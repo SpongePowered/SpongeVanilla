@@ -1,5 +1,6 @@
-package com.mythicmc.mythic;
+package com.mythicmc.mythic.utils;
 
+import com.mythicmc.mythic.Mappings;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
@@ -37,7 +38,7 @@ public class ServerComposite {
                     hasValue = true;
                     try {
                         serverPort = Integer.parseInt(argumentValue);
-                    } catch (NumberFormatException var13) {
+                    } catch (NumberFormatException ignored) {
                     }
                 } else if (argument.equals("--singleplayer") && argumentValue != null) {
                     hasValue = true;
@@ -69,7 +70,6 @@ public class ServerComposite {
                 try {
                     return proceed.invoke(self, args);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    // TODO Auto-generated catch block
                     Logger.error("Failed to invoke " + proceed);
                     e.printStackTrace();
                 }

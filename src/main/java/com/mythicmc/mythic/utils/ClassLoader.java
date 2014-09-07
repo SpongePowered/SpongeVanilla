@@ -1,4 +1,4 @@
-package com.mythicmc.mythic;
+package com.mythicmc.mythic.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-public class SystemClassLoader {
-    @SuppressWarnings("rawtypes")
+public class ClassLoader {
+
     private static final Class[] parameters = new Class[]{URL.class};
 
     public static void addFile(String s) throws IOException {
@@ -19,15 +19,14 @@ public class SystemClassLoader {
         addURL(f.toURI().toURL());
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void addURL(URL u) throws IOException {
-        URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        Class sysclass = URLClassLoader.class;
+        URLClassLoader sysloader = (URLClassLoader) java.lang.ClassLoader.getSystemClassLoader();
+        Class<URLClassLoader> sysclass = URLClassLoader.class;
 
         try {
             Method method = sysclass.getDeclaredMethod("addURL", parameters);
             method.setAccessible(true);
-            method.invoke(sysloader, new Object[]{u});
+            method.invoke(sysloader, u);
         } catch (Throwable t) {
             t.printStackTrace();
             throw new IOException("Error, could not add URL to system classloader");
