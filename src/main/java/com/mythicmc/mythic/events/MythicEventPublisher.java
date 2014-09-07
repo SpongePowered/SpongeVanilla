@@ -1,8 +1,10 @@
+package com.mythicmc.mythic.events;
+
 import java.lang.reflect.Method;
 
 
 public class MythicEventPublisher {
-	//not used yet because we have to figure out how to get a return
+    //not used yet because we have to figure out how to get a return
     public static void raiseEvent(final MythicEvent event) {
         new Thread() {
             @Override
@@ -13,7 +15,7 @@ public class MythicEventPublisher {
     }
 
     @SuppressWarnings("rawtypes")
-	public static MythicEvent raise(final MythicEvent event) {
+    public static MythicEvent raise(final MythicEvent event) {
         for (Class handler : MythicEventHandlerRegistry.getHandlers()) {
             Method[] methods = handler.getMethods();
 

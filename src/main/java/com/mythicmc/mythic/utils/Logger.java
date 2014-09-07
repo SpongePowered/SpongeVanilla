@@ -1,4 +1,4 @@
-package com.mythicmc.mythic;
+package com.mythicmc.mythic.utils;
 
 public class Logger {
 

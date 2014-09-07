@@ -1,4 +1,4 @@
-package com.mythicmc.mythic;
+package com.mythicmc.mythic.utils;
 
 import java.io.File;
 import java.io.IOException;

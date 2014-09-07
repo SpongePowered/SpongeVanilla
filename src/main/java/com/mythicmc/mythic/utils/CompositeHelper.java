@@ -1,4 +1,4 @@
-package com.mythicmc.mythic;
+package com.mythicmc.mythic.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

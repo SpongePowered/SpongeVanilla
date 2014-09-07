@@ -1,4 +1,4 @@
-package com.mythicmc.mythic;
+package com.mythicmc.mythic.utils;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -41,7 +41,7 @@ public class ServerComposite {
                     hasValue = true;
                     try {
                         serverPort = Integer.parseInt(argumentValue);
-                    } catch (NumberFormatException var13) {
+                    } catch (NumberFormatException ignored) {
                     }
                 } else if (argument.equals("--singleplayer") && argumentValue != null) {
                     hasValue = true;
@@ -101,7 +101,7 @@ public class ServerComposite {
         try {
             //XXX: Obfuscated reference: net.minecraft.server.MinecraftServer.startServerThread()
             Method startServerThreadMethod = server.getClass().getMethod("B", new Class[0]);
-            startServerThreadMethod.invoke(server, new Object[0]);
+            startServerThreadMethod.invoke(server);
         } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IllegalAccessException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class ServerComposite {
         Object serverShutdownThread;
         try {
             //XXX: Obfuscated reference: net.minecraft.server.ThreadServerShutdown (name pending- not in mcp yet)
-            serverShutdownThread = Class.forName("pe").getDeclaredConstructor(new Class[]{String.class, serverClass}).newInstance(new Object[]{"Server Shutdown Thread", server});
+            serverShutdownThread = Class.forName("pe").getDeclaredConstructor(new Class[]{String.class, serverClass}).newInstance("Server Shutdown Thread", server);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             Logger.error("Failed to load server shutdown thread class.");
             e.printStackTrace();
