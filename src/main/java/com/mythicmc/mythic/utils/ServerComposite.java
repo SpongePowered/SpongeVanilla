@@ -20,14 +20,7 @@ public class ServerComposite {
         //start the server
         Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
 
-        boolean showGui = true;
-        String serverOwner = null;
         String worldsDirectory = ".";
-        String world = null;
-        boolean demo = false;
-        boolean bonusChest = false;
-        int serverPort = -1;
-
         for (int argIndex = 0; argIndex < args.length; ++argIndex) {
             String argument = args[argIndex];
             String argumentValue = argIndex == args.length - 1 ? null : args[argIndex + 1];
@@ -37,24 +30,21 @@ public class ServerComposite {
                 if (argument.equals("--port") && argumentValue != null) {
                     hasValue = true;
                     try {
-                        serverPort = Integer.parseInt(argumentValue);
+                        Integer.parseInt(argumentValue);
                     } catch (NumberFormatException ignored) {
                     }
                 } else if (argument.equals("--singleplayer") && argumentValue != null) {
                     hasValue = true;
-                    serverOwner = argumentValue;
                 } else if (argument.equals("--universe") && argumentValue != null) {
                     hasValue = true;
                     worldsDirectory = argumentValue;
                 } else if (argument.equals("--world") && argumentValue != null) {
                     hasValue = true;
-                    world = argumentValue;
                 } else if (argument.equals("--demo")) {
-                    demo = true;
                 } else if (argument.equals("--bonusChest")) {
-                    bonusChest = true;
                 }
-            } else showGui = false;
+            } else {
+			}
 
             if (hasValue) ++argIndex;
 

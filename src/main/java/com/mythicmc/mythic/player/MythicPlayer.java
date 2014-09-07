@@ -1,8 +1,5 @@
 package com.mythicmc.mythic.player;
 
-import com.mythicmc.mythic.item.MythicItem;
-import com.mythicmc.mythic.utils.CompositeHelper;
-
 public class MythicPlayer {
     /*
      * This class provides a mapping wrapper for EntityPlayer.
