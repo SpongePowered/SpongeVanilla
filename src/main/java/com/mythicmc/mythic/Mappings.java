@@ -3,6 +3,7 @@ package com.mythicmc.mythic;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -12,8 +13,10 @@ import java.util.Objects;
 public class Mappings {
     private static Map<String, Class<?>> classes;
     private static Map<String, Map<String, ?>> methods;
+	private static Map<String, Map<String,?>> fields;
 
-    private static void load() {
+    @SuppressWarnings("unchecked")
+	private static void load() {
         Config mappings = ConfigFactory.parseURL(Mappings.class.getResource("/mappings.conf"));
 
         classes = new HashMap<>();
@@ -29,6 +32,10 @@ public class Mappings {
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.methods").unwrapped().entrySet()) {
             methods.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
+        
+        for(Map.Entry<String, Object> entry : mappings.getObject("mappings.fields").unwrapped().entrySet()) {
+        	fields.put(entry.getKey(), (Map<String,?>) entry.getValue());
+        }
     }
 
     public static Class<?> getClassByHumanName(String humanName) {
@@ -38,6 +45,8 @@ public class Mappings {
 
         return classes.get(humanName);
     }
+    
+    
 
     public static Method getMethod(String humanClassName, String humanMethodName) {
         if (classes == null || methods == null) {
@@ -65,7 +74,21 @@ public class Mappings {
 
         return getMethod(humanClassName, humanMethodName);
     }
+    
+    public static Field getField(String humanClassName, String humanFieldName) {
+        if (classes == null || methods == null) {
+            load();
+        }
 
+        Class<?> clazz = getClassByHumanName(humanClassName);
+        try {
+            return clazz.getField(String.valueOf(fields.get(humanClassName).get(humanFieldName)));
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     public static Object call(Object object, String humanClassName, String humanMethodName, Object... args) {
         Method method = getMethod(humanClassName, humanMethodName);
 
