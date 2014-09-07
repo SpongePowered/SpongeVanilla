@@ -20,6 +20,5 @@ public class Main {
 
         //now that classes are loaded, let's attempt to create the composite layer
         ServerComposite.create(args);
-
     }
 }

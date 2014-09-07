@@ -14,14 +14,10 @@ public class ServerComposite {
 
     public static void create(String[] args) {
         //attempt to locate the MinecraftServer class
-        //XXX: Obfuscated reference: net.minecraft.server.dedicated.DedicatedServer
-        serverClass = CompositeHelper.getClass("po");
+        serverClass = Mappings.getClassByHumanName("net.minecraft.server.dedicated.DedicatedServer");
 
-        //attempt to locate Bootstrap class
-        //XXX: Obfuscated reference: net.minecraft.init.Bootstrap
-        Class<?> bootstrapClass = CompositeHelper.getClass("od");
-        //XXX: Obfuscated reference: net.minecraft.init.Bootstrap.func_151354_b
-        CompositeHelper.invokeMethod("c", bootstrapClass, new Class[0], new Object[0]);
+        //start the server
+        Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
 
         boolean showGui = true;
         String serverOwner = null;
@@ -99,10 +95,8 @@ public class ServerComposite {
 
         // fire up the server thread
         try {
-            //XXX: Obfuscated reference: net.minecraft.server.MinecraftServer.startServerThread()
-            Method startServerThreadMethod = server.getClass().getMethod("B", new Class[0]);
-            startServerThreadMethod.invoke(server, new Object[0]);
-        } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IllegalAccessException e) {
+            Mappings.call(server, server.getClass(), "startServerThread");
+        } catch (IllegalArgumentException | SecurityException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();
         }
@@ -110,9 +104,8 @@ public class ServerComposite {
         //attempt to locate the ThreadServerShutdown class
         Object serverShutdownThread;
         try {
-            //XXX: Obfuscated reference: net.minecraft.server.ThreadServerShutdown (name pending- not in mcp yet)
-            serverShutdownThread = Class.forName("pe").getDeclaredConstructor(new Class[]{String.class, serverClass}).newInstance(new Object[]{"Server Shutdown Thread", server});
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            serverShutdownThread = Mappings.getClassByHumanName("net.minecraft.server.ThreadServerShutdown").getDeclaredConstructor(String.class, serverClass).newInstance("Server Shutdown Thread", server);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             Logger.error("Failed to load server shutdown thread class.");
             e.printStackTrace();
             return;
