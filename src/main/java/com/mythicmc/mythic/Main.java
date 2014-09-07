@@ -7,29 +7,7 @@ import java.io.IOException;
 
 public class Main {
 
-	public static void main(String [] args){
-		
-		//get a list of libraries from ./lib/
-		File dir = new File("./lib/");
-		File [] files = dir.listFiles(new FilenameFilter() {
-		    @Override
-		    public boolean accept(File dir, String name) {
-		        return name.endsWith(".jar");
-		    }
-		});
-
-		//install libraries
-		for (File jarfile : files) {
-			try {
-				SystemClassLoader.addURL(jarfile.toURI().toURL());
-				Logger.info("Loaded library: " + jarfile.getName());
-			} catch (IOException e) {
-				Logger.error("Failed to load library: " + jarfile.getName());
-				e.printStackTrace();
-			}
-		}
-		
-		
+	public static void main(String [] args) {
 		//load the server jar into the default classloader
 		try {
 			File jarfile = new File("./minecraft_server.jar");
