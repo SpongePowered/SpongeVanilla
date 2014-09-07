@@ -2,7 +2,7 @@ package com.mythicmc.mythic;
 
 import com.mythicmc.mythic.utils.Logger;
 import com.mythicmc.mythic.utils.ServerComposite;
-import com.mythicmc.mythic.utils.SystemClassLoader;
+import com.mythicmc.mythic.utils.ClassLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class Main {
         //load the server jar into the default classloader
         try {
             File jarFile = new File("./minecraft_server.jar");
-            SystemClassLoader.addURL(jarFile.toURI().toURL());
+            ClassLoader.addURL(jarFile.toURI().toURL());
             Logger.info("Loaded server: " + jarFile.getName());
         } catch (IOException e) {
             Logger.error("Failed to load minecraft_server.jar . Please make sure it exists in the same directory.");

@@ -7,7 +7,7 @@ public class MythicEventHooks {
 	 * This class provides a reciever for hooks inserted into vanilla code.
 	 * The hooks will have to be reinstalled every update -
 	 * Comments above each hook provide information that is useful in finding the hook.
-	 */
+	 *
 
 
     //HOOK: onExecuteCommand
@@ -26,10 +26,10 @@ public class MythicEventHooks {
         //a hardcoded hook to uninstall if "stop" is run from console
 
         //What is this???
-        /*if(commandParts[0].equalsIgnoreCase("stop") && event.player == null){
+        if(commandParts[0].equalsIgnoreCase("stop") && event.player == null){
             Mythic.uninstall();
-		}*/
+		}
 
         return !event.cancelled;
-    }
+    }*/
 }
