@@ -1,7 +1,7 @@
 package com.mythicmc.mythic.item;
 
 public class MythicItem {
-  /*  //XXX: obfuscation reference
+    //XXX: obfuscation reference
     amj itemStack = null;
     //XXX: obfuscation reference
     alq test;
@@ -56,7 +56,6 @@ public class MythicItem {
     //ItemStack(Block|Item, int stacksize) amj(atr|alq, int)
     //ItemStack(Block|Item) amj(atr|alq)
 
-    //ItemStack onUseItemRightClick(World w, EntityPlayer e) amj a(aqu w, ahd e)*/
-	// DEAD CODE PLEASE IGNORE
+    //ItemStack onUseItemRightClick(World w, EntityPlayer e) amj a(aqu w, ahd e)
 
 }

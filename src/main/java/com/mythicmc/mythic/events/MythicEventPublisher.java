@@ -14,15 +14,14 @@ public class MythicEventPublisher {
         }.start();
     }
 
-    @SuppressWarnings("rawtypes")
     public static MythicEvent raise(final MythicEvent event) {
         for (Class handler : MythicEventHandlerRegistry.getHandlers()) {
             Method[] methods = handler.getMethods();
 
-            for (int i = 0; i < methods.length; ++i) {
-                MythicEventHandler eventHandler = methods[i].getAnnotation(MythicEventHandler.class);
+            for (Method method : methods) {
+                MythicEventHandler eventHandler = method.getAnnotation(MythicEventHandler.class);
                 if (eventHandler != null) {
-                    Class[] methodParams = methods[i].getParameterTypes();
+                    Class[] methodParams = method.getParameterTypes();
 
                     if (methodParams.length < 1)
                         continue;
@@ -33,7 +32,7 @@ public class MythicEventPublisher {
 
                     // defence from runtime exceptions:
                     try {
-                        methods[i].invoke(handler.newInstance(), event);
+                        method.invoke(handler.newInstance(), event);
                     } catch (Exception e) {
                         System.err.println(e);
                     }
