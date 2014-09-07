@@ -3,7 +3,6 @@ package com.mythicmc.mythic.events;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("rawtypes")
 public class MythicEventHandlerRegistry {
     private static List<Class> handlers = new ArrayList<Class>();
 

@@ -73,7 +73,6 @@ public class ServerComposite {
                 try {
                     return proceed.invoke(self, args);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    // TODO Auto-generated catch block
                     Logger.error("Failed to invoke " + proceed);
                     e.printStackTrace();
                 }
