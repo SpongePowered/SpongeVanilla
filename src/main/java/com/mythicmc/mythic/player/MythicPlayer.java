@@ -1,13 +1,12 @@
 package com.mythicmc.mythic.player;
 
-import com.mythicmc.mythic.item.MythicItem;
-import com.mythicmc.mythic.utils.CompositeHelper;
 
 public class MythicPlayer {
     /*
+    
      * This class provides a mapping wrapper for EntityPlayer.
 	 * It will have to be updated as the obfuscation changes (or becomes unnecessary).
-	 */
+	 *
 
     //set the type of this field to the (obfuscated or not) PlayerEntity type.
     //XXX: obfuscation reference
@@ -17,8 +16,8 @@ public class MythicPlayer {
     Class<?> VanillaPlayerClass = CompositeHelper.getClass("ahd");
 
     //obf: ahd vanillaEntityPlayer
-    public MythicPlayer(ahd vanillaEntityPlayer) {
-        entityPlayer = vanillaEntityPlayer;
+    public MythicPlayer(Class<?> vanillaEntityPlayer) throws InstantiationException, IllegalAccessException {
+        entityPlayer = vanillaEntityPlayer.newInstance();
     }
 
     public void sendChatMessage(String message) {
@@ -119,4 +118,5 @@ public class MythicPlayer {
     //void onDeath(DamageSource var1) a(wh var1)
 
     //void EntityLivingBase.onItemPickup(Entity itemToBePickedUp, int unused) xm.a(wv itemToBePickedUp, int unused)
+    */
 }
