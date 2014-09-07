@@ -17,7 +17,7 @@ public class Logger {
     }
     
     public static void debug(String format, Object...objects) {
-    	logf("debuh", format, objects);
+    	logf("debuh", format, objects);	
     }
     
     public static void logf(String level, String format, Object...objects) {
