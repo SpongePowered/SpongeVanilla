@@ -10,20 +10,18 @@ public class MythicPlayer {
 	 */
 
     //set the type of this field to the (obfuscated or not) PlayerEntity type.
-    //XXX: obfuscation reference
-
-    //Obf:ahd
-    Object entityPlayer = null;
     Class<?> VanillaPlayerClass = CompositeHelper.getClass("ahd");
+    //Obf: ahd
+    Object entityPlayer = null;
 
-    //obf: ahd vanillaEntityPlayer
-    public MythicPlayer(ahd vanillaEntityPlayer) {
+    //Obf: ahd
+    public MythicPlayer(Object vanillaEntityPlayer) {
         entityPlayer = vanillaEntityPlayer;
     }
 
-    public void sendChatMessage(String message) {
+    public void sendMessage(String message) {
         //should point at EntityPlayer.addChatComponentMessage(IChatComponent p_146105_1_)
-        //obf: hu chatComponentMessage = new hu(message);
+        //Obf: hu
         hu chatComponentMessage = new hu(message);
         //XXX: obfuscation reference
         entityPlayer.a(chatComponentMessage);
@@ -91,14 +89,27 @@ public class MythicPlayer {
         return entityPlayer.ao.toString();
     }
 
-    public void heal(float amount) {
+    public float getHealth() {
+        //TODO: find mapping
+        return 0;
+    }
+
+    public void setHeath(float amount) {
         //XXX: obfuscation reference
         ((xm) entityPlayer).g(amount);
     }
 
-    public void setHealth(float amount) {
+    public void setMaxHealth(float amount) {
         //XXX: obfuscation reference
         ((xm) entityPlayer).h(amount);
+    }
+
+    public float getFoodLevel() {
+        return 0;
+    }
+
+    public void setFoodLevel(float amount) {
+        //TODO:Find mapping
     }
 
     public MythicItem getEquipmentInSlot(int slot) {

@@ -1,13 +1,18 @@
 package com.mythicmc.mythic.item;
 
+import com.mythicmc.mythic.utils.CompositeHelper;
+
 public class MythicItem {
-    //XXX: obfuscation reference
-    amj itemStack = null;
+
+    //Obf: amj
+    Object itemStack = null;
+    Class<?> VanillaItemClass = CompositeHelper.getClass("amj");
+
     //XXX: obfuscation reference
     alq test;
 
-    //XXX: obfuscation reference
-    public MythicItem(amj item) {
+    //Obf: amj
+    public MythicItem(Object item) {
         itemStack = item;
     }
 
