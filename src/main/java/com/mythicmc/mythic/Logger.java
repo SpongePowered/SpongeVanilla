@@ -1,3 +1,5 @@
+package com.mythicmc.mythic;
+
 public class Logger {
 	
 	public static void info(String msg){

@@ -1,3 +1,5 @@
+package com.mythicmc.mythic;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;

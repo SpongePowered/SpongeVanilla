@@ -1,3 +1,5 @@
+package com.mythicmc.mythic;
+
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
