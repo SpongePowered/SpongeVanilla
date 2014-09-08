@@ -6,7 +6,7 @@ apply plugin: 'idea'
 mainClassName = "org.granitemc.granite.Main"
 
 sourceCompatibility = 1.7
-version = "beta1-rev$System.env.BUILD_NUMBER"
+version = "1.8.$Sys.env.BUILD_NUMBER"
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ dependencies {
 }
 
 task runMythic(dependsOn: classes, type: JavaExec) {
-    main = "com.mythicmc.mythic.Main"
+    main = "org.granitemc.granite.Main"
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
 
