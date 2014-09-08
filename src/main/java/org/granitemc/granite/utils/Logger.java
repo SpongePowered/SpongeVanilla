@@ -4,6 +4,29 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
+	public static class PluginLogger {
+		private final String id;
+		public PluginLogger(String id) {
+			this.id = id;
+		}
+		
+		 public  void info(String format, Object...objects) {
+			 logfc(id,"info", format, objects);
+		 }
+
+		 public  void warn(String format, Object...objects) {
+			 logfc(id,"warn", format, objects);
+		 }
+
+		 public  void error(String format, Object...objects) {
+			 logfc(id,"error", format, objects);
+		 }
+		    
+		 public void debug(String format, Object...objects) {
+			 logfc(id,"debug", format, objects);
+		 }
+	}
+
 	public static boolean showThread = true;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	

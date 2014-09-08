@@ -65,8 +65,8 @@ public class ServerComposite {
         MethodHandler serverCommandHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-                Logger.info("Command proxy triggered!");
-                Logger.info(thisMethod.getName() + " ->" + proceed.getName());
+               
+                Logger.info("Command proxy : %s -> %s.", thisMethod.getName(), proceed.getName());
                 return null;
                 /*
                 try {
