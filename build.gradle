@@ -6,7 +6,7 @@ apply plugin: 'idea'
 mainClassName = "org.granitemc.granite.Main"
 
 sourceCompatibility = 1.7
-version = "1.8.$System.env.BUILD_NUMBER"
+version = "1.8-$System.env.BUILD_NUMBER"
 
 repositories {
     mavenCentral()
