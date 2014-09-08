@@ -37,6 +37,7 @@ public class MythicStartupThread extends Thread {
         }
 
         File plugins = new File("plugins");
+        plugins.mkdirs();
         for (File plugin : plugins.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
