@@ -7,10 +7,13 @@ import javassist.util.proxy.ProxyFactory;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 public class ServerComposite {
     static Class<?> serverClass = null;
+    static Class<?> commandHandlerClass = null;
     static Object server = null;
+    static Object commandHandler = null;
 
     public static void create(String[] args) {
         //attempt to locate the MinecraftServer class
@@ -43,20 +46,37 @@ public class ServerComposite {
                 } else if (argument.equals("--bonusChest")) {
                 }
             } else {
-			}
+            }
 
             if (hasValue) ++argIndex;
 
         }
         //creating proxy
-        ProxyFactory factory = new ProxyFactory();
-        factory.setSuperclass(serverClass);
 
-        MethodHandler handler = new MethodHandler() {
+        //commandproxy first
+
+        commandHandlerClass = Mappings.getClassByHumanName("net.minecraft.command.ServerCommandHandler");
+        //proxy out the ServerCommandManager
+        ProxyFactory factory = new ProxyFactory();
+        factory.setSuperclass(commandHandlerClass);
+
+        MethodHandler serverCommandHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
+                Logger.info("Command proxy triggered!");
                 try {
-                    return proceed.invoke(self, args);
+                    if(thisMethod.getName() == "a" && args.length >= 5){
+                        //commands are processed here:
+                        //args: ae var1, ac var2, int var3, String var4, Object ... var5
+                        //ae is castable to player
+                        boolean cancelVanillaCommand = false;
+                        String[] commandParams = ((String)args[3]).split(" ");
+                        Logger.info("intercepted command: " + commandParams[0]);
+
+                        if(!cancelVanillaCommand) proceed.invoke(self, args);
+                    } else {
+                        return proceed.invoke(self, args);
+                    }
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     Logger.error("Failed to invoke " + proceed);
                     e.printStackTrace();
@@ -66,12 +86,45 @@ public class ServerComposite {
         };
 
         try {
-            server = factory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, handler);
+            commandHandler = factory.create(new Class[]{}, new Object[]{}, serverCommandHandler);
+        } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            Logger.error("Failed to create command proxy.");
+            e.printStackTrace();
+            return;
+        }
+
+
+        factory = new ProxyFactory();
+        factory.setSuperclass(serverClass);
+
+        MethodHandler serverHandler = new MethodHandler() {
+            @Override
+            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
+                try {
+                    //if calling the createCommandHandler function, lets give them our proxy instead
+                    //why is this not working?
+                    if(thisMethod.getName() == "h" && args.length == 0){
+                        Logger.info("Installing command proxy...");
+                        return commandHandler;
+                    } else {
+                        return proceed.invoke(self, args);
+                    }
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    Logger.error("Failed to invoke " + proceed);
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+        try {
+            server = factory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
         } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             Logger.error("Failed to instanciate server.");
             e.printStackTrace();
             return;
         }
+
 
         //these will need to be refactored to the obfuscated variants
         //if (serverOwner != null) serverProxy.setServerOwner(serverOwner);
@@ -83,8 +136,8 @@ public class ServerComposite {
 
         // fire up the server thread
         try {
-        	 Mappings.call(server,"net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
-        	
+            Mappings.call(server,"net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
+
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();
