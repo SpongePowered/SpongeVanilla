@@ -11,11 +11,15 @@ public class Main {
 
     public static void main(String[] args) {
         //load the server jar into the default classloader
-    	Logger.info("Loading jar from %s into classpath.", new File("	minecraft_server.jar").getAbsolutePath());
+    	File mcJar =  new File("minecraft_server.jar");
+    	Logger.info("Loading jar from %s into classpath.",mcJar.getAbsolutePath());
+    
+    	if(!mcJar.exists()) {
+    		throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
+    	}
         try {
-            File jarFile = new File("./minecraft_server.jar");
-            ClassLoader.addURL(jarFile.toURI().toURL());
-            Logger.info("Loaded server: " + jarFile.getName());
+            ClassLoader.addURL(mcJar.toURI().toURL());
+            Logger.info("Loaded server: " + mcJar.getAbsolutePath());
         } catch (IOException e) {
             Logger.error("Failed to load minecraft_server.jar . Please make sure it exists in the same directory.");
             e.printStackTrace();

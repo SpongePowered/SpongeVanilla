@@ -13,7 +13,11 @@ import java.util.Objects;
 
 public class Mappings {
     public static class MappingNotFoundException extends RuntimeException {
-        private String triedToAccess;
+        /**
+		 * So that eclipse stops bitching.
+		 */
+		private static final long serialVersionUID = 1L;
+		private String triedToAccess;
 
         public MappingNotFoundException(String triedToAccess) {
             super("Tried to access " + triedToAccess);
