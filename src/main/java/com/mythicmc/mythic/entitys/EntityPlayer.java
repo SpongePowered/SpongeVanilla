@@ -1,23 +1,23 @@
-package com.mythicmc.mythic.player;
+package com.mythicmc.mythic.entitys;
 
 import com.mythicmc.mythic.Mappings;
-import com.mythicmc.mythic.item.MythicItemStack;
+import com.mythicmc.mythic.item.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-public class MythicPlayer {
+public class EntityPlayer {
 
     /**
      * This class provides a mapping wrapper for EntityPlayer.
-	 * It will have to be updated as the obfuscation changes (or becomes unnecessary).
-	*/
+     * It will have to be updated as the obfuscation changes (or becomes unnecessary).
+     */
 
     //set the type of this field to the (obfuscated or not) PlayerEntity type.
     Object vanillaPlayerInstance = null;
-    String targetClass = "net.minecraft.entity.player.EntityPlayer";
+    String targetClass = "net.minecraft.entity.EntityPlayer";
 
-    public MythicPlayer(Object instance) {
+    public EntityPlayer(Object instance) {
         instance = vanillaPlayerInstance;
     }
 
@@ -26,99 +26,84 @@ public class MythicPlayer {
         //obf: hu chatComponentMessage = new hu(message);
         hu chatComponentMessage = new hu(message);
         //XXX: obfuscation reference
-        vanillaPlayerInstance.a(chatComponentMessage);
+        vanillaEntityInstance.a(chatComponentMessage);
     }*/
 
     public void teleportToDimension(int dimId) {
         //TODO: Check if this works or need to be invoked differently
-        //Obf: wv
         invoke("teleportToDimension", new Object[]{dimId});
+    }
+
+
+    public void teleportToPlayer(EntityPlayer player) {
+        if (getDimension() != player.getDimension()) {
+            teleportToDimension(player.getDimension());
+        }
+        setPosition(player.getX(), player.getY(), player.getZ());
     }
 
     public void setPosition(double x, double y, double z) {
         //TODO: Check if this works or need to be invoked differently
-        //Obf: a
         invoke("setPosition", new Object[]{x, y, z});
     }
 
-    public void teleportToPlayer(MythicPlayer mythicPlayer) {
-        if (getDimension() != mythicPlayer.getDimension()) {
-            teleportToDimension(mythicPlayer.getDimension());
-        }
-        setPosition(mythicPlayer.getX(), mythicPlayer.getY(), mythicPlayer.getZ());
+    public UUID getUUID() {
+        return (UUID) invoke("getUUID", new Object[]{});
     }
 
     public double getX() {
-        //Obf: wv.s
         return (double) invoke("getX", new Object[]{});
     }
 
     public double getY() {
-        //Obf: wv.s
         return (double) invoke("getY", new Object[]{});
     }
 
     public double getZ() {
-        //Obf: wv.s
         return (double) invoke("getZ", new Object[]{});
     }
 
     public int getDimension() {
-        //Obf: wv.am
         return (int) invoke("getDimension", new Object[]{});
     }
 
     public boolean isUsingItem() {
-        //Obf: br
         return (boolean) invoke("isUsingItem", new Object[]{});
     }
 
     public void stopUsingItem() {
-        //Obf: bT
         invoke("isUsingItem", new Object[]{});
     }
 
     public void clearItemInUse() {
-        //Obf: bU
         invoke("clearItemInUse", new Object[]{});
     }
 
     public String getName() {
-        //Obf: d_
-        return (String) invoke("isUsingItem", new Object[]{});
-    }
-
-    public UUID getUUID() {
-        //Obf: ao
-        return (UUID) invoke("getUUID", new Object[]{});
+        return (String) invoke("getName", new Object[]{});
     }
 
     public void heal(int amount) {
         //TODO: Check if this works or need to be invoked differently
-        //Obf: (xm) g
         invoke("heal", new Object[]{amount});
     }
 
     public void setHealth(int amount) {
         //TODO: Check if this works or need to be invoked differently
-        //Obf: (xm) h
         invoke("setHealth", new Object[]{amount});
     }
 
-    public MythicItemStack getEquipmentInSlot(int slot) {
+    public ItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
-        //Obf: p
-        return new MythicItemStack(invoke("getEquiptmentInSlot", new Object[]{slot}));
+        return new ItemStack(invoke("getEquiptmentInSlot", new Object[]{slot}));
     }
 
-    public MythicItemStack getHeldItem() {
+    public ItemStack getHeldItem() {
         //TODO: Check if this works or need to be invoked differently
-        //XXX: obfuscation reference
-        return new MythicItemStack(invoke("getHeldItem", new Object[]{}));
+        return new ItemStack(invoke("getHeldItem", new Object[]{}));
     }
 
-    public void setCurrentItemOrArmor(int slot, MythicItemStack item) {
-        //Obf: c
+    public void setCurrentItemOrArmor(int slot, ItemStack item) {
         invoke("setCurrentItemOrArmor", new Object[]{slot, item});
     }
 

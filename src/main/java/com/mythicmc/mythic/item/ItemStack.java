@@ -1,14 +1,14 @@
 package com.mythicmc.mythic.item;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+
 import com.mythicmc.mythic.Mappings;
 
-public class MythicItemStack {
+public class ItemStack {
     Object vanillaItemInstance = null;
     String targetClass = "net.minecraft.item.ItemStack";
 
-    public MythicItemStack(Object instance) {
+    public ItemStack(Object instance) {
         vanillaItemInstance = instance;
     }
 
@@ -38,8 +38,8 @@ public class MythicItemStack {
         return (String) invoke("getDisplayName", new Object[]{});
     }
 
-    public MythicItemStack setDisplayName(String name) {
-        return new MythicItemStack(invoke("setDisplayName", new Object[]{name}));
+    public ItemStack setDisplayName(String name) {
+        return new ItemStack(invoke("setDisplayName", new Object[]{name}));
     }
 
     public boolean hasDisplayName() {
