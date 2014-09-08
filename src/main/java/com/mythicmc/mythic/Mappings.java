@@ -12,6 +12,18 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Mappings {
+    public static class MappingNotFoundException extends RuntimeException {
+        private String triedToAccess;
+
+        public MappingNotFoundException(String triedToAccess) {
+            super("Tried to access " + triedToAccess);
+            this.triedToAccess = triedToAccess;
+        }
+
+        public String getTriedToAccess() {
+            return triedToAccess;
+        }
+    }
     private static Map<String, Class<?>> classes;
     private static Map<String, Map<String, ?>> methods;
 	private static Map<String, Map<String,?>> fields;
@@ -62,7 +74,7 @@ public class Mappings {
             return clazz.getMethod(String.valueOf(methods.get(humanClassName).get(humanMethodName)));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            return null;
+            throw new MappingNotFoundException(humanClassName + "/" + humanMethodName);
         }
     }
 
@@ -89,7 +101,7 @@ public class Mappings {
             return clazz.getField(String.valueOf(fields.get(humanClassName).get(humanFieldName)));
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
-            return null;
+            throw new MappingNotFoundException(humanClassName + "/" + humanFieldName);
         }
     }
     
@@ -100,7 +112,7 @@ public class Mappings {
             return method.invoke(object, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -112,7 +124,7 @@ public class Mappings {
             return method.invoke(object, args);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getCause());
         }
     }
 }
