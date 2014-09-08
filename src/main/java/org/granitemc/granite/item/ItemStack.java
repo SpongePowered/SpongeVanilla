@@ -15,38 +15,38 @@ public class ItemStack {
     //need more constructors here that are capable of creating vanilla item instances
 
     public Object getItem() {
-        return invoke("getItem", new Object[]{});
+        return invoke("getItem");
     }
 
     public int getItemDamage() {
-        return (int) invoke("getItemDamage", new Object[]{});
+        return (int) invoke("getItemDamage");
     }
 
     public String[] getItemLore() {
-        return (String[]) invoke("getItemLore", new Object[]{});
+        return (String[]) invoke("getItemLore");
     }
 
     public void setItemDamage(int damage) {
-        invoke("setItemDamage", new Object[]{damage});
+        invoke("setItemDamage", damage);
     }
 
     public int getMaxDamage() {
-        return (int) invoke("getMaxDamage", new Object[]{});
+        return (int) invoke("getMaxDamage");
     }
 
     public String getDisplayName() {
-        return (String) invoke("getDisplayName", new Object[]{});
+        return (String) invoke("getDisplayName");
     }
 
     public ItemStack setDisplayName(String name) {
-        return new ItemStack(invoke("setDisplayName", new Object[]{name}));
+        return new ItemStack(invoke("setDisplayName", name));
     }
 
     public boolean hasDisplayName() {
-        return (boolean) invoke("hasDisplayName", new Object[]{});
+        return (boolean) invoke("hasDisplayName");
     }
 
-    public Object invoke(String targetMethod, Object[] parameters) {
+    public Object invoke(String targetMethod, Object... parameters) {
         try {
             return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaItemInstance, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {

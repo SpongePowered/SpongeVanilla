@@ -13,10 +13,10 @@ public class Entity {
     }
 
     public void setPosition(double x, double y, double z) {
-        invoke("setPosition", new Object[]{x, y, z});
+        invoke("setPosition", x, y, z);
     }
 
-    public Object invoke(String targetMethod, Object[] parameters) {
+    public Object invoke(String targetMethod, Object... parameters) {
         try {
             return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaEntityInstance, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {

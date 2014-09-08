@@ -30,7 +30,7 @@ public class EntityPlayer {
 
     public void teleportToDimension(int dimId) {
         //TODO: Check if this works or need to be invoked differently
-        invoke("teleportToDimension", new Object[]{dimId});
+        invoke("teleportToDimension", dimId);
     }
 
     public void teleportToPlayer(EntityPlayer player) {
@@ -42,67 +42,67 @@ public class EntityPlayer {
 
     public void setPosition(double x, double y, double z) {
         //TODO: Check if this works or need to be invoked differently
-        invoke("setPosition", new Object[]{x, y, z});
+        invoke("setPosition", x, y, z);
     }
 
     public UUID getUUID() {
-        return (UUID) invoke("getUUID", new Object[]{});
+        return (UUID) invoke("getUUID");
     }
 
     public double getX() {
-        return (double) invoke("getX", new Object[]{});
+        return (double) invoke("getX");
     }
 
     public double getY() {
-        return (double) invoke("getY", new Object[]{});
+        return (double) invoke("getY");
     }
 
     public double getZ() {
-        return (double) invoke("getZ", new Object[]{});
+        return (double) invoke("getZ");
     }
 
     public int getDimension() {
-        return (int) invoke("getDimension", new Object[]{});
+        return (int) invoke("getDimension");
     }
 
     public boolean isUsingItem() {
-        return (boolean) invoke("isUsingItem", new Object[]{});
+        return (boolean) invoke("isUsingItem");
     }
 
     public void stopUsingItem() {
-        invoke("isUsingItem", new Object[]{});
+        invoke("isUsingItem");
     }
 
     public void clearItemInUse() {
-        invoke("clearItemInUse", new Object[]{});
+        invoke("clearItemInUse");
     }
 
     public String getName() {
-        return (String) invoke("getName", new Object[]{});
+        return (String) invoke("getName");
     }
 
     public void heal(int amount) {
         //TODO: Check if this works or need to be invoked differently
-        invoke("heal", new Object[]{amount});
+        invoke("heal", amount);
     }
 
     public void setHealth(int amount) {
         //TODO: Check if this works or need to be invoked differently
-        invoke("setHealth", new Object[]{amount});
+        invoke("setHealth", amount);
     }
 
     public ItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
-        return new ItemStack(invoke("getEquiptmentInSlot", new Object[]{slot}));
+        return new ItemStack(invoke("getEquiptmentInSlot", slot));
     }
 
     public ItemStack getHeldItem() {
         //TODO: Check if this works or need to be invoked differently
-        return new ItemStack(invoke("getHeldItem", new Object[]{}));
+        return new ItemStack(invoke("getHeldItem"));
     }
 
     public void setCurrentItemOrArmor(int slot, ItemStack item) {
-        invoke("setCurrentItemOrArmor", new Object[]{slot, item});
+        invoke("setCurrentItemOrArmor", slot, item);
     }
 
     /*public void onDeath(DamageSource var1) {
@@ -111,7 +111,7 @@ public class EntityPlayer {
 
     //void EntityLivingBase.onItemPickup(Entity itemToBePickedUp, int unused) xm.a(wv itemToBePickedUp, int unused)
 
-    public Object invoke(String targetMethod, Object[] parameters) {
+    public Object invoke(String targetMethod, Object... parameters) {
         try {
             return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaPlayerInstance, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
