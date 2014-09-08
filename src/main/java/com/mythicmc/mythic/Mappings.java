@@ -77,7 +77,7 @@ public class Mappings {
 
         Class<?> clazz = getClassByHumanName(humanClassName);
         try {
-        	System.out.printf("Getting %s.%s\n", humanClassName, humanMethodName);
+        	Logger.info("Getting %s.%s\n", humanClassName, humanMethodName);
             return clazz.getMethod(String.valueOf(methods.get(humanClassName).get(humanMethodName)));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
