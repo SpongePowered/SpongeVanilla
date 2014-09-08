@@ -49,3 +49,8 @@ gradle-app.setting
 .classpath
 bin/
 
+minecraft*
+logs
+world
+*.properties
+*.json

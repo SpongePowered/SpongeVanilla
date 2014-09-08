@@ -12,6 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         //load the server jar into the default classloader
+    	Logger.info("Loading jar from %s into classpath.", new File("	minecraft_server.jar").getAbsolutePath());
         try {
             File jarFile = new File("./minecraft_server.jar");
             ClassLoader.addURL(jarFile.toURI().toURL());
@@ -21,6 +22,9 @@ public class Main {
             e.printStackTrace();
             return;
         }
+        
+    	Logger.debug("Got mapping : %s that is %s.", "net.minecraft.server.dedicated.DedicatedServer", Mappings.getClassByHumanName("net.minecraft.server.dedicated.DedicatedServer").getName());
+
 
         //now that classes are loaded, let's attempt to create the composite layer
         ServerComposite.create(args);

@@ -56,7 +56,6 @@ public class ServerComposite {
         MethodHandler handler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-                //System.out.println("Handling " + thisMethod + " via the method handler");
                 try {
                     return proceed.invoke(self, args);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -85,8 +84,9 @@ public class ServerComposite {
 
         // fire up the server thread
         try {
-            Mappings.call(server, server.getClass(), "startServerThread");
-        } catch (IllegalArgumentException | SecurityException e) {
+        	 Mappings.call(server,"net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
+        	
+        } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();
         }

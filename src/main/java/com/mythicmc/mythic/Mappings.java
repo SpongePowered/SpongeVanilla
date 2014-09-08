@@ -1,5 +1,6 @@
 package com.mythicmc.mythic;
 
+import com.mythicmc.mythic.utils.Logger;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -22,6 +23,7 @@ public class Mappings {
         classes = new HashMap<>();
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.classes").unwrapped().entrySet()) {
             try {
+            	Logger.info("Adding mapping: %s to %s.",entry.getKey(), Class.forName((String) entry.getValue()).getName()  );
                 classes.put(entry.getKey(), Class.forName((String) entry.getValue()));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -30,9 +32,10 @@ public class Mappings {
 
         methods = new HashMap<>();
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.methods").unwrapped().entrySet()) {
+        	
             methods.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
-        
+        fields = new HashMap<>();
         for(Map.Entry<String, Object> entry : mappings.getObject("mappings.fields").unwrapped().entrySet()) {
         	fields.put(entry.getKey(), (Map<String,?>) entry.getValue());
         }
@@ -55,6 +58,7 @@ public class Mappings {
 
         Class<?> clazz = getClassByHumanName(humanClassName);
         try {
+        	System.out.printf("Getting %s.%s\n", humanClassName, humanMethodName);
             return clazz.getMethod(String.valueOf(methods.get(humanClassName).get(humanMethodName)));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -100,7 +104,8 @@ public class Mappings {
         }
     }
 
-    public static Object call(Object object, Class<?> clazz, String humanMethodName, Object... args) {
+    public static Object call(Object object, String humanMethodName, Object... args) {
+    	Class<?> clazz = object.getClass();
         Method method = getMethod(clazz, humanMethodName);
 
         try {
