@@ -37,7 +37,7 @@ public class Mappings {
         }
         fields = new HashMap<>();
         for(Map.Entry<String, Object> entry : mappings.getObject("mappings.fields").unwrapped().entrySet()) {
-        	fields.put(entry.getKey(), (Map<String,?>) entry.getValue());
+        	fields.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
     }
 

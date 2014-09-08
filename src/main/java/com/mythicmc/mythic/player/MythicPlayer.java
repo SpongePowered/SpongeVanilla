@@ -14,13 +14,9 @@ public class MythicPlayer {
 	*/
 
     //set the type of this field to the (obfuscated or not) PlayerEntity type.
-    //XXX: obfuscation reference
-
-    //Obf:ahd
     Object vanillaPlayerInstance = null;
     String targetClass = "net.minecraft.entity.player.EntityPlayer";
 
-    //obf: ahd
     public MythicPlayer(Object instance) {
         instance = vanillaPlayerInstance;
     }

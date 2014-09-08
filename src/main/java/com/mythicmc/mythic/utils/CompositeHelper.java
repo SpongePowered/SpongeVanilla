@@ -3,7 +3,6 @@ package com.mythicmc.mythic.utils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
 public class CompositeHelper {
     public static Class<?> getClass(String forName) {
         try {

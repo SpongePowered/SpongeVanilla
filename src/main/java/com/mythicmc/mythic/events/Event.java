@@ -3,18 +3,6 @@ package com.mythicmc.mythic.events;
 import java.util.Arrays;
 import java.util.UUID;
 
-/**
- * This class was created as part of the PapayaUtils project. </br> </br>
- * Get the source code of this file on Bitbucket : </br>
- * bitbucket.org/systembenders/benders </br> </br>
- * 
- * PapayaUtils is distribuited under a GNU Lesser General Public License. </br> 
- * (https://www.gnu.org/licenses/lgpl.html)
- * 
- * @author matheus
- *
- */
- 
 public class Event {
 	
 	   

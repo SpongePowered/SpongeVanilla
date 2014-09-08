@@ -8,7 +8,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
 public class ServerComposite {
     static Class<?> serverClass = null;
     static Object server = null;
