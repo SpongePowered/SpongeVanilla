@@ -30,7 +30,7 @@ task fatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': mainClassName
     }
-    baseName = project.name + '-all'
+	classifier = 'all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
