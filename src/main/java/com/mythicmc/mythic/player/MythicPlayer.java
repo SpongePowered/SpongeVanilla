@@ -1,39 +1,48 @@
 package com.mythicmc.mythic.player;
 
+import com.mythicmc.mythic.Mappings;
+import com.mythicmc.mythic.item.MythicItemStack;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
+
 public class MythicPlayer {
-    /*
+
+    /**
      * This class provides a mapping wrapper for EntityPlayer.
 	 * It will have to be updated as the obfuscation changes (or becomes unnecessary).
-	 	
+	*/
 
     //set the type of this field to the (obfuscated or not) PlayerEntity type.
     //XXX: obfuscation reference
 
     //Obf:ahd
-    Object entityPlayer = null;
-    Class<?> VanillaPlayerClass = CompositeHelper.getClass("ahd");
+    Object vanillaPlayerInstance = null;
+    String targetClass = "net.minecraft.entity.player.EntityPlayer";
 
-    //obf: ahd vanillaEntityPlayer
-    public MythicPlayer(ahd vanillaEntityPlayer) {
-        entityPlayer = vanillaEntityPlayer;
+    //obf: ahd
+    public MythicPlayer(Object instance) {
+        instance = vanillaPlayerInstance;
     }
 
-    public void sendChatMessage(String message) {
+    /*public void sendChatMessage(String message) {
         //should point at EntityPlayer.addChatComponentMessage(IChatComponent p_146105_1_)
         //obf: hu chatComponentMessage = new hu(message);
         hu chatComponentMessage = new hu(message);
         //XXX: obfuscation reference
-        entityPlayer.a(chatComponentMessage);
-    }
+        vanillaPlayerInstance.a(chatComponentMessage);
+    }*/
 
     public void teleportToDimension(int dimId) {
-        //XXX: obfuscation reference
-        ((wv) entityPlayer).c(dimId);
+        //TODO: Check if this works or need to be invoked differently
+        //Obf: wv
+        invoke("teleportToDimension", new Object[]{dimId});
     }
 
     public void setPosition(double x, double y, double z) {
-        //XXX: obfuscation reference
-        ((wv) entityPlayer).a(x, y, z);
+        //TODO: Check if this works or need to be invoked differently
+        //Obf: a
+        invoke("setPosition", new Object[]{x, y, z});
     }
 
     public void teleportToPlayer(MythicPlayer mythicPlayer) {
@@ -44,77 +53,92 @@ public class MythicPlayer {
     }
 
     public double getX() {
-        //XXX: obfuscation reference
-        return ((wv) entityPlayer).s;
+        //Obf: wv.s
+        return (double) invoke("getX", new Object[]{});
     }
 
     public double getY() {
-        //XXX: obfuscation reference
-        return ((wv) entityPlayer).t;
+        //Obf: wv.s
+        return (double) invoke("getY", new Object[]{});
     }
 
     public double getZ() {
-        //XXX: obfuscation reference
-        return ((wv) entityPlayer).u;
+        //Obf: wv.s
+        return (double) invoke("getZ", new Object[]{});
     }
 
     public int getDimension() {
-        //XXX: obfuscation reference
-        return ((wv) entityPlayer).am;
+        //Obf: wv.am
+        return (int) invoke("getDimension", new Object[]{});
     }
 
     public boolean isUsingItem() {
-        //XXX: obfuscation reference
-        return entityPlayer.bR();
+        //Obf: br
+        return (boolean) invoke("isUsingItem", new Object[]{});
     }
 
     public void stopUsingItem() {
-        //XXX: obfuscation reference
-        entityPlayer.bT();
+        //Obf: bT
+        invoke("isUsingItem", new Object[]{});
     }
 
     public void clearItemInUse() {
-        //XXX: obfuscation reference
-        entityPlayer.bU();
+        //Obf: bU
+        invoke("clearItemInUse", new Object[]{});
     }
 
     public String getName() {
-        //XXX: obfuscation reference
-        return entityPlayer.d_();
+        //Obf: d_
+        return (String) invoke("isUsingItem", new Object[]{});
     }
 
-    public String getUUIDString() {
-        //XXX: obfuscation reference
-        return entityPlayer.ao.toString();
+    public UUID getUUID() {
+        //Obf: ao
+        return (UUID) invoke("getUUID", new Object[]{});
     }
 
-    public void heal(float amount) {
-        //XXX: obfuscation reference
-        ((xm) entityPlayer).g(amount);
+    public void heal(int amount) {
+        //TODO: Check if this works or need to be invoked differently
+        //Obf: (xm) g
+        invoke("heal", new Object[]{amount});
     }
 
-    public void setHealth(float amount) {
-        //XXX: obfuscation reference
-        ((xm) entityPlayer).h(amount);
+    public void setHealth(int amount) {
+        //TODO: Check if this works or need to be invoked differently
+        //Obf: (xm) h
+        invoke("setHealth", new Object[]{amount});
     }
 
-    public MythicItem getEquipmentInSlot(int slot) {
-        //XXX: obfuscation reference
-        return new MythicItem(entityPlayer.p(slot));
+    public MythicItemStack getEquipmentInSlot(int slot) {
+        //TODO: Check if this works or need to be invoked differently
+        //Obf: p
+        return new MythicItemStack(invoke("getEquiptmentInSlot", new Object[]{slot}));
     }
 
-    public MythicItem getHeldItem() {
+    public MythicItemStack getHeldItem() {
+        //TODO: Check if this works or need to be invoked differently
         //XXX: obfuscation reference
-        return new MythicItem(entityPlayer.bz());
+        return new MythicItemStack(invoke("getHeldItem", new Object[]{}));
     }
 
-    public void setCurrentItemOrArmor(int slot, MythicItem item) {
-        //XXX: obfuscation reference
-        entityPlayer.c(slot, item.itemStack);
+    public void setCurrentItemOrArmor(int slot, MythicItemStack item) {
+        //Obf: c
+        invoke("setCurrentItemOrArmor", new Object[]{slot, item});
     }
 
-    //void onDeath(DamageSource var1) a(wh var1)
+    /*public void onDeath(DamageSource var1) {
+        a(wh var1);
+    }*/
 
     //void EntityLivingBase.onItemPickup(Entity itemToBePickedUp, int unused) xm.a(wv itemToBePickedUp, int unused)
-	*/
+
+    public Object invoke(String targetMethod, Object[] parameters) {
+        try {
+            return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaPlayerInstance, parameters);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

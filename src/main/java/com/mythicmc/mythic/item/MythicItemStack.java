@@ -22,6 +22,10 @@ public class MythicItemStack {
         return (int) invoke("getItemDamage", new Object[]{});
     }
 
+    public String[] getItemLore() {
+        return (String[]) invoke("getItemLore", new Object[]{});
+    }
+
     public void setItemDamage(int damage) {
         invoke("setItemDamage", new Object[]{damage});
     }
@@ -45,9 +49,7 @@ public class MythicItemStack {
     public Object invoke(String targetMethod, Object[] parameters) {
         try {
             return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaItemInstance, parameters);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
