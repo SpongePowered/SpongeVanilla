@@ -1,7 +1,7 @@
-Mythic
+Granite
 ======
 
-Mythic - A different API for Minecraft 1.8+.
+Granite - A different API for Minecraft 1.8+.
 This is _not_ Sponge!
 
 The purpose of this API is to take a "hands off" approach to vanilla code.  
