@@ -1,11 +1,11 @@
-package com.mythicmc.mythic;
+package org.granitemc.granite;
 
 import java.io.File;
 import java.io.IOException;
 
-import com.mythicmc.mythic.utils.ClassLoader;
-import com.mythicmc.mythic.utils.Logger;
-import com.mythicmc.mythic.utils.ServerComposite;
+import org.granitemc.granite.utils.ClassLoader;
+import org.granitemc.granite.utils.Logger;
+import org.granitemc.granite.utils.ServerComposite;
 
 public class MythicStartupThread extends Thread{
 	private String[] args;

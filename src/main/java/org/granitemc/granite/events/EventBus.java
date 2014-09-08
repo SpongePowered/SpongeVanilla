@@ -1,4 +1,4 @@
-package com.mythicmc.mythic.events;
+package org.granitemc.granite.events;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

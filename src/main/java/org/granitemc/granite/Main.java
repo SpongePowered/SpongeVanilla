@@ -1,7 +1,7 @@
-package com.mythicmc.mythic;
+package org.granitemc.granite;
 
-import com.mythicmc.mythic.utils.Logger;
-import com.mythicmc.mythic.utils.ServerComposite;
+import org.granitemc.granite.utils.Logger;
+import org.granitemc.granite.utils.ServerComposite;
 
 public class Main {
 

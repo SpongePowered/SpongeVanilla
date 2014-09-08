@@ -1,4 +1,4 @@
-package com.mythicmc.mythic.utils;
+package org.granitemc.granite.utils;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,8 +1,8 @@
-package com.mythicmc.mythic.entitys;
-
-import com.mythicmc.mythic.Mappings;
+package org.granitemc.granite.entitys;
 
 import java.lang.reflect.InvocationTargetException;
+
+import org.granitemc.granite.Mappings;
 
 public class Entity {
 

@@ -3,10 +3,10 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-mainClassName = "com.mythicmc.mythic.Main"
+mainClassName = "org.granitemc.granite.Main"
 
 sourceCompatibility = 1.7
-version = '0.0.6-SNAPSHOT'
+version = '0.0.$System.env.BUILD_NUMBER-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -28,7 +28,7 @@ task runMythic(dependsOn: classes, type: JavaExec) {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.mythicmc.mythic.Main'
+        attributes 'Main-Class': mainClassName
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

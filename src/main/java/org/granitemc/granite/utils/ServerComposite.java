@@ -1,6 +1,5 @@
-package com.mythicmc.mythic.utils;
+package org.granitemc.granite.utils;
 
-import com.mythicmc.mythic.Mappings;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
@@ -10,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.util.Objects;
+
+import org.granitemc.granite.Mappings;
 
 public class ServerComposite {
     static Class<?> serverClass = null;

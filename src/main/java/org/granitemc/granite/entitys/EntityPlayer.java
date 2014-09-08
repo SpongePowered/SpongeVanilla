@@ -1,10 +1,10 @@
-package com.mythicmc.mythic.entitys;
-
-import com.mythicmc.mythic.Mappings;
-import com.mythicmc.mythic.item.ItemStack;
+package org.granitemc.granite.entitys;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
+
+import org.granitemc.granite.Mappings;
+import org.granitemc.granite.item.ItemStack;
 
 public class EntityPlayer {
 

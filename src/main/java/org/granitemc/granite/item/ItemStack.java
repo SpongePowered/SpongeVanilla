@@ -1,8 +1,8 @@
-package com.mythicmc.mythic.item;
+package org.granitemc.granite.item;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.mythicmc.mythic.Mappings;
+import org.granitemc.granite.Mappings;
 
 public class ItemStack {
     Object vanillaItemInstance = null;
