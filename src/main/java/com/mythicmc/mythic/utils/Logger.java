@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
+	public static boolean showThread = true;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     public static void info(String format, Object...objects) {
         logf("info", format, objects);
@@ -22,6 +23,10 @@ public class Logger {
     }
     
     public static void logf(String level, String format, Object...objects) {
-    	System.out.printf(String.format("[%s] [%s/%s] %s\n",sdf.format(new Date(System.currentTimeMillis())),"Mythic", level.toUpperCase(), format), objects);
+    	String tName = "Mythic Main Thread";
+    	if(showThread)
+    		 tName = Thread.currentThread().getName();
+
+    	System.out.printf(String.format("[%s] [%s/%s] %s\n",sdf.format(new Date(System.currentTimeMillis())),tName, level.toUpperCase(), format), objects);
     }
 }
