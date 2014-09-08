@@ -38,6 +38,7 @@ public class ServerComposite {
                     try {
                         Integer.parseInt(argumentValue);
                     } catch (NumberFormatException ignored) {
+
                     }
                 } else if (argument.equals("--singleplayer") && argumentValue != null) {
                     hasValue = true;
@@ -47,14 +48,17 @@ public class ServerComposite {
                 } else if (argument.equals("--world") && argumentValue != null) {
                     hasValue = true;
                 } else if (argument.equals("--demo")) {
+
                 } else if (argument.equals("--bonusChest")) {
+
                 }
             } else {
+
             }
 
             if (hasValue) ++argIndex;
-
         }
+
         //creating proxy
 
         //commandproxy first
@@ -95,7 +99,7 @@ public class ServerComposite {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
                 try {
-                    if(!commandProxyInstalled){
+                    if (!commandProxyInstalled){
                         try {
                             commandProxyInstalled = true;
                             Field commandManager = self.getClass().getSuperclass().getSuperclass().getDeclaredField("p");
@@ -137,7 +141,6 @@ public class ServerComposite {
             return;
         }
 
-
         //these will need to be refactored to the obfuscated variants
         //if (serverOwner != null) serverProxy.setServerOwner(serverOwner);
         //if (world != null) serverProxy.setFolderName(world);
@@ -149,7 +152,6 @@ public class ServerComposite {
         // fire up the server thread
         try {
             Mappings.call(server,"net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
-
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();

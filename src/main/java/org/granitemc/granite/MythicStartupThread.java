@@ -7,21 +7,23 @@ import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Logger;
 import org.granitemc.granite.utils.ServerComposite;
 
-public class MythicStartupThread extends Thread{
-	private String[] args;
-	public MythicStartupThread(String string, String[] args) {
-		setName(string);
-		this.args = args;
-	}
+public class MythicStartupThread extends Thread {
+    private String[] args;
 
-	public void run() {
-		Logger.infoc(getName(), "Starting Granite version @VERSION@");
-    	File mcJar =  new File("minecraft_server.jar");
-    	Logger.info("Loading jar from %s into classpath.",mcJar.getAbsolutePath());
-    
-    	if(!mcJar.exists()) {
-    		throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
-    	}
+    public MythicStartupThread(String string, String[] args) {
+        setName(string);
+        this.args = args;
+    }
+
+    public void run() {
+        Logger.infoc(getName(), "Starting Granite version @VERSION@");
+        File mcJar =  new File("minecraft_server.jar");
+        Logger.info("Loading jar from %s into classpath.",mcJar.getAbsolutePath());
+
+        if (!mcJar.exists()) {
+            throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
+        }
+
         try {
             ClassLoader.addURL(mcJar.toURI().toURL());
             Logger.info("Loaded server: " + mcJar.getAbsolutePath());
@@ -30,8 +32,7 @@ public class MythicStartupThread extends Thread{
             e.printStackTrace();
             return;
         }
+
         ServerComposite.create(args);
-
-	}
-
+    }
 }

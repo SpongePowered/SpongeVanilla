@@ -1,7 +1,6 @@
 package org.granitemc.granite.utils;
 
 public class ChatFormatCodes {
-
     //Colour Codes
     public static String black = "§0";
     public static String blue = "§1";
