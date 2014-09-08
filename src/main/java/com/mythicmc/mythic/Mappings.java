@@ -39,7 +39,7 @@ public class Mappings {
         classes = new HashMap<>();
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.classes").unwrapped().entrySet()) {
             try {
-            	Logger.info("Adding mapping: %s to %s.",entry.getKey(), Class.forName((String) entry.getValue()).getName()  );
+            	Logger.infoc("MappingRegistry","Adding mapping: %s to %s.",entry.getKey(), Class.forName((String) entry.getValue()).getName()  );
                 classes.put(entry.getKey(), Class.forName((String) entry.getValue()));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
