@@ -8,17 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-/**
- * This class was created as part of the PapayaUtils project. </br> </br>
- * Get the source code of this file on Bitbucket : </br>
- * bitbucket.org/systembenders/benders </br> </br>
- * 
- * PapayaUtils is distribuited under a GNU Lesser General Public License. </br> 
- * (https://www.gnu.org/licenses/lgpl.html)
- * 
- * @author matheus
- *
- */
+
 public class EventBus {
 	/**
 	 * If this is set to false, errors/methods found won't be logged.
