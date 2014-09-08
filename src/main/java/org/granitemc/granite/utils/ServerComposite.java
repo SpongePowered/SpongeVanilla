@@ -1,5 +1,6 @@
 package org.granitemc.granite.utils;
 
+import org.granitemc.granite.Mappings;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
@@ -10,13 +11,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import org.granitemc.granite.Mappings;
-
 public class ServerComposite {
     static Class<?> serverClass = null;
     static Class<?> commandHandlerClass = null;
     static Object server = null;
     static Object commandHandler = null;
+
+    static boolean commandProxyInstalled = false;
 
     public static void create(String[] args) {
         //attempt to locate the MinecraftServer class
@@ -66,8 +67,10 @@ public class ServerComposite {
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
                 Logger.info("Command proxy triggered!");
                 Logger.info(thisMethod.getName() + " ->" + proceed.getName());
+                return null;
+                /*
                 try {
-                    /*if(Objects.equals(thisMethod.getName(), "a") && args.length >= 5){
+                    if(Objects.equals(thisMethod.getDeclaredName(), "a") && args.length >= 5){
                         //commands are processed here:
                         //args: ae var1, ac var2, int var3, String var4, Object ... var5
                         //ae is castable to player
@@ -76,14 +79,15 @@ public class ServerComposite {
                         Logger.info("intercepted command: " + commandParams[0]);
 
                         if(!cancelVanillaCommand) proceed.invoke(self, args);
-                    } else {*/
+                    } else {
                         return proceed.invoke(self, args);
-                    //}
+                    }
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     Logger.error("Failed to invoke " + proceed);
                     e.printStackTrace();
                 }
                 return null;
+                */
             }
         };
 
@@ -91,14 +95,20 @@ public class ServerComposite {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
                 try {
-                    //if calling the createCommandHandler function, lets give them our proxy instead
-                    //why is this not working?
-                    if(Objects.equals(thisMethod.getName(), "h") && args.length == 0){
-                        Logger.info("Installing command proxy...");
-                        return commandHandler;
-                    } else {
-                        return proceed.invoke(self, args);
+                    if(!commandProxyInstalled){
+                        try {
+                            commandProxyInstalled = true;
+                            Field commandManager = self.getClass().getSuperclass().getSuperclass().getDeclaredField("p");
+                            commandManager.setAccessible(true);
+                            Logger.info("Gained access to server command manager.");
+                            commandManager.set(self, commandHandler);
+                        } catch (NoSuchFieldException e) {
+                            Logger.error("Unable to modify command manager field.");
+                            e.printStackTrace();
+                        }
                     }
+
+                    return proceed.invoke(self, args);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     Logger.error("Failed to invoke " + proceed);
                     e.printStackTrace();
