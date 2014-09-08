@@ -1,4 +1,4 @@
-package org.granitemc.granite.entitys;
+package org.granitemc.granite.entities;
 
 import org.granitemc.granite.Mappings;
 import org.granitemc.granite.item.ItemStack;
