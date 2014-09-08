@@ -26,8 +26,9 @@ public class Event {
 
     /**
      * Creates an event
+     *
      * @param oCause the new cause
-     * @param oData the new data
+     * @param oData  the new data
      */
     public Event(Object oCause, String type, Object... oData) {
         cause = oCause;
@@ -38,6 +39,7 @@ public class Event {
 
     /**
      * Returns a string representation of the cause and data of this event.
+     *
      * @param prettyPrint if should append end-of-line chars.
      */
     public String toString(boolean prettyPrint) {

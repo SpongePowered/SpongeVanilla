@@ -1,8 +1,8 @@
 package org.granitemc.granite.item;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.granitemc.granite.Mappings;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class ItemStack {
     Object vanillaItemInstance = null;

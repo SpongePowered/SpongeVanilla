@@ -1,10 +1,10 @@
 package org.granitemc.granite.entitys;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
-
 import org.granitemc.granite.Mappings;
 import org.granitemc.granite.item.ItemStack;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class EntityPlayer {
     /**

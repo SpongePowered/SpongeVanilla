@@ -1,8 +1,8 @@
 package org.granitemc.granite.entitys;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.granitemc.granite.Mappings;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class Entity {
     Object vanillaEntityInstance = null;

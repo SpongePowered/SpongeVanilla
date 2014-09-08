@@ -1,14 +1,14 @@
 package org.granitemc.granite.utils;
 
-import org.granitemc.granite.Mappings;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
+import org.granitemc.granite.Mappings;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Field;
 
 public class ServerComposite {
     static Class<?> serverClass = null;
@@ -68,7 +68,7 @@ public class ServerComposite {
         MethodHandler serverCommandHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-               
+
                 Logger.info("Command proxy : %s -> %s.", thisMethod.getName(), proceed.getName());
                 return null;
                 /*
@@ -98,7 +98,7 @@ public class ServerComposite {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
                 try {
-                    if (!commandProxyInstalled){
+                    if (!commandProxyInstalled) {
                         try {
                             commandProxyInstalled = true;
                             Field commandManager = self.getClass().getSuperclass().getSuperclass().getDeclaredField("p");
@@ -150,7 +150,7 @@ public class ServerComposite {
 
         // fire up the server thread
         try {
-            Mappings.call(server,"net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
+            Mappings.call(server, "net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();

@@ -2,6 +2,7 @@ package org.granitemc.granite;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.granitemc.granite.utils.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -9,8 +10,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.granitemc.granite.utils.Logger;
 
 public class Mappings {
     public static class MappingNotFoundException extends RuntimeException {
@@ -32,7 +31,7 @@ public class Mappings {
 
     private static Map<String, Class<?>> classes;
     private static Map<String, Map<String, ?>> methods;
-    private static Map<String, Map<String,?>> fields;
+    private static Map<String, Map<String, ?>> fields;
 
     @SuppressWarnings("unchecked")
     private static void load() {
@@ -53,7 +52,7 @@ public class Mappings {
             methods.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
         fields = new HashMap<>();
-        for(Map.Entry<String, Object> entry : mappings.getObject("mappings.fields").unwrapped().entrySet()) {
+        for (Map.Entry<String, Object> entry : mappings.getObject("mappings.fields").unwrapped().entrySet()) {
             fields.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
     }
@@ -96,7 +95,7 @@ public class Mappings {
 
         return getMethod(humanClassName, humanMethodName);
     }
-    
+
     public static Field getField(String humanClassName, String humanFieldName) {
         if (classes == null || methods == null) {
             load();
@@ -110,7 +109,7 @@ public class Mappings {
             throw new MappingNotFoundException(humanClassName + "/" + humanFieldName);
         }
     }
-    
+
     public static Object call(Object object, String humanClassName, String humanMethodName, Object... args) {
         Method method = getMethod(humanClassName, humanMethodName);
 
