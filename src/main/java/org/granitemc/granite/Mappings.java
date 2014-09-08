@@ -15,10 +15,10 @@ import org.granitemc.granite.utils.Logger;
 public class Mappings {
     public static class MappingNotFoundException extends RuntimeException {
         /**
-		 * So that eclipse stops bitching.
-		 */
-		private static final long serialVersionUID = 1L;
-		private String triedToAccess;
+         * So that eclipse stops bitching.
+         */
+        private static final long serialVersionUID = 1L;
+        private String triedToAccess;
 
         public MappingNotFoundException(String triedToAccess) {
             super("Tried to access " + triedToAccess);
@@ -29,18 +29,19 @@ public class Mappings {
             return triedToAccess;
         }
     }
+
     private static Map<String, Class<?>> classes;
     private static Map<String, Map<String, ?>> methods;
-	private static Map<String, Map<String,?>> fields;
+    private static Map<String, Map<String,?>> fields;
 
     @SuppressWarnings("unchecked")
-	private static void load() {
+    private static void load() {
         Config mappings = ConfigFactory.parseURL(Mappings.class.getResource("/mappings.conf"));
 
         classes = new HashMap<>();
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.classes").unwrapped().entrySet()) {
             try {
-            	Logger.infoc("MappingRegistry","Adding mapping: %s to %s.",entry.getKey(), Class.forName((String) entry.getValue()).getName()  );
+                Logger.infoc("MappingRegistry", "Adding mapping: %s to %s.", entry.getKey(), Class.forName((String) entry.getValue()).getName());
                 classes.put(entry.getKey(), Class.forName((String) entry.getValue()));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -49,12 +50,11 @@ public class Mappings {
 
         methods = new HashMap<>();
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.methods").unwrapped().entrySet()) {
-        	
             methods.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
         fields = new HashMap<>();
         for(Map.Entry<String, Object> entry : mappings.getObject("mappings.fields").unwrapped().entrySet()) {
-        	fields.put(entry.getKey(), (Map<String, ?>) entry.getValue());
+            fields.put(entry.getKey(), (Map<String, ?>) entry.getValue());
         }
     }
 
@@ -68,8 +68,6 @@ public class Mappings {
         }
         return classes.get(humanName);
     }
-    
-    
 
     public static Method getMethod(String humanClassName, String humanMethodName) {
         if (classes == null || methods == null) {
@@ -78,7 +76,7 @@ public class Mappings {
 
         Class<?> clazz = getClassByHumanName(humanClassName);
         try {
-        	Logger.info("Getting %s.%s", humanClassName, humanMethodName);
+            Logger.info("Getting %s.%s", humanClassName, humanMethodName);
             return clazz.getMethod(String.valueOf(methods.get(humanClassName).get(humanMethodName)));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -125,7 +123,7 @@ public class Mappings {
     }
 
     public static Object call(Object object, String humanMethodName, Object... args) {
-    	Class<?> clazz = object.getClass();
+        Class<?> clazz = object.getClass();
         Method method = getMethod(clazz, humanMethodName);
 
         try {

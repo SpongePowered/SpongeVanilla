@@ -7,7 +7,6 @@ import org.granitemc.granite.Mappings;
 import org.granitemc.granite.item.ItemStack;
 
 public class EntityPlayer {
-
     /**
      * This class provides a mapping wrapper for EntityPlayer.
      * It will have to be updated as the obfuscation changes (or becomes unnecessary).
@@ -33,7 +32,6 @@ public class EntityPlayer {
         //TODO: Check if this works or need to be invoked differently
         invoke("teleportToDimension", new Object[]{dimId});
     }
-
 
     public void teleportToPlayer(EntityPlayer player) {
         if (getDimension() != player.getDimension()) {
@@ -121,5 +119,4 @@ public class EntityPlayer {
         }
         return null;
     }
-
 }

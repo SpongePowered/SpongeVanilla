@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.granitemc.granite.Mappings;
 
 public class Entity {
-
     Object vanillaEntityInstance = null;
     String targetClass = "net.minecraft.entity.Entity";
 
@@ -25,5 +24,4 @@ public class Entity {
         }
         return null;
     }
-
 }
