@@ -17,10 +17,10 @@ public class Logger {
     }
     
     public static void debug(String format, Object...objects) {
-    	logf("debuh", format, objects);	
+    	logf("debug", format, objects);
     }
     
     public static void logf(String level, String format, Object...objects) {
-    	System.out.printf(String.format("%s[%s/%s]%s\n",new Date(System.currentTimeMillis()),"Mythic", level.toUpperCase(), format), objects);	
+    	System.out.printf(String.format("%s [%s/%s] %s\n",new Date(System.currentTimeMillis()),"Mythic", level.toUpperCase(), format), objects);
     }
 }

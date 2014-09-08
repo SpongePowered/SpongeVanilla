@@ -58,6 +58,9 @@ public class Mappings {
             load();
         }
 
+        if (!classes.containsKey(humanName)) {
+            throw new MappingNotFoundException(humanName);
+        }
         return classes.get(humanName);
     }
     
@@ -74,7 +77,7 @@ public class Mappings {
             return clazz.getMethod(String.valueOf(methods.get(humanClassName).get(humanMethodName)));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            throw new MappingNotFoundException(humanClassName + "/" + humanMethodName);
+            throw new MappingNotFoundException(humanClassName + "/" + humanMethodName + "(...)");
         }
     }
 

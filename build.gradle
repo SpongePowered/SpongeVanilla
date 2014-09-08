@@ -1,6 +1,9 @@
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
+mainClassName = "com.mythicmc.mythic.Main"
 
 sourceCompatibility = 1.7
 version = '0.0.6-SNAPSHOT'
@@ -13,6 +16,14 @@ dependencies {
     compile 'org.javassist:javassist:3.18.2-GA'
     compile 'com.typesafe:config:1.2.1'
     testCompile 'junit:junit:4.11'
+}
+
+task runMythic(dependsOn: classes, type: JavaExec) {
+    main = "com.mythicmc.mythic.Main"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+
+    workingDir = new File("run/")
 }
 
 task fatJar(type: Jar) {

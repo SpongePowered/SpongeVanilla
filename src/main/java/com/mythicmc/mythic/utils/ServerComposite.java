@@ -2,12 +2,14 @@ package com.mythicmc.mythic.utils;
 
 import com.mythicmc.mythic.Mappings;
 import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public class ServerComposite {
     static Class<?> serverClass = null;
@@ -57,15 +59,14 @@ public class ServerComposite {
 
         commandHandlerClass = Mappings.getClassByHumanName("net.minecraft.command.ServerCommandHandler");
         //proxy out the ServerCommandManager
-        ProxyFactory factory = new ProxyFactory();
-        factory.setSuperclass(commandHandlerClass);
 
         MethodHandler serverCommandHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
                 Logger.info("Command proxy triggered!");
+                Logger.info(thisMethod.getName() + " ->" + proceed.getName());
                 try {
-                    if(thisMethod.getName() == "a" && args.length >= 5){
+                    /*if(Objects.equals(thisMethod.getName(), "a") && args.length >= 5){
                         //commands are processed here:
                         //args: ae var1, ac var2, int var3, String var4, Object ... var5
                         //ae is castable to player
@@ -74,9 +75,9 @@ public class ServerComposite {
                         Logger.info("intercepted command: " + commandParams[0]);
 
                         if(!cancelVanillaCommand) proceed.invoke(self, args);
-                    } else {
+                    } else {*/
                         return proceed.invoke(self, args);
-                    }
+                    //}
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     Logger.error("Failed to invoke " + proceed);
                     e.printStackTrace();
@@ -85,25 +86,13 @@ public class ServerComposite {
             }
         };
 
-        try {
-            commandHandler = factory.create(new Class[]{}, new Object[]{}, serverCommandHandler);
-        } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            Logger.error("Failed to create command proxy.");
-            e.printStackTrace();
-            return;
-        }
-
-
-        factory = new ProxyFactory();
-        factory.setSuperclass(serverClass);
-
         MethodHandler serverHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
                 try {
                     //if calling the createCommandHandler function, lets give them our proxy instead
                     //why is this not working?
-                    if(thisMethod.getName() == "h" && args.length == 0){
+                    if(Objects.equals(thisMethod.getName(), "h") && args.length == 0){
                         Logger.info("Installing command proxy...");
                         return commandHandler;
                     } else {
@@ -118,9 +107,21 @@ public class ServerComposite {
         };
 
         try {
+            ProxyFactory factory = new ProxyFactory();
+            factory.setSuperclass(serverClass);
             server = factory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
         } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             Logger.error("Failed to instanciate server.");
+            e.printStackTrace();
+            return;
+        }
+        try {
+            ProxyFactory factory = new ProxyFactory();
+            factory.setSuperclass(commandHandlerClass);
+            commandHandler = factory.create(new Class[]{}, new Object[]{});
+            ((Proxy) commandHandler).setHandler(serverCommandHandler);
+        } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            Logger.error("Failed to create command proxy.");
             e.printStackTrace();
             return;
         }

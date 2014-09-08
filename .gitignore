@@ -49,9 +49,12 @@ gradle-app.setting
 .classpath
 bin/
 
+### Other ###
+
 minecraft*
 logs
 world
 *.properties
 *.json
 eula.txt
+run/
