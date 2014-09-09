@@ -56,8 +56,11 @@ public class PluginLoader {
     @SuppressWarnings("static-method")
     private List<Class<?>> iterateJar(JarFile f) {
         List<Class<?>> ret = new ArrayList<Class<?>>();
+        List<JarEntry> peeked = new ArrayList<JarEntry>();
+
         JarEntry entry;
         while ((entry = f.entries().nextElement()) != null) {
+        	log.info("Peeking %s.", entry);
             if (entry.getName().toLowerCase().endsWith(".class")) {
                 log.info("Found class file %s.", entry.getName());
                 try {
@@ -66,6 +69,9 @@ public class PluginLoader {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
+                peeked.add(entry);
+            }else if(entry.isDirectory() || entry.getName().endsWith(".")){
+            	continue;
             }else {
             	continue;
             }
