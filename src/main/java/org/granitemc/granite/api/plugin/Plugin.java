@@ -1,4 +1,6 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite.api.plugin;
+
+import org.granitemc.granite.api.DummySetupClass;
 
 /**
  * License (MIT)

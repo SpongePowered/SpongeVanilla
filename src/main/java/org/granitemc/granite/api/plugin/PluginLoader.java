@@ -1,5 +1,6 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite.api.plugin;
 
+import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.utils.Logger;
 
 import java.lang.reflect.InvocationTargetException;

@@ -1,5 +1,7 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite.api.plugin;
 
+import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.SetupMethod;
 import org.granitemc.granite.api.events.LoadEvent;
 import org.granitemc.granite.api.events.PreloadEvent;
 import org.granitemc.granite.utils.Logger;
