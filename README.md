@@ -8,6 +8,16 @@ The purpose of this API is to take a "hands off" approach to vanilla code.
 That is, we _describe_ the code to our composite layer, without actually including any of it.
 Access is gained by composite classes, reflection, proxy classes and interfaces, and classloaders.
 
+To-do list
+------
+- ~~Set-up~~
+- **Command proxy / command API**
+- **Plugin loader**
+- Event proxy
+- API for worlds, items, players
+- Essentials-style example plugin
+- ???
+
 License (MIT)
 -------
 Copyright (c) 2014 Granite Team
