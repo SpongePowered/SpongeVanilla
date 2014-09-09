@@ -12,7 +12,6 @@ import java.util.List;
 
 public class PluginContainer {
 
-
     private String name;
     private String id;
     private String version;
@@ -101,13 +100,7 @@ public class PluginContainer {
             } else {
                 try {
                     method.invoke(setupClass2.newInstance(), GraniteAPI.instance());
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
                     e.printStackTrace();
                 }
             }

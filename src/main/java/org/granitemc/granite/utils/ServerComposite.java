@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ServerComposite {
+
     static Class<?> serverClass = null;
     static Class<?> commandHandlerClass = null;
     static Object server = null;
@@ -19,8 +20,9 @@ public class ServerComposite {
     static boolean commandProxyInstalled = false;
 
     public static void create(String[] args) {
+
         //attempt to locate the MinecraftServer class
-        serverClass = Mappings.getClassByHumanName("net.minecraft.server.dedicated.DedicatedServer");
+        serverClass = Mappings.getClassByHumanName("net.minecraft.server.DedicatedServer");
 
         //start the server
         Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
@@ -154,7 +156,7 @@ public class ServerComposite {
 
         // fire up the server thread
         try {
-            Mappings.call(server, "net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
+            Mappings.call(server, "net.minecraft.server.DedicatedServer", "startServerThread");
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();

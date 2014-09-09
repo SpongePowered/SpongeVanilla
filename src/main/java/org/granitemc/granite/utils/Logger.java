@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
+
     public static class PluginLogger {
+
         private final String id;
 
         public PluginLogger(String id) {
@@ -27,7 +29,6 @@ public class Logger {
             logfc(id, "debug", format, objects);
         }
     }
-
 
     public static boolean showThread = true;
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");

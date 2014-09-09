@@ -8,11 +8,8 @@ import org.granitemc.granite.events.EventBus;
 
 import java.util.ArrayList;
 
-
-/**
- * @author matheus
- */
 public class GraniteAPI {
+
     private static GraniteAPI instance;
     private static EventBus eventbus;
 
@@ -22,7 +19,6 @@ public class GraniteAPI {
         }
         return instance;
     }
-
 
     public boolean isPlugin(Object obj) {
         return isClassPlugin(obj.getClass());
@@ -35,7 +31,6 @@ public class GraniteAPI {
     public Plugin getPlugin(Object obj) {
         return getClassPlugin(obj.getClass());
     }
-
 
     public Plugin getClassPlugin(Class<?> class1) {
         return isClassPlugin(class1) ? class1.getAnnotation(Plugin.class) : null;

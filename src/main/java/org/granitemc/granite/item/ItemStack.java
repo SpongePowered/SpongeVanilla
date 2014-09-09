@@ -5,6 +5,7 @@ import org.granitemc.granite.Mappings;
 import java.lang.reflect.InvocationTargetException;
 
 public class ItemStack {
+
     Object vanillaItemInstance = null;
     String targetClass = "net.minecraft.item.ItemStack";
 

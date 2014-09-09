@@ -10,10 +10,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.jar.JarFile;
 
-public class MythicStartupThread extends Thread {
+public class GraniteStartupThread extends Thread {
+
     private String[] args;
 
-    public MythicStartupThread(String string, String[] args) {
+    public GraniteStartupThread(String string, String[] args) {
         setName(string);
         this.args = args;
     }
@@ -52,10 +53,8 @@ public class MythicStartupThread extends Thread {
             }
         }
 
-
         ServerComposite.create(args);
 
     }
-
 
 }

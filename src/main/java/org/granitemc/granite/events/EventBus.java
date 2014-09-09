@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventBus {
+
     /**
      * If this is set to false, errors/methods found won't be logged.
      */
@@ -17,9 +18,7 @@ public class EventBus {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface EventSubscribed {
-
-    }
+    public @interface EventSubscribed {}
 
     /**
      * All the handlers
@@ -65,10 +64,12 @@ public class EventBus {
      * @param eventHandler the event handler
      */
     public void register(Class<?> eventHandler) {
-        if (handlers != null)
+        if (handlers != null) {
             handlers.add(eventHandler);
-        else
+        }
+        else {
             throw new IllegalArgumentException("This EventBus was not initialized.");
+        }
     }
 
     /**

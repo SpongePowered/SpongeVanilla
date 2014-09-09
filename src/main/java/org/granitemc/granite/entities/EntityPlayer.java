@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class EntityPlayer {
+
     /**
      * This class provides a mapping wrapper for EntityPlayer.
      * It will have to be updated as the obfuscation changes (or becomes unnecessary).

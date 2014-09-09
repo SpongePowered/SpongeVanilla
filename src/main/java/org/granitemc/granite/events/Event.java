@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class Event {
+
     /**
      * The cause of this event
      */

@@ -12,7 +12,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Mappings {
+
     public static class MappingNotFoundException extends RuntimeException {
+
         /**
          * So that eclipse stops bitching.
          */

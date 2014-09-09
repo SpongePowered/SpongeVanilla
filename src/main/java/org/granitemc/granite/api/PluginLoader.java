@@ -10,6 +10,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class PluginLoader {
+
     URLClassLoader loader = (URLClassLoader) java.lang.ClassLoader.getSystemClassLoader();
     Logger.PluginLogger log = new Logger.PluginLogger("pluginloader");
     JarFile f;
