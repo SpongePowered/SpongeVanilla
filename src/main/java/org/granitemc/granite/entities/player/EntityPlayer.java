@@ -1,4 +1,4 @@
-package org.granitemc.granite.entities;
+package org.granitemc.granite.entities.player;
 
 import org.granitemc.granite.item.ItemStack;
 import org.granitemc.granite.utils.Mappings;
@@ -37,11 +37,11 @@ public class EntityPlayer {
      */
 
     //set the type of this field to the (obfuscated or not) PlayerEntity type.
-    Object vanillaPlayerInstance = null;
+    Object entityPlayerInstance = null;
     String targetClass = "net.minecraft.entity.EntityPlayer";
 
     public EntityPlayer(Object instance) {
-        instance = vanillaPlayerInstance;
+        instance = entityPlayerInstance;
     }
 
     /*public void sendChatMessage(String message) {
@@ -137,7 +137,7 @@ public class EntityPlayer {
 
     public Object invoke(String targetMethod, Object... parameters) {
         try {
-            return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaPlayerInstance, parameters);
+            return Mappings.getMethod(targetClass, targetMethod).invoke(entityPlayerInstance, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
