@@ -1,16 +1,14 @@
 package org.granitemc.granite.api.plugin;
 
-import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.utils.Logger;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Annotation;
-
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.utils.Logger;
 
 /**
  * License (MIT)
