@@ -3,14 +3,37 @@ package org.granitemc.granite.utils;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
-import org.granitemc.granite.Mappings;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * License (MIT)
+ *
+ * Copyright (c) 2014. avarisc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 public class ServerComposite {
+
     static Class<?> serverClass = null;
     static Class<?> commandHandlerClass = null;
     static Object server = null;
@@ -19,8 +42,9 @@ public class ServerComposite {
     static boolean commandProxyInstalled = false;
 
     public static void create(String[] args) {
+
         //attempt to locate the MinecraftServer class
-        serverClass = Mappings.getClassByHumanName("net.minecraft.server.dedicated.DedicatedServer");
+        serverClass = Mappings.getClassByHumanName("net.minecraft.server.DedicatedServer");
 
         //start the server
         Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
@@ -73,16 +97,16 @@ public class ServerComposite {
                 //return null;
 
                 try {
-                    if(thisMethod.getName() == "a" && args.length >= 5){
+                    if (thisMethod.getName() == "a" && args.length >= 5) {
                         //commands are processed here:
                         //args: ae var1, ac var2, int var3, String var4, Object ... var5
                         //ae is castable to player
                         boolean cancelVanillaCommand = false;
-                        String[] commandParams = ((String)args[3]).split(" ");
+                        String[] commandParams = ((String) args[3]).split(" ");
                         //Logger.info("intercepted command: " + commandParams[0]);
                         System.out.println("intercepted command: " + commandParams[0]);
 
-                        if(!cancelVanillaCommand) proceed.invoke(self, args);
+                        if (!cancelVanillaCommand) proceed.invoke(self, args);
                     } else {
                         return proceed.invoke(self, args);
                     }
@@ -112,7 +136,7 @@ public class ServerComposite {
                             e.printStackTrace();
                         }
                     }
-                    if(thisMethod.getName() == "M"){
+                    if (thisMethod.getName() == "M") {
                         return self;
                     }
                     return proceed.invoke(self, args);
@@ -154,7 +178,7 @@ public class ServerComposite {
 
         // fire up the server thread
         try {
-            Mappings.call(server, "net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
+            Mappings.call(server, "net.minecraft.server.DedicatedServer", "startServerThread");
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();
