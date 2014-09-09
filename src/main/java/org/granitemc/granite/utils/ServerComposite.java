@@ -68,29 +68,31 @@ public class ServerComposite {
         MethodHandler serverCommandHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
+                System.out.println("proxy invoked!");
+                //Logger.info("Command proxy : %s -> %s.", thisMethod.getName(), proceed.getName());
+                //return null;
 
-                Logger.info("Command proxy : %s -> %s.", thisMethod.getName(), proceed.getName());
-                return null;
-                /*
                 try {
-                    if(Objects.equals(thisMethod.getDeclaredName(), "a") && args.length >= 5){
+                    if(thisMethod.getName() == "a" && args.length >= 5){
                         //commands are processed here:
                         //args: ae var1, ac var2, int var3, String var4, Object ... var5
                         //ae is castable to player
                         boolean cancelVanillaCommand = false;
                         String[] commandParams = ((String)args[3]).split(" ");
-                        Logger.info("intercepted command: " + commandParams[0]);
+                        //Logger.info("intercepted command: " + commandParams[0]);
+                        System.out.println("intercepted command: " + commandParams[0]);
 
                         if(!cancelVanillaCommand) proceed.invoke(self, args);
                     } else {
                         return proceed.invoke(self, args);
                     }
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    Logger.error("Failed to invoke " + proceed);
+                    System.out.println("Failed to invoke " + proceed);
+                    System.out.println("Cause: " + e.getCause());
                     e.printStackTrace();
                 }
                 return null;
-                */
+
             }
         };
 
@@ -110,7 +112,9 @@ public class ServerComposite {
                             e.printStackTrace();
                         }
                     }
-
+                    if(thisMethod.getName() == "M"){
+                        return self;
+                    }
                     return proceed.invoke(self, args);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     Logger.error("Failed to invoke " + proceed);
