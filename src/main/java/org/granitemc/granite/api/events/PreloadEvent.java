@@ -1,6 +1,6 @@
 package org.granitemc.granite.api.events;
 
-import org.granitemc.granite.api.PluginContainer;
+import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.events.Event;
 import org.granitemc.granite.utils.Logger;
 

@@ -1,5 +1,7 @@
 package org.granitemc.granite.api;
 
+import org.granitemc.granite.api.plugin.Plugin;
+import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.events.EventBus;
 
 import java.util.ArrayList;
