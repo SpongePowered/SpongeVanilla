@@ -62,7 +62,7 @@ public class GraniteAPI {
     }
 
     public Plugin getClassPlugin(Class<?> class1) {
-        return isClassPlugin(class1) ? class1.getAnnotation(Plugin.class) : null;
+        return class1.getAnnotation(Plugin.class);
     }
 
     public PluginContainer loadPlugin(Object obj) {

@@ -3,6 +3,8 @@ package org.granitemc.granite.api.plugin;
 import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.utils.Logger;
 
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Annotation;
+
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -66,6 +68,8 @@ public class PluginLoader {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
+            }else {
+            	continue;
             }
         }
         return ret;
@@ -73,13 +77,30 @@ public class PluginLoader {
 
     @SuppressWarnings("static-method")
     private Class<?>[] findPlugins(Class<?>[] candidates) {
+    	int i = 1;
+    	for(Class<?> clazz : candidates) {
+    		Logger.info("Candidate %s : %s", i, clazz);
+    		i++;
+    	}
         List<Class<?>> ret = new ArrayList<Class<?>>();
         for (Class<?> clazz : candidates) {
+        	if(clazz.getAnnotations().length == 0 || clazz.getAnnotations() == null) {
+        		Logger.info("Class %s does not have any annotations present.", clazz);
+        		continue;
+        	}
             try {
-                if (clazz.isAnnotationPresent(Plugin.class)) {
-                    log.info("Loading plugin class %s.", clazz.getName());
-                    ret.add(clazz);
-                }
+            	Logger.info("Searching for annotation Plugin in %s", clazz);
+            	for(java.lang.annotation.Annotation a : clazz.getAnnotations()) {
+            		Logger.info("Comparing %s to %s.", a.getClass(), Plugin.class);
+            		if(a.getClass().equals(Plugin.class)) {
+            			
+            			log.info("Loading plugin class %s.", clazz.getName());
+            			ret.add(clazz);
+            		}else {
+            			
+            		}
+            	}
+                
             } catch (Exception e) {
 
             }
@@ -88,13 +109,13 @@ public class PluginLoader {
     }
 
     public void run() {
-
-        log.info(" Finding class candidates");
-        log.info(" Total candidates possible : " + f.size());
+    	
+        log.info("Finding class candidates");
+        log.info("Total candidates possible : " + f.size());
         Class<?>[] candidates = iterateJar(f).toArray(new Class[f.size()]);
-        log.info(" Finding actual mod classes");
+        log.info("Finding actual mod classes");
         Class<?>[] modClasses = findPlugins(candidates);
-        log.info(" Loading actual mod classes");
+        log.info("Loading actual mod classes");
         for (Class<?> clazz : modClasses) {
             doLoading(clazz);
         }

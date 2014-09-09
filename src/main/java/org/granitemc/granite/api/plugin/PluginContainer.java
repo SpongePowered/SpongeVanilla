@@ -1,16 +1,16 @@
 package org.granitemc.granite.api.plugin;
 
-import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.api.SetupMethod;
-import org.granitemc.granite.api.events.LoadEvent;
-import org.granitemc.granite.api.events.PreloadEvent;
-import org.granitemc.granite.utils.Logger;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.SetupMethod;
+import org.granitemc.granite.api.events.PreloadEvent;
+import org.granitemc.granite.api.plugin.Plugin.ServerState;
+import org.granitemc.granite.utils.Logger;
 
 /**
  * License (MIT)
@@ -45,13 +45,19 @@ public class PluginContainer {
     private Class<?> pluginClass;
 
     public void loadFromPlugin(Class<?> pluginClass) {
-        Plugin classPlugin = GraniteAPI.instance().getClassPlugin(pluginClass);
-
-        setName(classPlugin.name());
-        setID(classPlugin.id());
-        setVersion(classPlugin.version());
-        setSetupClass(classPlugin.setupClass());
+        Plugin classPlugin;
+        try {
+            classPlugin = pluginClass.getAnnotation(Plugin.class);
+            setName(classPlugin.name());
+            setID(classPlugin.id());
+            setVersion(classPlugin.version());
+            setSetupClass(classPlugin.setupClass());
+        }catch(NullPointerException e) {
+        	Logger.error("A derp in the Plugin loader has caused the class %s to be mistakenly identified as a plugin. Please remain calm. ", pluginClass);
+        }
         setPluginClass(pluginClass);
+
+       
     }
 
     private void setID(String id2) {
@@ -84,7 +90,7 @@ public class PluginContainer {
     }
 
 
-    private void setVersion(String version) {
+    private void setVersion(String version) { 
         this.version = version;
     }
 
@@ -103,9 +109,11 @@ public class PluginContainer {
         if (getSetupClass() != null) {
             runSetupFunctions(getSetupClass());
         }
-        GraniteAPI.eventBus().register(pluginClass);
-        GraniteAPI.eventBus().post(new PreloadEvent(this));
-        GraniteAPI.eventBus().post(new LoadEvent(this));
+        for(Method m : pluginClass.getDeclaredMethods()) {
+        	if(m.isAnnotationPresent(Plugin.On.class) && Arrays.deepEquals(m.getParameterTypes(), new Object[]{PreloadEvent.class}) && ((Plugin.On)m.getAnnotation(Plugin.On.class)).value() == ServerState.PRESTART) {
+        		m.invoke(new PreloadEvent(this));
+        	}
+        }
 
     }
 

@@ -65,10 +65,11 @@ public class GraniteStartupThread extends Thread {
         for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
-                return arg0.getName().endsWith(".jar");
+                return arg1.endsWith(".jar");
             }
         })) {
             try {
+            	Logger.info("Loading jarfile plugins/%s.", plugin.getName());
                 ClassLoader.addFile(plugin);
                 new PluginLoader(new JarFile(plugin)).run();
             } catch (IOException e) {
