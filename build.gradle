@@ -15,6 +15,7 @@ repositories {
 dependencies {
     compile 'org.javassist:javassist:3.18.2-GA'
     compile 'com.typesafe:config:1.2.1'
+    compile 'com.google.guava:guava:18.0'
     testCompile 'junit:junit:4.11'
 }
 
