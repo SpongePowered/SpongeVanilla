@@ -19,14 +19,6 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
-task runMythic(dependsOn: classes, type: JavaExec) {
-    main = "org.granitemc.granite.Main"
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-
-    workingDir = new File("run/")
-}
-
 task fatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': mainClassName
