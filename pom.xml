@@ -1,0 +1,67 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.granitemc</groupId>
+    <name>Granite</name>
+    <version>1.8-SNAPSHOT</version>
+    <artifactId>Granite</artifactId>
+
+    <properties>
+        <jdk>1.7</jdk>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <main.class>org.granitemc.granite.Main</main.class>
+    </properties>
+
+    <organization>
+        <name>Granite MC</name>
+        <url>http://www.granitemc.org/</url>
+    </organization>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.18.2-GA</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+        <finalName>${project.artifactId}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+
+                <configuration>
+                    <source>${jdk}</source>
+                    <target>${jdk}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+
+                    <finalName>${project.artifactId}-${project.version}</finalName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
