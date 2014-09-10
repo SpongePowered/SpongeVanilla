@@ -35,8 +35,7 @@ import org.granitemc.granite.events.EventBus;
 public class GraniteAPI {
 
     private static GraniteAPI instance;
-    private static EventBus eventbus;
-    
+
     private  List<CommandContainer> registeredCommandContainers = new ArrayList<CommandContainer>();
     
     public static GraniteAPI instance() {
@@ -44,13 +43,6 @@ public class GraniteAPI {
             instance = new GraniteAPI();
         }
         return instance;
-    }
-
-    public static EventBus eventBus() {
-        if (eventbus == null) {
-            eventbus = new EventBus(new ArrayList<Class<?>>());
-        }
-        return eventbus;
     }
 
     public boolean isPlugin(Object obj) {
