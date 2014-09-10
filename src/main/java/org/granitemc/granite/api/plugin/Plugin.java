@@ -2,6 +2,11 @@ package org.granitemc.granite.api.plugin;
 
 import org.granitemc.granite.api.DummySetupClass;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * License (MIT)
  *
@@ -25,6 +30,8 @@ import org.granitemc.granite.api.DummySetupClass;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Plugin {
 
     /**
