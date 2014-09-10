@@ -1,12 +1,4 @@
-package org.granitemc.granite.api.events;
-
-import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.events.Event;
-import org.granitemc.granite.utils.Logger;
-
-import java.io.File;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -27,7 +19,15 @@ import java.io.File;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.api.events;
+
+import org.granitemc.granite.api.plugin.PluginContainer;
+import org.granitemc.granite.events.Event;
+import org.granitemc.granite.utils.Logger;
+
+import java.io.File;
 
 public class PreloadEvent extends Event {
 

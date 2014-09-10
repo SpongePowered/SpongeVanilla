@@ -1,10 +1,4 @@
-package org.granitemc.granite.item;
-
-import org.granitemc.granite.utils.Mappings;
-
-import java.lang.reflect.InvocationTargetException;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -25,7 +19,13 @@ import java.lang.reflect.InvocationTargetException;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.item;
+
+import org.granitemc.granite.utils.Mappings;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class ItemStack {
 

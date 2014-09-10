@@ -1,12 +1,4 @@
-package org.granitemc.granite.utils;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -27,7 +19,15 @@ import java.net.URLClassLoader;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.utils;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class ClassLoader {
 

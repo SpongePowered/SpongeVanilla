@@ -1,11 +1,4 @@
-/**
-*
-*/
-package org.granitemc.granite.api.commands;
-
-/**
- * This class was created as a part of Granite
-
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -26,7 +19,13 @@ package org.granitemc.granite.api.commands;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+/**
+*
+*/
+package org.granitemc.granite.api.commands;
+
 public @interface Command {
 	public String name();
 	public String info();

@@ -1,14 +1,4 @@
-package org.granitemc.granite.api;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.granitemc.granite.api.commands.CommandContainer;
-import org.granitemc.granite.api.plugin.Plugin;
-import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.events.EventBus;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -29,7 +19,17 @@ import org.granitemc.granite.events.EventBus;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.api;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.granitemc.granite.api.commands.CommandContainer;
+import org.granitemc.granite.api.plugin.Plugin;
+import org.granitemc.granite.api.plugin.PluginContainer;
+import org.granitemc.granite.events.EventBus;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class GraniteAPI {

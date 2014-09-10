@@ -1,14 +1,4 @@
-package org.granitemc.granite.utils;
-
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyFactory;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -29,7 +19,17 @@ import java.lang.reflect.Method;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.utils;
+
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyFactory;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ServerComposite {
     static ProxyFactory serverFactory = null;
