@@ -67,14 +67,8 @@ public class EntityPlayer {
     public void setPosition(double x, double y, double z) {
         try {
             Object asLivingEntityBase = Class.forName("wv").cast(entityPlayerInstance);
-            Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, new Object[]{x, y, z});
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -87,11 +81,7 @@ public class EntityPlayer {
     public double getX() {
         try {
             return Class.forName("wv").getDeclaredField("s").getDouble(Class.forName("wv").cast(entityPlayerInstance));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0D;
@@ -100,11 +90,7 @@ public class EntityPlayer {
     public double getY() {
         try {
             return Class.forName("wv").getDeclaredField("t").getDouble(Class.forName("wv").cast(entityPlayerInstance));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0D;
@@ -113,11 +99,7 @@ public class EntityPlayer {
     public double getZ() {
         try {
             return Class.forName("wv").getDeclaredField("u").getDouble(Class.forName("wv").cast(entityPlayerInstance));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return 0D;

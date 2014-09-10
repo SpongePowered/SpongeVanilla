@@ -26,24 +26,17 @@ import java.io.File;
  */
 
 public class Config {
+    
     public static final File mcJar = new File("minecraft_server.jar");
     public static final File configFolder = new File("configuration");
     public static final File pluginsFolder = new File("plugins");
-    public static final File pythonPluginsFolder = new File(pluginsFolder, "python");
-	/**
-	 * 
-	 */
+
 	public static void initDirs() {
 		if(!configFolder.exists())
 			configFolder.mkdirs();
 		
 		if(!pluginsFolder.exists())
 			pluginsFolder.mkdirs();
-		
-	
-		
-		if(!pythonPluginsFolder.exists())
-			pythonPluginsFolder.mkdirs();
 	}
     
 }
