@@ -42,7 +42,7 @@ Want to Help?
 Join us in irc, on esper.net in channel **#granite**.
 
 If you'd like to contribute, make a pull request- we read and consider them all very carefully.
-Should you decide to contribute to the project, please read our contribution guidelines.
+Should you decide to contribute to the project, please read our [contribution guidelines](https://github.com/GraniteTeam/Granite/blob/master/CONTRIBUTING.md).
 
 You can also visit our website at http://www.granitemc.org/ .
 
