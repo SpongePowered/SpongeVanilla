@@ -86,5 +86,5 @@ And finally you can push the new code to GitHub:
 
 Your pull request will now automatically be updated.
 
-## Legal Observations
+## Legal observations
 By contributing to this source code repository, the contents of which are licensed under the MIT license, you are agreeing that your submission is compatible with the MIT license, and that you understand you are providing this source code to an open source, MIT licensed repository, and that you have all rights in regards to your submission to authorize its contribution to source code distributed under the MIT license.
