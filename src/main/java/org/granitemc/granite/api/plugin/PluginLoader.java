@@ -1,20 +1,24 @@
 package org.granitemc.granite.api.plugin;
 
-import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.utils.Logger;
-
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.commands.Command;
+import org.granitemc.granite.api.commands.CommandContainer;
+import org.granitemc.granite.api.commands.CommandInfo;
+import org.granitemc.granite.utils.Logger;
 
 /**
  * License (MIT)
@@ -122,5 +126,25 @@ public class PluginLoader {
         for (Class<?> clazz : modClasses) {
             doLoading(clazz);
         }
+        List<CommandContainer> commands = loadCommands(modClasses);
+        for(CommandContainer command : commands) {
+        	GraniteAPI.instance().addCommandContainer(command);
+        }
     }
+
+	/**
+	 * @param modClasses
+	 * @return
+	 */
+	private List<CommandContainer> loadCommands(List<Class<?>> modClasses) {
+		List<CommandContainer> ret = new ArrayList<CommandContainer>();
+		for(Class c : modClasses) {
+			for(Method m : c.getDeclaredMethods()) {
+				if(m.getAnnotation(Command.class) != null && Arrays.deepEquals(m.getParameterTypes(), new Object[]{CommandInfo.class})) {
+					ret.add(new CommandContainer(m));
+				}	
+			}
+		}
+		return ret;
+	}
 }

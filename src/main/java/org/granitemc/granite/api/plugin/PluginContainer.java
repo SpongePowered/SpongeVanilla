@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.api.SetupMethod;
 import org.granitemc.granite.api.events.PreloadEvent;
 import org.granitemc.granite.api.plugin.Plugin.ServerState;
 import org.granitemc.granite.utils.Logger;
