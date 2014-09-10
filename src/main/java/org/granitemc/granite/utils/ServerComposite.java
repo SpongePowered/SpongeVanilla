@@ -1,9 +1,7 @@
 package org.granitemc.granite.utils;
 
 import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
-import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -35,13 +33,10 @@ import java.lang.reflect.Method;
 
 public class ServerComposite {
     static ProxyFactory serverFactory = null;
-    static ProxyFactory commandFactory = null;
     static Class<?> dedicatedServerClass = null;
     static Class<?> commandHandlerClass = null;
     static Object server = null;
-    static Object commandHandler = null;
     static Field fieldServerCommandManager = null;
-    static Field commandManager = null;
 
     public static void create(String[] args) {
         /*
@@ -91,32 +86,8 @@ public class ServerComposite {
         //start bootstrapping the server
         Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
 
-        //process commandline arguments
+        //prepare commandline arguments
         String worldsDirectory = ".";
-        for (int argIndex = 0; argIndex < args.length; ++argIndex) {
-            String argument = args[argIndex];
-            String argumentValue = argIndex == args.length - 1 ? null : args[argIndex + 1];
-            boolean hasValue = false;
-
-            if (!argument.equals("nogui") && !argument.equals("--nogui")) {
-                if (argument.equals("--port") && argumentValue != null) {
-                    hasValue = true;
-                    try {
-                        Integer.parseInt(argumentValue);
-                    } catch (NumberFormatException ignored) {
-
-                    }
-                } else if (argument.equals("--singleplayer") && argumentValue != null) {
-                    hasValue = true;
-                } else if (argument.equals("--universe") && argumentValue != null) {
-                    hasValue = true;
-                    worldsDirectory = argumentValue;
-                } else if (argument.equals("--world") && argumentValue != null) {
-                    hasValue = true;
-                }
-            }
-            if (hasValue) ++argIndex;
-        }
 
         //finally, create the server proxy class and store it at the server field for now, we'll start it in a moment
         try {
@@ -134,14 +105,9 @@ public class ServerComposite {
             commandProxyDSField.setAccessible(true);
             Object oldCommandManager = commandProxyDSField.get(server);
             Object cproxy = java.lang.reflect.Proxy.newProxyInstance(oldCommandManager.getClass().getClassLoader(), new Class[]{commandProxyDSField.getType()}, new CommandProxy(oldCommandManager));
-            Object adProxy = commandProxyDSField.getType().cast(cproxy);
             System.out.println("Cast proxy to " + commandProxyDSField.getType().getName());
             commandProxyDSField.set(Class.forName("net.minecraft.server.MinecraftServer").cast(server), cproxy);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
         //now, we invoke the various commandline argument settings on the server:

@@ -1,9 +1,9 @@
 package org.granitemc.granite.utils;
 
+import org.granitemc.granite.entities.player.EntityPlayer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CommandProxy implements java.lang.reflect.InvocationHandler {
     public Object obj;
@@ -31,6 +31,11 @@ public class CommandProxy implements java.lang.reflect.InvocationHandler {
         if(commandParts[0].equalsIgnoreCase("test")){
             if(isCommandSenderPlayer(commandSender)){
                 System.out.println("A player has used the test command.");
+                //create a mythicplayer
+                EntityPlayer granitePlayer = new EntityPlayer(commandSender);
+                System.out.println("Before Y: " + granitePlayer.getY());
+                granitePlayer.setPosition(granitePlayer.getX(), granitePlayer.getY() + 50D, granitePlayer.getZ());
+                System.out.println("After Y:" + granitePlayer.getY());
             } else {
                 System.out.println("Silly server. Test commands are for players!");
             }
@@ -48,28 +53,18 @@ public class CommandProxy implements java.lang.reflect.InvocationHandler {
     }
 
     public static boolean isCommandSenderPlayer(Object commandSender){
-        ArrayList<String> nonplayers = new ArrayList<String>();
+        ArrayList<String> nonplayers = new ArrayList<>();
         nonplayers.add("Rcon");
         nonplayers.add("Server");
         nonplayers.add("@");
-        if(nonplayers.contains(getSenderName(commandSender))){
-            return false;
-        } else {
-            return true;
-        }
+        return !nonplayers.contains(getSenderName(commandSender));
     }
 
     public static String getSenderName(Object commandSender){
         try {
             Class<?> iCommandSender = Class.forName("ae");
             return (String) iCommandSender.getDeclaredMethod("d_").invoke(commandSender);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return "";

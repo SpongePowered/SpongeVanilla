@@ -65,8 +65,19 @@ public class EntityPlayer {
     }
 
     public void setPosition(double x, double y, double z) {
-        //TODO: Check if this works or need to be invoked differently
-        invoke("setPosition", x, y, z);
+        try {
+            Object asLivingEntityBase = Class.forName("wv").cast(entityPlayerInstance);
+            Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, new Object[]{x, y, z});
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public UUID getUUID() {
@@ -74,15 +85,42 @@ public class EntityPlayer {
     }
 
     public double getX() {
-        return (double) invoke("getX");
+        try {
+            return Class.forName("wv").getDeclaredField("s").getDouble(Class.forName("wv").cast(entityPlayerInstance));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0D;
     }
 
     public double getY() {
-        return (double) invoke("getY");
+        try {
+            return Class.forName("wv").getDeclaredField("t").getDouble(Class.forName("wv").cast(entityPlayerInstance));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0D;
     }
 
     public double getZ() {
-        return (double) invoke("getZ");
+        try {
+            return Class.forName("wv").getDeclaredField("u").getDouble(Class.forName("wv").cast(entityPlayerInstance));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0D;
     }
 
     public int getDimension() {
