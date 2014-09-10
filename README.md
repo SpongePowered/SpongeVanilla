@@ -11,9 +11,10 @@ Access is gained by composite classes, reflection, proxy classes and interfaces,
 To-do list
 ------
 - ~~Set-up~~
-- **Command proxy / command API**
-- **Plugin loader**
-- Event proxy
+- ~~Command proxy~~
+- ~~Plugin loader~~
+- **Command API**
+- **Event proxy**
 - API for worlds, items, players
 - Essentials-style example plugin
 - ???
