@@ -1,12 +1,4 @@
-package org.granitemc.granite.entities.player;
-
-import org.granitemc.granite.item.ItemStack;
-import org.granitemc.granite.utils.Mappings;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -27,7 +19,15 @@ import java.util.UUID;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.entities.player;
+
+import org.granitemc.granite.item.ItemStack;
+import org.granitemc.granite.utils.Mappings;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class EntityPlayer {
 

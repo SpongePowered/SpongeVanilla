@@ -1,17 +1,4 @@
-package org.granitemc.granite.api.plugin;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.api.events.PreloadEvent;
-import org.granitemc.granite.api.plugin.Plugin.ServerState;
-import org.granitemc.granite.utils.Logger;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -32,7 +19,20 @@ import org.granitemc.granite.utils.Logger;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.api.plugin;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.events.PreloadEvent;
+import org.granitemc.granite.api.plugin.Plugin.ServerState;
+import org.granitemc.granite.utils.Logger;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class PluginContainer {

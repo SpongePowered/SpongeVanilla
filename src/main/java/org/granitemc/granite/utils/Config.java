@@ -1,8 +1,4 @@
-package org.granitemc.granite.utils;
-
-import java.io.File;
-
-/**
+/*****************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -23,10 +19,14 @@ import java.io.File;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ ****************************************************************************************/
+
+package org.granitemc.granite.utils;
+
+import java.io.File;
 
 public class Config {
-    
+
     public static final File mcJar = new File("minecraft_server.jar");
     public static final File configFolder = new File("configuration");
     public static final File pluginsFolder = new File("plugins");
