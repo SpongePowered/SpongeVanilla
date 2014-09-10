@@ -1,6 +1,6 @@
 package org.granitemc.granite.api.plugin;
 
-import java.lang.reflect.InvocationTargetException;		
+import java.lang.reflect.InvocationTargetException;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,18 +88,20 @@ public class PluginLoader {
     	}
         List<Class<?>> ret = new ArrayList<Class<?>>();
         for (Class<?> clazz : candidates) {
-        	if(clazz.getInterfaces().length == 0 || clazz.getInterfaces() == null) {
-        		Logger.info("Class %s does not have any interfaces present.", clazz);
+        	if(clazz.getAnnotations().length == 0 || clazz.getAnnotations() == null) {
+        		Logger.info("Class %s does not have any annotations present.", clazz);
         		continue;
         	}
             try {
-            	Logger.info("Searching for interface IPlugin in %s", clazz);
-            	for(Class<?> class1 : clazz.getInterfaces()) {
-            		if(class1.equals(IPlugin.class)) {
-                		ret.add(class1);
-                		Logger.info("Found IPlugin in class %s", clazz);
+            	Logger.info("Searching for annotation Plugin in %s", clazz);
+            	for(java.lang.annotation.Annotation a : clazz.getAnnotations()) {
+            		Logger.info("Comparing %s to %s.", a.getClass(), Plugin.class);
+            		if(a.getClass().equals(Plugin.class)) {
+            			
+            			log.info("Loading plugin class %s.", clazz.getName());
+            			ret.add(clazz);
             		}else {
-            			Logger.info("Didn't find IPlugin in class %s, but I found %s", clazz, class1);
+            			
             		}
             	}
                 
@@ -118,10 +120,6 @@ public class PluginLoader {
         log.info("Finding actual mod classes");
         Class<?>[] modClasses = findPlugins(candidates);
         log.info("Loading actual mod classes");
-        if(modClasses.length == 0 || modClasses == null) {
-        	Logger.info("No plugins found in %s.", f);
-        	return;
-        }
         for (Class<?> clazz : modClasses) {
             doLoading(clazz);
         }

@@ -2,8 +2,6 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
 mainClassName = "org.granitemc.granite.Main"
 
@@ -13,8 +11,6 @@ version = "1.8-SNAPSHOT-$System.env.BUILD_NUMBER"
 repositories {
     mavenCentral()
 }
-
-
 
 dependencies {
     compile 'org.javassist:javassist:3.18.2-GA'
@@ -51,4 +47,3 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	classifier = 'javadoc'
 	from 'build/docs/javadoc'
 }
-

@@ -9,7 +9,7 @@ import java.util.List;
 import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.api.SetupMethod;
 import org.granitemc.granite.api.events.PreloadEvent;
-import org.granitemc.granite.api.plugin.IPlugin.ServerState;
+import org.granitemc.granite.api.plugin.Plugin.ServerState;
 import org.granitemc.granite.utils.Logger;
 
 /**
@@ -45,20 +45,16 @@ public class PluginContainer {
     private Class<?> pluginClass;
 
     public void loadFromPlugin(Class<?> pluginClass) {
-        IPlugin classPlugin;
+        Plugin classPlugin;
         try {
-        	classPlugin = GraniteAPI.instance().getClassPlugin(pluginClass);
-            setName(classPlugin.getName());
-            setID(classPlugin.getID());
-            setVersion(classPlugin.getVersion());
-            setSetupClass(classPlugin.getSetupClass());
+            classPlugin = pluginClass.getAnnotation(Plugin.class);
+            setName(classPlugin.name());
+            setID(classPlugin.id());
+            setVersion(classPlugin.version());
+            setSetupClass(classPlugin.setupClass());
         }catch(NullPointerException e) {
         	Logger.error("A derp in the Plugin loader has caused the class %s to be mistakenly identified as a plugin. Please remain calm. ", pluginClass);
-        } catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+        }
         setPluginClass(pluginClass);
 
        
@@ -114,12 +110,8 @@ public class PluginContainer {
             runSetupFunctions(getSetupClass());
         }
         for(Method m : pluginClass.getDeclaredMethods()) {
-        	if(m.isAnnotationPresent(IPlugin.On.class)
-        	&& Arrays.deepEquals(m.getParameterTypes(), new Object[]{PreloadEvent.class})
-        	&& ((IPlugin.On)m.getAnnotation(IPlugin.On.class)).value() == ServerState.PRESTART) {
-        		
+        	if(m.isAnnotationPresent(Plugin.On.class) && Arrays.deepEquals(m.getParameterTypes(), new Object[]{PreloadEvent.class}) && ((Plugin.On)m.getAnnotation(Plugin.On.class)).value() == ServerState.PRESTART) {
         		m.invoke(new PreloadEvent(this));
-        		
         	}
         }
 

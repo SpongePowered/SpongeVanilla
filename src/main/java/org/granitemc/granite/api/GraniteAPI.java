@@ -1,11 +1,10 @@
 package org.granitemc.granite.api;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.granitemc.granite.api.plugin.IPlugin;
+import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.events.EventBus;
+
+import java.util.ArrayList;
 
 /**
  * License (MIT)
@@ -55,19 +54,15 @@ public class GraniteAPI {
     }
 
     public boolean isClassPlugin(Class<?> class1) {
-        return Arrays.asList(class1.getInterfaces()).contains(IPlugin.class);
+        return class1.getAnnotation(Plugin.class) != null;
     }
 
-    public IPlugin getPlugin(Object obj) throws InstantiationException, IllegalAccessException {
+    public Plugin getPlugin(Object obj) {
         return getClassPlugin(obj.getClass());
     }
 
-    public IPlugin getClassPlugin(Class<?> class1) throws InstantiationException, IllegalAccessException {
-    	IPlugin ret = null;
-    	for(Class<?> c : class1.getInterfaces())
-    		if(c.equals(IPlugin.class))
-    			ret = (IPlugin) class1.newInstance();
-    	return ret;
+    public Plugin getClassPlugin(Class<?> class1) {
+        return class1.getAnnotation(Plugin.class);
     }
 
     public PluginContainer loadPlugin(Object obj) {
