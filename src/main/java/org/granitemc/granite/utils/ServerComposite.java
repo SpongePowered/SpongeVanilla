@@ -3,6 +3,7 @@ package org.granitemc.granite.utils;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
+import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -33,22 +34,64 @@ import java.lang.reflect.Method;
  */
 
 public class ServerComposite {
-
-    static Class<?> serverClass = null;
+    static ProxyFactory serverFactory = null;
+    static ProxyFactory commandFactory = null;
+    static Class<?> dedicatedServerClass = null;
     static Class<?> commandHandlerClass = null;
     static Object server = null;
     static Object commandHandler = null;
-
-    static boolean commandProxyInstalled = false;
+    static Field fieldServerCommandManager = null;
+    static Field commandManager = null;
 
     public static void create(String[] args) {
+        /*
+         * Our goals in this process are this:
+         * 1.) Create a server proxy that intercepts method invocation on MinecraftServer
+         * 2.) Create a command proxy that intercepts method invocation on ServerCommandManager
+         */
+        // get a handle on the command proxy target class
+        commandHandlerClass = Mappings.getClassByHumanName("net.minecraft.command.ServerCommandHandler");
+        //first, lets get a handle for the proxy's supersuper commandHandler field
+        try {
+            for (Field field : Class.forName("net.minecraft.server.MinecraftServer").getDeclaredFields()) {
+                if(field.getType() == Class.forName("ad")){
+                    System.out.println("Got handle for commandmanager!");
+                    fieldServerCommandManager = field;
+                    System.out.print(" - " + fieldServerCommandManager.getName());
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        //fieldServerCommandManager = Mappings.getField("net.minecraft.server.MinecraftServer", "commandHandler");
+        //and reset access flags so that it is not final or private at instanciation
+        fieldServerCommandManager.setAccessible(true);
 
-        //attempt to locate the MinecraftServer class
-        serverClass = Mappings.getClassByHumanName("net.minecraft.server.DedicatedServer");
+        //attempt to locate the DedicatedServer class
+        dedicatedServerClass = Mappings.getClassByHumanName("net.minecraft.server.dedicated.DedicatedServer");
 
-        //start the server
+        //create the server proxy method invocation handler
+        MethodHandler serverHandler = new MethodHandler() {
+            @Override
+            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
+                if(thisMethod.getReturnType() == Mappings.getClassByHumanName("net.minecraft.server.MinecraftServer")){
+                    return server;
+                } else {
+                    try {
+                        return proceed.invoke(self, args);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        Logger.error("Failed to invoke " + proceed);
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+        };
+
+        //start bootstrapping the server
         Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
 
+        //process commandline arguments
         String worldsDirectory = ".";
         for (int argIndex = 0; argIndex < args.length; ++argIndex) {
             String argument = args[argIndex];
@@ -70,105 +113,38 @@ public class ServerComposite {
                     worldsDirectory = argumentValue;
                 } else if (argument.equals("--world") && argumentValue != null) {
                     hasValue = true;
-                } else if (argument.equals("--demo")) {
-
-                } else if (argument.equals("--bonusChest")) {
-
                 }
-            } else {
-
             }
-
             if (hasValue) ++argIndex;
         }
 
-        //creating proxy
-
-        //commandproxy first
-
-        commandHandlerClass = Mappings.getClassByHumanName("net.minecraft.command.ServerCommandHandler");
-        //proxy out the ServerCommandManager
-
-        MethodHandler serverCommandHandler = new MethodHandler() {
-            @Override
-            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-                System.out.println("proxy invoked!");
-                //Logger.info("Command proxy : %s -> %s.", thisMethod.getName(), proceed.getName());
-                //return null;
-
-                try {
-                    if (thisMethod.getName() == "a" && args.length >= 5) {
-                        //commands are processed here:
-                        //args: ae var1, ac var2, int var3, String var4, Object ... var5
-                        //ae is castable to player
-                        boolean cancelVanillaCommand = false;
-                        String[] commandParams = ((String) args[3]).split(" ");
-                        //Logger.info("intercepted command: " + commandParams[0]);
-                        System.out.println("intercepted command: " + commandParams[0]);
-
-                        if (!cancelVanillaCommand) proceed.invoke(self, args);
-                    } else {
-                        return proceed.invoke(self, args);
-                    }
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    System.out.println("Failed to invoke " + proceed);
-                    System.out.println("Cause: " + e.getCause());
-                    e.printStackTrace();
-                }
-                return null;
-
-            }
-        };
-
-        MethodHandler serverHandler = new MethodHandler() {
-            @Override
-            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-                try {
-                    if (!commandProxyInstalled) {
-                        try {
-                            commandProxyInstalled = true;
-                            Field commandManager = self.getClass().getSuperclass().getSuperclass().getDeclaredField("p");
-                            commandManager.setAccessible(true);
-                            Logger.info("Gained access to server command manager.");
-                            commandManager.set(self, commandHandler);
-                        } catch (NoSuchFieldException e) {
-                            Logger.error("Unable to modify command manager field.");
-                            e.printStackTrace();
-                        }
-                    }
-                    if (thisMethod.getName() == "M") {
-                        return self;
-                    }
-                    return proceed.invoke(self, args);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    Logger.error("Failed to invoke " + proceed);
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-
+        //finally, create the server proxy class and store it at the server field for now, we'll start it in a moment
         try {
-            ProxyFactory factory = new ProxyFactory();
-            factory.setSuperclass(serverClass);
-            server = factory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
+            serverFactory = new ProxyFactory();
+            serverFactory.setSuperclass(dedicatedServerClass);
+            server = serverFactory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
         } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             Logger.error("Failed to instanciate server.");
             e.printStackTrace();
             return;
         }
+        //install the command proxy
         try {
-            ProxyFactory factory = new ProxyFactory();
-            factory.setSuperclass(commandHandlerClass);
-            commandHandler = factory.create(new Class[]{}, new Object[]{});
-            ((Proxy) commandHandler).setHandler(serverCommandHandler);
-        } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            Logger.error("Failed to create command proxy.");
+            Field commandProxyDSField = server.getClass().getSuperclass().getSuperclass().getDeclaredField("p");
+            commandProxyDSField.setAccessible(true);
+            Object oldCommandManager = commandProxyDSField.get(server);
+            Object cproxy = java.lang.reflect.Proxy.newProxyInstance(oldCommandManager.getClass().getClassLoader(), new Class[]{commandProxyDSField.getType()}, new CommandProxy(oldCommandManager));
+            Object adProxy = commandProxyDSField.getType().cast(cproxy);
+            System.out.println("Cast proxy to " + commandProxyDSField.getType().getName());
+            commandProxyDSField.set(Class.forName("net.minecraft.server.MinecraftServer").cast(server), cproxy);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
-
-        //these will need to be refactored to the obfuscated variants
+        //now, we invoke the various commandline argument settings on the server:
         //if (serverOwner != null) serverProxy.setServerOwner(serverOwner);
         //if (world != null) serverProxy.setFolderName(world);
         //if (serverPort >= 0) serverProxy.setServerPort(serverPort);
@@ -176,9 +152,9 @@ public class ServerComposite {
         //if (bonusChest) serverProxy.canCreateBonusChest(true);
         //if (showGui && !GraphicsEnvironment.isHeadless()) serverProxy.setGuiEnabled();     
 
-        // fire up the server thread
+        // and start the server start thread
         try {
-            Mappings.call(server, "net.minecraft.server.DedicatedServer", "startServerThread");
+            Mappings.call(server, "net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
             Logger.error("Failed to start server thread.");
             e.printStackTrace();
@@ -187,7 +163,7 @@ public class ServerComposite {
         //attempt to locate the ThreadServerShutdown class
         Object serverShutdownThread;
         try {
-            serverShutdownThread = Mappings.getClassByHumanName("net.minecraft.server.ThreadServerShutdown").getDeclaredConstructor(String.class, serverClass).newInstance("Server Shutdown Thread", server);
+            serverShutdownThread = Mappings.getClassByHumanName("net.minecraft.server.ThreadServerShutdown").getDeclaredConstructor(String.class, dedicatedServerClass).newInstance("Server Shutdown Thread", server);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             Logger.error("Failed to load server shutdown thread class.");
             e.printStackTrace();
