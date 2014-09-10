@@ -30,8 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.api.events.PreloadEvent;
-import org.granitemc.granite.api.plugin.Plugin.ServerState;
+//import org.granitemc.granite.api.events.PreloadEvent; //TODO
+//import org.granitemc.granite.api.plugin.Plugin.ServerState; //TODO
 import org.granitemc.granite.utils.Logger;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
@@ -105,6 +105,8 @@ public class PluginContainer {
     }
 
     public void setup() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+        //TODO
+        /*
         if (getSetupClass() != null) {
             runSetupFunctions(getSetupClass());
         }
@@ -113,7 +115,7 @@ public class PluginContainer {
         		m.invoke(new PreloadEvent(this));
         	}
         }
-
+        */
     }
 
     private void runSetupFunctions(Class<?> setupClass2) {
