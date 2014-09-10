@@ -1,10 +1,12 @@
 package org.granitemc.granite.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.granitemc.granite.api.commands.CommandContainer;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.events.EventBus;
-
-import java.util.ArrayList;
 
 /**
  * License (MIT)
@@ -34,7 +36,9 @@ public class GraniteAPI {
 
     private static GraniteAPI instance;
     private static EventBus eventbus;
-
+    
+    private  List<CommandContainer> registeredCommandContainers = new ArrayList<CommandContainer>();
+    
     public static GraniteAPI instance() {
         if (instance == null) {
             instance = new GraniteAPI();
@@ -75,4 +79,22 @@ public class GraniteAPI {
         return ret;
     }
 
+	/**
+	 * @param command
+	 */
+	public void addCommandContainer(CommandContainer command) {
+		registeredCommandContainers.add(command);
+	}
+	
+	public CommandContainer getCommandByAlias(String alias) {
+		for(CommandContainer container : registeredCommandContainers) {
+			for(String al : container.getAliases()) {
+				if(al.equalsIgnoreCase(alias))
+					return container;
+			}
+		}
+		return null;
+	}
+
+	
 }

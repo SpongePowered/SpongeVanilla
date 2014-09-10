@@ -1,6 +1,13 @@
-package org.granitemc.granite.api;
+/**
+*
+*/
+package org.granitemc.granite.api.commands;
+
+import org.granitemc.granite.entities.player.EntityPlayer;
 
 /**
+ * This class was created as a part of Granite
+
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -22,7 +29,17 @@ package org.granitemc.granite.api;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-public class DummySetupClass {
-
+public class CommandInfo {
+	
+	public EntityPlayer commandSender;
+	public String[] args;
+	
+	/**
+	 * @param commandSender2 the sender of this command
+	 * @param copiedArgs the args of this command
+	 */
+	public CommandInfo(Object commandSender2, String[] copiedArgs) {
+	}
+	
+	
 }

@@ -1,7 +1,5 @@
 package org.granitemc.granite.api.plugin;
 
-import org.granitemc.granite.api.DummySetupClass;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite.api.plugin;
 
 /**
  * License (MIT)
@@ -23,6 +23,6 @@ package org.granitemc.granite.api;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public @interface SetupMethod {
+public class DummySetupClass {
 
 }
