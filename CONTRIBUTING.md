@@ -72,7 +72,7 @@ New code in master branch.
 Your code.
 >>>>>>> my-new-branch
 ```
-The goal is the leave the file exactly the way you want it to look. That means removing the marker lines (<<<<<<<, =======, and >>>>>>>), and manually merging the two chunks of code into a single block. Once all the conflicts are resolved, you can mark them as so:
+The goal is the leave the file exactly the way you want it to look. That means removing the marker lines (`<<<<<<<`, `=======`, and `>>>>>>>`), and manually merging the two chunks of code into a single block. Once all the conflicts are resolved, you can mark them as so:
 
 `git add path/to/conflicted-file.java`
 
