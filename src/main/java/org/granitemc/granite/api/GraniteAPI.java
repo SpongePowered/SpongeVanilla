@@ -29,7 +29,6 @@ import java.util.List;
 import org.granitemc.granite.api.commands.CommandContainer;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.events.EventBus;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class GraniteAPI {
