@@ -46,7 +46,6 @@ public class Mappings {
         classes = new HashMap<>();
         for (Map.Entry<String, Object> entry : mappings.getObject("mappings.classes").unwrapped().entrySet()) {
             try {
-                Logger.infoc("MappingRegistry", "Adding mapping: %s to %s.", entry.getKey(), Class.forName((String) entry.getValue()).getName());
                 classes.put(entry.getKey(), Class.forName((String) entry.getValue()));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -81,7 +80,6 @@ public class Mappings {
 
         Class<?> clazz = getClassByHumanName(humanClassName);
         try {
-            Logger.info("Getting %s.%s", humanClassName, humanMethodName);
             return clazz.getMethod(String.valueOf(methods.get(humanClassName).get(humanMethodName)));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

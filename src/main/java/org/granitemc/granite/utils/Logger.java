@@ -48,9 +48,13 @@ public class Logger {
     }
 
     public static void logf(String level, String format, Object... objects) {
-        String tName = "Mythic Main Thread";
-        if (showThread)
+        String tName = "";
+        if (showThread) {
             tName = Thread.currentThread().getName();
+            if (tName.equals("main")) {
+                tName = "Main";
+            }
+        }
 
         System.out.printf(String.format("[%s] [%s/%s] %s\n", sdf.format(new Date(System.currentTimeMillis())), tName, level.toUpperCase(), format), objects);
     }

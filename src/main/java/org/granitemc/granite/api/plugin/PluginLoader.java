@@ -73,9 +73,7 @@ public class PluginLoader {
         }
 
         while ((entry = entries.nextElement()) != null) {
-            log.info("Peeking %s.", entry);
             if (entry.getName().toLowerCase().endsWith(".class")) {
-                log.info("Found class file %s.", entry.getName());
                 try {
                     String className = entry.getName().replaceAll("/", ".").substring(0, entry.getName().lastIndexOf("."));
                     Class<?> clazz = cl != null ? cl.loadClass(className) : null;
@@ -94,21 +92,13 @@ public class PluginLoader {
 
     @SuppressWarnings("static-method")
     private List<Class<?>> findPlugins(List<Class<?>> candidates) {
-        int i = 1;
-        for (Class<?> clazz : candidates) {
-            Logger.info("Candidate %s : %s", i, clazz);
-            i++;
-        }
         List<Class<?>> ret = new ArrayList<Class<?>>();
         for (Class<?> clazz : candidates) {
             if (clazz.getAnnotations() == null || clazz.getAnnotations().length == 0) {
-                Logger.info("Class %s does not have any annotations present.", clazz);
                 continue;
             }
             try {
-                Logger.info("Searching for annotation @Plugin in %s", clazz);
                 for (java.lang.annotation.Annotation a : clazz.getAnnotations()) {
-                    Logger.info("Comparing %s to %s.", a.annotationType(), Plugin.class);
                     if (a.annotationType().equals(Plugin.class)) {
                         log.info("Loading plugin class %s.", clazz.getName());
                         ret.add(clazz);
@@ -128,12 +118,7 @@ public class PluginLoader {
         } catch (IOException ignored) {
         }
 
-        log.info("Finding class candidates");
-        log.info("Total candidates possible : " + jf.size());
-        List<Class<?>> candidates = iterateJar(f, jf);
-        log.info("Finding actual mod classes");
-        List<Class<?>> modClasses = findPlugins(candidates);
-        log.info("Loading actual mod classes");
+        List<Class<?>> modClasses = findPlugins(iterateJar(f, jf));
         for (Class<?> clazz : modClasses) {
             doLoading(clazz);
         }

@@ -50,9 +50,7 @@ public class ServerComposite {
         try {
             for (Field field : Class.forName("net.minecraft.server.MinecraftServer").getDeclaredFields()) {
                 if(field.getType() == Class.forName("ad")){
-                    System.out.println("Got handle for commandmanager!");
                     fieldServerCommandManager = field;
-                    System.out.print(" - " + fieldServerCommandManager.getName());
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -95,7 +93,7 @@ public class ServerComposite {
             serverFactory.setSuperclass(dedicatedServerClass);
             server = serverFactory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
         } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            Logger.error("Failed to instanciate server.");
+            Logger.error("Failed to instantiate server.");
             e.printStackTrace();
             return;
         }
@@ -105,7 +103,6 @@ public class ServerComposite {
             commandProxyDSField.setAccessible(true);
             Object oldCommandManager = commandProxyDSField.get(server);
             Object cproxy = java.lang.reflect.Proxy.newProxyInstance(oldCommandManager.getClass().getClassLoader(), new Class[]{commandProxyDSField.getType()}, new CommandProxy(oldCommandManager));
-            System.out.println("Cast proxy to " + commandProxyDSField.getType().getName());
             commandProxyDSField.set(Class.forName("net.minecraft.server.MinecraftServer").cast(server), cproxy);
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

@@ -56,7 +56,7 @@ public class GraniteStartupThread extends Thread {
             ClassLoader.addURL(Config.mcJar.toURI().toURL());
             Logger.info("Loaded server: " + Config.mcJar.getAbsolutePath());
         } catch (IOException e) {
-            Logger.error("Failed to load minecraft_server.jar . Please make sure it exists in the same directory.");
+            Logger.error("Failed to load minecraft_server.jar. Please make sure it exists in the same directory.");
             e.printStackTrace();
             return;
         }
