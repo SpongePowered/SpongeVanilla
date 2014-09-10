@@ -17,7 +17,7 @@
 * There needs to a be a new lines at the end of every file.
 
 ## How to Git
-Once you've forked out repository on GitHub, you can clone your fork to your own machine to make changes:
+Once you've forked our repository on GitHub, you can clone your fork to your own machine to make changes:
 
 `git clone git@github.com:YourName/YourFork.git`
 
@@ -42,7 +42,7 @@ You're now ready to create a pull request.
 ### Resolving pull request merge conflicts.
 The first step is to add our repository so that changes can be pulled from it:
 
-`git remote add upstream https://github.com/Granite Team/Granite.git`
+`git remote add upstream https://github.com/GraniteTeam/Granite.git`
 
 Then make sure you are in the local master branch:
 
