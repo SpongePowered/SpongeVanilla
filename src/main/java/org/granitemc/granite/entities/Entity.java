@@ -23,6 +23,69 @@
 
 package org.granitemc.granite.entities;
 
+import org.granitemc.granite.utils.Mappings;
+
+import java.lang.reflect.InvocationTargetException;
+
 public class Entity {
+
+    private Object entityInstance = null;
+
+    public int getEntityId() {
+        //Obf: F
+        return (Integer) invoke("getEntityID");
+    }
+
+    public void setEntityId(int Id) {
+        //Obf: d
+        invoke("setEntityId", Id);
+    }
+
+    public Object getDataWatcher() {
+        //Obf: H
+        return invoke("getDataWatcher");
+    }
+
+    public void setDead() {
+        //Obf: J
+        invoke("setDead");
+    }
+
+    public void setSize(float width, float height) {
+        //Obf: a
+        invoke("setSize", width, height);
+    }
+
+    public void setRotation(float yaw, float pitch) {
+        //Obf: b
+        invoke("setRotation", yaw, pitch);
+    }
+
+    public void setPosition(double x, double y, double z) {
+        //Obf: b
+        invoke("setPosition", x, y, z);
+    }
+
+    public void onUpdate() {
+        //Obf: s_
+        invoke("onUpdate");
+    }
+
+    public void onEntityUpdate() {
+        //Obf: K
+        invoke("onEntityUpdate");
+    }
+
+    //Up to L()
+
+    private Object invoke(String targetMethod, Object... parameters) {
+        try {
+            String targetClass = "net.minecraft.entity.EntityPlayer";
+            return Mappings.getMethod(targetClass, targetMethod).invoke(entityInstance, parameters);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

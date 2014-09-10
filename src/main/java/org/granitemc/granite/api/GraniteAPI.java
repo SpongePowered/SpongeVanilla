@@ -23,68 +23,70 @@
 
 package org.granitemc.granite.api;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.granitemc.granite.api.commands.CommandContainer;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import org.granitemc.granite.events.EventBus;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class GraniteAPI {
-    private static List<PluginContainer> plugins;
-    private static Logger logger;
 
-    public static void init() {
-        plugins = new ArrayList<>();
-        logger = LogManager.getFormatterLogger("Granite");
-    }
+    private static GraniteAPI instance;
 
-    public static void loadPluginFromJar(File file) {
-        try {
-            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
-            JarFile jf = new JarFile(file);
-
-            Enumeration<JarEntry> entries = jf.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-
-                if (entry.getName().endsWith(".class")) {
-                    String className = entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - ".class".length());
-
-                    try {
-                        Class<?> clazz = classLoader.loadClass(className);
-
-                        for (Annotation a : clazz.getAnnotations()) {
-                            if (a.annotationType().equals(Plugin.class)) {
-                                PluginContainer container = new PluginContainer(clazz);
-
-                                getLogger().info("Loaded %s (v%s)!", container.getName(), container.getVersion());
-
-                                plugins.add(container);
-                            }
-                        }
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    private  List<CommandContainer> registeredCommandContainers = new ArrayList<CommandContainer>();
+    
+    public static GraniteAPI instance() {
+        if (instance == null) {
+            instance = new GraniteAPI();
         }
+        return instance;
     }
 
-    public static Logger getLogger() {
-        return logger;
+    public boolean isPlugin(Object obj) {
+        return isClassPlugin(obj.getClass());
     }
+
+    public boolean isClassPlugin(Class<?> class1) {
+        return class1.getAnnotation(Plugin.class) != null;
+    }
+
+    public Plugin getPlugin(Object obj) {
+        return getClassPlugin(obj.getClass());
+    }
+
+    public Plugin getClassPlugin(Class<?> class1) {
+        return class1.getAnnotation(Plugin.class);
+    }
+
+    public PluginContainer loadPlugin(Object obj) {
+        return loadClassPlugin(obj.getClass());
+    }
+
+    public PluginContainer loadClassPlugin(Class<?> clazz) {
+        PluginContainer ret = new PluginContainer();
+        ret.loadFromPlugin(clazz);
+        return ret;
+    }
+
+	/**
+	 * @param command
+	 */
+	public void addCommandContainer(CommandContainer command) {
+		registeredCommandContainers.add(command);
+	}
+	
+	public CommandContainer getCommandByAlias(String alias) {
+		for(CommandContainer container : registeredCommandContainers) {
+			for(String al : container.getAliases()) {
+				if(al.equalsIgnoreCase(alias))
+					return container;
+			}
+		}
+		return null;
+	}
+
+	
 }
