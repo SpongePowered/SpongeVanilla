@@ -24,19 +24,34 @@
 /**
  *
  */
-package org.granitemc.granite.api.commands;
+package org.granitemc.granite.api.command;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
-    public String name();
+public class CommandContainer {
+    private Command annotation;
+    private Method method;
 
-    public String info();
+    public CommandContainer(Method method) {
+        annotation = method.getAnnotation(Command.class);
+        this.method = method;
+    }
 
-    public String[] aliases();
+    public String[] getAliases() {
+        return annotation.aliases();
+    }
+
+    public String getName() {
+        return annotation.name();
+    }
+
+    public String getInfo() {
+        return annotation.info();
+    }
+
+    public Object invoke(CommandInfo info) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+        return method.invoke(method.getDeclaringClass().newInstance(), info);
+    }
+
 }

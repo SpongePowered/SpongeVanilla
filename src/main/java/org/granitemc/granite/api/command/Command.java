@@ -24,21 +24,19 @@
 /**
  *
  */
-package org.granitemc.granite.api.commands;
+package org.granitemc.granite.api.command;
 
-import org.granitemc.granite.entities.player.EntityPlayer;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class CommandInfo {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Command {
+    public String name();
 
-    public EntityPlayer commandSender;
-    public String[] args;
+    public String info();
 
-    /**
-     * @param commandSender2 the sender of this command
-     * @param copiedArgs     the args of this command
-     */
-    public CommandInfo(Object commandSender2, String[] copiedArgs) {
-    }
-
-
+    public String[] aliases();
 }

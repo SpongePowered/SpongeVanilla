@@ -24,34 +24,21 @@
 /**
  *
  */
-package org.granitemc.granite.api.commands;
+package org.granitemc.granite.api.command;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.granitemc.granite.entities.player.EntityPlayer;
 
-public class CommandContainer {
-    private Command annotation;
-    private Method method;
+public class CommandInfo {
 
-    public CommandContainer(Method method) {
-        annotation = method.getAnnotation(Command.class);
-        this.method = method;
+    public EntityPlayer commandSender;
+    public String[] args;
+
+    /**
+     * @param commandSender2 the sender of this command
+     * @param copiedArgs     the args of this command
+     */
+    public CommandInfo(Object commandSender2, String[] copiedArgs) {
     }
 
-    public String[] getAliases() {
-        return annotation.aliases();
-    }
-
-    public String getName() {
-        return annotation.name();
-    }
-
-    public String getInfo() {
-        return annotation.info();
-    }
-
-    public Object invoke(CommandInfo info) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-        return method.invoke(method.getDeclaringClass().newInstance(), info);
-    }
 
 }
