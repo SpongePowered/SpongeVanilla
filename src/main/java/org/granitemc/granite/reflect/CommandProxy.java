@@ -21,9 +21,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.reflect;
+package org.granitemc.granite.utils;
 
 import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.commands.CommandContainer;
+import org.granitemc.granite.api.commands.CommandInfo;
 import org.granitemc.granite.entities.player.EntityPlayer;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,54 +34,54 @@ import java.util.ArrayList;
 
 public class CommandProxy implements java.lang.reflect.InvocationHandler {
     public Object obj;
-
     public CommandProxy(Object obj) {
         this.obj = obj;
     }
 
     //catches all methods invoked on ServerCommandManager
-    public Object invoke(Object proxy, Method m, Object[] args) {
+    public Object invoke(Object proxy, Method m, Object[] args){
         //TODO even though there is only one method, we should probably verify that this is the correct one anyway.
         boolean cancelVanillaCommand = false;
-        GraniteAPI.getLogger().info("Command Proxy successfully invoked!");
+        Logger.info("Command Proxy successfully invoked!");
 
         Object commandSender = args[0];
         String commandString = (String) args[1];
 
-        GraniteAPI.getLogger().info("Command initiated by: " + getSenderName(commandSender));
+        Logger.info("Command initiated by: " + getSenderName(commandSender));
         //pre-process command string
-        if (commandString.startsWith("/")) {
+        if(commandString.startsWith("/")) {
             commandString = commandString.substring(1);
         }
         String[] commandParts = commandString.split(" ");
-        GraniteAPI.getLogger().info("Intercepted command: " + commandParts[0]);
+        Logger.info("Intercepted command: " + commandParts[0]);
 
-        if (commandParts[0].equalsIgnoreCase("test")) {
-            if (isCommandSenderPlayer(commandSender)) {
-                GraniteAPI.getLogger().info("A player has used the test command.");
+        if(commandParts[0].equalsIgnoreCase("test")){
+            if(isCommandSenderPlayer(commandSender)){
+                Logger.info("A player has used the test command.");
                 //create a mythicplayer
                 EntityPlayer granitePlayer = new EntityPlayer(commandSender);
-                GraniteAPI.getLogger().info("Before Y:%s ", granitePlayer.getY());
+                Logger.info("Before Y:%s ", granitePlayer.getY());
                 granitePlayer.setPosition(granitePlayer.getX(), granitePlayer.getY() + 50D, granitePlayer.getZ());
-                GraniteAPI.getLogger().info("After Y:%s", granitePlayer.getY());
+                Logger.info("After Y:%s", granitePlayer.getY());
             } else {
-                GraniteAPI.getLogger().info("Silly server. Test commands are for players!");
+                Logger.info("Silly server. Test commands are for players!");
             }
             cancelVanillaCommand = true;
-        } else {
-            //CommandContainer container = GraniteAPI.instance().getCommandByAlias(commandParts[0]);
-            String[] copiedArgs = new String[commandParts.length - 1];
-            for (int i = 1; i < commandParts.length; i++)
-                copiedArgs[i - 1] = commandParts[i];
-            try {
-                //container.invoke(new CommandInfo(commandSender, copiedArgs ));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-
+        }else {
+        	CommandContainer container = GraniteAPI.instance().getCommandByAlias(commandParts[0]);
+        	String[] copiedArgs = new String[commandParts.length-1];
+        	for(int i = 1; i < commandParts.length; i++)
+        		copiedArgs[i-1] = commandParts[i];
+			try {
+				container.invoke(new CommandInfo(commandSender, copiedArgs ));
+			} catch (IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | InstantiationException e) {
+				e.printStackTrace();
+			}
+        	
         }
-
-        if (cancelVanillaCommand) {
+        
+        if(cancelVanillaCommand) {
             try {
                 return m.invoke(obj, args); //forward to vanilla
             } catch (Exception e) {
@@ -88,21 +90,18 @@ public class CommandProxy implements java.lang.reflect.InvocationHandler {
         }
         return null;
     }
-
     private static final ArrayList<String> nonplayers = new ArrayList<>();
-
     static {
-        nonplayers.add("Rcon");
-        nonplayers.add("Server");
-        nonplayers.add("@");
+    	nonplayers.add("Rcon");
+    	nonplayers.add("Server");
+    	nonplayers.add("@");
     }
-
-    public static boolean isCommandSenderPlayer(Object commandSender) {
-
+    public static boolean isCommandSenderPlayer(Object commandSender){
+       
         return !nonplayers.contains(getSenderName(commandSender));
     }
 
-    public static String getSenderName(Object commandSender) {
+    public static String getSenderName(Object commandSender){
         try {
             Class<?> iCommandSender = Class.forName("ae");
             return (String) iCommandSender.getDeclaredMethod("d_").invoke(commandSender);

@@ -22,36 +22,41 @@
  ****************************************************************************************/
 
 /**
- *
- */
-package org.granitemc.granite.api.command;
+*
+*/
+package org.granitemc.granite.api.commands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class CommandContainer {
-    private Command annotation;
-    private Method method;
 
-    public CommandContainer(Method method) {
-        annotation = method.getAnnotation(Command.class);
-        this.method = method;
-    }
+	private Command annoteCommand;
+	private Method method;
+	/**
+	 * 
+	 */
+	public CommandContainer(Method method) {
+		annoteCommand = method.getAnnotation(Command.class);
+	}
 
-    public String[] getAliases() {
-        return annotation.aliases();
-    }
-
-    public String getName() {
-        return annotation.name();
-    }
-
-    public String getInfo() {
-        return annotation.info();
-    }
-
-    public Object invoke(CommandInfo info) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-        return method.invoke(method.getDeclaringClass().newInstance(), info);
-    }
+	/**
+	 * @return
+	 */
+	public String[] getAliases() {
+		return annoteCommand.aliases();
+	}
+	
+	public String getName() {
+		return annoteCommand.name();
+	}
+	
+	public String getInfo() {
+		return annoteCommand.info();
+	}
+	
+	public Object invoke(CommandInfo info) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+		return method.invoke(method.getDeclaringClass().newInstance(), info);
+	}
 
 }
