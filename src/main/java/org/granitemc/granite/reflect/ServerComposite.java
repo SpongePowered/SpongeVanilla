@@ -25,8 +25,7 @@ package org.granitemc.granite.reflect;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
-import org.granitemc.granite.reflect.CommandProxy;
-import org.granitemc.granite.utils.Logger;
+import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
@@ -76,7 +75,7 @@ public class ServerComposite {
                     try {
                         return proceed.invoke(self, args);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        Logger.error("Failed to invoke " + proceed);
+                        GraniteAPI.getLogger().error("Failed to invoke " + proceed);
                         e.printStackTrace();
                     }
                 }
@@ -96,9 +95,17 @@ public class ServerComposite {
             serverFactory.setSuperclass(dedicatedServerClass);
             server = serverFactory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
         } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            Logger.error("Failed to instantiate server.");
+            GraniteAPI.getLogger().error("Failed to instantiate server.");
             e.printStackTrace();
             return;
+        }
+        try {
+            // Inject logger
+            Field loggerField = Mappings.getField("net.minecraft.server.MinecraftServer", "logger");
+            ReflectionUtils.forceStaticAccessible(loggerField);
+            loggerField.set(null, GraniteAPI.getLogger());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         //install the command proxy
         try {
@@ -122,7 +129,7 @@ public class ServerComposite {
         try {
             Mappings.call(server, "net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
         } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
-            Logger.error("Failed to start server thread.");
+            GraniteAPI.getLogger().error("Failed to start server thread.");
             e.printStackTrace();
         }
 
@@ -131,7 +138,7 @@ public class ServerComposite {
         try {
             serverShutdownThread = Mappings.getClassByHumanName("net.minecraft.server.ThreadServerShutdown").getDeclaredConstructor(String.class, dedicatedServerClass).newInstance("Server Shutdown Thread", server);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            Logger.error("Failed to load server shutdown thread class.");
+            GraniteAPI.getLogger().error("Failed to load server shutdown thread class.");
             e.printStackTrace();
             return;
         }

@@ -23,8 +23,8 @@
 
 package org.granitemc.granite.reflect;
 
+import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.entities.player.EntityPlayer;
-import org.granitemc.granite.utils.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,29 +41,29 @@ public class CommandProxy implements java.lang.reflect.InvocationHandler {
     public Object invoke(Object proxy, Method m, Object[] args) {
         //TODO even though there is only one method, we should probably verify that this is the correct one anyway.
         boolean cancelVanillaCommand = false;
-        Logger.info("Command Proxy successfully invoked!");
+        GraniteAPI.getLogger().info("Command Proxy successfully invoked!");
 
         Object commandSender = args[0];
         String commandString = (String) args[1];
 
-        Logger.info("Command initiated by: " + getSenderName(commandSender));
+        GraniteAPI.getLogger().info("Command initiated by: " + getSenderName(commandSender));
         //pre-process command string
         if (commandString.startsWith("/")) {
             commandString = commandString.substring(1);
         }
         String[] commandParts = commandString.split(" ");
-        Logger.info("Intercepted command: " + commandParts[0]);
+        GraniteAPI.getLogger().info("Intercepted command: " + commandParts[0]);
 
         if (commandParts[0].equalsIgnoreCase("test")) {
             if (isCommandSenderPlayer(commandSender)) {
-                Logger.info("A player has used the test command.");
+                GraniteAPI.getLogger().info("A player has used the test command.");
                 //create a mythicplayer
                 EntityPlayer granitePlayer = new EntityPlayer(commandSender);
-                Logger.info("Before Y:%s ", granitePlayer.getY());
+                GraniteAPI.getLogger().info("Before Y:%s ", granitePlayer.getY());
                 granitePlayer.setPosition(granitePlayer.getX(), granitePlayer.getY() + 50D, granitePlayer.getZ());
-                Logger.info("After Y:%s", granitePlayer.getY());
+                GraniteAPI.getLogger().info("After Y:%s", granitePlayer.getY());
             } else {
-                Logger.info("Silly server. Test commands are for players!");
+                GraniteAPI.getLogger().info("Silly server. Test commands are for players!");
             }
             cancelVanillaCommand = true;
         } else {

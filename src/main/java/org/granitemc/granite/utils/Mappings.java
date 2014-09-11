@@ -107,9 +107,8 @@ public class Mappings {
 
         Class<?> clazz = getClassByHumanName(humanClassName);
         try {
-            return clazz.getField(String.valueOf(fields.get(humanClassName).get(humanFieldName)));
+            return clazz.getDeclaredField(fields.get(humanClassName).get(humanFieldName).toString());
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
             throw new MappingNotFoundException(humanClassName + "/" + humanFieldName);
         }
     }
