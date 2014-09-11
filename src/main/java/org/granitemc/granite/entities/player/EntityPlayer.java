@@ -137,7 +137,7 @@ public class EntityPlayer {
 
     public ItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
-        return new ItemStack(invoke("getEquiptmentInSlot", slot));
+        return new ItemStack(invoke("getEquipmentInSlot", slot));
     }
 
     public ItemStack getHeldItem() {
