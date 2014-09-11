@@ -23,11 +23,11 @@
 
 package org.granitemc.granite;
 
-import org.granitemc.granite.api.plugin.PluginLoader;
+import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
 import org.granitemc.granite.utils.Logger;
-import org.granitemc.granite.utils.ServerComposite;
+import org.granitemc.granite.reflect.ServerComposite;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -47,6 +47,7 @@ public class GraniteStartupThread extends Thread {
         Logger.info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
 
         Config.initDirs();
+        GraniteAPI.init();
 
         if (!Config.mcJar.exists()) {
             throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
@@ -68,7 +69,7 @@ public class GraniteStartupThread extends Thread {
             }
         })) {
             Logger.info("Loading jarfile plugins/%s.", plugin.getName());
-            new PluginLoader(plugin).run();
+            GraniteAPI.loadPluginFromJar(plugin);
         }
 
 
