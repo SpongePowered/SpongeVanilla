@@ -32,20 +32,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Plugin {
 
-	public enum ServerState {
-		PRESTART, STARTING, STARTED, PRESTOP, STOP
-	}
+    public enum ServerState {
+        PRESTART, STARTING, STARTED, PRESTOP, STOP
+    }
 
-	public @interface On {
-		ServerState value();
-	}
-	
-	public String name();
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface On {
+        ServerState value();
+    }
+
+    public String name();
 
     public String id();
 
     public String version();
-
-    public Class<?> setupClass() default DummySetupClass.class;
-
 }

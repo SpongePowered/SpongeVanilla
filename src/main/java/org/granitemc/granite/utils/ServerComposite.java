@@ -49,7 +49,7 @@ public class ServerComposite {
         //first, lets get a handle for the proxy's supersuper commandHandler field
         try {
             for (Field field : Class.forName("net.minecraft.server.MinecraftServer").getDeclaredFields()) {
-                if(field.getType() == Class.forName("ad")){
+                if (field.getType() == Class.forName("ad")) {
                     fieldServerCommandManager = field;
                 }
             }
@@ -67,7 +67,7 @@ public class ServerComposite {
         MethodHandler serverHandler = new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-                if(thisMethod.getReturnType() == Mappings.getClassByHumanName("net.minecraft.server.MinecraftServer")){
+                if (thisMethod.getReturnType() == Mappings.getClassByHumanName("net.minecraft.server.MinecraftServer")) {
                     return server;
                 } else {
                     try {

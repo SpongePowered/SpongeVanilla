@@ -31,12 +31,12 @@ public class Config {
     public static final File configFolder = new File("configuration");
     public static final File pluginsFolder = new File("plugins");
 
-	public static void initDirs() {
-		if(!configFolder.exists())
-			configFolder.mkdirs();
-		
-		if(!pluginsFolder.exists())
-			pluginsFolder.mkdirs();
-	}
-    
+    public static void initDirs() {
+        if (!configFolder.exists())
+            configFolder.mkdirs();
+
+        if (!pluginsFolder.exists())
+            pluginsFolder.mkdirs();
+    }
+
 }
