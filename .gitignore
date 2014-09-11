@@ -60,3 +60,4 @@ world
 *.json
 eula.txt
 run/
+crash-reports/
