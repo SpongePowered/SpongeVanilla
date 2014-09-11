@@ -23,8 +23,6 @@
 
 package org.granitemc.granite.api.plugin;
 
-import org.granitemc.granite.utils.Logger;
-
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class PluginContainer {
     private Plugin annotation;

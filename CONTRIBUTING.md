@@ -17,7 +17,7 @@
 * There needs to a be a new lines at the end of every file.
 
 ## How to Git
-Once you've forked out repository on GitHub, you can clone your fork to your own machine to make changes:
+Once you've forked our repository on GitHub, you can clone your fork to your own machine to make changes:
 
 `git clone git@github.com:YourName/YourFork.git`
 
@@ -42,7 +42,7 @@ You're now ready to create a pull request.
 ### Resolving pull request merge conflicts.
 The first step is to add our repository so that changes can be pulled from it:
 
-`git remote add upstream https://github.com/Granite Team/Granite.git`
+`git remote add upstream https://github.com/GraniteTeam/Granite.git`
 
 Then make sure you are in the local master branch:
 
@@ -72,7 +72,7 @@ New code in master branch.
 Your code.
 >>>>>>> my-new-branch
 ```
-The goal is the leave the file exactly the way you want it to look. That means removing the marker lines (<<<<<<<, =======, and >>>>>>>), and manually merging the two chunks of code into a single block. Once all the conflicts are resolved, you can mark them as so:
+The goal is the leave the file exactly the way you want it to look. That means removing the marker lines (`<<<<<<<`, `=======`, and `>>>>>>>`), and manually merging the two chunks of code into a single block. Once all the conflicts are resolved, you can mark them as so:
 
 `git add path/to/conflicted-file.java`
 
@@ -85,3 +85,6 @@ And finally you can push the new code to GitHub:
 `git push -f origin my-new-branch`
 
 Your pull request will now automatically be updated.
+
+## Legal observations
+By contributing to this source code repository, the contents of which are licensed under the MIT license, you are agreeing that your submission is compatible with the MIT license, and that you understand you are providing this source code to an open source, MIT licensed repository, and that you have all rights in regards to your submission to authorize its contribution to source code distributed under the MIT license.
