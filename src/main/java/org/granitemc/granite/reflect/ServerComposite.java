@@ -21,10 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.utils;
+package org.granitemc.granite.reflect;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
+import org.granitemc.granite.reflect.CommandProxy;
+import org.granitemc.granite.utils.Logger;
+import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.lang.reflect.Field;

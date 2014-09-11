@@ -21,9 +21,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.utils;
+package org.granitemc.granite.reflect;
 
 import org.granitemc.granite.entities.player.EntityPlayer;
+import org.granitemc.granite.utils.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
