@@ -23,9 +23,10 @@
 
 package org.granitemc.granite.api;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.utils.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +42,11 @@ import java.util.jar.JarFile;
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class GraniteAPI {
     private static List<PluginContainer> plugins;
+    private static Logger logger;
 
     public static void init() {
         plugins = new ArrayList<>();
+        logger = LogManager.getFormatterLogger("Granite");
     }
 
     public static void loadPluginFromJar(File file) {
@@ -66,7 +69,7 @@ public class GraniteAPI {
                             if (a.annotationType().equals(Plugin.class)) {
                                 PluginContainer container = new PluginContainer(clazz);
 
-                                Logger.info("Loaded %s (v%s)!", container.getName(), container.getVersion());
+                                getLogger().info("Loaded %s (v%s)!", container.getName(), container.getVersion());
 
                                 plugins.add(container);
                             }
@@ -79,5 +82,9 @@ public class GraniteAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }
