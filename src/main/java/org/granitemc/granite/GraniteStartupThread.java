@@ -23,10 +23,11 @@
 
 package org.granitemc.granite;
 
-import org.granitemc.granite.api.GraniteAPI;
-import org.granitemc.granite.reflect.ServerComposite;
+import org.granitemc.granite.api.plugin.PluginLoader;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
+import org.granitemc.granite.utils.Logger;
+import org.granitemc.granite.utils.ServerComposite;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -42,10 +43,8 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void run() {
-        GraniteAPI.init();
-
-        GraniteAPI.getLogger().info("Starting Granite version @VERSION@");
-        GraniteAPI.getLogger().info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
+        Logger.infoc(getName(), "Starting Granite version @VERSION@");
+        Logger.info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
 
         Config.initDirs();
 
@@ -55,9 +54,9 @@ public class GraniteStartupThread extends Thread {
 
         try {
             ClassLoader.addURL(Config.mcJar.toURI().toURL());
-            GraniteAPI.getLogger().info("Loaded server: " + Config.mcJar.getAbsolutePath());
+            Logger.info("Loaded server: " + Config.mcJar.getAbsolutePath());
         } catch (IOException e) {
-            GraniteAPI.getLogger().error("Failed to load minecraft_server.jar. Please make sure it exists in the same directory.");
+            Logger.error("Failed to load minecraft_server.jar. Please make sure it exists in the same directory.");
             e.printStackTrace();
             return;
         }
@@ -68,8 +67,8 @@ public class GraniteStartupThread extends Thread {
                 return arg1.endsWith(".jar");
             }
         })) {
-            GraniteAPI.getLogger().info("Loading jarfile plugins/%s.", plugin.getName());
-            GraniteAPI.loadPluginFromJar(plugin);
+            Logger.info("Loading jarfile plugins/%s.", plugin.getName());
+            new PluginLoader(plugin).run();
         }
 
 

@@ -21,7 +21,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.entities;
+/**
+*
+*/
+package org.granitemc.granite.api.commands;
 
-public class EntityCreature {
+public @interface Command {
+	public String name();
+	public String info();
+	public String[] aliases();
+	
 }
