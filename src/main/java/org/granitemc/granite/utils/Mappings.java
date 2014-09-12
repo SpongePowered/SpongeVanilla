@@ -25,6 +25,7 @@ package org.granitemc.granite.utils;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.granitemc.granite.reflect.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -117,8 +118,8 @@ public class Mappings {
         Method method = getMethod(humanClassName, humanMethodName);
 
         try {
-            return method.invoke(object, args);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            return ReflectionUtils.invoke(object, method, args);
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getCause());
         }
@@ -129,8 +130,8 @@ public class Mappings {
         Method method = getMethod(clazz, humanMethodName);
 
         try {
-            return method.invoke(object, args);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            return ReflectionUtils.invoke(object, method, args);
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getCause());
         }
