@@ -106,7 +106,7 @@
                         </manifest>
                     </archive>
 
-                    <finalName>${project.artifactId}-${project.version}-${build.number}</finalName>
+                    <finalName>${project.artifactId}-${project.version}-#${build.number}</finalName>
                 </configuration>
             </plugin>
         </plugins>
