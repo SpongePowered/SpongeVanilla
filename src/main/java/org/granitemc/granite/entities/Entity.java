@@ -27,6 +27,7 @@ import org.granitemc.granite.entities.player.EntityPlayer;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class Entity {
 
@@ -441,7 +442,417 @@ public class Entity {
         return (boolean) invoke("isEntityInsideOpaqueBlock");
     }
 
-    //TODO: Upto line 1145 (e) 1.8
+    //TODO: find out what class ahd is
+    /*public boolean interactFirst(ahd var1) {
+        //Obf:
+        return (boolean) invoke("interactFirst", var1);
+    }*/
+
+    //TODO: work out what class brt is
+    /*public brt getCollisionBox() {
+        //Obf: j
+        return (brt) invoke("getCollisionBox");
+    }*/
+
+    public void updateRidden() {
+        //Obf: ak
+        invoke("updateRidden");
+    }
+
+    public void updateRiderPosition() {
+        //Obf: al
+        invoke("updateRiderPosition");
+    }
+
+    public double getYOffset() {
+        //Obf: am
+        return (double) invoke("getYOffset");
+    }
+
+    public double getMountedYOffset() {
+        //Obf: an
+        return (double) invoke("getMountedYOffset");
+    }
+
+    public void mountEntity(Entity entity) {
+        //Obf: a
+        invoke("mountEntity", entity);
+    }
+
+    public float getCollisionBorderSize() {
+        //Obf: ao
+        return (float) invoke("getCollisionBorderSize");
+    }
+
+    //TODO: work out what class brt is
+    /*public brw getLookVector() {
+        //Obf: ap
+        return (brw) invoke("getLookVector");
+    }*/
+
+    public boolean isEating() {
+        //Obf: aq
+        return (boolean) invoke("isEating");
+    }
+
+    public void setEating(boolean var1) {
+        //Obf: f
+        invoke("setEating", var1);
+    }
+
+    //TODO: work out what class amj is
+    /*public amj[] getInventory() {
+        //Obf: at
+        return (amj[]) invoke("getInventory");
+    }*/
+
+    //TODO: work out what class amj is
+    /*public void setCurrentItemOrArmor(int var1, amj var2) {
+        //Obf: c
+        invoke("setCurrentItemOrArmor", var1, var2);
+    }*/
+
+    public int getPortalCooldown() {
+        //Obf: ar
+        return (Integer) invoke("getPortalCooldown");
+    }
+
+    public boolean isBurning() {
+        //Obf: au
+        return (boolean) invoke("isBurning");
+    }
+
+    public boolean isRiding() {
+        //Obf: av
+        return (boolean) invoke("isRiding");
+    }
+
+    public boolean isSneaking() {
+        //Obf: aw
+        return (boolean) invoke("isSneaking");
+    }
+
+    public void setSneaking(boolean var1) {
+        //Obf: c
+        invoke("setSneaking", var1);
+    }
+
+    public boolean isSprinting() {
+        //Obf: ax
+        return (boolean) invoke("isSprinting");
+    }
+
+    public void setSprinting(boolean var1) {
+        //Obf: d
+        invoke("setSprinting", var1);
+    }
+
+    public boolean isInvisible() {
+        //Obf: ay
+        return (boolean) invoke("isInvisible");
+    }
+
+    public void setInvisible(boolean var1) {
+        //Obf: e
+        invoke("setInvisible", var1);
+    }
+
+    public boolean getFlag(int flag) {
+        //Obf: g
+        return (boolean) invoke("getFlag", flag);
+    }
+
+    public void setFlag(int flag, boolean var2) {
+        //Obf: b
+        invoke("setFlag", flag, var2);
+    }
+
+    public int getAir() {
+        //Obf: aA
+        return (Integer) invoke("getAir");
+    }
+
+    public void setAir(int var1) {
+        //Obf: h
+        invoke("setAir", var1);
+    }
+
+    //TODO: Find out what class ads is
+    /*public void onStruckByLightning(ads var1) {
+        //Obf: a
+        invoke("onStruckByLightning", var1);
+    }*/
+
+    //TODO: Find out what class xm is
+    /*public void onKillEntity(xm var1) {
+        //Obf: a
+        invoke("onKillEntity", var1);
+    }*/
+
+    //TODO: Work out a suitable name and what the vars do
+    @Deprecated
+    public boolean func_145771_j(double var1, double var2, double var3) {
+        //Obf: j
+        return (boolean) invoke("func_145771_j", var1, var2, var3);
+    }
+
+    public void setInWeb() {
+        //Obf: aB
+        invoke("setInWeb");
+    }
+
+    public String getCommandSenderName() {
+        //Obf: d_
+        return (String) invoke("getCommandSenderName");
+    }
+
+    public Entity[] getParts() {
+        //Obf: aC
+        return (Entity[]) invoke("getParts");
+    }
+
+    public boolean isEntityEqual(Entity entity) {
+        //Obf: k
+        return (boolean) invoke("isEntityEqual", entity);
+    }
+
+    public float getRotationYawHead() {
+        //Obf: aD
+        return (float) invoke("getRotationYawHead");
+    }
+
+    //TODO: Find a suitable name (currently not used)
+    public void f(float var1) {
+        //Obf: f
+        invoke("f");
+    }
+
+    public boolean canAttackWithItem() {
+        //Obf: aE
+        return (boolean) invoke("canAttackWithItem");
+    }
+
+    public boolean hitByEntity(Entity entity) {
+        //Obf: l
+        return (boolean) invoke("hitByEntity", entity);
+    }
+
+    public void copyDataFrom(Entity entity) {
+        //Obf: n
+        invoke("copyDataFrom", entity);
+    }
+
+    public void travelToDimension(int dimension) {
+        //Obf: c
+        invoke("travelToDimension", dimension);
+    }
+
+    //TODO: Find suitable name and work out what the vars do and their classes
+    /*public float func_145772_a(aqo var1, aqu var2, dt var3, bec var4) {
+        //Obf: a
+        return (float) invoke("func_145772_a", aqo var1, aqu var2, dt var3, bec var4);
+    }*/
+
+    //TODO: Find suitable name and work out what the vars do and their classes
+    /*public boolean func_145774_a(aqo var1, aqu var2, dt var3, bec var4, float var5) {
+        //Obf: a
+        return (boolean) invoke("func_145774_a", aqo var1, aqu var2, dt var3, bec var4, float var5);
+    }*/
+
+    public int getMaxSafePointTries() {
+        //Obf: aF
+        return (Integer) invoke("getMaxSafePointTries");
+    }
+
+    public int getTeleportDirection() {
+        //Obf: aG
+        return (Integer) invoke("getTeleportDirection");
+    }
+
+    public boolean doesEntityNotTriggerPressurePlate() {
+        //Obf: aH
+        return (boolean) invoke("doesEntityNotTriggerPressurePlate");
+    }
+
+    //TODO: find out what class j is
+    /*public void addEntityCrashInfo(j var1) {
+        //Obf: a
+        invoke("addEntityCrashInfo", var1);
+    }*/
+
+    public UUID getUniqueID() {
+        //Obf: aJ
+        return (UUID) invoke("getUniqueID");
+    }
+
+    public boolean isPushedByWater() {
+        //Obf: aK
+        return (boolean) invoke("isPushedByWater");
+    }
+
+    //TODO: Find Suitable name and get ho class
+    /*public ho func_145748_c_() {
+        //Obf: e_
+        return (ho) invoke("func_145748_c_");
+    }*/
+
+    //TODO: These are new in 1.8?
+    /**
+     public void a(String var1) {
+     //Obf: a
+     invoke("a", var1);
+     }
+
+     public String aL() {
+     //Obf: aL
+     return (String) invoke("aL")
+     }
+
+     //HERE!!!!!!!
+     public boolean k_() {
+     //Obf: k_
+     return (boolean) invoke("k_");
+     }
+
+     public void g(boolean var1) {
+     //Obf: g
+     invoke("g", var1);
+     }
+
+     public boolean aM() {
+     //Obf: aM
+     return (boolean) invoke("aM");
+     }
+
+     public void a(double var1, double var3, double var5) {
+     //Obf: a
+     invoke("a", var1, var3, var5);
+     }*/
+
+    //TODO: Find Suitable name (not currently used)
+    /*public void func_145781_i(int var1) {
+        //Obf: i
+        invoke("func_145781_i", var1);
+    }*/
+
+    //TODO: These are new in 1.8?
+
+    /**
+     * public ej aO() {
+     * //Obf: aO
+     * return (ej) invoke("aO");
+     * }
+     *
+     * protected hr aP() {
+     * //Obf: aP
+     * return (hr) invoke("aO");
+     * }
+     *
+     * public boolean a(qw var1) {
+     * //Obf: a
+     * return (boolean) invoke("a");
+     * }
+     *
+     * public brt aQ() {
+     * //Obf: aQ
+     * return (brt) invoke("aQ");
+     * }
+     *
+     * public void a(brt var1) {
+     * //Obf: a
+     * invoke("a", var1);
+     * }
+     *
+     * public float aR() {
+     * //Obf: aR
+     * return (float) invoke("aR");
+     * }
+     *
+     * public boolean aS() {
+     * //Obf: aS
+     * return (boolean) invoke("aS");
+     * }
+     *
+     * public void h(boolean var1) {
+     * //Obf: h
+     * invoke("h", var1);
+     * }
+     *
+     * public boolean d(int var1, amj var2) {
+     * //Obf: d
+     * return (boolean) invoke("d", var1, var2);
+     * }
+     *
+     * //TODO: ? (not currently used)
+     * public void a(ho var1) {
+     * //Obf: a
+     * }
+     *
+     * public boolean a(int var1, String var2) {
+     * //Obf: a
+     * return (boolean) invoke("a", var1, var2);
+     * }
+     *
+     * public dt c() {
+     * //Obf: c
+     * return (dt) invoke("c");
+     * }
+     *
+     * public brw d() {
+     * //Obf: d
+     * return (brw) invoke("d");
+     * }
+     *
+     * public aqu e() {
+     * //Obf: e
+     * return (aqu) invoke("e")
+     * }
+     *
+     * public Entity f() {
+     * //Obf: f
+     * return (Entity) invoke("f");
+     * }
+     *
+     * public boolean t_() {
+     * //Obf: t_
+     * return (boolean) invoke("t_");
+     * }
+     *
+     * public void a(ag var1, int var2) {
+     * //Obf: a
+     * invoke("a", var1, var2);
+     * }
+     *
+     * public af aT() {
+     * //Obf: aT
+     * return (af) invoke("aT");
+     * }
+     *
+     * public void o(Entity var1) {
+     * //Obf: o
+     * invoke("o", var1);
+     * }
+     *
+     * public fn aU() {
+     * //Obf: aU
+     * return (fn) invoke("aU");
+     * }
+     *
+     * public boolean a(ahd var1, brw var2) {
+     * //Obf: a
+     * return (boolean) invoke("a", var1, var2);
+     * }
+     *
+     * public boolean aV() {
+     * //Obf: aV
+     * return (boolean) invoke("aV");
+     * }
+     * 
+     * protected void a(xm var1, wv var2) {
+     * //Obf: a
+     * invoke("a", var1, var2);
+     * }
+     */
 
     private Object invoke(String targetMethod, Object... parameters) {
         try {
