@@ -30,10 +30,10 @@ To-do list
 ------
 - ~~Set-up~~
 - ~~Command proxy~~
-- **Plugin loader**
+- ~~Plugin loader~~
 - **Command API**
 - **Event system**
-- API for worlds, items, players
+- **API for worlds, items, players**
 - Essentials-style example plugin
 - ??? (More to come)
 
