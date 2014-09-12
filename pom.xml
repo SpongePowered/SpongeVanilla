@@ -7,6 +7,7 @@
     <artifactId>Granite</artifactId>
 
     <properties>
+        <build.number>CUSTOM</build.number>
         <jdk>1.7</jdk>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>org.granitemc.granite.Main</main.class>
@@ -16,6 +17,13 @@
         <name>Granite MC</name>
         <url>http://www.granitemc.org/</url>
     </organization>
+
+    <scm>
+        <connection>scm:git:https://github.com/GraniteTeam/Granite.git</connection>
+        <developerConnection>scm:git:git@github.com:GraniteTeam/Granite.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/GraniteTeam/Granite</url>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -35,6 +43,7 @@
             <artifactId>log4j-api</artifactId>
             <version>2.0.2</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -82,8 +91,8 @@
                                 <includes>
                                     <include>org.javassist:javassist</include>
                                     <include>com.typesafe:config</include>
-                                    <include>org.apache.logging.log4j:log4j-core</include>
                                     <include>org.apache.logging.log4j:log4j-api</include>
+                                    <include>org.apache.logging.log4j:log4j-core</include>
                                     <include>com.google.guava:guava</include>
                                 </includes>
                             </artifactSet>
@@ -103,7 +112,7 @@
                         </manifest>
                     </archive>
 
-                    <finalName>${project.artifactId}-${project.version}</finalName>
+                    <finalName>${project.artifactId}-${project.version}-#${build.number}</finalName>
                 </configuration>
             </plugin>
         </plugins>
