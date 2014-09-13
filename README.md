@@ -26,6 +26,20 @@ already made good progress, and at this pace, will continue to do so.  We have i
 system in order to minimize the amount of work to implement updates; so once the project reaches a more finished state,
 maintenance should be a relatively simple affair.  Our hope is that this approach is a valid "future-proofed" option.
 
+Usage
+------
+Granite is very easy to setup:
+
+1.) Obtain or build a jarfile.
+
+2.) Obtain a minecraft_server.jar of the appropriate version (be sure to rename the file to "minecraft_server.jar" if
+it is named anything else (i.e. minecraft_server.1.8.jar)).
+
+3.) Launch Granite's jar with the appropriate commandline settings (both Java switches and vanilla Minecraft switches
+are supported).
+
+Granite will automatically create any files or directories it needs when launched.
+
 To-do list
 ------
 - ~~Set-up~~

@@ -7,10 +7,11 @@
     <artifactId>Granite</artifactId>
 
     <properties>
-        <build.number>CUSTOM</build.number>
         <jdk>1.7</jdk>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>org.granitemc.granite.Main</main.class>
+        <build.number>NA</build.number>
+        <finalName>${project.name}-${project.version}</finalName>
     </properties>
 
     <organization>
@@ -49,6 +50,7 @@
             <artifactId>log4j-core</artifactId>
             <version>2.0.2</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -61,9 +63,19 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>ci</id>
+
+            <properties>
+                <finalName>${project.name}-v${project.version}-b${build.number}</finalName>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${finalName}</finalName>
 
         <plugins>
             <plugin>
@@ -117,8 +129,6 @@
                             <mainClass>${main.class}</mainClass>
                         </manifest>
                     </archive>
-
-                    <finalName>${project.artifactId}-${project.version}-#${build.number}</finalName>
                 </configuration>
             </plugin>
         </plugins>
