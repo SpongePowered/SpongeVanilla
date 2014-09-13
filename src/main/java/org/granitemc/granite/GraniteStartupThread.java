@@ -27,6 +27,7 @@ import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.reflect.ServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
+import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -62,6 +63,8 @@ public class GraniteStartupThread extends Thread {
             return;
         }
 
+        Mappings.load();
+
         for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
@@ -73,7 +76,8 @@ public class GraniteStartupThread extends Thread {
         }
 
 
-        ServerComposite.create(args);
+        //ServerComposite___old.create(args);
+        ServerComposite.init();
     }
 
 }

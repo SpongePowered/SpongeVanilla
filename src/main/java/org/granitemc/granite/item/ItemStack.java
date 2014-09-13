@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 public class ItemStack {
 
     Object vanillaItemInstance = null;
-    String targetClass = "net.minecraft.item.ItemStack";
+    String targetClass = "n.m.item.ItemStack";
 
     public ItemStack(Object instance) {
         vanillaItemInstance = instance;

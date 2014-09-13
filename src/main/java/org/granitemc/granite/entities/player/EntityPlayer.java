@@ -24,24 +24,21 @@
 package org.granitemc.granite.entities.player;
 
 import org.granitemc.granite.item.ItemStack;
+import org.granitemc.granite.reflect.Composite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-public class EntityPlayer {
+public class EntityPlayer extends Composite {
 
     /**
      * This class provides a mapping wrapper for EntityPlayer.
      * It will have to be updated as the obfuscation changes (or becomes unnecessary).
      */
 
-    //set the type of this field to the (obfuscated or not) PlayerEntity type.
-    Object entityPlayerInstance = null;
-    String targetClass = "net.minecraft.entity.EntityPlayer";
-
-    public EntityPlayer(Object instance) {
-        instance = entityPlayerInstance;
+    public EntityPlayer(Object parent) {
+        super(parent);
     }
 
     /*public void sendChatMessage(String message) {
@@ -66,7 +63,7 @@ public class EntityPlayer {
 
     public void setPosition(double x, double y, double z) {
         try {
-            Object asLivingEntityBase = Class.forName("wv").cast(entityPlayerInstance);
+            Object asLivingEntityBase = Class.forName("wv").cast(parent);
             Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
@@ -80,7 +77,7 @@ public class EntityPlayer {
 
     public double getX() {
         try {
-            return Class.forName("wv").getDeclaredField("s").getDouble(Class.forName("wv").cast(entityPlayerInstance));
+            return Class.forName("wv").getDeclaredField("s").getDouble(Class.forName("wv").cast(parent));
         } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -89,7 +86,7 @@ public class EntityPlayer {
 
     public double getY() {
         try {
-            return Class.forName("wv").getDeclaredField("t").getDouble(Class.forName("wv").cast(entityPlayerInstance));
+            return Class.forName("wv").getDeclaredField("t").getDouble(Class.forName("wv").cast(parent));
         } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -98,7 +95,7 @@ public class EntityPlayer {
 
     public double getZ() {
         try {
-            return Class.forName("wv").getDeclaredField("u").getDouble(Class.forName("wv").cast(entityPlayerInstance));
+            return Class.forName("wv").getDeclaredField("u").getDouble(Class.forName("wv").cast(parent));
         } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -115,7 +112,7 @@ public class EntityPlayer {
 
     public void stopUsingItem() {
         invoke("isUsingItem");
-    }
+    } // TODO: wot?
 
     public void clearItemInUse() {
         invoke("clearItemInUse");
@@ -154,13 +151,4 @@ public class EntityPlayer {
     }*/
 
     //void EntityLivingBase.onItemPickup(Entity itemToBePickedUp, int unused) xm.a(wv itemToBePickedUp, int unused)
-
-    public Object invoke(String targetMethod, Object... parameters) {
-        try {
-            return Mappings.getMethod(targetClass, targetMethod).invoke(entityPlayerInstance, parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

@@ -1,151 +1,55 @@
-/*****************************************************************************************
- * License (MIT)
- *
- * Copyright (c) 2014. Granite Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the
- * following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
-
 package org.granitemc.granite.reflect;
 
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyFactory;
 import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ServerComposite {
-    static ProxyFactory serverFactory = null;
-    static Class<?> dedicatedServerClass = null;
-    static Class<?> commandHandlerClass = null;
-    static Object server = null;
-    static Field fieldServerCommandManager = null;
+public class ServerComposite extends Composite {
+    public static ServerComposite init() {
+        Mappings.invoke(null, "n.m.init.Bootstrap", "func_151354_b");
 
-    public static void create(String[] args) {
-        /*
-         * Our goals in this process are this:
-         * 1.) Create a server proxy that intercepts method invocation on MinecraftServer
-         * 2.) Create a command proxy that intercepts method invocation on ServerCommandManager
-         */
-        // get a handle on the command proxy target class
-        commandHandlerClass = Mappings.getClassByHumanName("net.minecraft.command.ServerCommandHandler");
-        //first, lets get a handle for the proxy's supersuper commandHandler field
+        return new ServerComposite(new File("."));
+    }
+
+    public ServerComposite(File worldsLocation) {
+        super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), worldsLocation);
+
+        // Inject logger, I don't think this is needed but I'll do it anyway just to be on the safe side
+        Field loggerField = Mappings.getField("n.m.server.MinecraftServer", "logger");
+        ReflectionUtils.forceStaticAccessible(loggerField);
         try {
-            for (Field field : Class.forName("net.minecraft.server.MinecraftServer").getDeclaredFields()) {
-                if (field.getType() == Class.forName("ad")) {
-                    fieldServerCommandManager = field;
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        //fieldServerCommandManager = Mappings.getField("net.minecraft.server.MinecraftServer", "commandHandler");
-        //and reset access flags so that it is not final or private at instanciation
-        fieldServerCommandManager.setAccessible(true);
-
-        //attempt to locate the DedicatedServer class
-        dedicatedServerClass = Mappings.getClassByHumanName("net.minecraft.server.dedicated.DedicatedServer");
-
-        //create the server proxy method invocation handler
-        MethodHandler serverHandler = new MethodHandler() {
-            @Override
-            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) {
-                if (thisMethod.getReturnType() == Mappings.getClassByHumanName("net.minecraft.server.MinecraftServer")) {
-                    return server;
-                } else {
-                    try {
-                        return proceed.invoke(self, args);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        GraniteAPI.getLogger().error("Failed to invoke " + proceed);
-                        e.printStackTrace();
-                    }
-                }
-                return null;
-            }
-        };
-
-        //start bootstrapping the server
-        Mappings.call(null, "net.minecraft.init.Bootstrap", "func_151354_b");
-
-        //prepare commandline arguments
-        String worldsDirectory = ".";
-
-        //finally, create the server proxy class and store it at the server field for now, we'll start it in a moment
-        try {
-            serverFactory = new ProxyFactory();
-            serverFactory.setSuperclass(dedicatedServerClass);
-            server = serverFactory.create(new Class[]{File.class}, new Object[]{new File(worldsDirectory)}, serverHandler);
-        } catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            GraniteAPI.getLogger().error("Failed to instantiate server.");
-            e.printStackTrace();
-            return;
-        }
-        try {
-            // Inject logger
-            Field loggerField = Mappings.getField("net.minecraft.server.MinecraftServer", "logger");
-            ReflectionUtils.forceStaticAccessible(loggerField);
             loggerField.set(null, GraniteAPI.getLogger());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        //install the command proxy
-        try {
-            Field commandProxyDSField = server.getClass().getSuperclass().getSuperclass().getDeclaredField("p");
-            commandProxyDSField.setAccessible(true);
-            Object oldCommandManager = commandProxyDSField.get(server);
-            Object cproxy = java.lang.reflect.Proxy.newProxyInstance(oldCommandManager.getClass().getClassLoader(), new Class[]{commandProxyDSField.getType()}, new CommandProxy(oldCommandManager));
-            commandProxyDSField.set(Class.forName("net.minecraft.server.MinecraftServer").cast(server), cproxy);
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        //now, we invoke the various commandline argument settings on the server:
-        //if (serverOwner != null) serverProxy.setServerOwner(serverOwner);
-        //if (world != null) serverProxy.setFolderName(world);
-        //if (serverPort >= 0) serverProxy.setServerPort(serverPort);
-        //if (demo) serverProxy.setDemo(true);
-        //if (bonusChest) serverProxy.canCreateBonusChest(true);
-        //if (showGui && !GraphicsEnvironment.isHeadless()) serverProxy.setGuiEnabled();     
 
-        // and start the server start thread
+        // Create command composite
+        CommandComposite commandComposite = new CommandComposite();
+
+        // Inject command composite
+        Field commandManagerField = Mappings.getField("n.m.server.MinecraftServer", "commandManager");
+        ReflectionUtils.forceStaticAccessible(commandManagerField);
         try {
-            Mappings.call(server, "net.minecraft.server.dedicated.DedicatedServer", "startServerThread");
-        } catch (IllegalArgumentException | SecurityException | NullPointerException e) {
-            GraniteAPI.getLogger().error("Failed to start server thread.");
+            commandManagerField.set(this.parent, commandComposite.parent);
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        //attempt to locate the ThreadServerShutdown class
-        Object serverShutdownThread;
-        try {
-            serverShutdownThread = Mappings.getClassByHumanName("net.minecraft.server.ThreadServerShutdown").getDeclaredConstructor(String.class, dedicatedServerClass).newInstance("Server Shutdown Thread", server);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            GraniteAPI.getLogger().error("Failed to load server shutdown thread class.");
-            e.printStackTrace();
-            return;
-        }
+        addHook(new HookListener() {
+            @Override
+            public Object activate(Method method, Method proxyCallback, Object[] args) {
+                // This is needed, for some reason. I don't know. Ask Jason.
+                if (method.getReturnType().equals(Mappings.getClass("n.m.server.MinecraftServer"))) {
+                    return parent;
+                }
+                return null;
+            }
+        });
 
-        //add shutdown hook
-        Runtime.getRuntime().addShutdownHook((Thread) serverShutdownThread);
-
-        //end minecraft main
+        // Start this baby
+        invoke("n.m.server.MinecraftServer", "startServerThread");
     }
 }

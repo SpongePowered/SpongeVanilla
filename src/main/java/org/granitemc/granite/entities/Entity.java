@@ -24,17 +24,15 @@
 package org.granitemc.granite.entities;
 
 import org.granitemc.granite.entities.player.EntityPlayer;
+import org.granitemc.granite.reflect.Composite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-public class Entity {
-
-    private Object entityInstance = null;
-
-    public Entity(Object instance) {
-        instance = entityInstance;
+public class Entity extends Composite {
+    public Entity(Object parent) {
+        super(parent);
     }
 
     public int getEntityId() {
@@ -853,15 +851,4 @@ public class Entity {
      * invoke("a", var1, var2);
      * }
      */
-
-    private Object invoke(String targetMethod, Object... parameters) {
-        try {
-            String targetClass = "net.minecraft.entity.EntityPlayer";
-            return Mappings.getMethod(targetClass, targetMethod).invoke(entityInstance, parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 }
