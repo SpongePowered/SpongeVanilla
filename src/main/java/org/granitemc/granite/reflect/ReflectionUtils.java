@@ -69,6 +69,7 @@ public class ReflectionUtils {
     }
 
     public static boolean areTypesCompatible(Class<?> actual, Class<?> expected) {
+        if (actual == null || expected == null) return false;
         if (expected.isAssignableFrom(actual)) {
             return true;
         } else {

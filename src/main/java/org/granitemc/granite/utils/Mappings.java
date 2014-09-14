@@ -28,6 +28,7 @@ import com.google.common.collect.HashBiMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.reflect.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -127,8 +128,10 @@ public class Mappings {
                 sig = sig + humanName;
             } else if (StringUtils.countMatches(clazz.getName(), ".") == 2 && clazz.getName().startsWith("java.lang.")) {
                 sig = sig + clazz.getName().substring(10);
-            } else {
+            } else if (clazz.isPrimitive()) {
                 sig = sig + clazz.getName();
+            } else {
+                throw new RuntimeException("Can't find class " + clazz.getName() + " in mappings! (did you forget to add them?)");
             }
             sig = sig + ";";
         }
@@ -139,7 +142,10 @@ public class Mappings {
 
         String methodSignature = methodName + "(" + sig + ")";
 
+
+        //Granite.getLogger().debug(methodSignature);
         // Smack it in dat map
+        methods.get(className).inverse().remove(m);
         methods.get(className).put(methodSignature, m);
     }
 
@@ -188,7 +194,7 @@ public class Mappings {
         Method res = null;
         Class<?> searchClass = getClass(className);
         while (res == null && !searchClass.equals(Object.class)) {
-            if (methods.containsKey(getClassName(searchClass)) && methods.get(getClassName(searchClass)).containsKey(methodSignature)) {
+            if (getClassName(searchClass, false) != null && methods.containsKey(getClassName(searchClass, false)) && methods.get(getClassName(searchClass, false)).containsKey(methodSignature)) {
                 res = methods.get(getClassName(searchClass)).get(methodSignature);
                 break;
             } else {
