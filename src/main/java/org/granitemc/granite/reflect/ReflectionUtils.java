@@ -1,10 +1,32 @@
 package org.granitemc.granite.reflect;
 
+/*****************************************************************************************
+ * License (MIT)
+ *
+ * Copyright (c) 2014. Granite Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ****************************************************************************************/
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
 import org.granitemc.granite.api.GraniteAPI;
 import org.granitemc.granite.utils.Mappings;
 
@@ -12,6 +34,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 public class ReflectionUtils {
     private static BiMap<Class<?>, Class<?>> primitives = new ImmutableBiMap.Builder<Class<?>, Class<?>>()
@@ -27,8 +50,9 @@ public class ReflectionUtils {
 
     /**
      * Will force access to a field. This even works with private static final fields!
-     *
+     * <p/>
      * Internally, this uses some reflection-on-reflection trickery I found on StackOverflow :)
+     *
      * @param f The field to force access to
      */
     public static void forceStaticAccessible(Field f) {
@@ -50,9 +74,9 @@ public class ReflectionUtils {
         } else {
             // If actual is primitive and expected isn't, or vice versa (xor)
             if (actual.isPrimitive() ^ expected.isPrimitive()) {
-                if (primitives.get(actual).equals(expected)) {
+                if (primitives.containsKey(actual) && primitives.get(actual).equals(expected)) {
                     return true;
-                } else if (primitives.inverse().get(actual).equals(expected)) {
+                } else if (primitives.inverse().containsKey(actual) && primitives.inverse().get(actual).equals(expected)) {
                     return true;
                 }
             }
@@ -74,9 +98,10 @@ public class ReflectionUtils {
 
     /**
      * Invoke a method, casting every type to the appropriate type, primitives included
+     *
      * @param instance The instance to invoke on
-     * @param m The method to invoke
-     * @param args The arguments to feed the method
+     * @param m        The method to invoke
+     * @param args     The arguments to feed the method
      * @return The object returned by the method
      * @throws InvocationTargetException
      */
@@ -104,11 +129,11 @@ public class ReflectionUtils {
      * Create a proxy that will direct every method called into the specified {@link javassist.util.proxy.MethodHandler}.
      * This will create a new instance of the source object.
      *
-     * @param source The source object
-     * @param handler The handler to proxy every method call to
+     * @param source          The source object
+     * @param handler         The handler to proxy every method call to
      * @param createIdentical If true, will copy every field from the source object into the new proxy
-     * @param paramTypes The type of the constructor parameters - must match the types of the actual constructor parameters exactly
-     * @param args The objects to pass to the constructor as arguments
+     * @param paramTypes      The type of the constructor parameters - must match the types of the actual constructor parameters exactly
+     * @param args            The objects to pass to the constructor as arguments
      * @return A new instance of the source object, with a proxy on top
      */
     public static Object createProxy(Object source, MethodHandler handler, boolean createIdentical, Class<?>[] paramTypes, Object... args) {
@@ -136,7 +161,8 @@ public class ReflectionUtils {
 
         /*if (obj instanceof Mappings.MCClass) {
             clazz = ((Mappings.MCClass) obj).getJavaClass();
-        } else */if (obj instanceof Class<?>) {
+        } else */
+        if (obj instanceof Class<?>) {
             clazz = (Class<?>) obj;
         } else {
             clazz = obj.getClass();
@@ -146,22 +172,28 @@ public class ReflectionUtils {
     }
 
     public static Class<?> getClassByName(String name) {
-        Class<?> clazz = null;
-        /*Mappings.MCClass mcClass = Mappings.getClass(name);
-        if (mcClass != null) {
-            clazz = mcClass.getJavaClass();
-        }*/
 
         try {
-            clazz = Class.forName(name);
+            return Mappings.getClass(name);
+        } catch (Mappings.MappingNotFoundException ignored) {
+        }
+
+        for (Class<?> primitive : primitives.keySet()) {
+            if (Objects.equals(primitive.getName(), name)) {
+                return primitive;
+            }
+        }
+
+        try {
+            return Class.forName(name);
         } catch (ClassNotFoundException ignored) {
         }
 
         try {
-            clazz = Class.forName("java.lang." + name);
+            return Class.forName("java.lang." + name);
         } catch (ClassNotFoundException ignored) {
         }
-        return clazz;
+        return null;
     }
 
     public static String getMethodSignature(Method m) {

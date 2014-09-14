@@ -1,3 +1,8 @@
+/**
+ *
+ */
+package org.granitemc.granite.api.command;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -21,10 +26,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-/**
- *
- */
-package org.granitemc.granite.api.command;
+import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,9 +35,16 @@ public class CommandContainer {
     private Command annotation;
     private Method method;
 
-    public CommandContainer(Method method) {
+    private Object instance;
+
+    private PluginContainer plugin;
+
+    public CommandContainer(PluginContainer plugin, Object instance, Method method) {
         annotation = method.getAnnotation(Command.class);
         this.method = method;
+
+        this.plugin = plugin;
+        this.instance = instance;
     }
 
     public String[] getAliases() {
@@ -50,8 +59,21 @@ public class CommandContainer {
         return annotation.info();
     }
 
-    public Object invoke(CommandInfo info) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
-        return method.invoke(method.getDeclaringClass().newInstance(), info);
+    public void invoke(CommandInfo info) {
+        try {
+            method.invoke(method.getDeclaringClass().newInstance(), info);
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.getCause().printStackTrace();
+        }
     }
 
+    public Object getInstance() {
+        return instance;
+    }
+
+    public PluginContainer getPlugin() {
+        return plugin;
+    }
 }

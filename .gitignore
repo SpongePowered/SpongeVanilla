@@ -62,3 +62,4 @@ eula.txt
 run/
 crash-reports/
 target/
+dependency-reduced-pom.xml

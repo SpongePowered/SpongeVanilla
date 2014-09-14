@@ -1,3 +1,8 @@
+/**
+ *
+ */
+package org.granitemc.granite.api.command;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -21,24 +26,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-/**
- *
- */
-package org.granitemc.granite.api.command;
-
-import org.granitemc.granite.entities.player.EntityPlayer;
-
 public class CommandInfo {
-
-    public EntityPlayer commandSender;
+    public CommandSender commandSender;
     public String[] args;
+    public String usedCommandName;
 
-    /**
-     * @param commandSender2 the sender of this command
-     * @param copiedArgs     the args of this command
-     */
-    public CommandInfo(Object commandSender2, String[] copiedArgs) {
+    public CommandContainer command;
+
+    public CommandSender getCommandSender() {
+        return commandSender;
     }
 
+    public String[] getArgs() {
+        return args;
+    }
 
+    public String getUsedCommandName() {
+        return usedCommandName;
+    }
+
+    public CommandContainer getCommand() {
+        return command;
+    }
 }

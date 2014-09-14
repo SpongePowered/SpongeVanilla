@@ -1,27 +1,27 @@
-/****************************************************************************************
- * License (MIT)                                                                        *
- *                                                                                      *
- * Copyright (c) 2014 Granite Team                                                      *
- *                                                                                      *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this *
- * software and associated documentation files (the "Software"), to deal in the         *
- * Software without restriction, including without limitation the rights to use, copy,  *
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,  *
- * and to permit persons to whom the Software is furnished to do so, subject to the     *
- * following conditions:                                                                *
- *                                                                                      *
- * The above copyright notice and this permission notice shall be included in all       *
- * copies or substantial portions of the Software.                                      *
- *                                                                                      *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,  *
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A        *
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT   *
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION    *
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE       *
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
- ****************************************************************************************/
-
 package org.granitemc.granite.utils;
+
+/*****************************************************************************************
+ * License (MIT)
+ *
+ * Copyright (c) 2014. Granite Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ****************************************************************************************/
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -263,15 +263,18 @@ public class Mappings {
         Class<?>[] types;
 
         String methodSignature = splitLast(obfuscatedFullSignature, ".")[1];
-        String methodName = methodSignature;
-        String unobfClassName = splitLast(obfuscatedFullSignature, ".")[0];
+        String methodName = methodSignature.split("\\(")[0];
+        if (methodName.contains(")")) methodName = methodName.substring(0, methodName.length() - 1);
+
+        String unobfClassName = splitLast(obfuscatedFullSignature.split("\\(")[0], ".")[0];
         if (obfuscatedFullSignature.contains("(")) {
+            methodSignature = obfuscatedFullSignature.substring(obfuscatedFullSignature.split("\\(")[0].lastIndexOf(".") + 1);
             types = new Class<?>[StringUtils.countMatches(methodSignature, ";") + 1];
             String params = methodSignature.split("\\(")[1].split("\\)")[0];
 
             int i = 0;
             for (String param : params.split(";")) {
-                Class<?> type = ReflectionUtils.getClassByName(param.trim());
+                Class<?> type = ReflectionUtils.getClassByName(expandShortcuts(param.trim()));
                 types[i] = type;
                 ++i;
             }

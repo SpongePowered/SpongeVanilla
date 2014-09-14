@@ -1,3 +1,5 @@
+package org.granitemc.granite.entity.player;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -21,16 +23,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.entities.player;
-
+import org.granitemc.granite.api.chat.ChatComponentText;
+import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.item.ItemStack;
 import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-public class EntityPlayer extends Composite {
+public class EntityPlayer extends Composite implements CommandSender {
 
     /**
      * This class provides a mapping wrapper for EntityPlayer.
@@ -40,14 +41,6 @@ public class EntityPlayer extends Composite {
     public EntityPlayer(Object parent) {
         super(parent);
     }
-
-    /*public void sendChatMessage(String message) {
-        //should point at EntityPlayer.addChatComponentMessage(IChatComponent p_146105_1_)
-        //obf: hu chatComponentMessage = new hu(message);
-        hu chatComponentMessage = new hu(message);
-        //XXX: obfuscation reference
-        vanillaEntityInstance.a(chatComponentMessage);
-    }*/
 
     public void teleportToDimension(int dimId) {
         //TODO: Check if this works or need to be invoked differently
@@ -62,13 +55,9 @@ public class EntityPlayer extends Composite {
     }
 
     public void setPosition(double x, double y, double z) {
-        try {
-            Object asLivingEntityBase = Class.forName("wv").cast(parent);
-            Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);
-        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
+        /*Object asLivingEntityBase = Class.forName("wv").cast(parent);
+        Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);*/
+        invoke("b(Double;Double;Double)", x, y, z);
     }
 
     public UUID getUUID() {
@@ -76,30 +65,15 @@ public class EntityPlayer extends Composite {
     }
 
     public double getX() {
-        try {
-            return Class.forName("wv").getDeclaredField("s").getDouble(Class.forName("wv").cast(parent));
-        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0D;
+        return (double) fieldGet("n.m.entity.Entity", "posX");
     }
 
     public double getY() {
-        try {
-            return Class.forName("wv").getDeclaredField("t").getDouble(Class.forName("wv").cast(parent));
-        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0D;
+        return (double) fieldGet("n.m.entity.Entity", "posY");
     }
 
     public double getZ() {
-        try {
-            return Class.forName("wv").getDeclaredField("u").getDouble(Class.forName("wv").cast(parent));
-        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0D;
+        return (double) fieldGet("n.m.entity.Entity", "posZ");
     }
 
     public int getDimension() {
@@ -111,8 +85,8 @@ public class EntityPlayer extends Composite {
     }
 
     public void stopUsingItem() {
-        invoke("isUsingItem");
-    } // TODO: wot?
+        invoke("stopUsingItem");
+    }
 
     public void clearItemInUse() {
         invoke("clearItemInUse");
@@ -120,6 +94,12 @@ public class EntityPlayer extends Composite {
 
     public String getName() {
         return (String) invoke("getName");
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        ChatComponentText component = new ChatComponentText(message);
+        invoke("addChatComponentMessage(String)", component);
     }
 
     public void heal(int amount) {

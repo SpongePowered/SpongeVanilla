@@ -1,3 +1,5 @@
+package org.granitemc.granite.api;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -21,8 +23,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.api;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.plugin.Plugin;
@@ -36,6 +36,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -47,6 +48,34 @@ public class GraniteAPI {
     public static void init() {
         plugins = new ArrayList<>();
         logger = LogManager.getFormatterLogger("Granite");
+    }
+
+    public static PluginContainer getPlugin(String name) {
+        for (PluginContainer p : plugins) {
+            if (Objects.equals(p.getName(), name)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public static List<PluginContainer> getPlugins() {
+        return plugins;
+    }
+
+    public static PluginContainer getPlugin(Object plugin) {
+        return getPlugin(plugin.getClass());
+    }
+
+    public static PluginContainer getPlugin(Class<?> pluginClass) {
+        if (pluginClass.isAnnotationPresent(Plugin.class)) {
+            for (PluginContainer p : plugins) {
+                if (p.getMainClass().equals(pluginClass)) {
+                    return p;
+                }
+            }
+        }
+        return null;
     }
 
     public static void loadPluginFromJar(File file) {

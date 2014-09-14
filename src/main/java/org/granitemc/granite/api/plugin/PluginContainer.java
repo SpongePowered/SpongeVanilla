@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.plugin;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -21,16 +23,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-package org.granitemc.granite.api.plugin;
+import org.granitemc.granite.api.command.Command;
+import org.granitemc.granite.api.command.CommandContainer;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class PluginContainer {
     private Plugin annotation;
-    private Class<?> clazz;
+    private Class<?> mainClass;
+    private Object instance;
+
+    private Map<String, CommandContainer> commands;
 
     public PluginContainer(Class<?> clazz) {
         annotation = clazz.getAnnotation(Plugin.class);
-        this.clazz = clazz;
+        this.mainClass = clazz;
+        try {
+            this.instance = clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        commands = new HashMap<>();
+
+        registerCommandHandler(instance);
     }
 
     public String getId() {
@@ -43,5 +61,29 @@ public class PluginContainer {
 
     public String getVersion() {
         return annotation.version();
+    }
+
+    public Object getInstance() {
+        return instance;
+    }
+
+    public Class<?> getMainClass() {
+        return mainClass;
+    }
+
+    public void registerCommandHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Command.class)) {
+                CommandContainer command = new CommandContainer(this, handler, m);
+
+                commands.put(command.getName(), command);
+            }
+        }
+    }
+
+    public Map<String, CommandContainer> getCommands() {
+        return commands;
     }
 }
