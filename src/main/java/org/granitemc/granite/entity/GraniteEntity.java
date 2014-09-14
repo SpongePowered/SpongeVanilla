@@ -23,26 +23,27 @@ package org.granitemc.granite.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.entity.player.EntityPlayer;
+import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.reflect.Composite;
 
 import java.util.UUID;
 
-public class Entity extends Composite {
+public class GraniteEntity extends Composite implements Entity {
 
-    public Entity(Object parent) {
+    public GraniteEntity(Object parent) {
         super(parent, false);
     }
 
+    @Override
     public int getEntityId() {
         //Obf: F
         return (Integer) invoke("getEntityID");
     }
 
-    public void setEntityId(int Id) {
+    /*public void setEntityId(int Id) {
         //Obf: d
         invoke("setEntityId", Id);
-    }
+    }*/
 
     //TODO: this is new in 1.8
     /*public void G() {
@@ -55,75 +56,81 @@ public class Entity extends Composite {
         invoke("Entity", var1);
     }*/
 
-    public void entityInit() {
+    /*public void entityInit() {
         //Obf: h
         invoke("entityInit");
-    }
+    }*/
 
     /*public xv getDataWatcher() {
         //Obf: H
         return (xv) invoke("getDataWatcher");
     }*/
 
-    public void setDead() {
+    /*public void setDead() {
         //Obf: J
         invoke("setDead");
-    }
+    }*/
 
+    @Override
     public void setSize(float width, float height) {
         //Obf: a
         invoke("setSize", width, height);
     }
 
+    @Override
     public void setRotation(float yaw, float pitch) {
         //Obf: b
         invoke("setRotation", yaw, pitch);
     }
 
+    @Override
     public void setPosition(double x, double y, double z) {
         //Obf: b
         invoke("setPosition", x, y, z);
     }
 
-    public void onUpdate() {
+    /*public void onUpdate() {
         //Obf: s_
         invoke("onUpdate");
-    }
+    }*/
 
-    public void onEntityUpdate() {
+    /*public void onEntityUpdate() {
         //Obf: K
         invoke("onEntityUpdate");
-    }
+    }*/
 
-    public int getMaxInPortalTime() {
+    /*public int getMaxInPortalTime() {
         //Obf: L
         return (Integer) invoke("getMaxInPortalTime");
-    }
+    }*/
 
-    public void setOnFireFromLava() {
+    /*public void setOnFireFromLava() {
         //Obf: M
         invoke("setOnFireFromLava");
-    }
+    }*/
 
+    @Override
     public void setFire(int seconds) {
         //Obf: e
         invoke("setFire", seconds);
     }
 
+    @Override
     public void extinguish() {
         //Obf: N
         invoke("extinguish");
     }
 
+    @Override
     public void kill() {
         //Obf: O
         invoke("kill");
     }
 
-    public boolean isOffsetPositionInLiquid(double x, double y, double z) {
+    /*public boolean isOffsetPositionInLiquid(double x, double y, double z) {
         //Obf: c
         return (boolean) invoke("isOffsetPositionInLiquid", x, y, z);
-    }
+    }*/
 
     //TODO: What does this do?
     /*private boolean b(brt var1) {
@@ -131,12 +138,13 @@ public class Entity extends Composite {
         return (boolean) invoke("b", var1);
     }*/
 
+    @Override
     public void moveEntity(double x, double y, double z) {
         //Obf: d
         invoke("moveEntity", x, y, z);
     }
 
-    //TODO: What does this do?
+    /*//TODO: What does this do?
     private void m() {
         //Obf: m
         invoke("m");
@@ -146,7 +154,7 @@ public class Entity extends Composite {
     public void Q() {
         //Obf: Q
         invoke("Q");
-    }
+    }*/
 
     //TODO: What does this do?
     /*protected void a(dt var1, atr var2) {
@@ -154,12 +162,14 @@ public class Entity extends Composite {
         invoke("a", var1, var2);
     }*/
 
-    //TODO: Work out what var1 and var2 do
+    //TODO: Work out what var1 and var2 do (volume/pitch, maybe inverse?)
+    @Override
     public void playSound(String soundName, float var1, float var2) {
         //Obf: a
         invoke("playSound", soundName, var1, var2);
     }
 
+    @Override
     public boolean canTriggerWalking() {
         //Obf: r_
         return (boolean) invoke("canTriggerWalking");
@@ -171,40 +181,45 @@ public class Entity extends Composite {
         invoke("updateFallState", distanceFallenThisTick, onGround, var4, var5);
     }*/
 
+    //TODO: API-fy this (brt = AxisAlignedBB?)
     /*public brt getBoundingBox() {
         //Obf: S
         return (brt) invoke("getBoundingBox");
     }*/
 
+    @Override
     public void dealFireDamage(int amountDamage) {
         //Obf: f
         invoke("dealFireDamage", amountDamage);
     }
 
+    @Override
     public boolean isImmuneToFire() {
         //Obf: K
         return (boolean) invoke("isImmuneToFire");
     }
 
-    public void fall(float var1, float var2) {
+    /*public void fall(float var1, float var2) {
         //Obf: e
         invoke("fall", var1, var2);
-    }
+    }*/
 
+    @Override
     public boolean isWet() {
         //Obf: U
         return (boolean) invoke("isWet");
     }
 
+    @Override
     public boolean isInWater() {
         //Obf: V
         return (boolean) invoke("isInWater");
     }
 
-    public boolean handleWaterMovement() {
+    /*public boolean handleWaterMovement() {
         //Obf: W
         return (boolean) invoke("handleWaterMovement");
-    }
+    }*/
 
     //TODO: What does this do?
     /*public void X() {
@@ -218,6 +233,7 @@ public class Entity extends Composite {
         invoke("Y");
     }*/
 
+    @Override
     public String getSplashSound() {
         //Obf: aa
         return (String) invoke("getSplashSound");
@@ -229,10 +245,10 @@ public class Entity extends Composite {
         return (boolean) invoke("isInsideOfMaterial");
     }*/
 
-    public boolean handleLavaMovement() {
+    /*public boolean handleLavaMovement() {
         //Obf: ab
         return (boolean) invoke("handleLavaMovement");
-    }
+    }*/
 
     //TODO: Work out what var1,2 and 3 do?
     /*public void moveFlying(float var1, float var2, float var3) {
@@ -258,12 +274,14 @@ public class Entity extends Composite {
         invoke("a", var1, var2, var3);
     }*/
 
+    @Override
     public void setLocationAndAngles(double x, double y, double z, float yaw, float pitch) {
         //Obf: b
         invoke("setLocationAndAngles", x, y, z, yaw, pitch);
     }
 
-    public float getDistanceToEntity(Entity entity) {
+    // Pretty much useless
+    /*public float getDistanceToEntity(Entity entity) {
         //Obf: g
         return (float) invoke("getDistanceToEntity", entity);
     }
@@ -271,7 +289,7 @@ public class Entity extends Composite {
     public double getDistanceSq(double x, double y, double z) {
         //Obf: e
         return (double) invoke("getDistanceSq", x, y, z);
-    }
+    }*/
 
     //TODO: Find out what class dt is
     /*public double b(dt var1) {
@@ -285,7 +303,7 @@ public class Entity extends Composite {
         return (double) invoke("b", var1);
     }*/
 
-    public double getDistance(double x, double y, double z) {
+    /*public double getDistance(double x, double y, double z) {
         //Obf: f
         return (double) invoke("getDistance", x, y, z);
     }
@@ -293,27 +311,27 @@ public class Entity extends Composite {
     public double getDistanceSqToEntity(Entity entity) {
         //Obf: h
         return (double) invoke("getDistanceSqToEntity", entity);
-    }
+    }*/
 
-    public void onCollideWithPlayer(EntityPlayer entityPlayer) {
+    /*public void onCollideWithPlayer(EntityPlayer entityPlayer) {
         //Obf: d
         invoke("onCollideWithPlayer", entityPlayer);
-    }
+    }*/
 
-    public void applyEntityCollision(Entity entity) {
+    /*public void applyEntityCollision(Entity entity) {
         //Obf: i
         invoke("applyEntityCollision", entity);
-    }
+    }*/
 
-    public void addVelocity(double x, double y, double z) {
+    /*public void addVelocity(double x, double y, double z) {
         //Obf: g
         invoke("addVelocity", x, y, z);
-    }
+    }*/
 
-    public void setBeenAttacked() {
+    /*public void setBeenAttacked() {
         //Obf: ac
         invoke("setBeenAttacked");
-    }
+    }*/
 
     //TODO: Work out what class ro is and what var2 does
     /*public void attackEntityFrom(ro var1, float var2) {
@@ -327,17 +345,19 @@ public class Entity extends Composite {
         return (brw) invoke("d", var1);
     }*/
 
+    @Override
     public boolean canBeCollidedWith() {
         //Obf: ad
         return (boolean) invoke("canBeCollidedWith");
     }
 
+    @Override
     public boolean canBePushed() {
         //Obf: ae
         return (boolean) invoke("canBePushed");
     }
 
-    //Currently does nothing
+    /*//Currently does nothing
     public void addToPlayerScore(Entity entity, int amount) {
         //Obf: b
         invoke("addToPlayerScore", entity, amount);
@@ -352,7 +372,7 @@ public class Entity extends Composite {
     public void onChunkLoad() {
         //Obf: ah
         invoke("onChunkLoad");
-    }
+    }*/
 
     //TODO: find out what adw and alq class is
     //TODO: find a good name for functions
@@ -377,11 +397,13 @@ public class Entity extends Composite {
         return (adw) invoke("entityDropItem", var1, var2);
     }*/
 
+    @Override
     public boolean isEntityAlive() {
         //Obf: ai
         return (boolean) invoke("isEntityAlive");
     }
 
+    @Override
     public boolean isEntityInsideOpaqueBlock() {
         //Obf: aj
         return (boolean) invoke("isEntityInsideOpaqueBlock");
@@ -399,7 +421,7 @@ public class Entity extends Composite {
         return (brt) invoke("getCollisionBox");
     }*/
 
-    public void updateRidden() {
+    /*public void updateRidden() {
         //Obf: ak
         invoke("updateRidden");
     }
@@ -407,27 +429,31 @@ public class Entity extends Composite {
     public void updateRiderPosition() {
         //Obf: al
         invoke("updateRiderPosition");
-    }
+    }*/
 
+    @Override
     public double getYOffset() {
         //Obf: am
         return (double) invoke("getYOffset");
     }
 
+    @Override
     public double getMountedYOffset() {
         //Obf: an
         return (double) invoke("getMountedYOffset");
     }
 
+    @Override
     public void mountEntity(Entity entity) {
         //Obf: a
         invoke("mountEntity", entity);
     }
 
-    public float getCollisionBorderSize() {
+    //TODO: wat?
+    /*public float getCollisionBorderSize() {
         //Obf: ao
         return (float) invoke("getCollisionBorderSize");
-    }
+    }*/
 
     //TODO: work out what class brt is
     /*public brw getLookVector() {
@@ -435,11 +461,13 @@ public class Entity extends Composite {
         return (brw) invoke("getLookVector");
     }*/
 
+    @Override
     public boolean isEating() {
         //Obf: aq
         return (boolean) invoke("isEating");
     }
 
+    @Override
     public void setEating(boolean var1) {
         //Obf: f
         invoke("setEating", var1);
@@ -457,52 +485,61 @@ public class Entity extends Composite {
         invoke("setCurrentItemOrArmor", var1, var2);
     }*/
 
+    @Override
     public int getPortalCooldown() {
         //Obf: ar
         return (Integer) invoke("getPortalCooldown");
     }
 
+    @Override
     public boolean isBurning() {
         //Obf: au
         return (boolean) invoke("isBurning");
     }
 
+    @Override
     public boolean isRiding() {
         //Obf: av
         return (boolean) invoke("isRiding");
     }
 
+    @Override
     public boolean isSneaking() {
         //Obf: aw
         return (boolean) invoke("isSneaking");
     }
 
+    @Override
     public void setSneaking(boolean var1) {
         //Obf: c
         invoke("setSneaking", var1);
     }
 
+    @Override
     public boolean isSprinting() {
         //Obf: ax
         return (boolean) invoke("isSprinting");
     }
 
+    @Override
     public void setSprinting(boolean var1) {
         //Obf: d
         invoke("setSprinting", var1);
     }
 
+    @Override
     public boolean isInvisible() {
         //Obf: ay
         return (boolean) invoke("isInvisible");
     }
 
+    @Override
     public void setInvisible(boolean var1) {
         //Obf: e
         invoke("setInvisible", var1);
     }
 
-    public boolean getFlag(int flag) {
+    /*public boolean getFlag(int flag) {
         //Obf: g
         return (boolean) invoke("getFlag", flag);
     }
@@ -510,13 +547,15 @@ public class Entity extends Composite {
     public void setFlag(int flag, boolean var2) {
         //Obf: b
         invoke("setFlag", flag, var2);
-    }
+    }*/
 
+    @Override
     public int getAir() {
         //Obf: aA
         return (Integer) invoke("getAir");
     }
 
+    @Override
     public void setAir(int var1) {
         //Obf: h
         invoke("setAir", var1);
@@ -540,52 +579,59 @@ public class Entity extends Composite {
         return (boolean) invoke("j", var1, var2, var3);
     }*/
 
+    @Override
     public void setInWeb() {
         //Obf: aB
         invoke("setInWeb");
     }
 
+    @Override
     public String getCommandSenderName() {
         //Obf: d_
         return (String) invoke("getCommandSenderName");
     }
 
-    public Entity[] getParts() {
+    @Override
+    public GraniteEntity[] getParts() {
         //Obf: aC
-        return (Entity[]) invoke("getParts");
+        return (GraniteEntity[]) invoke("getParts");
     }
 
+    @Override
     public boolean isEntityEqual(Entity entity) {
         //Obf: k
         return (boolean) invoke("isEntityEqual", entity);
     }
 
+    @Override
     public float getRotationYawHead() {
         //Obf: aD
         return (float) invoke("getRotationYawHead");
     }
 
     //TODO: Find a suitable name (currently not used)
-    public void f(float var1) {
+    /*public void f(float var1) {
         //Obf: f
         invoke("f");
-    }
+    }*/
 
+    @Override
     public boolean canAttackWithItem() {
         //Obf: aE
         return (boolean) invoke("canAttackWithItem");
     }
 
-    public boolean hitByEntity(Entity entity) {
+    /*public boolean hitByEntity(Entity entity) {
         //Obf: l
         return (boolean) invoke("hitByEntity", entity);
-    }
+    }*/
 
-    public void copyDataFrom(Entity entity) {
+    /*public void copyDataFrom(Entity entity) {
         //Obf: n
         invoke("copyDataFrom", entity);
-    }
+    }*/
 
+    @Override
     public void travelToDimension(int dimension) {
         //Obf: c
         invoke("travelToDimension", dimension);
@@ -603,7 +649,7 @@ public class Entity extends Composite {
         return (boolean) invoke("a", aqo var1, aqu var2, dt var3, bec var4, float var5);
     }*/
 
-    public int getMaxSafePointTries() {
+    /*public int getMaxSafePointTries() {
         //Obf: aF
         return (Integer) invoke("getMaxSafePointTries");
     }
@@ -616,7 +662,7 @@ public class Entity extends Composite {
     public boolean doesEntityNotTriggerPressurePlate() {
         //Obf: aH
         return (boolean) invoke("doesEntityNotTriggerPressurePlate");
-    }
+    }*/
 
     //TODO: find out what class j is
     /*public void addEntityCrashInfo(j var1) {
@@ -624,11 +670,13 @@ public class Entity extends Composite {
         invoke("addEntityCrashInfo", var1);
     }*/
 
+    @Override
     public UUID getUniqueID() {
         //Obf: aJ
         return (UUID) invoke("getUniqueID");
     }
 
+    @Override
     public boolean isPushedByWater() {
         //Obf: aK
         return (boolean) invoke("isPushedByWater");
