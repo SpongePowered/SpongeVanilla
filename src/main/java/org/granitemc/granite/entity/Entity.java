@@ -29,6 +29,7 @@ import org.granitemc.granite.reflect.Composite;
 import java.util.UUID;
 
 public class Entity extends Composite {
+
     public Entity(Object parent) {
         super(parent);
     }
@@ -43,10 +44,26 @@ public class Entity extends Composite {
         invoke("setEntityId", Id);
     }
 
-    public Object getDataWatcher() {
-        //Obf: H
-        return invoke("getDataWatcher");
+    //TODO: this is new in 1.8
+    /*public void G() {
+        //Obf: G
+        invoke("G");
+    }*/
+
+    /*public Entity(aqu var1) {
+        //Obf: wv
+        invoke("Entity", var1);
+    }*/
+
+    public void entityInit() {
+        //Obf: h
+        invoke("entityInit");
     }
+
+    /*public xv getDataWatcher() {
+        //Obf: H
+        return (xv) invoke("getDataWatcher");
+    }*/
 
     public void setDead() {
         //Obf: J
@@ -120,24 +137,22 @@ public class Entity extends Composite {
     }
 
     //TODO: What does this do?
-    /*private void m() {
+    private void m() {
         //Obf: m
-        invokve("m");
-    }*/
+        invoke("m");
+    }
 
     //TODO: What does this do?
-    @Deprecated
-    public void func_145775_I() {
+    public void Q() {
         //Obf: Q
-        invoke("func_145775_I");
+        invoke("Q");
     }
 
     //TODO: What does this do?
-    @Deprecated
-    protected void func_145780_a(Object var1, Object var2) {
+    /*protected void a(dt var1, atr var2) {
         //Obf: a
-        invoke("func_145780_a", var1, var2);
-    }
+        invoke("a", var1, var2);
+    }*/
 
     //TODO: Work out what var1 and var2 do
     public void playSound(String soundName, float var1, float var2) {
@@ -150,17 +165,16 @@ public class Entity extends Composite {
         return (boolean) invoke("canTriggerWalking");
     }
 
-    //TODO: Work out what var4 (class atr) and var5 (class dt) do
-    @Deprecated
-    public void updateFallState(double distanceFallenThisTick, boolean onGround, Object var4, Object var5) {
+    //TODO: ???
+    /*public void updateFallState(double distanceFallenThisTick, boolean onGround, atr var4, dt var5) {
         //Obf: a
         invoke("updateFallState", distanceFallenThisTick, onGround, var4, var5);
-    }
+    }*/
 
-    public Object getBoundingBox() {
+    /*public brt getBoundingBox() {
         //Obf: S
-        return invoke("getBoundingBox");
-    }
+        return (brt) invoke("getBoundingBox");
+    }*/
 
     public void dealFireDamage(int amountDamage) {
         //Obf: f
@@ -210,7 +224,7 @@ public class Entity extends Composite {
     }
 
     //TODO: Work out what var1 (class bof) is
-    /*public boolean isInsideOfMaterial(Object var1) {
+    /*public boolean isInsideOfMaterial(bof var1) {
         //Obf: a
         return (boolean) invoke("isInsideOfMaterial");
     }*/
@@ -233,13 +247,13 @@ public class Entity extends Composite {
     }*/
 
     //TODO: Work out what class aqu is
-    /*public void setWorld(Object var1) {
+    /*public void setWorld(aqu var1) {
         //Obf: a
         invoke("setWorld", var1);
     }*/
 
     //TODO: Work out what class dt is
-    /*public void a(Object var1, float var2, float var3) {
+    /*public void a(dt var1, float var2, float var3) {
         //Obf: a
         invoke("a", var1, var2, var3);
     }*/
@@ -260,13 +274,13 @@ public class Entity extends Composite {
     }
 
     //TODO: Find out what class dt is
-    /*public double b(Object var1) {
+    /*public double b(dt var1) {
         //Obf: b
         return (double) invoke("b", var1);
     }*/
 
     //TODO: Find out what class dt is
-    /*public double c(Object var1) {
+    /*public double c(dt var1) {
         //Obf: c
         return (double) invoke("b", var1);
     }*/
@@ -302,10 +316,10 @@ public class Entity extends Composite {
     }
 
     //TODO: Work out what class ro is and what var2 does
-    public void attackEntityFrom(Object var1, float var2) {
+    /*public void attackEntityFrom(ro var1, float var2) {
         //Obf: a
         invoke("attackEntityFrom", var1, var2);
-    }
+    }*/
 
     //TODO: Work out what class brw is and what var1 does
     /*public brw d(float var1) {
@@ -329,96 +343,31 @@ public class Entity extends Composite {
         invoke("addToPlayerScore", entity, amount);
     }
 
-    //TODO: Find out what class fn is.
-    //TODO: Do we really need this?
-    /*public boolean writeMountToNBT(fn var1) {
-        //Obf: c
-        return (boolean) invoke("writeMountToNBT", var1);
-    }*/
-
-    //TODO: Find out what class fn is.
-    //TODO: Do we really need this?
-    /*public boolean writeToNBTOptional(fn var1) {
-        //Obf: d
-        return (boolean) invoke("writeToNBTOptional", var1);
-    }*/
-
-    //TODO: Find out what class fn is.
-    //TODO: Do we really need this?
-    /*public void writeToNBT(fn var1) {
-        //Obf: e
-        invoke("writeToNBT", var1);
-    }*/
-
-    //TODO: Find out what class fn is.
-    //TODO: Do we really need this?
-    /*public void readFromNBT(fn var1) {
-        //Obf: f
-        invoke("readFromNBT", var1);
-    }*/
-
-    //TODO: Do we really need this?
-    public boolean shouldSetPosAfterLoading() {
-        //Obf: af
-        return (boolean) invoke("shouldSetPosAfterLoading");
-    }
-
     public String getEntityString() {
         //Obf: ag
         return (String) invoke("getEntityString");
     }
 
-    //TODO: Find out what class fn is.
-    //TODO: Do we really need this?
-    /*public void readEntityFromNBT(fn var1) {
-        //Obf: a
-        invoke("readEntityFromNBT", var1);
-    }*/
-
-    //TODO: Find out what class fn is.
-    //TODO: Do we really need this?
-    /*public void writeEntityToNBT(fn var1) {
-        //Obf: b
-        invoke("writeEntityToNBT", var1);
-    }*/
-
     //TODO: Currently not used
-    @Deprecated
     public void onChunkLoad() {
         //Obf: ah
         invoke("onChunkLoad");
     }
 
-    //TODO: Find out what class fv is.
-    //TODO: Find out what var1 does.
-    //TODO: Do we really need this?
-    /*public fv newDoubleNBTList(double ... var1) {
-        //Obf: a
-        return (fv) invoke("newDoubleNBTList", var1);
-    }*/
-
-    //TODO: Find out what class fv is.
-    //TODO: Find out what var1 does.
-    //TODO: Do we really need this?
-    /*public fv newFloatNBTList(float ... var1) {
-        //Obf: a
-        return (fv) invoke("newFloatNBTList", var1);
-    }*/
-
     //TODO: find out what adw and alq class is
     //TODO: find a good name for functions
     //TODO: what do the vars do?
-    /*public adw func_145779_a(alq var1, int var2) {
+    /*public adw s(alq var1, int var2) {
         //Obf: s
-        return (adw) invoke("func_145779_a", var1, var2);
+        return (adw) invoke("s", var1, var2);
     }*/
 
     //TODO: find out what adw and alq class is
     //TODO: find a good name for functions
     //TODO: what do the vars do?
-    /*public adw func_145778_a(alq var1, int var2, float var3) {
+    /*public adw a(alq var1, int var2, float var3) {
         //Obf: a
-        return (adw) invoke("func_145778_a", var1, var2, var3);
+        return (adw) invoke("a", var1, var2, var3);
     }*/
 
     //TODO: find out what adw and amj class is
@@ -440,7 +389,7 @@ public class Entity extends Composite {
 
     //TODO: find out what class ahd is
     /*public boolean interactFirst(ahd var1) {
-        //Obf:
+        //Obf: e
         return (boolean) invoke("interactFirst", var1);
     }*/
 
@@ -586,11 +535,10 @@ public class Entity extends Composite {
     }*/
 
     //TODO: Work out a suitable name and what the vars do
-    @Deprecated
-    public boolean func_145771_j(double var1, double var2, double var3) {
+    /*public boolean j(double var1, double var2, double var3) {
         //Obf: j
-        return (boolean) invoke("func_145771_j", var1, var2, var3);
-    }
+        return (boolean) invoke("j", var1, var2, var3);
+    }*/
 
     public void setInWeb() {
         //Obf: aB
@@ -644,15 +592,15 @@ public class Entity extends Composite {
     }
 
     //TODO: Find suitable name and work out what the vars do and their classes
-    /*public float func_145772_a(aqo var1, aqu var2, dt var3, bec var4) {
+    /*public float a(aqo var1, aqu var2, dt var3, bec var4) {
         //Obf: a
-        return (float) invoke("func_145772_a", aqo var1, aqu var2, dt var3, bec var4);
+        return (float) invoke("a", aqo var1, aqu var2, dt var3, bec var4);
     }*/
 
     //TODO: Find suitable name and work out what the vars do and their classes
-    /*public boolean func_145774_a(aqo var1, aqu var2, dt var3, bec var4, float var5) {
+    /*public boolean a(aqo var1, aqu var2, dt var3, bec var4, float var5) {
         //Obf: a
-        return (boolean) invoke("func_145774_a", aqo var1, aqu var2, dt var3, bec var4, float var5);
+        return (boolean) invoke("a", aqo var1, aqu var2, dt var3, bec var4, float var5);
     }*/
 
     public int getMaxSafePointTries() {
@@ -687,9 +635,9 @@ public class Entity extends Composite {
     }
 
     //TODO: Find Suitable name and get ho class
-    /*public ho func_145748_c_() {
+    /*public ho e_() {
         //Obf: e_
-        return (ho) invoke("func_145748_c_");
+        return (ho) invoke("e_");
     }*/
 
     //TODO: These are new in 1.8?
@@ -704,7 +652,6 @@ public class Entity extends Composite {
      return (String) invoke("aL")
      }
 
-     //HERE!!!!!!!
      public boolean k_() {
      //Obf: k_
      return (boolean) invoke("k_");
@@ -726,9 +673,9 @@ public class Entity extends Composite {
      }*/
 
     //TODO: Find Suitable name (not currently used)
-    /*public void func_145781_i(int var1) {
+    /*public void i(int var1) {
         //Obf: i
-        invoke("func_145781_i", var1);
+        invoke("i", var1);
     }*/
 
     //TODO: These are new in 1.8?
@@ -782,6 +729,7 @@ public class Entity extends Composite {
      * //TODO: ? (not currently used)
      * public void a(ho var1) {
      * //Obf: a
+     * invoke("a", var1);
      * }
      *
      * public boolean a(int var1, String var2) {
@@ -844,7 +792,7 @@ public class Entity extends Composite {
      * return (boolean) invoke("aV");
      * }
      *
-     * protected void a(xm var1, wv var2) {
+     * protected void a(xm var1, Entity var2) {
      * //Obf: a
      * invoke("a", var1, var2);
      * }
