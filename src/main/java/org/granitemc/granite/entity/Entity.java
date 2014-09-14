@@ -30,7 +30,7 @@ import java.util.UUID;
 
 public class Entity extends Composite {
     public Entity(Object parent) {
-        super(parent);
+        super(parent, false);
     }
 
     public int getEntityId() {

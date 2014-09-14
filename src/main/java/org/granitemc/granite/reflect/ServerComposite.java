@@ -23,16 +23,22 @@ package org.granitemc.granite.reflect;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.GraniteAPI;
+import com.google.common.collect.Lists;
+import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.command.CommandSender;
+import org.granitemc.granite.entity.player.EntityPlayer;
 import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
-public class ServerComposite extends Composite implements CommandSender {
+public class ServerComposite extends Composite implements Server, CommandSender {
     public static ServerComposite instance;
+
+    private Object serverConfigurationManager;
 
     public static ServerComposite init() {
         Mappings.invoke(null, "n.m.init.Bootstrap", "func_151354_b");
@@ -41,13 +47,13 @@ public class ServerComposite extends Composite implements CommandSender {
     }
 
     public ServerComposite(File worldsLocation) {
-        super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), worldsLocation);
+        super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), true, worldsLocation);
 
         // Inject logger, I don't think this is needed but I'll do it anyway just to be on the safe side
         Field loggerField = Mappings.getField("n.m.server.MinecraftServer", "logger");
         ReflectionUtils.forceStaticAccessible(loggerField);
         try {
-            loggerField.set(null, GraniteAPI.getLogger());
+            loggerField.set(null, Granite.getLogger());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -76,17 +82,49 @@ public class ServerComposite extends Composite implements CommandSender {
             }
         });
 
+
         // Start this baby
         invoke("n.m.server.MinecraftServer", "startServerThread");
     }
 
-    @Override
     public String getName() {
         return (String) invoke("n.m.command.ICommandSender", "getName");
     }
 
-    @Override
     public void sendMessage(String message) {
-        GraniteAPI.getLogger().info(message);
+        Granite.getLogger().info(message);
+    }
+
+    public List<EntityPlayer> getPlayers() {
+        List<EntityPlayer> ret = Lists.newArrayList();
+        try {
+            List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(getServerConfigurationManager());
+
+            for (Object o : playerObjs) {
+                EntityPlayer p = new EntityPlayer(o);
+                ret.add(p);
+                // TODO: cache - so the instances are the same
+            }
+
+            return ret;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Object getServerConfigurationManager() {
+        if (serverConfigurationManager == null) {
+            // Get server config manager
+            Field configurationManagerField = Mappings.getField("n.m.server.MinecraftServer", "configurationManager");
+            configurationManagerField.setAccessible(true);
+            try {
+                serverConfigurationManager = configurationManagerField.get(parent);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return serverConfigurationManager;
     }
 }

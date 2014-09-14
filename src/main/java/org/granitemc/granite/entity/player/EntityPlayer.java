@@ -25,10 +25,10 @@ package org.granitemc.granite.entity.player;
 
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.item.ItemStack;
+import org.granitemc.granite.chat.GraniteChatComponentText;
+import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.Composite;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class EntityPlayer extends Composite implements CommandSender {
@@ -39,7 +39,7 @@ public class EntityPlayer extends Composite implements CommandSender {
      */
 
     public EntityPlayer(Object parent) {
-        super(parent);
+        super(parent, false);
     }
 
     public void teleportToDimension(int dimId) {
@@ -57,7 +57,7 @@ public class EntityPlayer extends Composite implements CommandSender {
     public void setPosition(double x, double y, double z) {
         /*Object asLivingEntityBase = Class.forName("wv").cast(parent);
         Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);*/
-        invoke("b(Double;Double;Double)", x, y, z);
+        invoke("setPosition(Double;Double;Double)", x, y, z);
     }
 
     public UUID getUUID() {
@@ -98,7 +98,7 @@ public class EntityPlayer extends Composite implements CommandSender {
 
     @Override
     public void sendMessage(String message) {
-        ChatComponentText component = new ChatComponentText(message);
+        ChatComponentText component = new GraniteChatComponentText(message);
         invoke("addChatComponentMessage(String)", component);
     }
 
@@ -112,17 +112,17 @@ public class EntityPlayer extends Composite implements CommandSender {
         invoke("setHealth", amount);
     }
 
-    public ItemStack getEquipmentInSlot(int slot) {
+    public GraniteItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
-        return new ItemStack(invoke("getEquipmentInSlot", slot));
+        return new GraniteItemStack(invoke("getEquipmentInSlot", slot));
     }
 
-    public ItemStack getHeldItem() {
+    public GraniteItemStack getHeldItem() {
         //TODO: Check if this works or need to be invoked differently
-        return new ItemStack(invoke("getHeldItem"));
+        return new GraniteItemStack(invoke("getHeldItem"));
     }
 
-    public void setCurrentItemOrArmor(int slot, ItemStack item) {
+    public void setCurrentItemOrArmor(int slot, GraniteItemStack item) {
         invoke("setCurrentItemOrArmor", slot, item);
     }
 

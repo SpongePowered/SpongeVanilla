@@ -1,7 +1,4 @@
-package org.granitemc.granite.api.chat;
-
-import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.MinecraftUtils;
+package org.granitemc.granite.chat;
 
 /*****************************************************************************************
  * License (MIT)
@@ -26,10 +23,29 @@ import org.granitemc.granite.utils.MinecraftUtils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.chat.ChatComponentText;
+import org.granitemc.granite.reflect.Composite;
+import org.granitemc.granite.utils.MinecraftUtils;
 
-public interface ChatComponentText extends ChatComponent {
-    public ChatComponent add(String text);
-    public ChatComponent add(ChatComponent component);
+public class GraniteChatComponentText extends Composite implements ChatComponentText {
+    public GraniteChatComponentText(String text) {
+        super(null, false, text);
+    }
 
-    public String getText();
+    public GraniteChatComponentText(Object parent, Object... args) {
+        super(parent, false, args);
+    }
+
+    public ChatComponent add(String text) {
+        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
+    }
+
+    public ChatComponent add(ChatComponent component) {
+        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
+    }
+
+    public String getText() {
+        return (String) fieldGet("text");
+    }
 }

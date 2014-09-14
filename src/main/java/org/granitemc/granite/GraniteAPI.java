@@ -1,4 +1,4 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite;
 
 /*****************************************************************************************
  * License (MIT)
@@ -25,12 +25,20 @@ package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.granitemc.granite.api.API;
+import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.Server;
+import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
+import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.reflect.ServerComposite;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -41,16 +49,24 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
-public class GraniteAPI {
+public class GraniteAPI implements API {
     private static List<PluginContainer> plugins;
     private static Logger logger;
 
     public static void init() {
         plugins = new ArrayList<>();
         logger = LogManager.getFormatterLogger("Granite");
+
+        try {
+            Field impl = Granite.class.getDeclaredField("impl");
+            impl.setAccessible(true);
+            impl.set(null, new GraniteAPI());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static PluginContainer getPlugin(String name) {
+    public PluginContainer getPlugin(String name) {
         for (PluginContainer p : plugins) {
             if (Objects.equals(p.getName(), name)) {
                 return p;
@@ -59,15 +75,15 @@ public class GraniteAPI {
         return null;
     }
 
-    public static List<PluginContainer> getPlugins() {
+    public List<PluginContainer> getPlugins() {
         return plugins;
     }
 
-    public static PluginContainer getPlugin(Object plugin) {
+    public PluginContainer getPlugin(Object plugin) {
         return getPlugin(plugin.getClass());
     }
 
-    public static PluginContainer getPlugin(Class<?> pluginClass) {
+    public PluginContainer getPlugin(Class<?> pluginClass) {
         if (pluginClass.isAnnotationPresent(Plugin.class)) {
             for (PluginContainer p : plugins) {
                 if (p.getMainClass().equals(pluginClass)) {
@@ -78,7 +94,7 @@ public class GraniteAPI {
         return null;
     }
 
-    public static void loadPluginFromJar(File file) {
+    public void loadPluginFromJar(File file) {
         try {
             URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
             JarFile jf = new JarFile(file);
@@ -113,7 +129,20 @@ public class GraniteAPI {
         }
     }
 
-    public static Logger getLogger() {
+    public Logger getLogger() {
         return logger;
+    }
+
+    public ChatComponentBuilder getChatComponentBuilder() {
+        return null;
+    }
+
+    public ItemStack createItemStack() {
+        return null;
+        //TODO: stuff
+    }
+
+    public Server getServer() {
+        return ServerComposite.instance;
     }
 }

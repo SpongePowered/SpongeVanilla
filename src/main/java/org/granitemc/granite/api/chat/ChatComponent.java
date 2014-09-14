@@ -24,7 +24,7 @@ package org.granitemc.granite.api.chat;
  ****************************************************************************************/
 
 public interface ChatComponent {
-    Object add(String text);
+    ChatComponent add(String text);
     ChatComponent add(ChatComponent component);
 
     String getText();

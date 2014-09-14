@@ -1,7 +1,4 @@
-package org.granitemc.granite.api.chat;
-
-import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.MinecraftUtils;
+package org.granitemc.granite.api;
 
 /*****************************************************************************************
  * License (MIT)
@@ -26,10 +23,42 @@ import org.granitemc.granite.utils.MinecraftUtils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.apache.logging.log4j.Logger;
+import org.granitemc.granite.api.plugin.PluginContainer;
 
-public interface ChatComponentText extends ChatComponent {
-    public ChatComponent add(String text);
-    public ChatComponent add(ChatComponent component);
+import java.io.File;
+import java.util.List;
 
-    public String getText();
+@SuppressWarnings("ReflectionForUnavailableAnnotation")
+public class Granite {
+    // Set dynamically via reflection at runtime
+    private static API impl;
+
+    public static PluginContainer getPlugin(String name) {
+        return impl.getPlugin(name);
+    }
+
+    public static List<PluginContainer> getPlugins() {
+        return impl.getPlugins();
+    }
+
+    public static PluginContainer getPlugin(Object plugin) {
+        return impl.getPlugin(plugin);
+    }
+
+    public static PluginContainer getPlugin(Class<?> pluginClass) {
+        return impl.getPlugin(pluginClass);
+    }
+
+    public static void loadPluginFromJar(File file) {
+        impl.loadPluginFromJar(file);
+    }
+
+    public static Logger getLogger() {
+        return impl.getLogger();
+    }
+
+    public static Server getServer() {
+        return impl.getServer();
+    }
 }

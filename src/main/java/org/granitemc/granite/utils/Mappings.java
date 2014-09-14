@@ -184,7 +184,17 @@ public class Mappings {
         if (!methodSignature.contains("(")) {
             methodSignature = methodSignature + "()";
         }
-        Method res = methods.get(expandShortcuts(className)).get(methodSignature);
+
+        Method res = null;
+        Class<?> searchClass = getClass(className);
+        while (res == null && !searchClass.equals(Object.class)) {
+            if (methods.containsKey(getClassName(searchClass)) && methods.get(getClassName(searchClass)).containsKey(methodSignature)) {
+                res = methods.get(getClassName(searchClass)).get(methodSignature);
+                break;
+            } else {
+                searchClass = searchClass.getSuperclass();
+            }
+        }
 
         if (res == null) {
             throw new MappingNotFoundException(expandShortcuts(className) + "/" + methodSignature);

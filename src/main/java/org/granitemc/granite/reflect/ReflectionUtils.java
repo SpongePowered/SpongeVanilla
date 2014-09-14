@@ -27,7 +27,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
-import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.Field;
@@ -145,7 +145,7 @@ public class ReflectionUtils {
 
             if (createIdentical) {
                 for (Field f : proxy.getClass().getSuperclass().getDeclaredFields()) {
-                    GraniteAPI.getLogger().debug(f);
+                    Granite.getLogger().debug(f);
                 }
             }
 
@@ -202,5 +202,15 @@ public class ReflectionUtils {
             sig = sig + type.getName() + ";";
         }
         return m.getName() + "(" + sig.substring(0, sig.length() - 1) + ")";
+    }
+
+    public static Class<?>[] getTypes(Object... objects) {
+        Class<?>[] ret = new Class<?>[objects.length];
+
+        for (int i = 0; i < objects.length; i++) {
+            ret[i] = objects.getClass();
+        }
+
+        return ret;
     }
 }

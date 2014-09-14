@@ -23,6 +23,8 @@ package org.granitemc.granite.reflect;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import com.sun.deploy.util.ReflectionUtil;
+import javafx.scene.effect.Reflection;
 import javassist.util.proxy.MethodHandler;
 import org.granitemc.granite.utils.Mappings;
 
@@ -58,7 +60,7 @@ public abstract class Composite {
         globalHooks.add(hook);
     }
 
-    public Composite(Object parent, Object... args) {
+    public Composite(Object parent, boolean proxy, Class<?>[] argTypes, Object... args) {
         hooks = new HashMap<>();
         globalHooks = new ArrayList<>();
         Class<?>[] types = new Class[args.length];
@@ -71,37 +73,53 @@ public abstract class Composite {
 
         final Composite me = this;
 
-        this.parent = ReflectionUtils.createProxy(parent, new MethodHandler() {
-            @Override
-            // This method may be invoked thousands of times per second... MAKE IT FAST
-            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-                try {
-                    if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
-                        for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
-                            Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
-                            if (hook.wasHandled) {
-                                return ret;
+        if (proxy) {
+            this.parent = ReflectionUtils.createProxy(parent, new MethodHandler() {
+                @Override
+                // This method may be invoked thousands of times per second... MAKE IT FAST
+                public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+                    try {
+                        if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
+                            for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
+                                Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
+                                if (hook.wasHandled) {
+                                    return ret;
+                                }
                             }
                         }
+                    } catch (Mappings.MappingNotFoundException ignored) {
                     }
-                } catch (Mappings.MappingNotFoundException ignored) {
-                }
 
-                for (Hook hook : globalHooks) {
-                    Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
-                    if (hook.wasHandled) {
-                        return ret;
+                    for (Hook hook : globalHooks) {
+                        Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
+                        if (hook.wasHandled) {
+                            return ret;
+                        }
                     }
-                }
 
+                    try {
+                        return proceed.invoke(self, args);
+                    } catch (InvocationTargetException e) {
+                        e.getCause().printStackTrace();
+                    }
+                    return null;
+                }
+            }, parent == null, types, args);
+        } else {
+            if (parent != null) {
+                this.parent = parent;
+            } else {
                 try {
-                    return proceed.invoke(self, args);
-                } catch (InvocationTargetException e) {
-                    e.getCause().printStackTrace();
+                    this.parent = clazz.getConstructor(argTypes).newInstance(args);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    e.printStackTrace();
                 }
-                return null;
             }
-        }, parent == null, types, args);
+        }
+    }
+
+    public Composite(Object parent, boolean proxy, Object... args) {
+        this(parent, proxy, ReflectionUtils.getTypes(args), args);
     }
 
     public Object invoke(Object instance, Method m, Object... args) {

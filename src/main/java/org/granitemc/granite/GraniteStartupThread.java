@@ -23,7 +23,7 @@ package org.granitemc.granite;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.reflect.ServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
@@ -45,38 +45,40 @@ public class GraniteStartupThread extends Thread {
     public void run() {
         GraniteAPI.init();
 
-        GraniteAPI.getLogger().info("Starting Granite version @VERSION@");
-        GraniteAPI.getLogger().info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
+        Granite.getLogger().info("Starting Granite version @VERSION@");
+        Granite.getLogger().info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
 
         Config.initDirs();
 
+        // Load MC
         if (!Config.mcJar.exists()) {
             throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
         }
 
         try {
             ClassLoader.addURL(Config.mcJar.toURI().toURL());
-            GraniteAPI.getLogger().info("Loaded server: " + Config.mcJar.getAbsolutePath());
+            Granite.getLogger().info("Loaded server: " + Config.mcJar.getAbsolutePath());
         } catch (IOException e) {
-            GraniteAPI.getLogger().error("Failed to load minecraft_server.jar. Please make sure it exists in the same directory.");
+            Granite.getLogger().error("Failed to load minecraft_server.jar. Please make sure it exists in the same directory.");
             e.printStackTrace();
             return;
         }
 
         Mappings.load();
 
+        // Load plugins
         for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
             }
         })) {
-            GraniteAPI.getLogger().info("Loading jarfile plugins/%s.", plugin.getName());
-            GraniteAPI.loadPluginFromJar(plugin);
+            Granite.getLogger().info("Loading jarfile plugins/%s.", plugin.getName());
+            Granite.loadPluginFromJar(plugin);
         }
 
 
-        //ServerComposite___old.create(args);
+        // Start the server
         ServerComposite.init();
     }
 

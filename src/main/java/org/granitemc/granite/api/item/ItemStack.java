@@ -1,7 +1,4 @@
-package org.granitemc.granite.api.chat;
-
-import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.MinecraftUtils;
+package org.granitemc.granite.api.item;
 
 /*****************************************************************************************
  * License (MIT)
@@ -26,10 +23,16 @@ import org.granitemc.granite.utils.MinecraftUtils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+public interface ItemStack {
+    int getItemDamage();
+    void setItemDamage(int damage);
 
-public interface ChatComponentText extends ChatComponent {
-    public ChatComponent add(String text);
-    public ChatComponent add(ChatComponent component);
+    String[] getItemLore();
 
-    public String getText();
+    int getMaxDamage();
+
+    String getDisplayName();
+    ItemStack setDisplayName(String name);
+
+    boolean hasDisplayName();
 }

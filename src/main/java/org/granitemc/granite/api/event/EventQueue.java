@@ -23,48 +23,8 @@ package org.granitemc.granite.api.event;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-public class EventQueue {
-    private Map<Class<? extends Event>, Queue<Event>> queues;
-
-    /**
-     * Fire an event, broadcasting it out to any eventual listeners of the event queue
-     *
-     * @param event The event to fire
-     */
-    public void fireEvent(Event event) {
-        if (!queues.containsKey(event.getClass())) {
-            Queue<Event> queue = new ConcurrentLinkedQueue<>();
-            queues.put(event.getClass(), queue);
-        }
-
-        queues.get(event.getClass()).add(event);
-    }
-
-    /**
-     * Fire an event, and block until it has been processed.
-     *
-     * @param event The event to fire
-     * @return true if the event wasn't cancelled
-     */
-    public boolean fireEventBlocking(Event event) {
-        return fireEventBlocking(event, 0);
-    }
-
-    public boolean fireEventBlocking(Event event, long timeout) {
-        fireEvent(event);
-
-        synchronized (event) {
-            try {
-                event.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return event.hasBeenProcessed();
-    }
+public interface EventQueue {
+    void fireEvent(Event event);
+    void fireEventBlocking(Event event);
+    void fireEventBlocking(Event event, long timeout);
 }

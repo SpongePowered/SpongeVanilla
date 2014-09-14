@@ -1,7 +1,12 @@
-package org.granitemc.granite.api.chat;
+package org.granitemc.granite.api;
 
-import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.MinecraftUtils;
+import org.apache.logging.log4j.Logger;
+import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.plugin.PluginContainer;
+
+import java.io.File;
+import java.util.List;
 
 /*****************************************************************************************
  * License (MIT)
@@ -26,10 +31,20 @@ import org.granitemc.granite.utils.MinecraftUtils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+public interface API {
+    PluginContainer getPlugin(String name);
+    PluginContainer getPlugin(Object plugin);
+    PluginContainer getPlugin(Class<?> pluginClass);
 
-public interface ChatComponentText extends ChatComponent {
-    public ChatComponent add(String text);
-    public ChatComponent add(ChatComponent component);
+    void loadPluginFromJar(File file);
 
-    public String getText();
+    List<PluginContainer> getPlugins();
+
+    Logger getLogger();
+
+    ChatComponentBuilder getChatComponentBuilder();
+
+    ItemStack createItemStack();
+
+    Server getServer();
 }

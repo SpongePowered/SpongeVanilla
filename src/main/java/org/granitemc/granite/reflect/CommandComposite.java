@@ -24,7 +24,7 @@ package org.granitemc.granite.reflect;
  ****************************************************************************************/
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.granitemc.granite.api.GraniteAPI;
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
 
 public class CommandComposite extends Composite {
     public CommandComposite() {
-        super(Mappings.getClass("n.m.command.ServerCommandManager"));
+        super(Mappings.getClass("n.m.command.ServerCommandManager"), true);
 
         addHook("executeCommand(n.m.command.ICommandSender;String)", new HookListener() {
             @Override
@@ -45,25 +45,27 @@ public class CommandComposite extends Composite {
 
                 CommandSender sender = (CommandSender) MinecraftUtils.wrap(args[0]);
 
-                for (PluginContainer plugin : GraniteAPI.getPlugins()) {
+                for (PluginContainer plugin : Granite.getPlugins()) {
                     for (CommandContainer command : plugin.getCommands().values()) {
                         if (command.getName().equalsIgnoreCase(commandArgs[0])) {
                             dispatchCommand(command, sender, commandArgs);
+                            hook.setWasHandled(true);
                         }
                     }
                 }
 
-                for (PluginContainer plugin : GraniteAPI.getPlugins()) {
+                for (PluginContainer plugin : Granite.getPlugins()) {
                     for (CommandContainer command : plugin.getCommands().values()) {
                         for (String alias : command.getAliases()) {
                             if (alias.equalsIgnoreCase(commandArgs[0])) {
                                 dispatchCommand(command, sender, commandArgs);
+                                hook.setWasHandled(true);
+
                             }
                         }
                     }
                 }
 
-                hook.setWasHandled(true);
                 return 0;
             }
         });

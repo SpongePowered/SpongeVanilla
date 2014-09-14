@@ -23,18 +23,21 @@ package org.granitemc.granite.item;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.reflect.Composite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class ItemStack {
+public class GraniteItemStack extends Composite implements ItemStack {
 
-    Object vanillaItemInstance = null;
-    String targetClass = "n.m.item.ItemStack";
-
-    public ItemStack(Object instance) {
-        vanillaItemInstance = instance;
+    public GraniteItemStack(Object instance) {
+        super(instance, false);
     }
+
+    /*public GraniteItemStack() {
+        super(Mappings.getClass("n.m.item"), false);
+    }*/
 
     //need more constructors here that are capable of creating vanilla item instances
 
@@ -62,21 +65,12 @@ public class ItemStack {
         return (String) invoke("getDisplayName");
     }
 
-    public ItemStack setDisplayName(String name) {
-        return new ItemStack(invoke("setDisplayName", name));
+    public GraniteItemStack setDisplayName(String name) {
+        return new GraniteItemStack(invoke("setDisplayName", name));
     }
 
     public boolean hasDisplayName() {
         return (boolean) invoke("hasDisplayName");
-    }
-
-    public Object invoke(String targetMethod, Object... parameters) {
-        try {
-            return Mappings.getMethod(targetClass, targetMethod).invoke(vanillaItemInstance, parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     //ItemStack constructors:

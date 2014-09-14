@@ -1,7 +1,8 @@
-package org.granitemc.granite.api.chat;
+package org.granitemc.granite.api;
 
-import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.entity.player.EntityPlayer;
+
+import java.util.List;
 
 /*****************************************************************************************
  * License (MIT)
@@ -26,10 +27,6 @@ import org.granitemc.granite.utils.MinecraftUtils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-
-public interface ChatComponentText extends ChatComponent {
-    public ChatComponent add(String text);
-    public ChatComponent add(ChatComponent component);
-
-    public String getText();
+public interface Server {
+    List<EntityPlayer> getPlayers();
 }
