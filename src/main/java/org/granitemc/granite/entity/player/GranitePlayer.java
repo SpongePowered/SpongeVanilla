@@ -23,75 +23,84 @@ package org.granitemc.granite.entity.player;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.api.command.CommandSender;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
+import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.Composite;
 
 import java.util.UUID;
 
-public class EntityPlayer extends Composite implements CommandSender {
+public class GranitePlayer extends GraniteEntity implements Player {
 
-    /**
-     * This class provides a mapping wrapper for EntityPlayer.
-     * It will have to be updated as the obfuscation changes (or becomes unnecessary).
-     */
-
-    public EntityPlayer(Object parent) {
+    public GranitePlayer(Object parent) {
         super(parent, false);
     }
 
+    @Override
     public void teleportToDimension(int dimId) {
         //TODO: Check if this works or need to be invoked differently
         invoke("teleportToDimension", dimId);
     }
 
-    public void teleportToPlayer(EntityPlayer player) {
+    @Override
+    public void teleportToPlayer(Player player) {
         if (getDimension() != player.getDimension()) {
             teleportToDimension(player.getDimension());
         }
         setPosition(player.getX(), player.getY(), player.getZ());
     }
 
+    @Override
     public void setPosition(double x, double y, double z) {
         /*Object asLivingEntityBase = Class.forName("wv").cast(parent);
         Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);*/
         invoke("setPosition(Double;Double;Double)", x, y, z);
     }
 
+    @Override
     public UUID getUUID() {
         return (UUID) invoke("getUUID");
     }
 
+    @Override
     public double getX() {
         return (double) fieldGet("n.m.entity.Entity", "posX");
     }
 
+    @Override
     public double getY() {
         return (double) fieldGet("n.m.entity.Entity", "posY");
     }
 
+    @Override
     public double getZ() {
         return (double) fieldGet("n.m.entity.Entity", "posZ");
     }
 
+    @Override
     public int getDimension() {
         return (int) invoke("getDimension");
     }
 
+    @Override
     public boolean isUsingItem() {
         return (boolean) invoke("isUsingItem");
     }
 
+    @Override
     public void stopUsingItem() {
         invoke("stopUsingItem");
     }
 
+    @Override
     public void clearItemInUse() {
         invoke("clearItemInUse");
     }
 
+    @Override
     public String getName() {
         return (String) invoke("getName");
     }
@@ -99,31 +108,36 @@ public class EntityPlayer extends Composite implements CommandSender {
     @Override
     public void sendMessage(String message) {
         ChatComponentText component = new GraniteChatComponentText(message);
-        invoke("addChatComponentMessage(String)", component);
+        invoke("addChatComponentMessage(String)", ((GraniteChatComponentText) component).parent);
     }
 
+    @Override
     public void heal(int amount) {
         //TODO: Check if this works or need to be invoked differently
         invoke("heal", amount);
     }
 
+    @Override
     public void setHealth(int amount) {
         //TODO: Check if this works or need to be invoked differently
         invoke("setHealth", amount);
     }
 
-    public GraniteItemStack getEquipmentInSlot(int slot) {
+    @Override
+    public ItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
         return new GraniteItemStack(invoke("getEquipmentInSlot", slot));
     }
 
-    public GraniteItemStack getHeldItem() {
+    @Override
+    public ItemStack getHeldItem() {
         //TODO: Check if this works or need to be invoked differently
         return new GraniteItemStack(invoke("getHeldItem"));
     }
 
-    public void setCurrentItemOrArmor(int slot, GraniteItemStack item) {
-        invoke("setCurrentItemOrArmor", slot, item);
+    @Override
+    public void setCurrentItemOrArmor(int slot, ItemStack item) {
+        invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) item).parent);
     }
 
     /*public void onDeath(DamageSource var1) {

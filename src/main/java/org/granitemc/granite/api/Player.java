@@ -1,7 +1,5 @@
 package org.granitemc.granite.api;
 
-import java.util.List;
-
 /*****************************************************************************************
  * License (MIT)
  *
@@ -25,6 +23,47 @@ import java.util.List;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-public interface Server {
-    List<Player> getPlayers();
+import org.granitemc.granite.api.command.CommandSender;
+import org.granitemc.granite.api.entity.Entity;
+import org.granitemc.granite.api.item.ItemStack;
+
+import java.util.UUID;
+
+public interface Player extends CommandSender, Entity {
+    void teleportToDimension(int dimId);
+
+    void teleportToPlayer(Player player);
+
+    void setPosition(double x, double y, double z);
+
+    UUID getUUID();
+
+    double getX();
+
+    double getY();
+
+    double getZ();
+
+    int getDimension();
+
+    boolean isUsingItem();
+
+    void stopUsingItem();
+
+    void clearItemInUse();
+
+    String getName();
+
+    @Override
+    void sendMessage(String message);
+
+    void heal(int amount);
+
+    void setHealth(int amount);
+
+    ItemStack getEquipmentInSlot(int slot);
+
+    ItemStack getHeldItem();
+
+    void setCurrentItemOrArmor(int slot, ItemStack item);
 }

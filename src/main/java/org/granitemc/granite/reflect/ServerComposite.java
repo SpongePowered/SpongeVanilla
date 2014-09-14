@@ -27,7 +27,8 @@ import com.google.common.collect.Lists;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.entity.player.EntityPlayer;
+import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.api.Player;
 import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
@@ -95,13 +96,13 @@ public class ServerComposite extends Composite implements Server, CommandSender 
         Granite.getLogger().info(message);
     }
 
-    public List<EntityPlayer> getPlayers() {
-        List<EntityPlayer> ret = Lists.newArrayList();
+    public List<Player> getPlayers() {
+        List<Player> ret = Lists.newArrayList();
         try {
             List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(getServerConfigurationManager());
 
             for (Object o : playerObjs) {
-                EntityPlayer p = new EntityPlayer(o);
+                Player p = new GranitePlayer(o);
                 ret.add(p);
                 // TODO: cache - so the instances are the same
             }

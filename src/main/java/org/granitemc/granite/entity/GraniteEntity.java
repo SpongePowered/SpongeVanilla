@@ -34,6 +34,10 @@ public class GraniteEntity extends Composite implements Entity {
         super(parent, false);
     }
 
+    public GraniteEntity(Object parent, boolean b) {
+        super(parent, false);
+    }
+
     @Override
     public int getEntityId() {
         //Obf: F
@@ -74,19 +78,19 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setSize(float width, float height) {
         //Obf: a
-        invoke("setSize", width, height);
+        invoke("setSize(float;float)", width, height);
     }
 
     @Override
     public void setRotation(float yaw, float pitch) {
         //Obf: b
-        invoke("setRotation", yaw, pitch);
+        invoke("setRotation(float;float)", yaw, pitch);
     }
 
     @Override
     public void setPosition(double x, double y, double z) {
         //Obf: b
-        invoke("setPosition", x, y, z);
+        invoke("setPosition(double;double;double)", x, y, z);
     }
 
     /*public void onUpdate() {
@@ -112,7 +116,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setFire(int seconds) {
         //Obf: e
-        invoke("setFire", seconds);
+        invoke("setFire(int)", seconds);
     }
 
     @Override
@@ -141,7 +145,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void moveEntity(double x, double y, double z) {
         //Obf: d
-        invoke("moveEntity", x, y, z);
+        invoke("moveEntity(double;double;double)", x, y, z);
     }
 
     /*//TODO: What does this do?
@@ -166,7 +170,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void playSound(String soundName, float var1, float var2) {
         //Obf: a
-        invoke("playSound", soundName, var1, var2);
+        invoke("playSound(String;float;float)", soundName, var1, var2);
     }
 
     @Override
@@ -190,7 +194,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void dealFireDamage(int amountDamage) {
         //Obf: f
-        invoke("dealFireDamage", amountDamage);
+        invoke("dealFireDamage(int)", amountDamage);
     }
 
     @Override
@@ -277,7 +281,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setLocationAndAngles(double x, double y, double z, float yaw, float pitch) {
         //Obf: b
-        invoke("setLocationAndAngles", x, y, z, yaw, pitch);
+        invoke("setLocationAndAngles(double;double;double;float;float)", x, y, z, yaw, pitch);
     }
 
     // Pretty much useless
@@ -446,7 +450,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void mountEntity(Entity entity) {
         //Obf: a
-        invoke("mountEntity", entity);
+        invoke("mountEntity(n.m.entity.Entity)", entity);
     }
 
     //TODO: wat?
@@ -470,7 +474,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setEating(boolean var1) {
         //Obf: f
-        invoke("setEating", var1);
+        invoke("setEating(boolean)", var1);
     }
 
     //TODO: work out what class amj is
@@ -512,7 +516,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setSneaking(boolean var1) {
         //Obf: c
-        invoke("setSneaking", var1);
+        invoke("setSneaking(boolean)", var1);
     }
 
     @Override
@@ -524,7 +528,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setSprinting(boolean var1) {
         //Obf: d
-        invoke("setSprinting", var1);
+        invoke("setSprinting(boolean)", var1);
     }
 
     @Override
@@ -536,7 +540,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setInvisible(boolean var1) {
         //Obf: e
-        invoke("setInvisible", var1);
+        invoke("setInvisible(boolean)", var1);
     }
 
     /*public boolean getFlag(int flag) {
@@ -558,7 +562,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setAir(int var1) {
         //Obf: h
-        invoke("setAir", var1);
+        invoke("setAir(int)", var1);
     }
 
     //TODO: Find out what class ads is
@@ -600,7 +604,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public boolean isEntityEqual(Entity entity) {
         //Obf: k
-        return (boolean) invoke("isEntityEqual", entity);
+        return (boolean) invoke("isEntityEqual(n.m.entity.Entity)", entity);
     }
 
     @Override
@@ -634,7 +638,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void travelToDimension(int dimension) {
         //Obf: c
-        invoke("travelToDimension", dimension);
+        invoke("travelToDimension(int)", dimension);
     }
 
     //TODO: Find suitable name and work out what the vars do and their classes
