@@ -45,7 +45,7 @@ To-do list
 - ~~Set-up~~
 - ~~Command proxy~~
 - ~~Plugin loader~~
-- **Command API**
+- ~~Command API~~
 - **Event system**
 - **API for worlds, items, players**
 - Essentials-style example plugin
