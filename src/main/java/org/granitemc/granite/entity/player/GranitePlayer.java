@@ -29,7 +29,6 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.reflect.Composite;
 
 import java.util.UUID;
 

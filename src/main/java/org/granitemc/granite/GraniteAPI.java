@@ -32,7 +32,6 @@ import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.ServerComposite;
 
 import java.io.File;

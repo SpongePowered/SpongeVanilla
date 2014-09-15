@@ -25,10 +25,10 @@ package org.granitemc.granite.reflect;
 
 import com.google.common.collect.Lists;
 import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.entity.player.GranitePlayer;
-import org.granitemc.granite.api.Player;
 import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;

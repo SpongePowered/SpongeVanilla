@@ -25,9 +25,6 @@ package org.granitemc.granite.item;
 
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.Mappings;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class GraniteItemStack extends Composite implements ItemStack {
 

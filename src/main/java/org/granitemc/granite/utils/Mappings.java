@@ -28,7 +28,6 @@ import com.google.common.collect.HashBiMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.reflect.ReflectionUtils;
 
 import java.lang.reflect.Field;

@@ -23,12 +23,9 @@ package org.granitemc.granite.reflect;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import com.sun.deploy.util.ReflectionUtil;
-import javafx.scene.effect.Reflection;
 import javassist.util.proxy.MethodHandler;
 import org.granitemc.granite.utils.Mappings;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

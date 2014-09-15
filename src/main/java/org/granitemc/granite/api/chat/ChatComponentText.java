@@ -1,8 +1,5 @@
 package org.granitemc.granite.api.chat;
 
-import org.granitemc.granite.reflect.Composite;
-import org.granitemc.granite.utils.MinecraftUtils;
-
 /*****************************************************************************************
  * License (MIT)
  *
