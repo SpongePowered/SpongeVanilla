@@ -30,6 +30,7 @@ import org.granitemc.granite.api.item.ItemStack;
 import java.util.UUID;
 
 public interface Player extends CommandSender, Entity {
+
     void teleportToDimension(int dimId);
 
     void teleportToPlayer(Player player);
@@ -54,7 +55,6 @@ public interface Player extends CommandSender, Entity {
 
     String getName();
 
-    @Override
     void sendMessage(String message);
 
     void heal(int amount);
