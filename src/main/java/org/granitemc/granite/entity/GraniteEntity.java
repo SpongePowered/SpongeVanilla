@@ -28,14 +28,10 @@ import org.granitemc.granite.reflect.Composite;
 
 import java.util.UUID;
 
-public class GraniteEntity extends Composite implements Entity {
+public abstract class GraniteEntity extends Composite implements Entity {
 
-    public GraniteEntity(Object parent) {
-        super(parent, false);
-    }
-
-    public GraniteEntity(Object parent, boolean b) {
-        super(parent, false);
+    public GraniteEntity(Object parent, boolean proxy, Object... args) {
+        super(parent, proxy, args);
     }
 
     @Override
@@ -44,36 +40,40 @@ public class GraniteEntity extends Composite implements Entity {
         return (Integer) invoke("getEntityID");
     }
 
-    /*public void setEntityId(int Id) {
+    @Override
+    public void setEntityId(int Id) {
         //Obf: d
         invoke("setEntityId", Id);
-    }*/
+    }
 
     //TODO: this is new in 1.8
-    /*public void G() {
+    @Override
+    public void G() {
         //Obf: G
         invoke("G");
-    }*/
+    }
 
     /*public Entity(aqu var1) {
         //Obf: wv
         invoke("Entity", var1);
     }*/
 
-    /*public void entityInit() {
+    @Override
+    public void entityInit() {
         //Obf: h
         invoke("entityInit");
-    }*/
+    }
 
     /*public xv getDataWatcher() {
         //Obf: H
         return (xv) invoke("getDataWatcher");
     }*/
 
-    /*public void setDead() {
+    @Override
+    public void setDead() {
         //Obf: J
         invoke("setDead");
-    }*/
+    }
 
     @Override
     public void setSize(float width, float height) {
@@ -93,25 +93,29 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("setPosition(double;double;double)", x, y, z);
     }
 
-    /*public void onUpdate() {
+    @Override
+    public void onUpdate() {
         //Obf: s_
         invoke("onUpdate");
-    }*/
+    }
 
-    /*public void onEntityUpdate() {
+    @Override
+    public void onEntityUpdate() {
         //Obf: K
         invoke("onEntityUpdate");
-    }*/
+    }
 
-    /*public int getMaxInPortalTime() {
+    @Override
+    public int getMaxInPortalTime() {
         //Obf: L
         return (Integer) invoke("getMaxInPortalTime");
-    }*/
+    }
 
-    /*public void setOnFireFromLava() {
+    @Override
+    public void setOnFireFromLava() {
         //Obf: M
         invoke("setOnFireFromLava");
-    }*/
+    }
 
     @Override
     public void setFire(int seconds) {
@@ -131,10 +135,11 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("kill");
     }
 
-    /*public boolean isOffsetPositionInLiquid(double x, double y, double z) {
+    @Override
+    public boolean isOffsetPositionInLiquid(double x, double y, double z) {
         //Obf: c
         return (boolean) invoke("isOffsetPositionInLiquid", x, y, z);
-    }*/
+    }
 
     //TODO: What does this do?
     /*private boolean b(brt var1) {
@@ -148,17 +153,19 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("moveEntity(double;double;double)", x, y, z);
     }
 
-    /*//TODO: What does this do?
-    private void m() {
+    //TODO: What does this do?
+    @Override
+    public void m() {
         //Obf: m
         invoke("m");
     }
 
     //TODO: What does this do?
+    @Override
     public void Q() {
         //Obf: Q
         invoke("Q");
-    }*/
+    }
 
     //TODO: What does this do?
     /*protected void a(dt var1, atr var2) {
@@ -203,10 +210,11 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("isImmuneToFire");
     }
 
-    /*public void fall(float var1, float var2) {
+    @Override
+    public void fall(float var1, float var2) {
         //Obf: e
         invoke("fall", var1, var2);
-    }*/
+    }
 
     @Override
     public boolean isWet() {
@@ -220,22 +228,25 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("isInWater");
     }
 
-    /*public boolean handleWaterMovement() {
+    @Override
+    public boolean handleWaterMovement() {
         //Obf: W
         return (boolean) invoke("handleWaterMovement");
-    }*/
+    }
 
     //TODO: What does this do?
-    /*public void X() {
+    @Override
+    public void X() {
         //Obf: X
         invoke("X");
-    }*/
+    }
 
     //TODO: What does this do?
-    /*public void Y() {
+    @Override
+    public void Y() {
         //Obj: Y
         invoke("Y");
-    }*/
+    }
 
     @Override
     public String getSplashSound() {
@@ -249,22 +260,25 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("isInsideOfMaterial");
     }*/
 
-    /*public boolean handleLavaMovement() {
+    @Override
+    public boolean handleLavaMovement() {
         //Obf: ab
         return (boolean) invoke("handleLavaMovement");
-    }*/
+    }
 
     //TODO: Work out what var1,2 and 3 do?
-    /*public void moveFlying(float var1, float var2, float var3) {
+    @Override
+    public void moveFlying(float var1, float var2, float var3) {
         //Obf: a
         invoke("moveFlying", var1, var2, var3);
-    }*/
+    }
 
     //TODO: Work out what var1 does
-    /*public float getBrightness(float var1) {
+    @Override
+    public float getBrightness(float var1) {
         //Obf: c
         return (float) invoke("getBrightness", var1);
-    }*/
+    }
 
     //TODO: Work out what class aqu is
     /*public void setWorld(aqu var1) {
@@ -284,16 +298,17 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("setLocationAndAngles(double;double;double;float;float)", x, y, z, yaw, pitch);
     }
 
-    // Pretty much useless
-    /*public float getDistanceToEntity(Entity entity) {
+    @Override
+    public float getDistanceToEntity(GraniteEntity entity) {
         //Obf: g
         return (float) invoke("getDistanceToEntity", entity);
     }
 
+    @Override
     public double getDistanceSq(double x, double y, double z) {
         //Obf: e
         return (double) invoke("getDistanceSq", x, y, z);
-    }*/
+    }
 
     //TODO: Find out what class dt is
     /*public double b(dt var1) {
@@ -307,35 +322,42 @@ public class GraniteEntity extends Composite implements Entity {
         return (double) invoke("b", var1);
     }*/
 
-    /*public double getDistance(double x, double y, double z) {
+    @Override
+    public double getDistance(double x, double y, double z) {
         //Obf: f
         return (double) invoke("getDistance", x, y, z);
     }
 
-    public double getDistanceSqToEntity(Entity entity) {
+    @Override
+    public double getDistanceSqToEntity(GraniteEntity entity) {
         //Obf: h
         return (double) invoke("getDistanceSqToEntity", entity);
-    }*/
+    }
 
-    /*public void onCollideWithPlayer(EntityPlayer entityPlayer) {
+    //TODO: Something is up with this override?
+    //@Override
+    public void onCollideWithPlayer(GraniteEntity entityPlayer) {
         //Obf: d
         invoke("onCollideWithPlayer", entityPlayer);
-    }*/
+    }
 
-    /*public void applyEntityCollision(Entity entity) {
+    @Override
+    public void applyEntityCollision(GraniteEntity entity) {
         //Obf: i
         invoke("applyEntityCollision", entity);
-    }*/
+    }
 
-    /*public void addVelocity(double x, double y, double z) {
+    @Override
+    public void addVelocity(double x, double y, double z) {
         //Obf: g
         invoke("addVelocity", x, y, z);
-    }*/
+    }
 
-    /*public void setBeenAttacked() {
+    @Override
+    public void setBeenAttacked() {
         //Obf: ac
         invoke("setBeenAttacked");
-    }*/
+    }
 
     //TODO: Work out what class ro is and what var2 does
     /*public void attackEntityFrom(ro var1, float var2) {
@@ -361,22 +383,25 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("canBePushed");
     }
 
-    /*//Currently does nothing
-    public void addToPlayerScore(Entity entity, int amount) {
+    //TODO: Currently does nothing
+    @Override
+    public void addToPlayerScore(GraniteEntity entity, int amount) {
         //Obf: b
         invoke("addToPlayerScore", entity, amount);
     }
 
+    @Override
     public String getEntityString() {
         //Obf: ag
         return (String) invoke("getEntityString");
     }
 
     //TODO: Currently not used
+    @Override
     public void onChunkLoad() {
         //Obf: ah
         invoke("onChunkLoad");
-    }*/
+    }
 
     //TODO: find out what adw and alq class is
     //TODO: find a good name for functions
@@ -425,15 +450,17 @@ public class GraniteEntity extends Composite implements Entity {
         return (brt) invoke("getCollisionBox");
     }*/
 
-    /*public void updateRidden() {
+    @Override
+    public void updateRidden() {
         //Obf: ak
         invoke("updateRidden");
     }
 
+    @Override
     public void updateRiderPosition() {
         //Obf: al
         invoke("updateRiderPosition");
-    }*/
+    }
 
     @Override
     public double getYOffset() {
@@ -448,7 +475,7 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public void mountEntity(Entity entity) {
+    public void mountEntity(GraniteEntity entity) {
         //Obf: a
         invoke("mountEntity(n.m.entity.Entity)", entity);
     }
@@ -543,15 +570,17 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("setInvisible(boolean)", var1);
     }
 
-    /*public boolean getFlag(int flag) {
+    @Override
+    public boolean getFlag(int flag) {
         //Obf: g
         return (boolean) invoke("getFlag", flag);
     }
 
+    @Override
     public void setFlag(int flag, boolean var2) {
         //Obf: b
         invoke("setFlag", flag, var2);
-    }*/
+    }
 
     @Override
     public int getAir() {
@@ -578,10 +607,11 @@ public class GraniteEntity extends Composite implements Entity {
     }*/
 
     //TODO: Work out a suitable name and what the vars do
-    /*public boolean j(double var1, double var2, double var3) {
+    @Override
+    public boolean j(double var1, double var2, double var3) {
         //Obf: j
         return (boolean) invoke("j", var1, var2, var3);
-    }*/
+    }
 
     @Override
     public void setInWeb() {
@@ -602,7 +632,7 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public boolean isEntityEqual(Entity entity) {
+    public boolean isEntityEqual(GraniteEntity entity) {
         //Obf: k
         return (boolean) invoke("isEntityEqual(n.m.entity.Entity)", entity);
     }
@@ -614,10 +644,11 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     //TODO: Find a suitable name (currently not used)
-    /*public void f(float var1) {
+    @Override
+    public void f(float var1) {
         //Obf: f
         invoke("f");
-    }*/
+    }
 
     @Override
     public boolean canAttackWithItem() {
@@ -625,15 +656,17 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("canAttackWithItem");
     }
 
-    /*public boolean hitByEntity(Entity entity) {
+    @Override
+    public boolean hitByEntity(GraniteEntity entity) {
         //Obf: l
         return (boolean) invoke("hitByEntity", entity);
-    }*/
+    }
 
-    /*public void copyDataFrom(Entity entity) {
+    @Override
+    public void copyDataFrom(GraniteEntity entity) {
         //Obf: n
         invoke("copyDataFrom", entity);
-    }*/
+    }
 
     @Override
     public void travelToDimension(int dimension) {
@@ -653,20 +686,23 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("a", aqo var1, aqu var2, dt var3, bec var4, float var5);
     }*/
 
-    /*public int getMaxSafePointTries() {
+    @Override
+    public int getMaxSafePointTries() {
         //Obf: aF
         return (Integer) invoke("getMaxSafePointTries");
     }
 
+    @Override
     public int getTeleportDirection() {
         //Obf: aG
         return (Integer) invoke("getTeleportDirection");
     }
 
+    @Override
     public boolean doesEntityNotTriggerPressurePlate() {
         //Obf: aH
         return (boolean) invoke("doesEntityNotTriggerPressurePlate");
-    }*/
+    }
 
     //TODO: find out what class j is
     /*public void addEntityCrashInfo(j var1) {
@@ -693,42 +729,45 @@ public class GraniteEntity extends Composite implements Entity {
     }*/
 
     //TODO: These are new in 1.8?
+
     /**
-     public void a(String var1) {
-     //Obf: a
-     invoke("a", var1);
-     }
-
-     public String aL() {
-     //Obf: aL
-     return (String) invoke("aL")
-     }
-
-     public boolean k_() {
-     //Obf: k_
-     return (boolean) invoke("k_");
-     }
-
-     public void g(boolean var1) {
-     //Obf: g
-     invoke("g", var1);
-     }
-
-     public boolean aM() {
-     //Obf: aM
-     return (boolean) invoke("aM");
-     }
-
-     public void a(double var1, double var3, double var5) {
-     //Obf: a
-     invoke("a", var1, var3, var5);
-     }*/
+     * public void a(String var1) {
+     * //Obf: a
+     * invoke("a", var1);
+     * }
+     * <p/>
+     * public String aL() {
+     * //Obf: aL
+     * return (String) invoke("aL")
+     * }
+     * <p/>
+     * public boolean k_() {
+     * //Obf: k_
+     * return (boolean) invoke("k_");
+     * }
+     * <p/>
+     * public void g(boolean var1) {
+     * //Obf: g
+     * invoke("g", var1);
+     * }
+     * <p/>
+     * public boolean aM() {
+     * //Obf: aM
+     * return (boolean) invoke("aM");
+     * }
+     * <p/>
+     * public void a(double var1, double var3, double var5) {
+     * //Obf: a
+     * invoke("a", var1, var3, var5);
+     * }
+     */
 
     //TODO: Find Suitable name (not currently used)
-    /*public void i(int var1) {
+    @Override
+    public void i(int var1) {
         //Obf: i
         invoke("i", var1);
-    }*/
+    }
 
     //TODO: These are new in 1.8?
 
