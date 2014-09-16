@@ -29,6 +29,10 @@ import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.reflect.composite.Hook;
+import org.granitemc.granite.reflect.composite.HookListener;
+import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
@@ -36,7 +40,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class ServerComposite extends Composite implements Server, CommandSender {
+public class ServerComposite extends ProxyComposite implements Server, CommandSender {
     public static ServerComposite instance;
 
     private Object serverConfigurationManager;
@@ -48,7 +52,7 @@ public class ServerComposite extends Composite implements Server, CommandSender 
     }
 
     public ServerComposite(File worldsLocation) {
-        super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), true, worldsLocation);
+        super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), new Class[] {File.class}, worldsLocation);
 
         // Inject logger, I don't think this is needed but I'll do it anyway just to be on the safe side
         Field loggerField = Mappings.getField("n.m.server.MinecraftServer", "logger");

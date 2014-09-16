@@ -25,16 +25,17 @@ package org.granitemc.granite.chat;
 
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.reflect.Composite;
+import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteChatComponentText extends Composite implements ChatComponentText {
     public GraniteChatComponentText(String text) {
-        super(null, false, text);
+        super(Mappings.getClass("n.m.util.ChatComponentText"), text);
     }
 
     public GraniteChatComponentText(Object parent, Object... args) {
-        super(parent, false, args);
+        super(parent);
     }
 
     public ChatComponent add(String text) {

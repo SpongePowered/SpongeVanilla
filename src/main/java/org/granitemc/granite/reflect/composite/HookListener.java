@@ -1,4 +1,4 @@
-package org.granitemc.granite.reflect;
+package org.granitemc.granite.reflect.composite;
 
 /*****************************************************************************************
  * License (MIT)

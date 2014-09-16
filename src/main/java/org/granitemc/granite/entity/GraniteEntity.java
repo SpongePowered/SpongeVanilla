@@ -24,18 +24,18 @@ package org.granitemc.granite.entity;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.entity.Entity;
-import org.granitemc.granite.reflect.Composite;
+import org.granitemc.granite.reflect.composite.Composite;
 
 import java.util.UUID;
 
 public class GraniteEntity extends Composite implements Entity {
 
     public GraniteEntity(Object parent) {
-        super(parent, false);
+        super(parent);
     }
 
     public GraniteEntity(Object parent, boolean b) {
-        super(parent, false);
+        super(parent);
     }
 
     @Override

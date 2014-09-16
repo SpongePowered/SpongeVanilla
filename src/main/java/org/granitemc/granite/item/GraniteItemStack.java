@@ -24,12 +24,12 @@ package org.granitemc.granite.item;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.reflect.Composite;
+import org.granitemc.granite.reflect.composite.Composite;
 
 public class GraniteItemStack extends Composite implements ItemStack {
 
     public GraniteItemStack(Object instance) {
-        super(instance, false);
+        super(instance);
     }
 
     /*public GraniteItemStack() {

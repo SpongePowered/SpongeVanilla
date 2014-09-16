@@ -1,4 +1,4 @@
-package org.granitemc.granite.reflect;
+package org.granitemc.granite.reflect.composite;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,100 +23,33 @@ package org.granitemc.granite.reflect;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import javassist.util.proxy.MethodHandler;
+import org.granitemc.granite.reflect.ReflectionUtils;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class Composite {
     public Object parent;
     public Class<?> clazz;
 
-    public Map<String, List<Hook>> hooks;
-    public List<Hook> globalHooks;
-
-    public void addHook(String methodSignature, HookListener listener) {
-        if (!hooks.containsKey(Mappings.expandShortcuts(methodSignature))) {
-            hooks.put(Mappings.expandShortcuts(methodSignature), new ArrayList<Hook>());
-        }
-
-        Hook hook = new Hook();
-        hook.listener = listener;
-        hook.methodSignature = Mappings.expandShortcuts(methodSignature);
-        hooks.get(Mappings.expandShortcuts(methodSignature)).add(hook);
+    public Composite(Object parent) {
+        this.parent = parent;
+        this.clazz = parent.getClass();
     }
 
-    public void addHook(HookListener listener) {
-        Hook hook = new Hook();
-        hook.listener = listener;
-        globalHooks.add(hook);
-    }
-
-    public Composite(Object parent, boolean proxy, Class<?>[] argTypes, Object... args) {
-        hooks = new HashMap<>();
-        globalHooks = new ArrayList<>();
-        Class<?>[] types = new Class[args.length];
-
-        for (int i = 0; i < args.length; i++) {
-            types[i] = args[i].getClass();
-        }
-
+    public Composite(Class<?> clazz, Class<?>[] constructorArgTypes, Object... constructorArgs) {
         this.clazz = ReflectionUtils.extractClass(parent);
 
-        final Composite me = this;
-
-        if (proxy) {
-            this.parent = ReflectionUtils.createProxy(parent, new MethodHandler() {
-                @Override
-                // This method may be invoked thousands of times per second... MAKE IT FAST
-                public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-                    try {
-                        if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
-                            for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
-                                Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
-                                if (hook.wasHandled) {
-                                    return ret;
-                                }
-                            }
-                        }
-                    } catch (Mappings.MappingNotFoundException ignored) {
-                    }
-
-                    for (Hook hook : globalHooks) {
-                        Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
-                        if (hook.wasHandled) {
-                            return ret;
-                        }
-                    }
-
-                    try {
-                        return proceed.invoke(self, args);
-                    } catch (InvocationTargetException e) {
-                        e.getCause().printStackTrace();
-                    }
-                    return null;
-                }
-            }, parent == null, types, args);
-        } else {
-            if (parent != null) {
-                this.parent = parent;
-            } else {
-                try {
-                    this.parent = clazz.getConstructor(argTypes).newInstance(args);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
+        try {
+            this.parent = clazz.getConstructor(constructorArgTypes).newInstance(constructorArgs);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 
-    public Composite(Object parent, boolean proxy, Object... args) {
-        this(parent, proxy, ReflectionUtils.getTypes(args), args);
+    public Composite(Class<?> clazz, Object... constructorArgs) {
+        this(clazz, ReflectionUtils.getTypes(constructorArgs), constructorArgs);
     }
 
     public Object invoke(Object instance, Method m, Object... args) {
@@ -177,7 +110,7 @@ public abstract class Composite {
         fieldSet(Mappings.getClass(className), fieldName, value);
     }
 
-    public void fieldSet(String fieldName, Object value){
+    public void fieldSet(String fieldName, Object value) {
         fieldSet(clazz, fieldName, value);
     }
 }

@@ -29,14 +29,18 @@ import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.plugin.PluginContainer;
+import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.reflect.composite.Hook;
+import org.granitemc.granite.reflect.composite.HookListener;
+import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Method;
 
-public class CommandComposite extends Composite {
+public class CommandComposite extends ProxyComposite {
     public CommandComposite() {
-        super(Mappings.getClass("n.m.command.ServerCommandManager"), true);
+        super(Mappings.getClass("n.m.command.ServerCommandManager"), new Class[]{});
 
         addHook("executeCommand(n.m.command.ICommandSender;String)", new HookListener() {
             @Override
