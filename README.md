@@ -51,6 +51,11 @@ To-do list
 - Essentials-style example plugin
 - ??? (More to come)
 
+Secondary tasks
+------
+- Caching of our wrapper classes
+- Plugin dependencies
+
 Want to Help?
 ------
 Join us in irc, on esper.net in channel **#granite**.
