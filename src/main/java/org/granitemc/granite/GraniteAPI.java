@@ -32,7 +32,7 @@ import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.reflect.ServerComposite;
+import org.granitemc.granite.reflect.GraniteServerComposite;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,6 +142,6 @@ public class GraniteAPI implements API {
     }
 
     public Server getServer() {
-        return ServerComposite.instance;
+        return GraniteServerComposite.instance;
     }
 }

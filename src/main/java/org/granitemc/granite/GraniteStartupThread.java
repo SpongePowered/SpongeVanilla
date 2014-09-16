@@ -24,7 +24,7 @@ package org.granitemc.granite;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.reflect.ServerComposite;
+import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
 import org.granitemc.granite.utils.Mappings;
@@ -79,7 +79,7 @@ public class GraniteStartupThread extends Thread {
 
 
         // Start the server
-        ServerComposite.init();
+        GraniteServerComposite.init();
     }
 
 }

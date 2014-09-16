@@ -1,7 +1,5 @@
 package org.granitemc.granite.api;
 
-import java.util.List;
-
 /*****************************************************************************************
  * License (MIT)
  *
@@ -25,6 +23,121 @@ import java.util.List;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-public interface Server {
+import org.granitemc.granite.api.command.CommandSender;
+
+import java.io.File;
+import java.net.Proxy;
+import java.security.KeyPair;
+import java.util.List;
+
+public interface Server extends CommandSender {
+    String getName();
+
+    void sendMessage(String message);
+
     List<Player> getPlayers();
+
+    //TODO: May be important?
+    void setUserMessage(String var1);
+
+    boolean canStructuresSpawn();
+
+    boolean isHardcore();
+
+    int getOpPermissionLevel();
+
+    void saveAllWorlds(boolean var1);
+
+    void stopServer();
+
+    String getServerHostname();
+
+    boolean isServerRunning();
+
+    void initiateShutdown();
+
+    File getDataDirectory();
+
+    //TODO: Add hook for eventual scheduler
+    void tick();
+
+    boolean getAllowNether();
+
+    String getHostname();
+
+    void setHostname(String hostname);
+
+    int getPort();
+
+    String getMotd();
+
+    String getMinecraftVersion();
+
+    int getCurrentPlayerCount();
+
+    int getMaxPlayers();
+
+    boolean isDebuggingEnabled();
+
+    String getServerModName();
+
+    KeyPair getKeyPair();
+
+    void setKeyPair(KeyPair keyPair);
+
+    int getServerPort();
+
+    void setServerPort(int port);
+
+    String getServerOwner();
+
+    void setServerOwner(String serverOwner);
+
+    boolean isSinglePlayer();
+
+    String getFolderName();
+
+    void setFolderName(String folderName);
+
+    boolean allowSpawnMonsters();
+
+    boolean canCreateBonusChest(boolean var1);
+
+    void deleteWorldAndStopServer();
+
+    boolean isSnooperEnabled();
+
+    boolean isDedicatedServer();
+
+    boolean getCanSpawnAnimals();
+
+    void setCanSpawnAnimals(boolean var1);
+
+    boolean getCanSpawnNPCs();
+
+    void setCanSpawnNPCs(boolean var1);
+
+    boolean isPvpEnabled();
+
+    void setAllowPvp(boolean var1);
+
+    boolean isFlightAllowed();
+
+    void setAllowFlight(boolean var1);
+
+    boolean isCommandBlockEnabled();
+
+    boolean getGuiEnabled();
+
+    int getTickCounter();
+
+    int getSpawnProtectionSize();
+
+    boolean getForceGamemode();
+
+    void setForceGamemode(boolean var1);
+
+    Proxy getServerProxy();
+
+    long getCurrentTimeMillis();
 }

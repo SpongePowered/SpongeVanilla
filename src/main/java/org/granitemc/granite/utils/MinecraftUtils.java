@@ -25,12 +25,12 @@ package org.granitemc.granite.utils;
 
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.player.GranitePlayer;
-import org.granitemc.granite.reflect.ServerComposite;
+import org.granitemc.granite.reflect.GraniteServerComposite;
 
 public class MinecraftUtils {
     public static Object wrap(Object object) {
         if (Mappings.getClass("n.m.server.MinecraftServer").isInstance(object)) {
-            return ServerComposite.instance;
+            return GraniteServerComposite.instance;
         } else if (Mappings.getClass("n.m.entity.player.EntityPlayer").isInstance(object)) {
             return new GranitePlayer(object);
         } else if (Mappings.getClass("net.minecraft.util.ChatComponentText").isInstance(object)) {
