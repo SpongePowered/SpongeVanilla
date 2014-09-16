@@ -60,6 +60,16 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }
 
     @Override
+    public void onCollideWithPlayer(GranitePlayer entityPlayer) {
+
+    }
+
+    @Override
+    public float getCollisionBorderSize() {
+        return 0;
+    }
+
+    @Override
     public UUID getUUID() {
         return (UUID) invoke("getUUID");
     }
