@@ -24,7 +24,7 @@ package org.granitemc.granite.api.command;
  ****************************************************************************************/
 
 public interface CommandSender {
-    Object getName();
+    String getName();
 
     void sendMessage(String message);
 }
