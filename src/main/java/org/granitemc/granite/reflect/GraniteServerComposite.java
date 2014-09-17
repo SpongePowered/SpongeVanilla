@@ -87,6 +87,19 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
             }
         });
 
+        final GraniteServerComposite me = this;
+
+        // Inject SCM
+        addHook("func_152361_a(n.m.server.management.ServerConfigurationManager)", new HookListener() {
+            @Override
+            public Object activate(Method method, Method proxyCallback, Hook hook, Object[] args) {
+                SCMComposite scm = new SCMComposite(me);
+                fieldSet("configurationManager", scm);
+                hook.setWasHandled(true);
+                return null;
+            }
+        });
+
 
         // Start this baby
         invoke("n.m.server.MinecraftServer", "startServerThread");
