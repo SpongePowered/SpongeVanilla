@@ -33,7 +33,6 @@ import org.granitemc.granite.item.GraniteItemStack;
 import java.util.UUID;
 
 public class GranitePlayer extends GraniteEntity implements Player {
-
     public GranitePlayer(Object parent) {
         super(parent, false);
     }
