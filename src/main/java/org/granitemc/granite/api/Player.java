@@ -34,8 +34,6 @@ public interface Player extends CommandSender, Entity {
 
     void teleportToPlayer(Player player);
 
-    void setPosition(double x, double y, double z);
-
     UUID getUUID();
 
     double getX();
@@ -51,10 +49,6 @@ public interface Player extends CommandSender, Entity {
     void stopUsingItem();
 
     void clearItemInUse();
-
-    String getName();
-
-    void sendMessage(String message);
 
     void heal(int amount);
 
