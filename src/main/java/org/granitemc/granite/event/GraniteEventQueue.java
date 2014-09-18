@@ -23,15 +23,22 @@ package org.granitemc.granite.event;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import com.google.common.collect.Lists;
 import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventQueue;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GraniteEventQueue implements EventQueue {
     private Map<Class<? extends Event>, Queue<Event>> queues;
+
+    public GraniteEventQueue() {
+        queues = new HashMap<>();
+    }
 
     /**
      * Fire an event, broadcasting it out to any eventual listeners of the event queue
@@ -68,5 +75,31 @@ public class GraniteEventQueue implements EventQueue {
                 }
             }
         }
+    }
+
+    public Object popEvent(Class<?> type) {
+        Queue queue = queues.get(type);
+        return queue.poll();
+    }
+
+    public List<Event> popEvents(Class<?> type) {
+        Queue<Event> queue = queues.get(type);
+
+        List<Event> ret = Lists.newArrayList();
+        while (queue.peek() != null) {
+            ret.add(queue.poll());
+        }
+
+        return ret;
+    }
+
+    public List<Event> popAllEvents() {
+        List<Event> ret = Lists.newArrayList();
+
+        for (Class<?> type : queues.keySet()) {
+            ret.addAll(popEvents(type));
+        }
+
+        return ret;
     }
 }

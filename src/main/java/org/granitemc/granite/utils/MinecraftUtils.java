@@ -31,7 +31,7 @@ public class MinecraftUtils {
     public static Object wrap(Object object) {
         if (Mappings.getClass("n.m.server.MinecraftServer").isInstance(object)) {
             return GraniteServerComposite.instance;
-        } else if (Mappings.getClass("n.m.entity.player.EntityPlayer").isInstance(object)) {
+        } else if (Mappings.getClass("n.m.entity.player.EntityPlayerMP").isInstance(object)) {
             return new GranitePlayer(object);
         } else if (Mappings.getClass("net.minecraft.util.ChatComponentText").isInstance(object)) {
             return new GraniteChatComponentText(object);

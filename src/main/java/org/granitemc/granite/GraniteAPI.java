@@ -29,9 +29,13 @@ import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.api.event.EventHandlerContainer;
+import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
+import org.granitemc.granite.event.GraniteEventQueue;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 
 import java.io.File;
@@ -40,29 +44,38 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class GraniteAPI implements API {
-    private static List<PluginContainer> plugins;
-    private static Logger logger;
+    public static GraniteAPI instance;
+
+    private List<PluginContainer> plugins;
+    private Logger logger;
+
+    private GraniteEventQueue eventQueue;
+
+    private Map<Class<? extends Event>, List<EventHandlerContainer>> eventHandlers;
 
     public static void init() {
-        plugins = new ArrayList<>();
-        logger = LogManager.getFormatterLogger("Granite");
 
         try {
             Field impl = Granite.class.getDeclaredField("impl");
             impl.setAccessible(true);
-            impl.set(null, new GraniteAPI());
+            impl.set(null, instance = new GraniteAPI());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private GraniteAPI() {
+        plugins = new ArrayList<>();
+        logger = LogManager.getFormatterLogger("Granite");
+
+        eventQueue = new GraniteEventQueue();
+        eventHandlers = new HashMap<>();
     }
 
     public PluginContainer getPlugin(String name) {
@@ -116,6 +129,16 @@ public class GraniteAPI implements API {
                                 getLogger().info("Loaded %s (v%s)!", container.getName(), container.getVersion());
 
                                 plugins.add(container);
+
+                                // TODO: make this part better
+                                for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
+                                    for (EventHandlerContainer ehc : ehcList) {
+                                        if (!eventHandlers.containsKey(ehc.getEventType())) {
+                                            eventHandlers.put(ehc.getEventType(), new ArrayList<EventHandlerContainer>());
+                                        }
+                                        eventHandlers.get(ehc.getEventType()).add(ehc);
+                                    }
+                                }
                             }
                         }
                     } catch (ClassNotFoundException e) {
@@ -138,10 +161,29 @@ public class GraniteAPI implements API {
 
     public ItemStack createItemStack() {
         return null;
-        //TODO: stuff
+        //TODO: create item stack
     }
 
     public Server getServer() {
         return GraniteServerComposite.instance;
+    }
+
+    @Override
+    public EventQueue getEventQueue() {
+        return eventQueue;
+    }
+
+    public void tick() {
+        List<Event> events = eventQueue.popAllEvents();
+
+        for (Event event : events) {
+            if (eventHandlers.containsKey(event.getClass())) {
+                for (EventHandlerContainer ehc : eventHandlers.get(event.getClass())) {
+                    ehc.invoke(event);
+                }
+            }
+
+            event.finishProcessing();
+        }
     }
 }

@@ -1,4 +1,7 @@
-package org.granitemc.granite.api.plugin;
+package org.granitemc.granite.api.event.player;
+
+import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.event.Event;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,19 +26,14 @@ package org.granitemc.granite.api.plugin;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.event.Event;
+public class PlayerJoinEvent extends Event {
+    private Player player;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public PlayerJoinEvent(Player player) {
+        this.player = player;
+    }
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Plugin {
-    public String name();
-
-    public String id();
-
-    public String version();
+    public Player getPlayer() {
+        return player;
+    }
 }

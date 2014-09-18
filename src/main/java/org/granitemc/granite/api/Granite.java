@@ -24,6 +24,7 @@ package org.granitemc.granite.api;
  ****************************************************************************************/
 
 import org.apache.logging.log4j.Logger;
+import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
@@ -60,5 +61,9 @@ public class Granite {
 
     public static Server getServer() {
         return impl.getServer();
+    }
+
+    public static EventQueue getEventQueue() {
+        return impl.getEventQueue();
     }
 }

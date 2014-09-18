@@ -2,6 +2,7 @@ package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
@@ -47,4 +48,6 @@ public interface API {
     ItemStack createItemStack();
 
     Server getServer();
+
+    EventQueue getEventQueue();
 }

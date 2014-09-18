@@ -1,4 +1,11 @@
-package org.granitemc.granite.api.plugin;
+package org.granitemc.granite.api.event;
+
+import org.granitemc.granite.api.command.Command;
+import org.granitemc.granite.api.command.CommandInfo;
+import org.granitemc.granite.api.plugin.PluginContainer;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,19 +30,41 @@ package org.granitemc.granite.api.plugin;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.event.Event;
+public class EventHandlerContainer {
+    private On annotation;
+    private Method method;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    private Object instance;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Plugin {
-    public String name();
+    private PluginContainer plugin;
 
-    public String id();
+    public EventHandlerContainer(PluginContainer plugin, Object instance, Method method) {
+        annotation = method.getAnnotation(On.class);
+        this.method = method;
 
-    public String version();
+        this.plugin = plugin;
+        this.instance = instance;
+    }
+
+    public Class<? extends Event> getEventType() {
+        return annotation.event();
+    }
+
+    public Object getInstance() {
+        return instance;
+    }
+
+    public PluginContainer getPlugin() {
+        return plugin;
+    }
+
+    public void invoke(Event event) {
+        try {
+            method.invoke(instance, event);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.getCause().printStackTrace();
+        }
+    }
 }

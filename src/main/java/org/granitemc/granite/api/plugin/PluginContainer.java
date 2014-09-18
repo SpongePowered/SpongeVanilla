@@ -25,9 +25,14 @@ package org.granitemc.granite.api.plugin;
 
 import org.granitemc.granite.api.command.Command;
 import org.granitemc.granite.api.command.CommandContainer;
+import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.api.event.EventHandlerContainer;
+import org.granitemc.granite.api.event.On;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
@@ -37,6 +42,7 @@ public class PluginContainer {
     private Object instance;
 
     private Map<String, CommandContainer> commands;
+    private Map<Class<? extends Event>, List<EventHandlerContainer>> events;
 
     public PluginContainer(Class<?> clazz) {
         annotation = clazz.getAnnotation(Plugin.class);
@@ -47,8 +53,10 @@ public class PluginContainer {
             e.printStackTrace();
         }
         commands = new HashMap<>();
+        events = new HashMap<>();
 
         registerCommandHandler(instance);
+        registerEventHandler(instance);
     }
 
     public String getId() {
@@ -83,7 +91,27 @@ public class PluginContainer {
         }
     }
 
+    public void registerEventHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(On.class)) {
+                EventHandlerContainer evt = new EventHandlerContainer(this, handler, m);
+
+                if (!events.containsKey(evt.getEventType())) {
+                    events.put(evt.getEventType(), new ArrayList<EventHandlerContainer>());
+                }
+
+                events.get(evt.getEventType()).add(evt);
+            }
+        }
+    }
+
     public Map<String, CommandContainer> getCommands() {
         return commands;
+    }
+
+    public Map<Class<? extends Event>, List<EventHandlerContainer>> getEvents() {
+        return events;
     }
 }

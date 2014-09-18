@@ -24,9 +24,7 @@ package org.granitemc.granite.reflect;
  ****************************************************************************************/
 
 import com.google.common.collect.Lists;
-import javassist.*;
-import javassist.expr.ExprEditor;
-import javassist.expr.NewExpr;
+import org.granitemc.granite.GraniteAPI;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.Server;
@@ -43,53 +41,15 @@ import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.security.KeyPair;
 import java.util.List;
-import java.util.Objects;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {
     public static GraniteServerComposite instance;
 
-    private Object serverConfigurationManager;
+    private SCMComposite scm;
 
     public static GraniteServerComposite init() {
         // Edit stuff before the classes are loaded
-        try {
-            // This part has to be updated by hand, and doesn't involve mappings
-            ClassPool pool = new ClassPool(true);
-            CtClass cc = pool.get("po");
-            CtMethod m = cc.getDeclaredMethod("i");
-
-            m.instrument(new ExprEditor() {
-                @Override
-                public void edit(NewExpr e) throws CannotCompileException {
-                    if (Objects.equals(e.getClassName(), "pn")) {
-                        // replace pn constructor with null - we'll set it to something in a proxy later
-                        e.replace("$_ = null;");
-                    }
-                    super.edit(e);
-                }
-            });
-
-            // Remove line 171 (this.a((sn) new pn(this));)
-            // This is line 111 in the decompiled source (by fernflower), but jd-gui shows it correctly as 171
-            /*CodeAttribute codeAttribute = m.getMethodInfo().getCodeAttribute();
-
-            LineNumberAttribute lineNumberAttribute = (LineNumberAttribute) codeAttribute.getAttribute(LineNumberAttribute.tag);
-
-            int startPc = lineNumberAttribute.toStartPc(171);
-            int endPc = lineNumberAttribute.toStartPc(173); // Next line of code (Mojang likely has a blank at 172)
-
-            byte[] code = codeAttribute.getCode();
-            for (int i = startPc; i < endPc; i++) {
-                // Change byte to a no operation code
-                code[i] = CodeAttribute.NOP;
-            }*/
-
-            // Save everything
-            cc.toClass();
-
-        } catch (NotFoundException | CannotCompileException e) {
-            e.printStackTrace();
-        }
+        BytecodeModifier.modify();
 
         // Load mappings AFTER editing is done, otherwise it'll break
         Mappings.load();
@@ -106,6 +66,14 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         injectSelf();
         injectSCM();
 
+        addHook("tick()", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                GraniteAPI.instance.tick();
+                return null;
+            }
+        });
+
         // Start this baby
         invoke("n.m.server.MinecraftServer", "startServerThread");
     }
@@ -116,6 +84,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         // Inject SCM
         addHook("func_152361_a(n.m.server.management.ServerConfigurationManager)", new HookListener() {
             SCMComposite comp = null;
+
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 // The arg is null, since we replaced that above
@@ -129,25 +98,12 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
+
+                scm = comp;
+
                 return null;
             }
         });
-
-        /*ClassPool cp = ClassPool.getDefault();
-        try {
-            Method javaMethod = Mappings.getMethod("n.m.server.dedicated.DedicatedServer", "startServer");
-            CtClass clazz = cp.getCtClass(javaMethod.getDeclaringClass().getName());
-
-            try {
-                method.insertBefore("System.out.println(\"Hello World\");");
-                clazz.writeFile();
-            } catch (CannotCompileException | IOException e) {
-                e.printStackTrace();
-            }
-
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void injectLogger() {
@@ -203,7 +159,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     public List<Player> getPlayers() {
         List<Player> ret = Lists.newArrayList();
         try {
-            List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(getServerConfigurationManager());
+            List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(scm.parent);
 
             for (Object o : playerObjs) {
                 Player p = new GranitePlayer(o);
@@ -216,21 +172,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private Object getServerConfigurationManager() {
-        if (serverConfigurationManager == null) {
-            // Get server config manager
-            Field configurationManagerField = Mappings.getField("n.m.server.MinecraftServer", "configurationManager");
-            configurationManagerField.setAccessible(true);
-            try {
-                serverConfigurationManager = configurationManagerField.get(parent);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return serverConfigurationManager;
     }
 
     //TODO: May be important?

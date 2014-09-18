@@ -1,4 +1,10 @@
-package org.granitemc.granite.api.event;
+package org.granitemc.granite.reflect;
+
+import javassist.*;
+import javassist.expr.ExprEditor;
+import javassist.expr.NewExpr;
+
+import java.util.Objects;
 
 /**
  * **************************************************************************************
@@ -25,34 +31,40 @@ package org.granitemc.granite.api.event;
  * **************************************************************************************
  */
 
-public class Event {
-    private boolean cancelled;
-    protected On.Priority currentPriority;
-    protected boolean processed;
+public class BytecodeModifier {
+    // This stuff has to be updated by hand, and doesn't involve mappings
 
-    public boolean isCancelled() {
-        return cancelled;
-    }
+    public static void modify() {
+        try {
+            ClassPool pool = new ClassPool(true);
 
-    public void setCancelled(boolean cancelled) {
-        assertCanModify();
-        this.cancelled = cancelled;
-    }
-
-    public boolean hasBeenProcessed() {
-        return processed;
-    }
-
-    public void finishProcessing() {
-        processed = true;
-        synchronized (this) {
-            this.notify();
+            modifyServer(pool);
+            modifyScm(pool);
+        } catch (CannotCompileException | NotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    private void assertCanModify() {
-        if (currentPriority == On.Priority.MONITOR) {
-            throw new RuntimeException("Cannot modify event if priority is MONITOR");
-        }
+    public static void modifyServer(ClassPool pool) throws NotFoundException, CannotCompileException {
+        CtClass cc = pool.get("po");
+        CtMethod m = cc.getDeclaredMethod("i");
+
+        m.instrument(new ExprEditor() {
+            @Override
+            public void edit(NewExpr e) throws CannotCompileException {
+                if (Objects.equals(e.getClassName(), "pn")) {
+                    // replace pn constructor with null - we'll set it to something in a proxy later
+                    e.replace("$_ = null;");
+                }
+                super.edit(e);
+            }
+        });
+
+        // Save everything
+        cc.toClass();
+    }
+
+    public static void modifyScm(ClassPool pool) {
+        // TODO
     }
 }

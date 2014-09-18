@@ -61,8 +61,8 @@ public class CommandContainer {
 
     public void invoke(CommandInfo info) {
         try {
-            method.invoke(method.getDeclaringClass().newInstance(), info);
-        } catch (IllegalAccessException | InstantiationException e) {
+            method.invoke(instance, info);
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.getCause().printStackTrace();

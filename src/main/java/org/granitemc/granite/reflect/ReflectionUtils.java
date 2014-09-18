@@ -27,6 +27,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.utils.Mappings;
 
@@ -146,7 +147,7 @@ public class ReflectionUtils {
 
             if (createIdentical) {
                 for (Field f : proxy.getClass().getSuperclass().getDeclaredFields()) {
-                    Granite.getLogger().debug(f);
+                    throw new NotImplementedException("not implemented - go bug marvin about this");
                 }
             }
 
