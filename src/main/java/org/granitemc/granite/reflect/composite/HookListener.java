@@ -29,11 +29,13 @@ public interface HookListener {
     /**
      * Called when a hook is activated (the hooked method is called)
      *
+     *
+     * @param self          The self object
      * @param method        The method that was called
      * @param proxyCallback A method which should be called in order to call the vanilla method (NOT method!)
      * @param hook          The hook that was called. Use it to set whether the method was handled here or should be passed on.
      * @param args          The arguments passed to the method
      * @return The object that (should be) returned from the method. Will only be needed if the hook was handled.
      */
-    public Object activate(Method method, Method proxyCallback, Hook hook, Object[] args);
+    public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args);
 }

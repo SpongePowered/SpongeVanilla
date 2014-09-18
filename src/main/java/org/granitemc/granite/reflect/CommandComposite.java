@@ -29,7 +29,6 @@ import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -44,7 +43,7 @@ public class CommandComposite extends ProxyComposite {
 
         addHook("executeCommand(n.m.command.ICommandSender;String)", new HookListener() {
             @Override
-            public Object activate(Method method, Method proxyCallback, Hook hook, Object[] args) {
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 String[] commandArgs = ((String) args[1]).split(" ");
 
                 CommandSender sender = (CommandSender) MinecraftUtils.wrap(args[0]);

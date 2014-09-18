@@ -23,17 +23,10 @@ package org.granitemc.granite.reflect;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.command.CommandContainer;
-import org.granitemc.granite.api.command.CommandInfo;
-import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Method;
 
@@ -41,6 +34,12 @@ public class SCMComposite extends ProxyComposite {
     public SCMComposite(GraniteServerComposite server) {
         super(Mappings.getClass("n.m.server.dedicated.DedicatedPlayerList"), new Class[]{Mappings.getClass("n.m.server.dedicated.DedicatedServer")}, server.parent);
 
-        
+        addHook("initializeConnectionToPlayer(n.m.network.NetworkManager;n.m.entity.player.EntityPlayerMP)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                System.out.println(method);
+                return null;
+            }
+        });
     }
 }

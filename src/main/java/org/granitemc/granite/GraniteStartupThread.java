@@ -64,8 +64,6 @@ public class GraniteStartupThread extends Thread {
             return;
         }
 
-        Mappings.load();
-
         // Load plugins
         for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
             @Override
@@ -81,5 +79,4 @@ public class GraniteStartupThread extends Thread {
         // Start the server
         GraniteServerComposite.init();
     }
-
 }

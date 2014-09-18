@@ -6,10 +6,7 @@ import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * **************************************************************************************
@@ -78,7 +75,7 @@ public class ProxyComposite extends Composite {
                 try {
                     if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
                         for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
-                            Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
+                            Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
                             if (hook.wasHandled) {
                                 return ret;
                             }
@@ -88,7 +85,7 @@ public class ProxyComposite extends Composite {
                 }
 
                 for (Hook hook : globalHooks) {
-                    Object ret = hook.listener.activate(thisMethod, proceed, hook, args);
+                    Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
                     if (hook.wasHandled) {
                         return ret;
                     }
