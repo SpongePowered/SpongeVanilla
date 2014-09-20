@@ -55,6 +55,7 @@ Secondary tasks
 ------
 - Caching of our wrapper classes
 - Plugin dependencies
+- Configurable join/leave messages
 
 Want to Help?
 ------
