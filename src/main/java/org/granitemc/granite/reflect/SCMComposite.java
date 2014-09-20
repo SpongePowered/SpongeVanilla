@@ -60,5 +60,22 @@ public class SCMComposite extends ProxyComposite {
                 return null;
             }
         });
+
+        addHook("func_148545_a(com.mojang.authlib.GameProfile)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                Object world = GraniteServerComposite.instance.worldServerForDimension(0);
+                ItemInWorldComposite iiw = new ItemInWorldComposite(world);
+
+                try {
+                    Field f = self.getClass().getSuperclass().getSuperclass().getDeclaredField("_itemInWorldArgument");
+                    f.setAccessible(true);
+                    f.set(self, iiw.parent);
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
     }
 }

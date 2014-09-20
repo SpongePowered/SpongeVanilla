@@ -505,4 +505,8 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         //Obf: aI
         return (Integer) invoke("aI");
     }*/
+
+    public Object worldServerForDimension(int var1) {
+        return invoke("n.m.server.MinecraftServer", "worldServerForDimension(int)", var1);
+    }
 }
