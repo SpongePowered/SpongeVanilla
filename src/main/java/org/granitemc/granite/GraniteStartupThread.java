@@ -27,7 +27,6 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
-import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.io.FilenameFilter;

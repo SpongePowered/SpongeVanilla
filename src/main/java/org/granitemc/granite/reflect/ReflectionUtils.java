@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableBiMap;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.Field;

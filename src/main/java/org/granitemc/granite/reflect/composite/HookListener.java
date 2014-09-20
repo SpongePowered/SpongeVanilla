@@ -29,7 +29,6 @@ public interface HookListener {
     /**
      * Called when a hook is activated (the hooked method is called)
      *
-     *
      * @param self          The self object
      * @param method        The method that was called
      * @param proxyCallback A method which should be called in order to call the vanilla method (NOT method!)
