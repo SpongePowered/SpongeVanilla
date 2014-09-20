@@ -49,6 +49,7 @@ To-do list
 - **Event system**
 - **API for worlds, items, players**
 - Essentials-style example plugin
+- Multiworld
 - ??? (More to come)
 
 Secondary tasks
