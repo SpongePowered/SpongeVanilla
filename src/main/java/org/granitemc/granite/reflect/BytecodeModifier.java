@@ -64,7 +64,26 @@ public class BytecodeModifier {
         cc.toClass();
     }
 
-    public static void modifyScm(ClassPool pool) {
-        // TODO
+    public static void modifyScm(ClassPool pool) throws NotFoundException, CannotCompileException {
+        CtClass cc = pool.get("sn");
+        // Find the method
+        final CtMethod method = cc.getDeclaredMethod("a", new CtClass[]{pool.get("gr"), pool.get("qw")});
+
+        // Add a field to the class (we'll write to that just before this method is called)
+        cc.addField(new CtField(pool.get("rj"), "_playServerArgument", cc));
+
+        // Modify method to use the field
+        method.instrument(new ExprEditor() {
+            @Override
+            public void edit(NewExpr e) throws CannotCompileException {
+                if (Objects.equals(e.getClassName(), "rj")) {
+                    // Replace new rj() with the field
+                    e.replace("$_ = _playServerArgument;");
+                }
+            }
+        });
+
+        // Save it
+        cc.toClass();
     }
 }

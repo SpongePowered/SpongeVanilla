@@ -26,12 +26,14 @@ package org.granitemc.granite.reflect;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.event.player.PlayerJoinEvent;
+import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class SCMComposite extends ProxyComposite {
@@ -45,6 +47,16 @@ public class SCMComposite extends ProxyComposite {
 
                 PlayerJoinEvent event = new PlayerJoinEvent(p);
                 Granite.getEventQueue().fireEvent(event);
+
+                PlayServerComposite psc = new PlayServerComposite(GraniteServerComposite.instance, args[0], (GranitePlayer) p);
+
+                try {
+                    Field f = self.getClass().getSuperclass().getSuperclass().getDeclaredField("_playServerArgument");
+                    f.setAccessible(true);
+                    f.set(self, psc.parent);
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         });
