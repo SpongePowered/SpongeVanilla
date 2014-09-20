@@ -2,8 +2,10 @@ package org.granitemc.granite.reflect;
 
 import javassist.*;
 import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
 import javassist.expr.NewExpr;
 
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -40,9 +42,23 @@ public class BytecodeModifier {
 
             modifyServer(pool);
             modifyScm(pool);
+
+            modifyPi(pool);
         } catch (CannotCompileException | NotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void modifyPi(ClassPool pool) throws NotFoundException, CannotCompileException {
+        // Neutralize "pi" spam.
+        // It would spam nothing but "pi" in the console, constantly
+        // I don't know the cause but this removes the spam.
+        // This may come back and bite me in the ass later :)
+        CtClass cc = pool.get("ig");
+        CtMethod m = cc.getDeclaredMethod("a");
+        m.addCatch("return;", pool.get("pi"));
+
+        cc.toClass();
     }
 
     public static void modifyServer(ClassPool pool) throws NotFoundException, CannotCompileException {
