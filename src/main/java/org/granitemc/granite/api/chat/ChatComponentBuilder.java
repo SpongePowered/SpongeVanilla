@@ -26,6 +26,8 @@ package org.granitemc.granite.api.chat;
 public interface ChatComponentBuilder {
     ChatComponentBuilder text(String text);
 
+    ChatComponentBuilder translation(String key, Object... args);
+
     ChatComponentBuilder component(ChatComponent component);
 
     ChatComponent build();

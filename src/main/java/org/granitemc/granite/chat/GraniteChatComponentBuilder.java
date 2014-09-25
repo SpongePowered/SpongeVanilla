@@ -38,6 +38,17 @@ public class GraniteChatComponentBuilder implements ChatComponentBuilder {
         return this;
     }
 
+    @Override
+    public ChatComponentBuilder translation(String key, Object... args) {
+        ChatComponent component = new GraniteChatComponentTranslation(key, args);
+        if (this.component == null) {
+            this.component = component;
+        } else {
+            this.component = this.component.add(component);
+        }
+        return this;
+    }
+
     public ChatComponentBuilder component(ChatComponent component) {
         if (this.component == null) {
             this.component = component;
