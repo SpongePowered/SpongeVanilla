@@ -23,14 +23,27 @@ package org.granitemc.granite;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.block.BlockTypes;
+import org.granitemc.granite.block.GraniteBlockType;
+import org.granitemc.granite.reflect.BytecodeModifier;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
+import org.granitemc.granite.utils.Mappings;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class GraniteStartupThread extends Thread {
 
@@ -45,11 +58,40 @@ public class GraniteStartupThread extends Thread {
         GraniteAPI.init();
 
         Granite.getLogger().info("Starting Granite version @VERSION@");
-        Granite.getLogger().info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
 
         Config.initDirs();
 
-        // Load MC
+        loadMinecraft();
+
+        loadPlugins();
+
+        // Edit stuff before the classes are loaded
+        BytecodeModifier.modify();
+
+        // Load mappings AFTER editing is done, otherwise it'll break
+        Mappings.load();
+
+        Mappings.invoke(null, "n.m.init.Bootstrap", "func_151354_b");
+        loadBlocksAndItems();
+
+        GraniteServerComposite.init();
+    }
+
+    private void loadPlugins() {
+        for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File arg0, String arg1) {
+                return arg1.endsWith(".jar");
+            }
+        })) {
+            Granite.getLogger().info("Loading jarfile plugins/%s.", plugin.getName());
+            Granite.loadPluginFromJar(plugin);
+        }
+    }
+
+    public void loadMinecraft() {
+        Granite.getLogger().info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
+
         if (!Config.mcJar.exists()) {
             throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
         }
@@ -60,22 +102,45 @@ public class GraniteStartupThread extends Thread {
         } catch (IOException e) {
             Granite.getLogger().error("Failed to load minecraft_server.jar. Please make sure it exists in the same directory.");
             e.printStackTrace();
-            return;
+            System.exit(1);
         }
+    }
 
-        // Load plugins
-        for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File arg0, String arg1) {
-                return arg1.endsWith(".jar");
+    public void loadBlocksAndItems() {
+        Class<?> blockClass = Mappings.getClass("n.m.block.Block");
+
+        try {
+            Field nameField = Mappings.getField(blockClass, "blockWithMetadata");
+            nameField.setAccessible(true);
+
+            Field nameMapField = BlockTypes.class.getDeclaredField("nameMap");
+            nameMapField.setAccessible(true);
+            BiMap<String, BlockType> nameMap = HashBiMap.create();
+            nameMapField.set(null, nameMap);
+
+            Field idMapField = BlockTypes.class.getDeclaredField("idMap");
+            idMapField.setAccessible(true);
+            BiMap<Integer, BlockType> idMap = HashBiMap.create();
+            idMapField.set(null, idMap);
+
+            for (Object block : (Iterable) Mappings.getField(blockClass, "blockRegistry").get(null)) {
+                String fullName = nameField.get(block).toString();
+                String name = fullName.split(":")[1].split("\\[")[0].split(",")[0];
+
+                Field blockField = BlockTypes.class.getField(name);
+
+                Object metadata = Mappings.getField(blockClass, "blockMetadata").get(block);
+                Collection variants = (Collection) Mappings.getField(metadata.getClass(), "variants").get(metadata);
+
+                GraniteBlockType type = new GraniteBlockType(variants.iterator().next());
+                int id = (int) Mappings.invoke(null, "n.m.block.Block", "getIdFromBlock(n.m.block.Block)", block);
+                nameMap.put(name, type);
+                idMap.put(id, type);
+
+                BlockTypes.class.getDeclaredField(name).set(null, type);
             }
-        })) {
-            Granite.getLogger().info("Loading jarfile plugins/%s.", plugin.getName());
-            Granite.loadPluginFromJar(plugin);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
         }
-
-
-        // Start the server
-        GraniteServerComposite.init();
     }
 }

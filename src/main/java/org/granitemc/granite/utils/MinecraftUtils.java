@@ -23,9 +23,13 @@ package org.granitemc.granite.utils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.GraniteServerComposite;
+import org.granitemc.granite.world.GraniteWorld;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class MinecraftUtils {
     public static Object wrap(Object object) {
@@ -33,8 +37,20 @@ public class MinecraftUtils {
             return GraniteServerComposite.instance;
         } else if (Mappings.getClass("n.m.entity.player.EntityPlayerMP").isInstance(object)) {
             return new GranitePlayer(object);
+        } else if (Mappings.getClass("n.m.world.World").isInstance(object)) {
+            return new GraniteWorld(object);
         } else if (Mappings.getClass("net.minecraft.util.ChatComponentText").isInstance(object)) {
             return new GraniteChatComponentText(object);
+        }
+        return null;
+    }
+
+    public static Object createChunkCoordinates(int x, int y, int z) {
+        Class<?> ccClass = Mappings.getClass("n.m.util.ChunkCoordinates");
+        try {
+            return ccClass.getConstructor(int.class, int.class, int.class).newInstance(x, y, z);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
         }
         return null;
     }

@@ -24,12 +24,17 @@ package org.granitemc.granite.entity.player;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class GranitePlayer extends GraniteEntity implements Player {
@@ -80,7 +85,7 @@ public class GranitePlayer extends GraniteEntity implements Player {
 
     @Override
     public int getDimension() {
-        return (int) invoke("getDimension");
+        return (int) fieldGet("n.m.entity.Entity", "dimension");
     }
 
     @Override
@@ -106,7 +111,7 @@ public class GranitePlayer extends GraniteEntity implements Player {
     @Override
     public void sendMessage(String message) {
         ChatComponentText component = new GraniteChatComponentText(message);
-        invoke("addChatComponentMessage(String)", ((GraniteChatComponentText) component).parent);
+        invoke("addChatComponentMessage(n.m.util.IChatComponent)", ((GraniteChatComponentText) component).parent);
     }
 
     @Override
@@ -136,6 +141,21 @@ public class GranitePlayer extends GraniteEntity implements Player {
     @Override
     public void setCurrentItemOrArmor(int slot, ItemStack item) {
         invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) item).parent);
+    }
+
+    public void sendBlockUpdate(Block b) {
+        try {
+            Mappings.invoke(fieldGet("playerNetServerHandler"), "n.m.network.NetHandlerPlayServer", "sendPacket(n.m.network.Packet)",
+                    Mappings.getClass("n.m.network.play.client.S23PacketBlockChange").getConstructor(
+                            Mappings.getClass("n.m.world.World"),
+                            Mappings.getClass("n.m.util.ChunkCoordinates")
+                    ).newInstance(
+                            ((GraniteWorld) getWorld()).parent,
+                            MinecraftUtils.createChunkCoordinates(b.getX(), b.getY(), b.getZ())
+                    ));
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     /*public void onDeath(DamageSource var1) {

@@ -1,4 +1,4 @@
-package org.granitemc.granite.chat;
+package org.granitemc.granite.api.event.block;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,32 +23,24 @@ package org.granitemc.granite.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.reflect.composite.Composite;
-import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.event.Event;
 
-import java.lang.reflect.InvocationTargetException;
+public class BlockPlaceEvent extends Event {
+    Block block;
+    Player player;
 
-public class GraniteChatComponentText extends Composite implements ChatComponentText {
-    public GraniteChatComponentText(String text) {
-        super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);
+    public BlockPlaceEvent(Block block, Player player) {
+        this.block = block;
+        this.player = player;
     }
 
-    public GraniteChatComponentText(Object parent, Object... args) {
-        super(parent);
+    public Block getBlock() {
+        return block;
     }
 
-    public ChatComponent add(String text) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
-    }
-
-    public ChatComponent add(ChatComponent component) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
-    }
-
-    public String getText() {
-        return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
+    public Player getPlayer() {
+        return player;
     }
 }

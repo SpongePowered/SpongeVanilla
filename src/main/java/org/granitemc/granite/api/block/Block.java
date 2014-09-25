@@ -1,4 +1,4 @@
-package org.granitemc.granite.chat;
+package org.granitemc.granite.api.block;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,32 +23,18 @@ package org.granitemc.granite.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.reflect.composite.Composite;
-import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.api.world.World;
 
-import java.lang.reflect.InvocationTargetException;
+public interface Block {
+    int getX();
 
-public class GraniteChatComponentText extends Composite implements ChatComponentText {
-    public GraniteChatComponentText(String text) {
-        super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);
-    }
+    int getY();
 
-    public GraniteChatComponentText(Object parent, Object... args) {
-        super(parent);
-    }
+    int getZ();
 
-    public ChatComponent add(String text) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
-    }
+    World getWorld();
 
-    public ChatComponent add(ChatComponent component) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
-    }
+    BlockType getType();
 
-    public String getText() {
-        return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
-    }
+    void setType(BlockType type);
 }

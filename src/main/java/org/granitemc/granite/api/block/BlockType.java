@@ -1,4 +1,7 @@
-package org.granitemc.granite.chat;
+package org.granitemc.granite.api.block;
+
+import org.granitemc.granite.api.chat.ChatComponentText;
+import org.granitemc.granite.api.chat.ChatComponentTranslation;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,32 +26,33 @@ package org.granitemc.granite.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.reflect.composite.Composite;
-import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
+public interface BlockType extends ItemType {
+    float getSlipperiness();
 
-import java.lang.reflect.InvocationTargetException;
+    int getLightOpacity();
 
-public class GraniteChatComponentText extends Composite implements ChatComponentText {
-    public GraniteChatComponentText(String text) {
-        super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);
-    }
+    int getLightValue();
 
-    public GraniteChatComponentText(Object parent, Object... args) {
-        super(parent);
-    }
+    // TODO
+    //int getMapColor();
 
-    public ChatComponent add(String text) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
-    }
+    float getHardness();
 
-    public ChatComponent add(ChatComponent component) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
-    }
+    float getBlastResistance();
 
-    public String getText() {
-        return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
-    }
+    boolean isOpaque();
+
+    boolean isTransparent();
+
+    boolean canBlockGrass();
+
+    String getTechnicalName();
+
+    String getName();
+
+    int getBlockId();
+
+    Comparable getMetadata(String key);
+
+    BlockType setMetadata(String key, Comparable value);
 }

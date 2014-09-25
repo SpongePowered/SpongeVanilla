@@ -1,6 +1,7 @@
-package org.granitemc.granite.chat;
+package org.granitemc.granite.api.chat;
 
-/*****************************************************************************************
+/**
+ * **************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -21,33 +22,14 @@ package org.granitemc.granite.chat;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ * **************************************************************************************
+ */
 
-import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentBuilder;
 
-public class GraniteChatComponentBuilder implements ChatComponentBuilder {
-    private ChatComponent component;
+public interface ChatComponentTranslation extends ChatComponent {
+    public Object[] getArguments();
 
-    public ChatComponentBuilder text(String text) {
-        if (component == null) {
-            component = new GraniteChatComponentText(text);
-        } else {
-            component = component.add(text);
-        }
-        return this;
-    }
+    public Object getKey();
 
-    public ChatComponentBuilder component(ChatComponent component) {
-        if (this.component == null) {
-            this.component = component;
-        } else {
-            this.component = this.component.add(component);
-        }
-        return this;
-    }
-
-    public ChatComponent build() {
-        return component;
-    }
+    String getText();
 }

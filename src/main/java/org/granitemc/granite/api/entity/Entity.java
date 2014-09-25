@@ -23,6 +23,8 @@ package org.granitemc.granite.api.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.world.World;
+
 import java.util.UUID;
 
 public interface Entity {
@@ -75,7 +77,7 @@ public interface Entity {
 
     boolean isEating();
 
-    void setEating(boolean var1);
+    void setEating(boolean eating);
 
     int getPortalCooldown();
 
@@ -85,19 +87,19 @@ public interface Entity {
 
     boolean isSneaking();
 
-    void setSneaking(boolean var1);
+    void setSneaking(boolean sneaking);
 
     boolean isSprinting();
 
-    void setSprinting(boolean var1);
+    void setSprinting(boolean sprinting);
 
     boolean isInvisible();
 
-    void setInvisible(boolean var1);
+    void setInvisible(boolean invisible);
 
     int getAir();
 
-    void setAir(int var1);
+    void setAir(int amountOfAir);
 
     void setInWeb();
 
@@ -116,4 +118,6 @@ public interface Entity {
     UUID getUniqueID();
 
     boolean isPushedByWater();
+
+    World getWorld();
 }

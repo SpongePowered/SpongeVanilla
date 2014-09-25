@@ -35,12 +35,10 @@ public abstract class Composite {
 
     public Composite(Object parent) {
         this.parent = parent;
-        this.clazz = parent.getClass();
+        this.clazz = ReflectionUtils.extractClass(parent);
     }
 
     public Composite(Class<?> clazz, Class<?>[] constructorArgTypes, Object... constructorArgs) {
-        this.clazz = ReflectionUtils.extractClass(parent);
-
         try {
             this.parent = clazz.getConstructor(constructorArgTypes).newInstance(constructorArgs);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -56,7 +54,7 @@ public abstract class Composite {
         try {
             return ReflectionUtils.invoke(instance, m, args);
         } catch (InvocationTargetException e) {
-            e.getCause().printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }

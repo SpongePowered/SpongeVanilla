@@ -23,21 +23,17 @@ package org.granitemc.granite.event;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import com.google.common.collect.Lists;
 import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.*;
 
 public class GraniteEventQueue implements EventQueue {
-    private Map<Class<? extends Event>, Queue<Event>> queues;
+    private Map<Class<? extends Event>, List<EventHandlerContainer>> handlers;
 
     public GraniteEventQueue() {
-        queues = new HashMap<>();
+        handlers = new HashMap<>();
     }
 
     /**
@@ -46,60 +42,22 @@ public class GraniteEventQueue implements EventQueue {
      * @param event The event to fire
      */
     public void fireEvent(Event event) {
-        if (!queues.containsKey(event.getClass())) {
-            Queue<Event> queue = new ConcurrentLinkedQueue<>();
-            queues.put(event.getClass(), queue);
+        if (!handlers.containsKey(event.getClass())) {
+            List<EventHandlerContainer> list = new ArrayList<>();
+            handlers.put(event.getClass(), list);
         }
 
-        queues.get(event.getClass()).add(event);
-    }
-
-    /**
-     * Fire an event, and block until it has been processed.
-     *
-     * @param event The event to fire
-     */
-    public void fireEventBlocking(Event event) {
-        fireEventBlocking(event, 0);
-    }
-
-    public void fireEventBlocking(Event event, long timeout) {
-        fireEvent(event);
-
-        synchronized (event) {
-            while (!event.hasBeenProcessed()) {
-                try {
-                    event.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        for (EventHandlerContainer handler : handlers.get(event.getClass())) {
+            handler.invoke(event);
         }
     }
 
-    public Object popEvent(Class<?> type) {
-        Queue queue = queues.get(type);
-        return queue.poll();
-    }
-
-    public List<Event> popEvents(Class<?> type) {
-        Queue<Event> queue = queues.get(type);
-
-        List<Event> ret = Lists.newArrayList();
-        while (queue.peek() != null) {
-            ret.add(queue.poll());
+    public void addHandler(Class<? extends Event> type, EventHandlerContainer handler) {
+        if (!handlers.containsKey(type)) {
+            List<EventHandlerContainer> list = new ArrayList<>();
+            handlers.put(type, list);
         }
 
-        return ret;
-    }
-
-    public List<Event> popAllEvents() {
-        List<Event> ret = Lists.newArrayList();
-
-        for (Class<?> type : queues.keySet()) {
-            ret.addAll(popEvents(type));
-        }
-
-        return ret;
+        handlers.get(type).add(handler);
     }
 }

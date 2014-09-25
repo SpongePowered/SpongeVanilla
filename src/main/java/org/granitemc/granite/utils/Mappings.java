@@ -149,7 +149,7 @@ public class Mappings {
     }
 
     public static String expandShortcuts(String str) {
-        return str.replaceAll("n.m", "net.minecraft");
+        return str.replaceAll("n\\.m", "net.minecraft");
     }
 
     public static Class<?> getClass(String className) {
@@ -193,8 +193,10 @@ public class Mappings {
         Method res = null;
         Class<?> searchClass = getClass(className);
         while (res == null && !searchClass.equals(Object.class)) {
-            if (getClassName(searchClass, false) != null && methods.containsKey(getClassName(searchClass, false)) && methods.get(getClassName(searchClass, false)).containsKey(methodSignature)) {
-                res = methods.get(getClassName(searchClass)).get(methodSignature);
+            if (getClassName(searchClass, false) != null
+                    && methods.containsKey(getClassName(searchClass, false))
+                    && methods.get(getClassName(searchClass, false)).containsKey(expandShortcuts(methodSignature))) {
+                res = methods.get(getClassName(searchClass)).get(expandShortcuts(methodSignature));
                 break;
             } else {
                 searchClass = searchClass.getSuperclass();
@@ -202,8 +204,9 @@ public class Mappings {
         }
 
         if (res == null) {
-            throw new MappingNotFoundException(expandShortcuts(className) + "/" + methodSignature);
+            throw new MappingNotFoundException(expandShortcuts(className) + "/" + expandShortcuts(methodSignature));
         }
+        res.setAccessible(true);
 
         return res;
     }
@@ -236,6 +239,7 @@ public class Mappings {
 
     public static Field getField(String className, String fieldName) {
         Field res = fields.get(expandShortcuts(className)).get(fieldName);
+        res.setAccessible(true);
 
         if (res == null) {
             throw new MappingNotFoundException(className + "/" + fieldName);
@@ -303,14 +307,12 @@ public class Mappings {
         if (classes.containsKey(unobfClassName)) {
             Class<?> clazz = classes.get(unobfClassName);
 
-            // insertion-ordered set
-            Set<Method> joinedMethods = new LinkedHashSet<>();
-            joinedMethods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
-            joinedMethods.addAll(Arrays.asList(clazz.getMethods()));
-
-            for (Method m : joinedMethods) {
-                if (m.getName().equals(methodName) && ReflectionUtils.isMethodCompatible(m, types)) {
-                    return m;
+            try {
+                return clazz.getDeclaredMethod(methodName, types);
+            } catch (NoSuchMethodException ignored) {
+                try {
+                    return clazz.getMethod(methodName, types);
+                } catch (NoSuchMethodException ignored_) {
                 }
             }
         }

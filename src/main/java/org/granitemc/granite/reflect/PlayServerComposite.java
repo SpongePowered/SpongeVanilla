@@ -23,9 +23,23 @@ package org.granitemc.granite.reflect;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.event.block.BlockBreakEvent;
+import org.granitemc.granite.api.event.block.BlockPlaceEvent;
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.reflect.composite.Hook;
+import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.world.GraniteWorld;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayServerComposite extends ProxyComposite {
     public PlayServerComposite(GraniteServerComposite server, Object networkManager, GranitePlayer entityPlayer) {
@@ -34,5 +48,28 @@ public class PlayServerComposite extends ProxyComposite {
                 Mappings.getClass("n.m.network.NetworkManager"),
                 Mappings.getClass("n.m.entity.player.EntityPlayerMP")
         }, server.parent, networkManager, entityPlayer.parent);
+
+        addHook("func_147345_a(n.m.network.play.client.C07PacketPlayerDigging)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                    Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
+
+                    World w = (World) MinecraftUtils.wrap(GraniteServerComposite.instance.worldServerForDimension(p.getDimension()));
+
+                    Block b = ((GraniteWorld) w).getBlock(Mappings.invoke(args[0], args[0].getClass(), "getPosition()"));
+
+                    BlockBreakEvent event = new BlockBreakEvent(b, p);
+                    Granite.getEventQueue().fireEvent(event);
+
+                    if (event.isCancelled()) {
+                        hook.setWasHandled(true);
+                        ((GranitePlayer) p).sendBlockUpdate(b);
+                        return false;
+                    }
+                }
+                return null;
+            }
+        });
     }
 }

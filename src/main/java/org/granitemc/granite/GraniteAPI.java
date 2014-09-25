@@ -35,6 +35,7 @@ import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
+import org.granitemc.granite.chat.GraniteChatComponentBuilder;
 import org.granitemc.granite.event.GraniteEventQueue;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 
@@ -57,8 +58,6 @@ public class GraniteAPI implements API {
 
     private GraniteEventQueue eventQueue;
 
-    private Map<Class<? extends Event>, List<EventHandlerContainer>> eventHandlers;
-
     public static void init() {
 
         try {
@@ -75,7 +74,6 @@ public class GraniteAPI implements API {
         logger = LogManager.getFormatterLogger("Granite");
 
         eventQueue = new GraniteEventQueue();
-        eventHandlers = new HashMap<>();
     }
 
     public PluginContainer getPlugin(String name) {
@@ -133,10 +131,7 @@ public class GraniteAPI implements API {
                                 // TODO: make this part better
                                 for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
                                     for (EventHandlerContainer ehc : ehcList) {
-                                        if (!eventHandlers.containsKey(ehc.getEventType())) {
-                                            eventHandlers.put(ehc.getEventType(), new ArrayList<EventHandlerContainer>());
-                                        }
-                                        eventHandlers.get(ehc.getEventType()).add(ehc);
+                                        eventQueue.addHandler(ehc.getEventType(), ehc);
                                     }
                                 }
                             }
@@ -156,7 +151,7 @@ public class GraniteAPI implements API {
     }
 
     public ChatComponentBuilder getChatComponentBuilder() {
-        return null;
+        return new GraniteChatComponentBuilder();
     }
 
     public ItemStack createItemStack() {
@@ -174,16 +169,6 @@ public class GraniteAPI implements API {
     }
 
     public void tick() {
-        List<Event> events = eventQueue.popAllEvents();
-
-        for (Event event : events) {
-            if (eventHandlers.containsKey(event.getClass())) {
-                for (EventHandlerContainer ehc : eventHandlers.get(event.getClass())) {
-                    ehc.invoke(event);
-                }
-            }
-
-            event.finishProcessing();
-        }
+        //TODO: scheduler
     }
 }

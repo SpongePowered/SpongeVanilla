@@ -1,4 +1,4 @@
-package org.granitemc.granite.chat;
+package org.granitemc.granite.block;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,32 +23,53 @@ package org.granitemc.granite.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.reflect.composite.Composite;
-import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.world.World;
+import org.granitemc.granite.world.GraniteWorld;
 
-import java.lang.reflect.InvocationTargetException;
+public class GraniteBlock implements Block {
+    private int x;
+    private int y;
+    private int z;
+    private BlockType type;
+    private World world;
 
-public class GraniteChatComponentText extends Composite implements ChatComponentText {
-    public GraniteChatComponentText(String text) {
-        super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);
+    public GraniteBlock(int x, int y, int z, GraniteBlockType type, World world) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.type = type;
+        this.world = world;
     }
 
-    public GraniteChatComponentText(Object parent, Object... args) {
-        super(parent);
+    @Override
+    public int getX() {
+        return x;
     }
 
-    public ChatComponent add(String text) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
+    @Override
+    public int getY() {
+        return y;
     }
 
-    public ChatComponent add(ChatComponent component) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
+    @Override
+    public int getZ() {
+        return z;
     }
 
-    public String getText() {
-        return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
+    @Override
+    public World getWorld() {
+        return world;
+    }
+
+    @Override
+    public BlockType getType() {
+        return ((GraniteWorld) world).getBlockTypeAtPosition(x, y, z);
+    }
+
+    @Override
+    public void setType(BlockType type) {
+        ((GraniteWorld) world).setBlockTypeAtPosition(x, y, z, type);
     }
 }

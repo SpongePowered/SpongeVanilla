@@ -40,6 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.security.KeyPair;
+import java.util.Iterator;
 import java.util.List;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {
@@ -48,13 +49,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     private SCMComposite scm;
 
     public static GraniteServerComposite init() {
-        // Edit stuff before the classes are loaded
-        BytecodeModifier.modify();
-
-        // Load mappings AFTER editing is done, otherwise it'll break
-        Mappings.load();
-        Mappings.invoke(null, "n.m.init.Bootstrap", "func_151354_b");
-
         return instance = new GraniteServerComposite(new File("."));
     }
 
@@ -508,5 +502,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public Object worldServerForDimension(int var1) {
         return invoke("n.m.server.MinecraftServer", "worldServerForDimension(int)", var1);
+    }
+
+    public boolean isOnServerThread() {
+        return fieldGet("n.m.server.MinecraftServer", "serverThread") == Thread.currentThread();
     }
 }

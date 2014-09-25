@@ -24,7 +24,9 @@ package org.granitemc.granite.entity;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.entity.Entity;
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.util.UUID;
 
@@ -472,9 +474,9 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public void setEating(boolean var1) {
+    public void setEating(boolean eating) {
         //Obf: f
-        invoke("setEating(boolean)", var1);
+        invoke("setEating(boolean)", eating);
     }
 
     //TODO: work out what class amj is
@@ -514,9 +516,9 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public void setSneaking(boolean var1) {
+    public void setSneaking(boolean sneaking) {
         //Obf: c
-        invoke("setSneaking(boolean)", var1);
+        invoke("setSneaking(boolean)", sneaking);
     }
 
     @Override
@@ -526,9 +528,9 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public void setSprinting(boolean var1) {
+    public void setSprinting(boolean sprinting) {
         //Obf: d
-        invoke("setSprinting(boolean)", var1);
+        invoke("setSprinting(boolean)", sprinting);
     }
 
     @Override
@@ -538,9 +540,9 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public void setInvisible(boolean var1) {
+    public void setInvisible(boolean invisible) {
         //Obf: e
-        invoke("setInvisible(boolean)", var1);
+        invoke("setInvisible(boolean)", invisible);
     }
 
     /*public boolean getFlag(int flag) {
@@ -560,9 +562,9 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public void setAir(int var1) {
+    public void setAir(int amountOfAir) {
         //Obf: h
-        invoke("setAir(int)", var1);
+        invoke("setAir(int)", amountOfAir);
     }
 
     //TODO: Find out what class ads is
@@ -684,6 +686,11 @@ public class GraniteEntity extends Composite implements Entity {
     public boolean isPushedByWater() {
         //Obf: aK
         return (boolean) invoke("isPushedByWater");
+    }
+
+    @Override
+    public World getWorld() {
+        return (World) MinecraftUtils.wrap(invoke("getWorld"));
     }
 
     //TODO: Find Suitable name and get ho class

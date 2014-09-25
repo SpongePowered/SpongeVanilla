@@ -25,19 +25,14 @@ package org.granitemc.granite.chat;
 
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.chat.ChatComponentText;
+import org.granitemc.granite.api.chat.ChatComponentTranslation;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
-import java.lang.reflect.InvocationTargetException;
-
-public class GraniteChatComponentText extends Composite implements ChatComponentText {
-    public GraniteChatComponentText(String text) {
-        super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);
-    }
-
-    public GraniteChatComponentText(Object parent, Object... args) {
-        super(parent);
+public class GraniteChatComponentTranslation extends Composite implements ChatComponentTranslation {
+    public GraniteChatComponentTranslation(String key, Object... values) {
+        super(Mappings.getClass("n.m.util.ChatComponentTranslation"), new Class[]{String.class, Object[].class}, key, values);
     }
 
     public ChatComponent add(String text) {
@@ -48,7 +43,18 @@ public class GraniteChatComponentText extends Composite implements ChatComponent
         return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
     }
 
+    @Override
     public String getText() {
         return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
+    }
+
+    @Override
+    public Object[] getArguments() {
+        return (Object[]) fieldGet("formatArgs");
+    }
+
+    @Override
+    public String getKey() {
+        return (String) fieldGet("key");
     }
 }
