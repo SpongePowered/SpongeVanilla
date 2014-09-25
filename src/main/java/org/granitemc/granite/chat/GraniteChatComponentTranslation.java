@@ -24,7 +24,6 @@ package org.granitemc.granite.chat;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.chat.ChatComponentTranslation;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;

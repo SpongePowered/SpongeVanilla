@@ -25,7 +25,6 @@ package org.granitemc.granite;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
@@ -41,9 +40,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class GraniteStartupThread extends Thread {
 

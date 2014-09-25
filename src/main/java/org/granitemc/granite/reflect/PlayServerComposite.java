@@ -27,7 +27,6 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.event.block.BlockBreakEvent;
-import org.granitemc.granite.api.event.block.BlockPlaceEvent;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;
@@ -38,8 +37,6 @@ import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayServerComposite extends ProxyComposite {
     public PlayServerComposite(GraniteServerComposite server, Object networkManager, GranitePlayer entityPlayer) {

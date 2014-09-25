@@ -27,10 +27,11 @@ import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.world.Location;
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
@@ -44,24 +45,30 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }
 
     @Override
-    public void teleportToDimension(int dimId) {
+    public void teleportToWorld(World world) {
         //TODO: Check if this works or need to be invoked differently
-        invoke("teleportToDimension", dimId);
+        int worldId = world.getWorldId();
+        invoke("teleportToDimension", worldId);
     }
 
     @Override
     public void teleportToPlayer(Player player) {
-        if (getDimension() != player.getDimension()) {
-            teleportToDimension(player.getDimension());
-        }
-        setPosition(player.getX(), player.getY(), player.getZ());
+        setPosition(player.getLocation());
     }
 
     @Override
-    public void setPosition(double x, double y, double z) {
+    public void setPosition(Location location) {
         /*Object asLivingEntityBase = Class.forName("wv").cast(parent);
         Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);*/
+        int world = location.getWorldId();
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        float pitch = location.getPitch();
+        float yaw = location.getYaw();
+        //TODO: set world id
         invoke("setPosition(Double;Double;Double)", x, y, z);
+        //TODO: set yaw and pitch
     }
 
     @Override
@@ -85,14 +92,15 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }
 
     @Override
-    public int getDimension() {
-        return (int) fieldGet("n.m.entity.Entity", "dimension");
+    public World getWorld() {
+        //TODO: Get this done
+        return null;
     }
 
     //TODO: get entity dimension and move this method to entity (Bug Ash)
     @Override
     public Location getLocation() {
-        return new Location(getDimension(), getX(), getY(), getZ());
+        return new Location(getWorld(), getX(), getY(), getZ());
     }
 
     @Override

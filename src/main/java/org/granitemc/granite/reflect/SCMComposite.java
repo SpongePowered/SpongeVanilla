@@ -38,7 +38,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class SCMComposite extends ProxyComposite {
+
     public SCMComposite(GraniteServerComposite server) {
+
         super(Mappings.getClass("n.m.server.dedicated.DedicatedPlayerList"), new Class[]{Mappings.getClass("n.m.server.dedicated.DedicatedServer")}, server.parent);
 
         addHook("initializeConnectionToPlayer(n.m.network.NetworkManager;n.m.entity.player.EntityPlayerMP)", new HookListener() {

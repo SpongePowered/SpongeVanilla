@@ -23,17 +23,14 @@ package org.granitemc.granite.world;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import com.google.common.collect.ImmutableMap;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.block.BlockTypes;
 import org.granitemc.granite.api.world.World;
-import org.granitemc.granite.block.*;
+import org.granitemc.granite.block.GraniteBlock;
+import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class GraniteWorld extends Composite implements World {
     public GraniteWorld(Object parent) {
@@ -44,6 +41,12 @@ public class GraniteWorld extends Composite implements World {
     public Block getBlock(int x, int y, int z) {
         GraniteBlockType type = new GraniteBlockType(invoke("net.minecraft.world.World", "getBlock(n.m.util.ChunkCoordinates)", MinecraftUtils.createChunkCoordinates(x, y, z)));
         return new GraniteBlock(x, y, z, type, this);
+    }
+
+    //TODO: Not sure how to get this?
+    @Override
+    public int getWorldId() {
+        return 0;
     }
 
     public Block getBlock(Object chunkCoordinates) {

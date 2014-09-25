@@ -27,14 +27,17 @@ import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.Location;
+import org.granitemc.granite.api.world.World;
 
 import java.util.UUID;
 
 public interface Player extends CommandSender, Entity {
 
-    void teleportToDimension(int dimId);
+    void teleportToWorld(World world);
 
     void teleportToPlayer(Player player);
+
+    void setPosition(Location location);
 
     UUID getUUID();
 

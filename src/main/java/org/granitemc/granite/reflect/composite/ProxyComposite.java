@@ -29,28 +29,14 @@ import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProxyComposite extends Composite {
     private Map<String, List<Hook>> hooks;
     private List<Hook> globalHooks;
-
-    public void addHook(String methodSignature, HookListener listener) {
-        if (!hooks.containsKey(Mappings.expandShortcuts(methodSignature))) {
-            hooks.put(Mappings.expandShortcuts(methodSignature), new ArrayList<Hook>());
-        }
-
-        Hook hook = new Hook();
-        hook.listener = listener;
-        hook.methodSignature = Mappings.expandShortcuts(methodSignature);
-        hooks.get(Mappings.expandShortcuts(methodSignature)).add(hook);
-    }
-
-    public void addHook(HookListener listener) {
-        Hook hook = new Hook();
-        hook.listener = listener;
-        globalHooks.add(hook);
-    }
 
     public ProxyComposite(Class<?> clazz, Class<?>[] constructorArgTypes, Object... constructorArgs) {
         this(clazz, false, constructorArgTypes, constructorArgs);
@@ -99,6 +85,23 @@ public class ProxyComposite extends Composite {
                 }
             }
         }, createIdentical, constructorArgTypes, constructorArgs);
+    }
+
+    public void addHook(String methodSignature, HookListener listener) {
+        if (!hooks.containsKey(Mappings.expandShortcuts(methodSignature))) {
+            hooks.put(Mappings.expandShortcuts(methodSignature), new ArrayList<Hook>());
+        }
+
+        Hook hook = new Hook();
+        hook.listener = listener;
+        hook.methodSignature = Mappings.expandShortcuts(methodSignature);
+        hooks.get(Mappings.expandShortcuts(methodSignature)).add(hook);
+    }
+
+    public void addHook(HookListener listener) {
+        Hook hook = new Hook();
+        hook.listener = listener;
+        globalHooks.add(hook);
     }
 
     /*public ProxyComposite(Object parent, Object... args) {

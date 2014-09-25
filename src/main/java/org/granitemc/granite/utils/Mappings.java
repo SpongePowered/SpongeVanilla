@@ -33,7 +33,9 @@ import org.granitemc.granite.reflect.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Mappings {
     // method signature = executeCommand(n.m.command.ICommandSender, String)
@@ -192,6 +194,7 @@ public class Mappings {
 
         Method res = null;
         Class<?> searchClass = getClass(className);
+        //TODO: \/ is that needed as it is always null and it is not needed?
         while (res == null && !searchClass.equals(Object.class)) {
             if (getClassName(searchClass, false) != null
                     && methods.containsKey(getClassName(searchClass, false))

@@ -40,17 +40,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.security.KeyPair;
-import java.util.Iterator;
 import java.util.List;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {
     public static GraniteServerComposite instance;
 
     private SCMComposite scm;
-
-    public static GraniteServerComposite init() {
-        return instance = new GraniteServerComposite(new File("."));
-    }
 
     public GraniteServerComposite(File worldsLocation) {
         super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), new Class[]{File.class}, worldsLocation);
@@ -70,6 +65,10 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
         // Start this baby
         invoke("n.m.server.MinecraftServer", "startServerThread");
+    }
+
+    public static GraniteServerComposite init() {
+        return instance = new GraniteServerComposite(new File("."));
     }
 
     private void injectSCM() {

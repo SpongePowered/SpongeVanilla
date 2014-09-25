@@ -26,8 +26,6 @@ package org.granitemc.granite.reflect;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
-import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.event.block.BlockBreakEvent;
 import org.granitemc.granite.api.event.block.BlockPlaceEvent;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
@@ -36,7 +34,6 @@ import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
-import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -50,6 +47,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
         addHook(new HookListener() {
             List<String> has = new ArrayList<>();
+
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (!has.contains(method.toString())) {

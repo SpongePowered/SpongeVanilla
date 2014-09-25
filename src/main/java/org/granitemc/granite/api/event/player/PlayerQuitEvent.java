@@ -32,6 +32,7 @@ import java.util.UUID;
  */
 
 public class PlayerQuitEvent extends Event {
+
     private Player player;
 
     public PlayerQuitEvent(Player player) {

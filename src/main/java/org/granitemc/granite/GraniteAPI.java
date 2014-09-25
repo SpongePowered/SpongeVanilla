@@ -29,7 +29,6 @@ import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
-import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
@@ -45,7 +44,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -58,6 +60,13 @@ public class GraniteAPI implements API {
 
     private GraniteEventQueue eventQueue;
 
+    private GraniteAPI() {
+        plugins = new ArrayList<>();
+        logger = LogManager.getFormatterLogger("Granite");
+
+        eventQueue = new GraniteEventQueue();
+    }
+
     public static void init() {
 
         try {
@@ -67,13 +76,6 @@ public class GraniteAPI implements API {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
-
-    private GraniteAPI() {
-        plugins = new ArrayList<>();
-        logger = LogManager.getFormatterLogger("Granite");
-
-        eventQueue = new GraniteEventQueue();
     }
 
     public PluginContainer getPlugin(String name) {

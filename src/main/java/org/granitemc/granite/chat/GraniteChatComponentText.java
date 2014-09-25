@@ -29,8 +29,6 @@ import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class GraniteChatComponentText extends Composite implements ChatComponentText {
     public GraniteChatComponentText(String text) {
         super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);

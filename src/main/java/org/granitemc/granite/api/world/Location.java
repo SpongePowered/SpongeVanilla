@@ -35,6 +35,11 @@ public class Location implements Cloneable {
         this.world = world;
     }
 
+    public int getWorldId() {
+        //TODO: get the int for the id.
+        return 0;
+    }
+
     public double getX() {
         return x;
     }
