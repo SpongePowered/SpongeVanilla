@@ -31,30 +31,11 @@ import org.granitemc.granite.api.world.Location;
 import java.util.UUID;
 
 public interface Player extends CommandSender, Entity {
-
-    void teleportToDimension(int dimId);
-
-    void teleportToPlayer(Player player);
-
-    UUID getUUID();
-
-    double getX();
-
-    double getY();
-
-    double getZ();
-
-    Location getLocation();
-
     boolean isUsingItem();
 
     void stopUsingItem();
 
     void clearItemInUse();
-
-    void heal(int amount);
-
-    void setHealth(int amount);
 
     ItemStack getEquipmentInSlot(int slot);
 

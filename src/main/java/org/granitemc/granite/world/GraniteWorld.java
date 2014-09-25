@@ -62,7 +62,14 @@ public class GraniteWorld extends Composite implements World {
     }
 
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type) {
-
         invoke("n.m.world.World", "setBlock(n.m.util.ChunkCoordinates;n.m.block.IBlockWithMetadata)", MinecraftUtils.createChunkCoordinates(x, y, z), ((GraniteBlockType) type).parent);
+    }
+
+    public int getDimension() {
+        return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getDimension");
+    }
+
+    public Object getWorldInfo() {
+        return invoke("n.m.world.World", "getWorldInfo()");
     }
 }

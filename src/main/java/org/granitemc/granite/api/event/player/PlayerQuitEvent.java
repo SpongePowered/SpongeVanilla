@@ -41,17 +41,4 @@ public class PlayerQuitEvent extends Event {
     public Player getPlayer() {
         return player;
     }
-
-    public UUID getPlayerUUID() {
-        return player.getUUID();
-    }
-
-    public int getPlayerDimension() {
-        return player.getDimension();
-    }
-
-    public Location getPlayerLocation() {
-        return player.getLocation();
-    }
-
 }

@@ -44,55 +44,10 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }
 
     @Override
-    public void teleportToDimension(int dimId) {
-        //TODO: Check if this works or need to be invoked differently
-        invoke("teleportToDimension", dimId);
-    }
-
-    @Override
-    public void teleportToPlayer(Player player) {
-        if (getDimension() != player.getDimension()) {
-            teleportToDimension(player.getDimension());
-        }
-        setPosition(player.getX(), player.getY(), player.getZ());
-    }
-
-    @Override
     public void setPosition(double x, double y, double z) {
         /*Object asLivingEntityBase = Class.forName("wv").cast(parent);
         Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);*/
         invoke("setPosition(Double;Double;Double)", x, y, z);
-    }
-
-    @Override
-    public UUID getUUID() {
-        return (UUID) invoke("getUUID");
-    }
-
-    @Override
-    public double getX() {
-        return (double) fieldGet("n.m.entity.Entity", "posX");
-    }
-
-    @Override
-    public double getY() {
-        return (double) fieldGet("n.m.entity.Entity", "posY");
-    }
-
-    @Override
-    public double getZ() {
-        return (double) fieldGet("n.m.entity.Entity", "posZ");
-    }
-
-    @Override
-    public int getDimension() {
-        return (int) fieldGet("n.m.entity.Entity", "dimension");
-    }
-
-    //TODO: get entity dimension and move this method to entity (Bug Ash)
-    @Override
-    public Location getLocation() {
-        return new Location(getDimension(), getX(), getY(), getZ());
     }
 
     @Override
@@ -119,18 +74,6 @@ public class GranitePlayer extends GraniteEntity implements Player {
     public void sendMessage(String message) {
         ChatComponentText component = new GraniteChatComponentText(message);
         invoke("addChatComponentMessage(n.m.util.IChatComponent)", ((GraniteChatComponentText) component).parent);
-    }
-
-    @Override
-    public void heal(int amount) {
-        //TODO: Check if this works or need to be invoked differently
-        invoke("heal", amount);
-    }
-
-    @Override
-    public void setHealth(int amount) {
-        //TODO: Check if this works or need to be invoked differently
-        invoke("setHealth", amount);
     }
 
     @Override

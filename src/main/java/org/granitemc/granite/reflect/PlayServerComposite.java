@@ -55,7 +55,7 @@ public class PlayServerComposite extends ProxyComposite {
                 if (!GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
 
-                    World w = (World) MinecraftUtils.wrap(GraniteServerComposite.instance.worldServerForDimension(p.getDimension()));
+                    World w = p.getWorld();
 
                     Block b = ((GraniteWorld) w).getBlock(Mappings.invoke(args[0], args[0].getClass(), "getPosition()"));
 

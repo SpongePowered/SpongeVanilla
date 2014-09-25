@@ -23,6 +23,8 @@ package org.granitemc.granite.api.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
 
 import java.util.UUID;
@@ -115,9 +117,27 @@ public interface Entity {
 
     void travelToDimension(int dimension);
 
+    Location getLocation();
+
     UUID getUniqueID();
 
     boolean isPushedByWater();
 
     World getWorld();
+
+    UUID getUUID();
+
+    double getX();
+
+    double getY();
+
+    double getZ();
+
+    void heal(int amount);
+
+    void setHealth(int amount);
+
+    void teleportToDimension(int dimId);
+
+    void teleportToPlayer(Player player);
 }

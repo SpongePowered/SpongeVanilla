@@ -23,15 +23,17 @@ package org.granitemc.granite.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.entity.Entity;
+import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.world.GraniteWorld;
 
 import java.util.UUID;
 
 public class GraniteEntity extends Composite implements Entity {
-
     public GraniteEntity(Object parent) {
         super(parent);
     }
@@ -39,6 +41,22 @@ public class GraniteEntity extends Composite implements Entity {
     public GraniteEntity(Object parent, boolean b) {
         super(parent);
     }
+
+
+    @Override
+    public void teleportToDimension(int dimId) {
+        //TODO: Check if this works or need to be invoked differently
+        invoke("teleportToDimension", dimId);
+    }
+
+    @Override
+    public void teleportToPlayer(Player player) {
+        if (!getWorld().equals(player.getWorld())) {
+            teleportToDimension(((GraniteWorld) player.getWorld()).getDimension());
+        }
+        setPosition(player.getX(), player.getY(), player.getZ());
+    }
+
 
     @Override
     public int getEntityId() {
@@ -131,6 +149,18 @@ public class GraniteEntity extends Composite implements Entity {
     public void kill() {
         //Obf: O
         invoke("kill");
+    }
+
+    @Override
+    public void heal(int amount) {
+        //TODO: Check if this works or need to be invoked differently
+        invoke("heal", amount);
+    }
+
+    @Override
+    public void setHealth(int amount) {
+        //TODO: Check if this works or need to be invoked differently
+        invoke("setHealth", amount);
     }
 
     /*public boolean isOffsetPositionInLiquid(double x, double y, double z) {
@@ -691,6 +721,33 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public World getWorld() {
         return (World) MinecraftUtils.wrap(invoke("getWorld"));
+    }
+
+
+    @Override
+    public UUID getUUID() {
+        return (UUID) invoke("getUUID");
+    }
+
+    @Override
+    public double getX() {
+        return (double) fieldGet("n.m.entity.Entity", "posX");
+    }
+
+    @Override
+    public double getY() {
+        return (double) fieldGet("n.m.entity.Entity", "posY");
+    }
+
+    @Override
+    public double getZ() {
+        return (double) fieldGet("n.m.entity.Entity", "posZ");
+    }
+
+
+    @Override
+    public Location getLocation() {
+        return new Location(getWorld(), getX(), getY(), getZ());
     }
 
     //TODO: Find Suitable name and get ho class
