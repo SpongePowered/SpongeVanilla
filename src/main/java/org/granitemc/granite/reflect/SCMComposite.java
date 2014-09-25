@@ -26,6 +26,7 @@ package org.granitemc.granite.reflect;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.event.player.PlayerJoinEvent;
+import org.granitemc.granite.api.event.player.PlayerQuitEvent;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -57,6 +58,17 @@ public class SCMComposite extends ProxyComposite {
                 } catch (IllegalAccessException | NoSuchFieldException e) {
                     e.printStackTrace();
                 }
+                return null;
+            }
+        });
+
+        addHook("playerLoggedOut(n.m.entity.player.EntityPlayerMP)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                Player player = (Player) MinecraftUtils.wrap(args[0]);
+
+                PlayerQuitEvent event = new PlayerQuitEvent(player);
+                Granite.getEventQueue().fireEvent(event);
                 return null;
             }
         });

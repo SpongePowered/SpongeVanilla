@@ -2,6 +2,7 @@ package org.granitemc.granite.api.event.player;
 
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.utils.Location;
 
 /**
  * **************************************************************************************
@@ -37,5 +38,9 @@ public class PlayerJoinEvent extends Event {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Location getPlayerLocation() {
+        return player.getLocation();
     }
 }
