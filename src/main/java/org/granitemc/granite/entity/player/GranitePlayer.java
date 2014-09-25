@@ -30,7 +30,7 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.utils.Location;
+import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
