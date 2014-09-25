@@ -49,6 +49,7 @@ gradle-app.setting
 .project
 .classpath
 .settings/
+.checkstyle
 bin/
 
 ### Other ###
