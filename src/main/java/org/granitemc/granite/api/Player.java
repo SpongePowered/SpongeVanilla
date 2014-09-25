@@ -44,8 +44,6 @@ public interface Player extends CommandSender, Entity {
 
     double getZ();
 
-    int getDimension();
-
     Location getLocation();
 
     boolean isUsingItem();

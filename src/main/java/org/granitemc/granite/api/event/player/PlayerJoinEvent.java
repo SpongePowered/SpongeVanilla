@@ -25,7 +25,6 @@ import org.granitemc.granite.api.Player;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.world.Location;
 
