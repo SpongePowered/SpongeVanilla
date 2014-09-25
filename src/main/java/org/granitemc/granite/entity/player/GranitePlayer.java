@@ -30,6 +30,7 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.utils.Location;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
@@ -86,6 +87,12 @@ public class GranitePlayer extends GraniteEntity implements Player {
     @Override
     public int getDimension() {
         return (int) fieldGet("n.m.entity.Entity", "dimension");
+    }
+
+    //TODO: get entity dimension and move this method to entity (Bug Ash)
+    @Override
+    public Location getLocation() {
+        return new Location(getDimension(), getX(), getY(), getZ());
     }
 
     @Override

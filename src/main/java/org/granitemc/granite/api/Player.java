@@ -26,10 +26,12 @@ package org.granitemc.granite.api;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.utils.Location;
 
 import java.util.UUID;
 
 public interface Player extends CommandSender, Entity {
+
     void teleportToDimension(int dimId);
 
     void teleportToPlayer(Player player);
@@ -43,6 +45,8 @@ public interface Player extends CommandSender, Entity {
     double getZ();
 
     int getDimension();
+
+    Location getLocation();
 
     boolean isUsingItem();
 
