@@ -46,8 +46,8 @@ To-do list
 - ~~Command proxy~~
 - ~~Plugin loader~~
 - ~~Command API~~
-- **Event system**
-- **API for worlds, items, players**
+- ~~Event system~~
+- **API for ~~worlds~~, ~~blocks~~, items, ~~players~~**
 - Essentials-style example plugin
 - Multiworld
 - ??? (More to come)
