@@ -54,8 +54,8 @@ bin/
 
 ### Other ###
 
-logs
-world
+logs/
+world/
 *.properties
 *.json
 eula.txt
