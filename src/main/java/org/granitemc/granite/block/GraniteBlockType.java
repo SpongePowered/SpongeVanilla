@@ -161,6 +161,22 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     @Override
+    public boolean equals(BlockType that) {
+        GraniteBlockType thatGbt = ((GraniteBlockType) that);
+        if (!thatGbt.getUnlocalizedName().equals(thatGbt.getUnlocalizedName())) return false;
+        for (String key : thatGbt.minecraftMetadataValuePossibilities.keySet()) {
+            if (!getMetadata(key).equals(thatGbt.getMetadata(key))) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean typeEquals(BlockType that) {
+        GraniteBlockType thatGbt = ((GraniteBlockType) that);
+        return getUnlocalizedName().equals(thatGbt.getUnlocalizedName());
+    }
+
+    @Override
     public int getMaxStackSize() {
         return 64;
     }
@@ -169,5 +185,9 @@ public class GraniteBlockType extends Composite implements BlockType {
     @Override
     public int getMaxDamage() {
         return 0;
+    }
+
+    public Object getBlockObject() {
+        return invoke("n.m.block.BlockWithMetadata", "getBlock");
     }
 }

@@ -55,4 +55,8 @@ public interface BlockType extends ItemType {
     Comparable getMetadata(String key);
 
     BlockType setMetadata(String key, Comparable value);
+
+    boolean equals(BlockType that);
+
+    boolean typeEquals(BlockType that);
 }
