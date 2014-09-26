@@ -2,14 +2,12 @@ package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,7 +135,21 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     @Override
     public String getName() {
+        // blockType is now ItemStack
         Object blockType = Mappings.invoke(invoke("getBlock"), "n.m.block.Block", "createStackedBlock(n.m.block.IBlockWithMetadata)", parent);
+        if (Mappings.invoke(blockType, "n.m.item.ItemStack", "getItem") == null) {
+            // TODO: move itemstack creation somewhere else
+            try {
+                blockType = Mappings.getClass("n.m.item.ItemStack").getConstructor(Mappings.getClass("n.m.item.Item")).newInstance(Mappings.invoke(null, "n.m.item.Item", "getItemFromBlock(n.m.block.Block)", invoke("getBlock")));
+
+                if (Mappings.invoke(blockType, "n.m.item.ItemStack", "getItem") == null) {
+                    blockType = Mappings.getClass("n.m.item.ItemStack").getConstructor(Mappings.getClass("n.m.item.Item")).newInstance(Mappings.invoke(null, "n.m.item.Item", "getItemFromName(String)", "minecraft:" + getTechnicalName()));
+                }
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
         return (String) Mappings.invoke(blockType, "n.m.item.ItemStack", "getName()");
     }
 

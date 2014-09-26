@@ -26,10 +26,11 @@ package org.granitemc.granite.reflect;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.event.block.BlockBreakEvent;
 import org.granitemc.granite.api.event.block.BlockPlaceEvent;
 import org.granitemc.granite.api.world.World;
+import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -38,6 +39,8 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,66 +51,87 @@ public class ItemInWorldComposite extends ProxyComposite {
                 Mappings.getClass("n.m.world.World"),
         }, world);
 
-        addHook(new HookListener() {
-            List<String> has = new ArrayList<>();
-            @Override
-            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                if (!has.contains(method.toString())) {
-                    has.add(method.toString());
-
-                }
-                return null;
-            }
-        });
-
         // Holy mother of method signature
         addHook("activateBlockOrUseItem(n.m.entity.player.EntityPlayer;n.m.world.World;n.m.item.ItemStack;n.m.util.ChunkCoordinates;net.minecraft.block.Direction;float;float;float)", new HookListener() {
+
+            private Field sdfjksdfhjksdfhjk;
+
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (GraniteServerComposite.instance.isOnServerThread()) {
-                    Player p = (Player) MinecraftUtils.wrap(args[0]);
+                    // TODO: change to ItemStack class (when available and working)
+                    Object itemStack = args[2];
+                    Object item = Mappings.invoke(itemStack, "n.m.item.ItemStack", "getItem");
 
-                    World w = (World) MinecraftUtils.wrap(args[1]);
+                    if (Mappings.getClass("n.m.item.ItemBlock").isInstance(item)) {
+                        Player p = (Player) MinecraftUtils.wrap(args[0]);
 
-                    Object chunkCoordinates = args[3];
-                    int preX = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getX");
-                    int preY = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getY");
-                    int preZ = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getZ");
+                        World w = (World) MinecraftUtils.wrap(args[1]);
 
-                    int x = preX;
-                    int y = preY;
-                    int z = preZ;
+                        Object chunkCoordinates = args[3];
+                        int preX = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getX");
+                        int preY = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getY");
+                        int preZ = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getZ");
 
-                    int direction = ((Enum) args[4]).ordinal();
-                    switch (direction) {
-                        case 0:
-                            y--;
-                            break;
-                        case 1:
-                            y++;
-                            break;
-                        case 2:
-                            z--;
-                            break;
-                        case 3:
-                            z++;
-                            break;
-                        case 4:
-                            x--;
-                            break;
-                        case 5:
-                            x++;
-                            break;
-                    }
+                        int x = preX;
+                        int y = preY;
+                        int z = preZ;
 
-                    Block b = w.getBlock(x, y, z);
+                        Block oldBlock = w.getBlock(x, y, z);
 
-                    BlockPlaceEvent event = new BlockPlaceEvent(b, p);
-                    Granite.getEventQueue().fireEvent(event);
+                        int direction = ((Enum) args[4]).ordinal();
 
-                    if (event.isCancelled()) {
+                        if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && oldBlock.getType().getMetadata("layers") == 1) {
+                            direction = 1;
+                        } else if (!(boolean) Mappings.invoke(
+                                ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
+                                "n.m.block.Block",
+                                "isReplaceable(n.m.world.World;n.m.util.ChunkCoordinates)",
+                                ((GraniteWorld) w).parent,
+                                MinecraftUtils.createChunkCoordinates(x, y, z)
+                        )) {
+                            switch (direction) {
+                                case 0:
+                                    y--;
+                                    break;
+                                case 1:
+                                    y++;
+                                    break;
+                                case 2:
+                                    z--;
+                                    break;
+                                case 3:
+                                    z++;
+                                    break;
+                                case 4:
+                                    x--;
+                                    break;
+                                case 5:
+                                    x++;
+                                    break;
+                            }
+                        }
+
+                        BlockType oldBlockType = w.getBlock(x, y, z).getType();
+
+                        try {
+                            proxyCallback.invoke(self, args);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+
+                        Block b = w.getBlock(x, y, z);
+                        if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
+                            BlockPlaceEvent event = new BlockPlaceEvent(b, p);
+                            Granite.getEventQueue().fireEvent(event);
+
+                            if (event.isCancelled()) {
+                                b.setType(oldBlockType);
+                                ((GranitePlayer) p).sendBlockUpdate(b);
+                            }
+                        }
+
                         hook.setWasHandled(true);
-                        ((GranitePlayer) p).sendBlockUpdate(b);
                     }
                 }
                 return null;
