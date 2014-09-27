@@ -27,7 +27,6 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.event.block.BlockBreakEvent;
-import org.granitemc.granite.api.event.block.BlockPlaceEvent;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;

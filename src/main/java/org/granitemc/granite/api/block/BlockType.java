@@ -1,10 +1,5 @@
 package org.granitemc.granite.api.block;
 
-import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.api.chat.ChatComponentTranslation;
-
-import java.util.Random;
-
 /*****************************************************************************************
  * License (MIT)
  *

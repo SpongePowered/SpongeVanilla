@@ -23,7 +23,6 @@ package org.granitemc.granite.utils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.GraniteServerComposite;

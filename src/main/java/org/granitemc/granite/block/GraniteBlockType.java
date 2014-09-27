@@ -2,8 +2,6 @@ package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.block.ItemTypes;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;

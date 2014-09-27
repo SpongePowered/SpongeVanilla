@@ -23,17 +23,14 @@ package org.granitemc.granite.world;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import com.google.common.collect.ImmutableMap;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.block.BlockTypes;
 import org.granitemc.granite.api.world.World;
-import org.granitemc.granite.block.*;
+import org.granitemc.granite.block.GraniteBlock;
+import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class GraniteWorld extends Composite implements World {
     public GraniteWorld(Object parent) {

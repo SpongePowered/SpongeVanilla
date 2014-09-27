@@ -26,9 +26,6 @@ package org.granitemc.granite.api;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.api.world.Location;
-
-import java.util.UUID;
 
 public interface Player extends CommandSender, Entity {
     boolean isUsingItem();

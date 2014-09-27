@@ -26,7 +26,6 @@ package org.granitemc.granite.item;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 
