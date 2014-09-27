@@ -39,11 +39,8 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemInWorldComposite extends ProxyComposite {
     public ItemInWorldComposite(Object world) {
@@ -53,9 +50,6 @@ public class ItemInWorldComposite extends ProxyComposite {
 
         // Holy mother of method signature
         addHook("activateBlockOrUseItem(n.m.entity.player.EntityPlayer;n.m.world.World;n.m.item.ItemStack;n.m.util.ChunkCoordinates;net.minecraft.block.Direction;float;float;float)", new HookListener() {
-
-            private Field sdfjksdfhjksdfhjk;
-
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (GraniteServerComposite.instance.isOnServerThread()) {
@@ -63,63 +57,66 @@ public class ItemInWorldComposite extends ProxyComposite {
                     Object itemStack = args[2];
                     Object item = Mappings.invoke(itemStack, "n.m.item.ItemStack", "getItem");
 
-                    if (Mappings.getClass("n.m.item.ItemBlock").isInstance(item)) {
-                        Player p = (Player) MinecraftUtils.wrap(args[0]);
+                    //if (Mappings.getClass("n.m.item.ItemBlock").isInstance(item)) {
+                    Player p = (Player) MinecraftUtils.wrap(args[0]);
 
-                        World w = (World) MinecraftUtils.wrap(args[1]);
+                    World w = (World) MinecraftUtils.wrap(args[1]);
 
-                        Object chunkCoordinates = args[3];
-                        int preX = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getX");
-                        int preY = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getY");
-                        int preZ = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getZ");
+                    Object chunkCoordinates = args[3];
+                    int preX = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getX");
+                    int preY = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getY");
+                    int preZ = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getZ");
 
-                        int x = preX;
-                        int y = preY;
-                        int z = preZ;
+                    int x = preX;
+                    int y = preY;
+                    int z = preZ;
 
-                        Block oldBlock = w.getBlock(x, y, z);
+                    Block oldBlock = w.getBlock(x, y, z);
 
-                        int direction = ((Enum) args[4]).ordinal();
+                    int direction = ((Enum) args[4]).ordinal();
 
-                        if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && oldBlock.getType().getMetadata("layers") == 1) {
-                            direction = 1;
-                        } else if (!(boolean) Mappings.invoke(
-                                ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
-                                "n.m.block.Block",
-                                "isReplaceable(n.m.world.World;n.m.util.ChunkCoordinates)",
-                                ((GraniteWorld) w).parent,
-                                MinecraftUtils.createChunkCoordinates(x, y, z)
-                        )) {
-                            switch (direction) {
-                                case 0:
-                                    y--;
-                                    break;
-                                case 1:
-                                    y++;
-                                    break;
-                                case 2:
-                                    z--;
-                                    break;
-                                case 3:
-                                    z++;
-                                    break;
-                                case 4:
-                                    x--;
-                                    break;
-                                case 5:
-                                    x++;
-                                    break;
-                            }
+                    if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && oldBlock.getType().getMetadata("layers") == 1) {
+                        // Not sure what this is for, but it's in MC's source
+                        direction = 1;
+                    } else if (!(boolean) Mappings.invoke(
+                            ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
+                            "n.m.block.Block",
+                            "isReplaceable(n.m.world.World;n.m.util.ChunkCoordinates)",
+                            ((GraniteWorld) w).parent,
+                            MinecraftUtils.createChunkCoordinates(x, y, z)
+                    )) {
+                        switch (direction) {
+                            case 0:
+                                y--;
+                                break;
+                            case 1:
+                                y++;
+                                break;
+                            case 2:
+                                z--;
+                                break;
+                            case 3:
+                                z++;
+                                break;
+                            case 4:
+                                x--;
+                                break;
+                            case 5:
+                                x++;
+                                break;
                         }
+                    }
 
-                        BlockType oldBlockType = w.getBlock(x, y, z).getType();
+                    BlockType oldBlockType = w.getBlock(x, y, z).getType();
 
-                        try {
-                            proxyCallback.invoke(self, args);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
+                    boolean retval = false;
+                    try {
+                        retval = (boolean) proxyCallback.invoke(self, args);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
 
+                    if (retval) {
                         Block b = w.getBlock(x, y, z);
                         if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
                             BlockPlaceEvent event = new BlockPlaceEvent(b, p);
@@ -130,10 +127,13 @@ public class ItemInWorldComposite extends ProxyComposite {
                                 ((GranitePlayer) p).sendBlockUpdate(b);
                             }
                         }
-
-                        hook.setWasHandled(true);
                     }
+
+                    hook.setWasHandled(true);
                 }
+
+                // TODO: fix possible dupe glitch relating to cancellation and skeleton heads
+
                 return null;
             }
         });

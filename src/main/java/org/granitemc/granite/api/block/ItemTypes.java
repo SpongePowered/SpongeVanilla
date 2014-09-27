@@ -23,11 +23,11 @@ package org.granitemc.granite.api.block;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import java.util.Map;
+import com.google.common.collect.BiMap;
 
 public class ItemTypes {
-    static Map<Integer, ItemType> idMap;
-    static Map<String, ItemType> nameMap;
+    static BiMap<Integer, ItemType> idMap;
+    static BiMap<String, ItemType> nameMap;
 
     public static ItemType iron_shovel;
     public static ItemType iron_pickaxe;
@@ -211,5 +211,16 @@ public class ItemTypes {
 
     public static ItemType getById(int id) {
         return idMap.get(id);
+    }
+
+    public static Integer getIdFromItem(ItemType type) {
+        // The maps store the item types with their default metadata
+        // "type" may have non-default metadata, and therefore the lookup fails
+        // Therefore, we're getting the default metadata of "type"
+        return idMap.inverse().get(getByName(type.getTechnicalName()));
+    }
+
+    public static String getNameFromItem(ItemType type) {
+        return nameMap.inverse().get(type);
     }
 }

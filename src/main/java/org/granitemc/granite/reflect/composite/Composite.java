@@ -41,6 +41,7 @@ public abstract class Composite {
     public Composite(Class<?> clazz, Class<?>[] constructorArgTypes, Object... constructorArgs) {
         try {
             this.parent = clazz.getConstructor(constructorArgTypes).newInstance(constructorArgs);
+            this.clazz = clazz;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }

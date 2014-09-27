@@ -1,5 +1,7 @@
 package org.granitemc.granite.api.item;
 
+import org.granitemc.granite.api.block.ItemType;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -34,7 +36,9 @@ public interface ItemStack {
 
     String getDisplayName();
 
-    ItemStack setDisplayName(String name);
+    void setDisplayName(String name);
 
     boolean hasDisplayName();
+
+    ItemType getType();
 }

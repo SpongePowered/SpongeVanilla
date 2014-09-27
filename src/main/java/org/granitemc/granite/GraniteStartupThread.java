@@ -25,11 +25,13 @@ package org.granitemc.granite;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
+import org.granitemc.granite.api.block.ItemType;
+import org.granitemc.granite.api.block.ItemTypes;
 import org.granitemc.granite.block.GraniteBlockType;
+import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.BytecodeModifier;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
@@ -41,9 +43,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class GraniteStartupThread extends Thread {
 
@@ -72,7 +71,8 @@ public class GraniteStartupThread extends Thread {
         Mappings.load();
 
         Mappings.invoke(null, "n.m.init.Bootstrap", "func_151354_b");
-        loadBlocksAndItems();
+        loadBlocks();
+        loadItems();
 
         GraniteServerComposite.init();
     }
@@ -106,7 +106,7 @@ public class GraniteStartupThread extends Thread {
         }
     }
 
-    public void loadBlocksAndItems() {
+    public void loadBlocks() {
         Class<?> blockClass = Mappings.getClass("n.m.block.Block");
 
         try {
@@ -127,8 +127,6 @@ public class GraniteStartupThread extends Thread {
                 String fullName = nameField.get(block).toString();
                 String name = fullName.split(":")[1].split("\\[")[0].split(",")[0];
 
-                Field blockField = BlockTypes.class.getField(name);
-
                 Object metadata = Mappings.getField(blockClass, "blockMetadata").get(block);
                 Collection variants = (Collection) Mappings.getField(metadata.getClass(), "variants").get(metadata);
 
@@ -138,6 +136,41 @@ public class GraniteStartupThread extends Thread {
                 idMap.put(id, type);
 
                 BlockTypes.class.getDeclaredField(name).set(null, type);
+            }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadItems() {
+        Class<?> itemClass = Mappings.getClass("n.m.item.Item");
+
+        try {
+            Field nameMapField = ItemTypes.class.getDeclaredField("nameMap");
+            nameMapField.setAccessible(true);
+            BiMap<String, ItemType> nameMap = HashBiMap.create();
+            nameMapField.set(null, nameMap);
+
+            Field idMapField = ItemTypes.class.getDeclaredField("idMap");
+            idMapField.setAccessible(true);
+            BiMap<Integer, ItemType> idMap = HashBiMap.create();
+            idMapField.set(null, idMap);
+
+            Object registry = Mappings.getField(itemClass, "itemRegistry").get(null);
+            for (Object item : (Iterable) Mappings.getField(itemClass, "itemRegistry").get(null)) {
+                String fullName = (String) Mappings.invoke(registry, "n.m.util.RegistryNamespaced", "getNameForObject(Object)", item).toString();
+                String name = fullName.split(":")[1];
+
+                GraniteItemType type = new GraniteItemType(item);
+
+                int id = (int) Mappings.invoke(null, "n.m.item.Item", "getIdFromItem(n.m.item.Item)", item);
+                nameMap.put(name, type);
+                idMap.put(id, type);
+
+                try {
+                    ItemTypes.class.getDeclaredField(name).set(null, type);
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                }
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();

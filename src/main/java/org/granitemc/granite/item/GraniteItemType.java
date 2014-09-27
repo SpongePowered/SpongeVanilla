@@ -1,9 +1,4 @@
-package org.granitemc.granite.api.block;
-
-import org.granitemc.granite.api.chat.ChatComponentText;
-import org.granitemc.granite.api.chat.ChatComponentTranslation;
-
-import java.util.Random;
+package org.granitemc.granite.item;
 
 /*****************************************************************************************
  * License (MIT)
@@ -28,37 +23,43 @@ import java.util.Random;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-public interface BlockType {
-    float getSlipperiness();
+import org.granitemc.granite.api.block.ItemType;
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.reflect.composite.Composite;
 
-    int getLightOpacity();
+public class GraniteItemType extends Composite implements ItemType {
 
-    int getLightValue();
+    public GraniteItemType(Object parent) {
+        super(parent);
+    }
 
-    // TODO
-    //int getMapColor();
+    @Override
+    public int getMaxStackSize() {
+        return (int) fieldGet("n.m.item.Item", "maxStackSize");
+    }
 
-    float getHardness();
+    @Override
+    public int getMaxDamage() {
+        return (int) fieldGet("n.m.item.Item", "maxDamage");
+    }
 
-    float getBlastResistance();
+    @Override
+    public String getName() {
+        return new GraniteItemStack(this).getDisplayName();
+    }
 
-    boolean isOpaque();
+    @Override
+    public int getNumericId() {
+        return (int) invoke("n.m.item.Item", "getIdFromItem");
+    }
 
-    boolean isTransparent();
+    @Override
+    public String getTechnicalName() {
+        return null;
+    }
 
-    boolean canBlockGrass();
-
-    Comparable getMetadata(String key);
-
-    BlockType setMetadata(String key, Comparable value);
-
-    boolean equals(BlockType that);
-
-    boolean typeEquals(BlockType that);
-
-    String getName();
-
-    int getNumericId();
-
-    String getTechnicalName();
+    @Override
+    public ItemStack getItemStack(int amount) {
+        return new GraniteItemStack(this, amount);
+    }
 }

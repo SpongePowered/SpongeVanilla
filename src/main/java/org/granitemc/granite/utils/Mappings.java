@@ -130,7 +130,8 @@ public class Mappings {
             } else if (clazz.isPrimitive()) {
                 sig = sig + clazz.getName();
             } else {
-                throw new RuntimeException("Can't find class " + clazz.getName() + " in mappings! (did you forget to add them?)");
+                sig = sig + clazz.getName();
+                //throw new RuntimeException("Can't find class " + clazz.getName() + " in mappings! (did you forget to add them?)");
             }
             sig = sig + ";";
         }

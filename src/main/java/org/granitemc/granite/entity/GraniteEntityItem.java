@@ -34,7 +34,7 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
 
     @Override
     public ItemStack getItemStack() {
-	return new GraniteItemStack(invoke("getItemStack"));
+	    return new GraniteItemStack(invoke("getItemStack"));
     }
 
     @Override

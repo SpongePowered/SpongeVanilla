@@ -2,6 +2,10 @@ package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
+import org.granitemc.granite.api.block.ItemType;
+import org.granitemc.granite.api.block.ItemTypes;
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 
@@ -10,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * **************************************************************************************
@@ -37,6 +42,9 @@ import java.util.Map;
  */
 
 public class GraniteBlockType extends Composite implements BlockType {
+
+    private GraniteItemStack graniteItemStack;
+
     public GraniteBlockType(Object parent) {
         super(parent);
 
@@ -133,24 +141,45 @@ public class GraniteBlockType extends Composite implements BlockType {
         return parent.toString().split(":")[1].split("\\[")[0].split(",")[0];
     }
 
+    public ItemStack getItemStack(int amount) {
+        // Super messy, it works, don't touch (pls)
+
+        if (typeEquals(BlockTypes.air)) return null;
+
+        Object itemStackObject = Mappings.invoke(invoke("getBlock"), "n.m.block.Block", "createStackedBlock(n.m.block.IBlockWithMetadata)", parent);
+
+        if (Mappings.invoke(itemStackObject, "n.m.item.ItemStack", "getItem") == null) {
+            Object itemObject = Mappings.invoke(null, "n.m.item.Item", "getItemFromBlock(n.m.block.Block)", invoke("getBlock"));
+
+            if (itemObject == null) {
+                itemObject = Mappings.invoke(null, "n.m.item.Item", "getItemFromName(String)", "minecraft:" + getTechnicalName());
+            }
+
+            if (itemObject == null) {
+                itemObject = Mappings.invoke(getBlockObject(), "n.m.block.Block", "getItemDropped(n.m.block.IBlockWithMetadata;java.util.Random;int)", parent, new Random(), 1);
+            }
+
+            if (itemObject == null) {
+                try {
+                    itemObject = Mappings.getClass("n.m.item.ItemBlock")
+                            .getConstructor(Mappings.getClass("n.m.block.Block"))
+                            .newInstance(getBlockObject());
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return new GraniteItemStack(itemObject, 1);
+        } else {
+            graniteItemStack = new GraniteItemStack(itemStackObject);
+            graniteItemStack.setStackSize(amount);
+            return graniteItemStack;
+        }
+    }
+
     @Override
     public String getName() {
-        // blockType is now ItemStack
-        Object blockType = Mappings.invoke(invoke("getBlock"), "n.m.block.Block", "createStackedBlock(n.m.block.IBlockWithMetadata)", parent);
-        if (Mappings.invoke(blockType, "n.m.item.ItemStack", "getItem") == null) {
-            // TODO: move itemstack creation somewhere else
-            try {
-                blockType = Mappings.getClass("n.m.item.ItemStack").getConstructor(Mappings.getClass("n.m.item.Item")).newInstance(Mappings.invoke(null, "n.m.item.Item", "getItemFromBlock(n.m.block.Block)", invoke("getBlock")));
-
-                if (Mappings.invoke(blockType, "n.m.item.ItemStack", "getItem") == null) {
-                    blockType = Mappings.getClass("n.m.item.ItemStack").getConstructor(Mappings.getClass("n.m.item.Item")).newInstance(Mappings.invoke(null, "n.m.item.Item", "getItemFromName(String)", "minecraft:" + getTechnicalName()));
-                }
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return (String) Mappings.invoke(blockType, "n.m.item.ItemStack", "getName()");
+        return getItemStack(1).getDisplayName();
     }
 
     public String getUnlocalizedName() {
@@ -158,7 +187,7 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     @Override
-    public int getBlockId() {
+    public int getNumericId() {
         return BlockTypes.getIdFromBlock(this);
     }
 
@@ -186,17 +215,6 @@ public class GraniteBlockType extends Composite implements BlockType {
     public boolean typeEquals(BlockType that) {
         GraniteBlockType thatGbt = ((GraniteBlockType) that);
         return getUnlocalizedName().equals(thatGbt.getUnlocalizedName());
-    }
-
-    @Override
-    public int getMaxStackSize() {
-        return 64;
-    }
-
-    // TODO: wtf is this?
-    @Override
-    public int getMaxDamage() {
-        return 0;
     }
 
     public Object getBlockObject() {

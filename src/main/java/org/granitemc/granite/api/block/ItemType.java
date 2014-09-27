@@ -1,5 +1,7 @@
 package org.granitemc.granite.api.block;
 
+import org.granitemc.granite.api.item.ItemStack;
+
 /*****************************************************************************************
  * License (MIT)
  *
@@ -27,4 +29,12 @@ public interface ItemType {
     int getMaxStackSize();
 
     int getMaxDamage();
+
+    String getName();
+
+    int getNumericId();
+
+    String getTechnicalName();
+
+    ItemStack getItemStack(int amount);
 }

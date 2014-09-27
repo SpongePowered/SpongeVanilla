@@ -23,8 +23,12 @@ package org.granitemc.granite.item;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.Mappings;
 
 public class GraniteItemStack extends Composite implements ItemStack {
 
@@ -32,42 +36,69 @@ public class GraniteItemStack extends Composite implements ItemStack {
         super(instance);
     }
 
-    /*public GraniteItemStack() {
-        super(Mappings.getClass("n.m.item"), false);
-    }*/
+    public GraniteItemStack(Object instance, int size) {
+        super(Mappings.getClass("n.m.item.ItemStack"),
+                Mappings.getClass("n.m.block.Block").isInstance(instance)
+                        ? new Class[]{Mappings.getClass("n.m.block.Block")}
+                        : new Class[]{Mappings.getClass("n.m.item.Item"), int.class}, instance, size);
+    }
 
-    //need more constructors here that are capable of creating vanilla item instances
+    public GraniteItemStack(ItemType type) {
+        this(type, type.getMaxStackSize());
+    }
 
-    public Object getItem() {
-        return invoke("getItem");
+    public GraniteItemStack(BlockType type) {
+        this(type, 64);
+    }
+
+    public GraniteItemStack(ItemType type, int size) {
+        super(Mappings.getClass("n.m.item.ItemStack"), new Class[]{Mappings.getClass("n.m.item.Item"), int.class}, ((GraniteItemType) type).parent, size);
+
+    }
+
+    public GraniteItemStack(BlockType type, int size) {
+        this(((GraniteItemStack) ((GraniteItemType) type).getItemStack(size)).parent);
+        //super(Mappings.getClass("n.m.item.ItemStack"), new Class[]{Mappings.getClass("n.m.block.Block"), int.class}, ((GraniteBlockType) type).getBlockObject(), size);
+    }
+
+    public ItemType getType() {
+        return new GraniteItemType(invoke("n.m.item.ItemStack", "getItem"));
     }
 
     public int getItemDamage() {
-        return (int) invoke("getItemDamage");
+        return (int) invoke("n.m.item.ItemStack", "getItemDamage");
     }
 
     public void setItemDamage(int damage) {
-        invoke("setItemDamage", damage);
+        invoke("n.m.item.ItemStack", "setItemDamage(int)", damage);
     }
 
     public String[] getItemLore() {
-        return (String[]) invoke("getItemLore");
+        return (String[]) invoke("n.m.item.ItemStack", "getItemLore");
     }
 
     public int getMaxDamage() {
-        return (int) invoke("getMaxDamage");
+        return getType().getMaxDamage();
     }
 
     public String getDisplayName() {
-        return (String) invoke("getDisplayName");
+        return (String) invoke("n.m.item.ItemStack", "getDisplayName");
     }
 
-    public GraniteItemStack setDisplayName(String name) {
-        return new GraniteItemStack(invoke("setDisplayName", name));
+    public void setDisplayName(String name) {
+        parent = invoke("n.m.item.ItemStack", "setStackDisplayName(String)", name);
     }
 
     public boolean hasDisplayName() {
-        return (boolean) invoke("hasDisplayName");
+        return (boolean) invoke("n.m.item.ItemStack", "hasDisplayName");
+    }
+
+    public int getStackSize() {
+        return (int) fieldGet("stackSize");
+    }
+
+    public void setStackSize(int amount) {
+        fieldSet("n.m.item.ItemStack", "stackSize", amount);
     }
 
     //ItemStack constructors:
