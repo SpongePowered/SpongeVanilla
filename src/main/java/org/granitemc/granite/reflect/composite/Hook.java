@@ -30,6 +30,9 @@ public class Hook {
 
     boolean wasHandled;
 
+    public boolean getWasHandled() {
+        return this.wasHandled;
+    }
     public void setWasHandled(boolean wasHandled) {
         this.wasHandled = wasHandled;
     }
