@@ -44,13 +44,6 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }
 
     @Override
-    public void setPosition(double x, double y, double z) {
-        /*Object asLivingEntityBase = Class.forName("wv").cast(parent);
-        Class.forName("wv").getDeclaredMethod("b", new Class[]{Double.TYPE, Double.TYPE, Double.TYPE}).invoke(asLivingEntityBase, x, y, z);*/
-        invoke("setPosition(Double;Double;Double)", x, y, z);
-    }
-
-    @Override
     public boolean isUsingItem() {
         return (boolean) invoke("isUsingItem");
     }
