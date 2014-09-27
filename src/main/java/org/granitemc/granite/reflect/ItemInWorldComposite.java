@@ -75,7 +75,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     int direction = ((Enum) args[4]).ordinal();
 
-                    if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && oldBlock.getType().getMetadata("layers") == 1) {
+                    if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && (int)oldBlock.getType().getMetadata("layers") == 1) {
                         // Not sure what this is for, but it's in MC's source
                         direction = 1;
                     } else if (!(boolean) Mappings.invoke(
