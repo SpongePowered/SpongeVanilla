@@ -27,7 +27,9 @@ import javassist.*;
 import javassist.expr.ExprEditor;
 import javassist.expr.NewExpr;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class BytecodeModifier {
     // This contains our own mini-mappings

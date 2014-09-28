@@ -40,7 +40,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.security.KeyPair;
-import java.util.Iterator;
 import java.util.List;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {

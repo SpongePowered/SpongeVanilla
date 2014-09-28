@@ -2,9 +2,6 @@ package org.granitemc.granite.api.event.player;
 
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.world.Location;
-
-import java.util.UUID;
 
 /**
  * **************************************************************************************

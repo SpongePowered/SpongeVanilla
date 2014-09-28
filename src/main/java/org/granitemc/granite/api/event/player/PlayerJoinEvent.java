@@ -1,6 +1,8 @@
 package org.granitemc.granite.api.event.player;
 
 import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.api.world.Location;
 
 /*****************************************************************************************
  * License (MIT)
@@ -24,9 +26,6 @@ import org.granitemc.granite.api.Player;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
-
-import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.world.Location;
 
 public class PlayerJoinEvent extends Event {
     private Player player;

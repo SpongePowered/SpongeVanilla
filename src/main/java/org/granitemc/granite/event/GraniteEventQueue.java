@@ -27,7 +27,10 @@ import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GraniteEventQueue implements EventQueue {
     private Map<Class<? extends Event>, List<EventHandlerContainer>> handlers;

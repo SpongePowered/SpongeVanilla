@@ -27,16 +27,15 @@ import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
 
 public class GranitePlayer extends GraniteEntity implements Player {
     public GranitePlayer(Object parent) {
@@ -106,4 +105,26 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }*/
 
     //void EntityLivingBase.onItemPickup(Entity itemToBePickedUp, int unused) xm.a(wv itemToBePickedUp, int unused)
+
+    /*************************************************
+     *                                               *
+     *              Granite Methods                  *
+     *                                               *
+     *************************************************/
+
+    @Override
+    public Location getLocation() {
+        return new Location(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
+    }
+
+    @Override
+    public void setLocation(Location location) {
+        setWorld(location.getWorld());
+        setX(location.getX());
+        setY(location.getY());
+        setZ(location.getZ());
+        setYaw(location.getYaw());
+        setPitch(location.getPitch());
+    }
+
 }
