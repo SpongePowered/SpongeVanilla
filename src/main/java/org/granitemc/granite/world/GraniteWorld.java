@@ -43,7 +43,6 @@ public class GraniteWorld extends Composite implements World {
         return new GraniteBlock(x, y, z, type, this);
     }
 
-    @Override
     public Block getBlock(Object chunkCoordinates) {
         int x = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getX");
         int y = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getY");
@@ -70,7 +69,6 @@ public class GraniteWorld extends Composite implements World {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getDimension");
     }
 
-    @Override
     public Object getWorldInfo() {
         return invoke("n.m.world.World", "getWorldInfo()");
     }
@@ -220,12 +218,10 @@ public class GraniteWorld extends Composite implements World {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setAllowCommands(boolean)", b);
     }
     
-    @Override
     public boolean isInitialized() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "isInitialized");
     }
     
-    @Override
     public void setInitialized(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setInitialized(boolean)", b);
     }
@@ -252,22 +248,18 @@ public class GraniteWorld extends Composite implements World {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSize(int)", d);
     }
     
-    @Override
     public long getBorderSizeLerpTime() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSizeLerpTime");
     }
         
-    @Override
     public void setBorderSizeLerpTime(long l) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSizeLerpTime(int)", l);
     }
     
-    @Override
     public double getBorderSizeLerpTarget() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSizeLerpTarget");
     }
         
-    @Override
     public void setBorderSizeLerpTarget(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSizeLerpTarget(int)", d);
     }

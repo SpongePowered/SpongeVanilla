@@ -28,15 +28,11 @@ import org.granitemc.granite.api.block.BlockType;
 
 public interface World {
     Block getBlock(int x, int y, int z);
-    
-    public Block getBlock(Object chunkCoordinates);
 
     public BlockType getBlockTypeAtPosition(int x, int y, int z);
 
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type);
 
-    public Object getWorldInfo();
-    
     public long getSeed();
     
     public long getSpawnX();
@@ -91,10 +87,6 @@ public interface World {
     
     public void setAllowCommands(boolean b);
     
-    public boolean isInitialized();
-    
-    public void setInitialized(boolean b);
-    
     public double getBorderCenterX();
     
     public double getBorderCenterZ();
@@ -102,14 +94,16 @@ public interface World {
     public double getBorderSize();
         
     public void setBorderSize(double d);
-    
-    public long getBorderSizeLerpTime();
+
+    // TODO: check if necessary
+    // TODO: extract to WorldBorder class
+    /*public long getBorderSizeLerpTime();
         
     public void setBorderSizeLerpTime(long l);
     
     public double getBorderSizeLerpTarget();
         
-    public void setBorderSizeLerpTarget(double d);
+    public void setBorderSizeLerpTarget(double d);*/
     
     public void setBorderCenterZ(double d);
     
