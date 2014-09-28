@@ -24,6 +24,7 @@ package org.granitemc.granite.api;
  ****************************************************************************************/
 
 import org.apache.logging.log4j.Logger;
+import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
@@ -74,8 +75,9 @@ public interface API {
 
     /**
      * Creates an {@link org.granitemc.granite.api.item.ItemStack}
+     * @param type The {@link org.granitemc.granite.api.block.ItemType} to create an ItemStack of
      */
-    ItemStack createItemStack();
+    ItemStack createItemStack(ItemType type, int amount);
 
     /**
      * Returns the {@link org.granitemc.granite.api.Server} of this server
