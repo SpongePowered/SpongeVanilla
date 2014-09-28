@@ -24,12 +24,25 @@ package org.granitemc.granite.api.world;
  ****************************************************************************************/
 
 public interface WorldBorder {
+    /**
+     * Returns the world of this border
+     */
     public World getWorld();
 
-    public Location getBorderCenter();
+    /**
+     * Returns the center location of this border
+     */
+    public Location getCenter();
 
+    /**
+     * Returns the size of this border
+     */
     public double getBorderSize();
 
+    /**
+     * Sets the size of this border
+     * @param d The size to set
+     */
     public void setBorderSize(double d);
 
     // TODO: check if necessary
@@ -41,21 +54,53 @@ public interface WorldBorder {
 
     public void setBorderSizeLerpTarget(double d);*/
 
-    public void setBorderCenter(Location l);
+    /**
+     * Sets the center location of this border
+     * @param l The location to set
+     */
+    public void setCenter(Location l);
 
-    public double getBorderSafeZone();
+    /**
+     * Returns the safe zone of this border
+     */
+    public double getSafeZone();
 
-    public void setBorderSafeZone(double d);
+    /**
+     * Sets the safe zone size of this border
+     * @param d The safe zone size to set
+     */
+    public void setSafeZone(double d);
 
-    public double getBorderDamagePerBlock();
+    /**
+     * Returns how many points of damage per block you take
+     */
+    public double getDamagePerBlock();
 
-    public void setBorderDamagePerBlock(double d);
+    /**
+     * Sets how many points of damage per block you take
+     * @param d How many points of damage per block you take
+     */
+    public void setDamagePerBlock(double d);
 
-    public int getBorderWarningBlocks();
+    /**
+     * Returns the warning blocks of this border
+     */
+    public int getWarningBlocks();
 
-    public int getBorderWarningTime();
+    /**
+     * Returns the warning time of this border
+     */
+    public int getWarningTime();
 
-    public void setBorderWarningBlocks(int i);
+    /**
+     * Sets the warning blocks of this border
+     * @param i The warning blocks to set
+     */
+    public void setWarningBlocks(int i);
 
-    public void setBorderWarningTime(int i);
+    /**
+     * Sets the warning time of this border
+     * @param i The warning time to set
+     */
+    public void setWarningTime(int i);
 }

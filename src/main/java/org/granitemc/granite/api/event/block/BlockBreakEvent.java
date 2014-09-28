@@ -36,10 +36,16 @@ public class BlockBreakEvent extends Event {
         this.player = player;
     }
 
+    /**
+     * Returns the block that was broken
+     */
     public Block getBlock() {
         return block;
     }
 
+    /**
+     * Returns the player that broke the block
+     */
     public Player getPlayer() {
         return player;
     }

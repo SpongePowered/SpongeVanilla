@@ -34,11 +34,10 @@ public class PlayerJoinEvent extends Event {
         this.player = player;
     }
 
+    /**
+     * Returns the player that joined
+     */
     public Player getPlayer() {
         return player;
-    }
-
-    public Location getPlayerLocation() {
-        return player.getLocation();
     }
 }

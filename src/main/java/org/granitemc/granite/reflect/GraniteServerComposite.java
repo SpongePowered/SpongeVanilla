@@ -169,9 +169,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     //TODO: May be important?
     @Override
-    public void setUserMessage(String var1) {
+    public void setUserMessage(String message) {
         //Obf: b
-        invoke("setUserMessage(String)", var1);
+        invoke("setUserMessage(String)", message);
     }
 
     @Override
@@ -193,9 +193,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void saveAllWorlds(boolean var1) {
+    public void saveAllWorlds(boolean outputLogMessage) {
         //Obf: a
-        invoke("saveAllWorlds(boolean)", var1);
+        invoke("saveAllWorlds(boolean)", outputLogMessage);
     }
 
     @Override
@@ -404,9 +404,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setCanSpawnAnimals(boolean var1) {
+    public void setCanSpawnAnimals(boolean spawnAnimals) {
         //Obf: d
-        invoke("setCanSpawnAnimals(boolean)", var1);
+        invoke("setCanSpawnAnimals(boolean)", spawnAnimals);
     }
 
     @Override
@@ -416,9 +416,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setCanSpawnNPCs(boolean var1) {
+    public void setCanSpawnNPCs(boolean spawnNPCs) {
         //Obf: e
-        invoke("setCanSpawnNPCs(boolean)", var1);
+        invoke("setCanSpawnNPCs(boolean)", spawnNPCs);
     }
 
     @Override
@@ -428,9 +428,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setAllowPvp(boolean var1) {
+    public void setAllowPvp(boolean allowPvP) {
         //Obf: f
-        invoke("setAllowPvp", var1);
+        invoke("setAllowPvp", allowPvP);
     }
 
     @Override
@@ -440,9 +440,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setAllowFlight(boolean var1) {
+    public void setAllowFlight(boolean allowFlight) {
         //Obf: g
-        invoke("setAllowFlight(boolean)", var1);
+        invoke("setAllowFlight(boolean)", allowFlight);
     }
 
     @Override
@@ -476,9 +476,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setForceGamemode(boolean var1) {
+    public void setForceGamemode(boolean forceGamemode) {
         //Obf: i
-        invoke("setForceGamemode(boolean)", var1);
+        invoke("setForceGamemode(boolean)", forceGamemode);
     }
 
     @Override

@@ -35,34 +35,58 @@ public class Granite {
     // Set dynamically via reflection at runtime
     private static API impl;
 
+    /**
+     * @see API#getPlugin(String)
+     */
     public static PluginContainer getPlugin(String name) {
         return impl.getPlugin(name);
     }
 
+    /**
+     * @see API#getPlugins()
+     */
     public static List<PluginContainer> getPlugins() {
         return impl.getPlugins();
     }
 
+    /**
+     * @see API#getPlugin(Object)
+     */
     public static PluginContainer getPlugin(Object plugin) {
         return impl.getPlugin(plugin);
     }
 
+    /**
+     * @see API#getPlugin(Class)
+     */
     public static PluginContainer getPlugin(Class<?> pluginClass) {
         return impl.getPlugin(pluginClass);
     }
 
+    /**
+     * @see API#loadPluginFromJar(java.io.File)
+     */
     public static void loadPluginFromJar(File file) {
         impl.loadPluginFromJar(file);
     }
 
+    /**
+     * @see API#getLogger()
+     */
     public static Logger getLogger() {
         return impl.getLogger();
     }
 
+    /**
+     * @see API#getServer()
+     */
     public static Server getServer() {
         return impl.getServer();
     }
 
+    /**
+     * @see API#getEventQueue()
+     */
     public static EventQueue getEventQueue() {
         return impl.getEventQueue();
     }

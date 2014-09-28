@@ -24,4 +24,5 @@ package org.granitemc.granite.api.event;
  ****************************************************************************************/
 
 public class APIEvent extends Event {
+    // TODO: what's the purpose of this class?
 }

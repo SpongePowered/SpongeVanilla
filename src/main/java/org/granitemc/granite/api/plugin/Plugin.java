@@ -31,9 +31,19 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Plugin {
+    /**
+     * The name of this plugin
+     */
     public String name();
 
+    /**
+     * The ID of this plugin
+     */
+    // TODO: how is this different from name()?
     public String id();
 
+    /**
+     * The version of this plugin, this should preferably be semantic versioning (Google it)
+     */
     public String version();
 }

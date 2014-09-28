@@ -28,15 +28,36 @@ import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
 
 public interface Player extends CommandSender, Entity {
+    /**
+     * Returns whether this player is currently using an item
+     */
     boolean isUsingItem();
 
+    /**
+     * Stops using an item
+     */
     void stopUsingItem();
 
+    /**
+     * Clears the item in use
+     */
     void clearItemInUse();
 
+    /**
+     * Returns the equipment in a slot
+     * @param slot The slot
+     */
     ItemStack getEquipmentInSlot(int slot);
 
+    /**
+     * Returns the held item
+     */
     ItemStack getHeldItem();
 
+    /**
+     * Sets an inventory or armor slot
+     * @param slot The slot to set
+     * @param item The {@link org.granitemc.granite.api.item.ItemStack} to set to
+     */
     void setCurrentItemOrArmor(int slot, ItemStack item);
 }
