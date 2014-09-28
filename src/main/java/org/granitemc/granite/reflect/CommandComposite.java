@@ -65,6 +65,7 @@ public class CommandComposite extends ProxyComposite {
                         if (command.getName().equalsIgnoreCase(commandArgs[0])) {
                             dispatchCommand(command, sender, commandArgs, args[0]);
                             hook.setWasHandled(true);
+                            return 0;
                         }
                     }
                 }
@@ -76,7 +77,7 @@ public class CommandComposite extends ProxyComposite {
                                 if (alias.equalsIgnoreCase(commandArgs[0])) {
                                     dispatchCommand(command, sender, commandArgs, args[0]);
                                     hook.setWasHandled(true);
-
+                                    return 0;
                                 }
                             }
                         }
@@ -97,7 +98,7 @@ public class CommandComposite extends ProxyComposite {
 
         List<Player> targets = new ArrayList<>();
         for (String arg : args) {
-            for (Object nativeTarget : (Object[]) Mappings.invoke(null, "n.m.command.PlayerSelector", "matchPlayers", nativeSender, arg, Mappings.getClass("n.m.entity.player.EntityPlayerMP"))) {
+            for (Object nativeTarget : (List<Object>) Mappings.invoke(null, "n.m.command.PlayerSelector", "matchPlayers(n.m.command.ICommandSender;String;Class)", nativeSender, arg, Mappings.getClass("n.m.entity.player.EntityPlayerMP"))) {
                 targets.add((Player) MinecraftUtils.wrap(nativeTarget));
             }
         }
