@@ -59,7 +59,7 @@ public class GraniteItemType extends Composite implements ItemType {
     }
 
     @Override
-    public ItemStack getItemStack(int amount) {
+    public ItemStack createItemStack(int amount) {
         return new GraniteItemStack(this, amount);
     }
 }

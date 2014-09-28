@@ -36,5 +36,5 @@ public interface ItemType {
 
     String getTechnicalName();
 
-    ItemStack getItemStack(int amount);
+    ItemStack createItemStack(int amount);
 }
