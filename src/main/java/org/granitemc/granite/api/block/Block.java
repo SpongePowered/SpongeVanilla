@@ -26,15 +26,33 @@ package org.granitemc.granite.api.block;
 import org.granitemc.granite.api.world.World;
 
 public interface Block {
+    /**
+     * Returns the X position of this block
+     */
     int getX();
 
+    /**
+     * Returns the Y position of this block
+     */
     int getY();
 
+    /**
+     * Returns the Z position of this block
+     */
     int getZ();
 
+    /**
+     * Returns the {@link org.granitemc.granite.api.world.World} this block is in
+     */
     World getWorld();
 
+    /**
+     * Returns the {@link org.granitemc.granite.api.block.BlockType} of this block
+     */
     BlockType getType();
 
+    /**
+     * Sets the {@link org.granitemc.granite.api.block.BlockType} of this block - this will edit the block
+     */
     void setType(BlockType type);
 }

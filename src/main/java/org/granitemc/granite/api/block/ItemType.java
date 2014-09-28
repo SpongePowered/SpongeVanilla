@@ -26,15 +26,34 @@ import org.granitemc.granite.api.item.ItemStack;
  ****************************************************************************************/
 
 public interface ItemType {
+    /**
+     * Returns the maximum amount of items in a stack of this item
+     */
     int getMaxStackSize();
 
+    /**
+     * Returns the maximum damage this item can take (damage can also be a crude form of item metadata)
+     */
     int getMaxDamage();
 
+    /**
+     * Gets the human name of this block (i.e. what you will see when you hover over this item in an inventory)
+     */
     String getName();
 
+    /**
+     * Returns the numeric ID of this block type. This should preferably not be used, rather, use {@link ItemType#getTechnicalName()} instead.
+     */
     int getNumericId();
 
+    /**
+     * Returns the technical name of this block (i.e. what's after the colon in minecraft:diamond, minecraft:wooden_door, etc.)
+     */
     String getTechnicalName();
 
+    /**
+     * Creates an {@link org.granitemc.granite.api.item.ItemStack} of this item type
+     * @param amount The amount of items in this {@link org.granitemc.granite.api.item.ItemStack}
+     */
     ItemStack createItemStack(int amount);
 }

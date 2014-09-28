@@ -228,7 +228,11 @@ public class BlockTypes {
     public static BlockType acacia_door;
     public static BlockType dark_oak_door;
 
-    public static BlockType getByName(String name) {
+    /**
+     * Gets a {@link org.granitemc.granite.api.block.BlockType} by its technical name
+     * @param name The technical name
+     */
+    public static BlockType getByTechnicalName(String name) {
         name = name.replaceAll(" ", "_");
         name = name.replaceAll("-", "_");
         name = name.toLowerCase();
@@ -236,18 +240,22 @@ public class BlockTypes {
         return nameMap.get(name);
     }
 
+    /**
+     * Gets a {@link org.granitemc.granite.api.block.BlockType} by its numeric ID
+     * @param id The numeric ID
+     */
     public static BlockType getById(int id) {
         return idMap.get(id);
     }
 
+    /**
+     * Gets the numeric ID from a {@link org.granitemc.granite.api.block.BlockType}
+     * @param type The {@link org.granitemc.granite.api.block.BlockType}
+     */
     public static Integer getIdFromBlock(BlockType type) {
         // The maps store the block types with their default metadata
         // "type" may have non-default metadata, and therefore the lookup fails
         // Therefore, we're getting the default metadata of "type"
-        return idMap.inverse().get(getByName(type.getTechnicalName()));
-    }
-
-    public static String getNameFromBlock(BlockType type) {
-        return nameMap.inverse().get(type);
+        return idMap.inverse().get(getByTechnicalName(type.getTechnicalName()));
     }
 }

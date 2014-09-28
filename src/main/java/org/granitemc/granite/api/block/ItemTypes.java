@@ -201,6 +201,10 @@ public class ItemTypes {
     public static ItemType record_11;
     public static ItemType record_wait;
 
+    /**
+     * Gets an {@link org.granitemc.granite.api.block.ItemType} by its technical name
+     * @param name The technical name
+     */
     public static ItemType getByName(String name) {
         name = name.replaceAll(" ", "_");
         name = name.replaceAll("-", "_");
@@ -209,18 +213,22 @@ public class ItemTypes {
         return nameMap.get(name);
     }
 
+    /**
+     * Gets an {@link org.granitemc.granite.api.block.ItemType} by its numeric ID
+     * @param id The numeric ID
+     */
     public static ItemType getById(int id) {
         return idMap.get(id);
     }
 
+    /**
+     * Gets the numeric ID from an {@link org.granitemc.granite.api.block.ItemType}
+     * @param type The {@link org.granitemc.granite.api.block.ItemType}
+     */
     public static Integer getIdFromItem(ItemType type) {
         // The maps store the item types with their default metadata
         // "type" may have non-default metadata, and therefore the lookup fails
         // Therefore, we're getting the default metadata of "type"
         return idMap.inverse().get(getByName(type.getTechnicalName()));
-    }
-
-    public static String getNameFromItem(ItemType type) {
-        return nameMap.inverse().get(type);
     }
 }
