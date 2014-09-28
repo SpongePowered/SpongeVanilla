@@ -53,6 +53,7 @@ public interface Block {
 
     /**
      * Sets the {@link org.granitemc.granite.api.block.BlockType} of this block - this will edit the block
+     * @param type The type to set
      */
     void setType(BlockType type);
 }

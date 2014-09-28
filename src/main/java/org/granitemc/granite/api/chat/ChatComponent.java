@@ -1,6 +1,7 @@
 package org.granitemc.granite.api.chat;
 
-/*****************************************************************************************
+/**
+ * **************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -21,12 +22,24 @@ package org.granitemc.granite.api.chat;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ * **************************************************************************************
+ */
 
 public interface ChatComponent {
+    /**
+     * Adds a text string to the end of this ChatComponent, and returns a new {@link org.granitemc.granite.api.chat.ChatComponentText}
+     * @param text the text string to add
+     */
     ChatComponent add(String text);
 
+    /**
+     * Adds a {@link org.granitemc.granite.api.chat.ChatComponent} to the end of this ChatComponent, and returns it
+     * @param component the component to add
+     */
     ChatComponent add(ChatComponent component);
 
+    /**
+     * Returns the plain text value of this {@link org.granitemc.granite.api.chat.ChatComponent}
+     */
     String getText();
 }

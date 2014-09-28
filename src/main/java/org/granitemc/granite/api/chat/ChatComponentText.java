@@ -25,5 +25,8 @@ package org.granitemc.granite.api.chat;
 
 
 public interface ChatComponentText extends ChatComponent {
+    /**
+     * Returns the plain text value of this {@link org.granitemc.granite.api.chat.ChatComponentText}
+     */
     String getText();
 }

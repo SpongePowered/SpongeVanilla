@@ -26,7 +26,14 @@ package org.granitemc.granite.api.entity;
 import org.granitemc.granite.api.item.ItemStack;
 
 public interface EntityItem extends Entity {
+    /**
+     * Gets the ItemStack of this item entity
+     */
     ItemStack getItemStack();
-    
+
+    /**
+     * Sets the ItemStack of this item entity
+     * @param itemStack The ItemStack
+     */
     void setItemStack(ItemStack itemStack);
 }

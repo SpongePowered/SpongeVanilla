@@ -47,18 +47,31 @@ public class CommandContainer {
         this.instance = instance;
     }
 
+    /**
+     * Returns the aliases of this command, these have a lower priority than the name
+     */
     public String[] getAliases() {
         return annotation.aliases();
     }
 
+    /**
+     * Returns the name of this command (i.e. what's just after the slash)
+     */
     public String getName() {
         return annotation.name();
     }
 
+    /**
+     * Returns the usage info of this command, will be used in /help
+     */
     public String getInfo() {
         return annotation.info();
     }
 
+    /**
+     * Invokes the command handler with a {@link org.granitemc.granite.api.command.CommandInfo}
+     * @param info The command info
+     */
     public void invoke(CommandInfo info) {
         try {
             method.invoke(instance, info);
@@ -69,10 +82,16 @@ public class CommandContainer {
         }
     }
 
+    /**
+     * Returns the instance of the command handler this command will be called on
+     */
     public Object getInstance() {
         return instance;
     }
 
+    /**
+     * Returns the plugin that registered the command
+     */
     public PluginContainer getPlugin() {
         return plugin;
     }

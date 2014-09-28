@@ -27,9 +27,18 @@ package org.granitemc.granite.api.chat;
 
 
 public interface ChatComponentTranslation extends ChatComponent {
+    /**
+     * Returns the object arguments of the translation
+     */
     public Object[] getArguments();
 
+    /**
+     * Returns the key of the translation
+     */
     public Object getKey();
 
+    /**
+     * Returns the full en-US value of this translation
+     */
     String getText();
 }

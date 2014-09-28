@@ -1,6 +1,7 @@
 package org.granitemc.granite.api.command;
 
-/*****************************************************************************************
+/**
+ * **************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -21,10 +22,20 @@ package org.granitemc.granite.api.command;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ * **************************************************************************************
+ */
 
 public interface CommandSender {
+    /**
+     * Returns the name of this {@link org.granitemc.granite.api.command.CommandSender}
+     */
     String getName();
 
+    /**
+     * Sends a message to this {@link org.granitemc.granite.api.command.CommandSender}, for players this will show up in the server, whilst for servers it will show up in the console.
+     *
+     * @param message The message to send
+     */
+    // TODO: use ChatComponent here
     void sendMessage(String message);
 }

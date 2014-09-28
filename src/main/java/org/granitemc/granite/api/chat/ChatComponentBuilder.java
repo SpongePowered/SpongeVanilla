@@ -24,11 +24,27 @@ package org.granitemc.granite.api.chat;
  ****************************************************************************************/
 
 public interface ChatComponentBuilder {
+    /**
+     * Adds a text string to the end of this {@link org.granitemc.granite.api.chat.ChatComponentBuilder}
+     * @param text The text string
+     */
     ChatComponentBuilder text(String text);
 
+    /**
+     * Adds a translation to the end of this {@link org.granitemc.granite.api.chat.ChatComponentBuilder}
+     * @param key The key of the translation
+     * @param args The object arguments to pass to the translation
+     */
     ChatComponentBuilder translation(String key, Object... args);
 
+    /**
+     * Adds a component to the end of this {@link org.granitemc.granite.api.chat.ChatComponentBuilder}
+     * @param component The component
+     */
     ChatComponentBuilder component(ChatComponent component);
 
+    /**
+     * Returns the underlying {@link org.granitemc.granite.api.chat.ChatComponent}
+     */
     ChatComponent build();
 }

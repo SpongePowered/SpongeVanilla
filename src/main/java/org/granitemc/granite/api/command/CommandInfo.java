@@ -33,18 +33,30 @@ public class CommandInfo {
 
     public CommandContainer command;
 
+    /**
+     * Returns the sender of this command (either a {@link org.granitemc.granite.api.Player} or a {@link org.granitemc.granite.api.Server})
+     */
     public CommandSender getCommandSender() {
         return commandSender;
     }
 
+    /**
+     * Returns the command args that were passed to this command (i.e. what's after the command name)
+     */
     public String[] getArgs() {
         return args;
     }
 
+    /**
+     * Returns the actual command name used when calling the command
+     */
     public String getUsedCommandName() {
         return usedCommandName;
     }
 
+    /**
+     * Returns the command that was called
+     */
     public CommandContainer getCommand() {
         return command;
     }

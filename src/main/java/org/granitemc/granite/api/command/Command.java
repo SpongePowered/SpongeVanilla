@@ -34,9 +34,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
+    /**
+     * The name of this command (i.e. what's just after the slash)
+     */
     public String name();
 
+    /**
+     * The usage info of this command, will be used in /help
+     */
     public String info();
 
+    /**
+     * The aliases of this command, these have a lower priority than the name
+     */
     public String[] aliases();
 }
