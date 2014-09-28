@@ -104,15 +104,15 @@ public interface Entity {
     boolean isInWater();
 
     //TODO: What does this do?
-    //void X();
+    /*void X();
 
     //TODO: What does this do?
-    //void Y();
+    /*void Y();
     
     String getSplashSound();
 
     //TODO: Work out what var1 (class bof) is
-    //boolean isInsideOfMaterial(bof var1);*/
+    /*boolean isInsideOfMaterial(bof var1);*/
 
     //String getSplashSound();
 
@@ -161,7 +161,7 @@ public interface Entity {
      */
     boolean canBePushed();
 
-    String getEntityString();
+    //String getEntityString();
 
     //TODO: find out what adw and alq class is
     //TODO: find a good name for functions
@@ -314,9 +314,9 @@ public interface Entity {
     /*boolean a(aqo var1, World world, dt var3, bec var4, float var5);*/
 
     //TODO: Figure out what this does
-    int getTeleportDirection();
+    //int getTeleportDirection();
 
-    boolean doesEntityNotTriggerPressurePlate();
+    //boolean doesEntityNotTriggerPressurePlate();
 
     /**
      * Returns the UUID of this entity
@@ -359,37 +359,15 @@ public interface Entity {
      */
     Location getLocation();
 
-    void setLocation(Location location);
-    
-    double getX();
-    
-    void setX(double x);
-    
-    double getY();
-    
-    void setY(double y);
-    
-    double getZ();
-    
-    void setZ(double z);
-    
-    float getPitch();
-    
-    void setPitch(float pitch);
-    
-    float getYaw();
-    
-    void setYaw(float yaw);
-            
     /**
      * Returns the entity currently riding this entity (or null)
      */
     // TODO: rename this so it makes more sense
-    Entity riddenByEntity();
+    //Entity getRiddenByEntity();
 
     /**
      * Returns the entity we are currently riding (or null)
      */
     // TODO: rename this so it makes more sense
-    Entity ridingEntity();
+    //Entity getRidingEntity();
 }
