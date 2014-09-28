@@ -28,18 +28,22 @@ import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GraniteItemStack extends Composite implements ItemStack {
-
-    public GraniteItemStack(Object instance) {
-        super(instance);
+    private static Map<Object, GraniteItemStack> instanceMap = new HashMap<>();
+    public GraniteItemStack(Object ïtemStackInstance) {
+        super(ïtemStackInstance);
     }
 
-    public GraniteItemStack(Object instance, int size) {
+    public GraniteItemStack(Object itemTypeInstance, int size) {
         super(Mappings.getClass("n.m.item.ItemStack"),
-                Mappings.getClass("n.m.block.Block").isInstance(instance)
+                Mappings.getClass("n.m.block.Block").isInstance(itemTypeInstance)
                         ? new Class[]{Mappings.getClass("n.m.block.Block")}
-                        : new Class[]{Mappings.getClass("n.m.item.Item"), int.class}, instance, size);
+                        : new Class[]{Mappings.getClass("n.m.item.Item"), int.class}, itemTypeInstance, size);
     }
 
     public GraniteItemStack(ItemType type) {
@@ -61,7 +65,7 @@ public class GraniteItemStack extends Composite implements ItemStack {
     }
 
     public ItemType getType() {
-        return new GraniteItemType(invoke("n.m.item.ItemStack", "getItem"));
+        return (ItemType) MinecraftUtils.wrap(invoke("n.m.item.ItemStack", "getItem"));
     }
 
     public int getItemDamage() {

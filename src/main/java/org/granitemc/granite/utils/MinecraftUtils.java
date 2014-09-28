@@ -23,8 +23,14 @@ package org.granitemc.granite.utils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.chat.GraniteChatComponentText;
+import org.granitemc.granite.chat.GraniteChatComponentTranslation;
+import org.granitemc.granite.entity.GraniteEntity;
+import org.granitemc.granite.entity.GraniteEntityItem;
 import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.world.GraniteWorld;
 
@@ -35,11 +41,23 @@ public class MinecraftUtils {
         if (Mappings.getClass("n.m.server.MinecraftServer").isInstance(object)) {
             return GraniteServerComposite.instance;
         } else if (Mappings.getClass("n.m.entity.player.EntityPlayerMP").isInstance(object)) {
-            return new GranitePlayer(object);
+            return GraniteItemStack.new_(object, GranitePlayer.class);
+        } else if (Mappings.getClass("n.m.entity.EntityItem").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteEntityItem.class);
+        } else if (Mappings.getClass("n.m.entity.Entity").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteEntity.class);
+        } else if (Mappings.getClass("n.m.block.IBlockWithMetadata").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteBlockType.class);
+        } else if (Mappings.getClass("n.m.item.Item").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteItemType.class);
         } else if (Mappings.getClass("n.m.world.World").isInstance(object)) {
-            return new GraniteWorld(object);
-        } else if (Mappings.getClass("net.minecraft.util.ChatComponentText").isInstance(object)) {
-            return new GraniteChatComponentText(object);
+            return GraniteItemStack.new_(object, GraniteWorld.class);
+        } else if (Mappings.getClass("n.m.util.ChatComponentText").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteChatComponentText.class);
+        } else if (Mappings.getClass("n.m.util.ChatComponentTranslation").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteChatComponentTranslation.class);
+        } else if (Mappings.getClass("n.m.item.ItemStack").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteItemStack.class);
         }
         return null;
     }

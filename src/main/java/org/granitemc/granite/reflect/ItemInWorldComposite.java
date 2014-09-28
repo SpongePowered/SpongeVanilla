@@ -116,6 +116,8 @@ public class ItemInWorldComposite extends ProxyComposite {
                         e.printStackTrace();
                     }
 
+                    // TODO: set block before calling, fire event, if cancelled, don't call callback at all
+
                     if (retval) {
                         Block b = w.getBlock(x, y, z);
                         if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {

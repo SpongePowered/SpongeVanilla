@@ -33,6 +33,7 @@ import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -155,9 +156,8 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
             List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(scm.parent);
 
             for (Object o : playerObjs) {
-                Player p = new GranitePlayer(o);
+                Player p = (Player) MinecraftUtils.wrap(o);
                 ret.add(p);
-                // TODO: cache - so the instances are the same
             }
 
             return ret;

@@ -37,6 +37,7 @@ import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
 import org.granitemc.granite.utils.Config;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -130,7 +131,7 @@ public class GraniteStartupThread extends Thread {
                 Object metadata = Mappings.getField(blockClass, "blockMetadata").get(block);
                 Collection variants = (Collection) Mappings.getField(metadata.getClass(), "variants").get(metadata);
 
-                GraniteBlockType type = new GraniteBlockType(variants.iterator().next());
+                GraniteBlockType type = (GraniteBlockType) MinecraftUtils.wrap(variants.iterator().next());
                 int id = (int) Mappings.invoke(null, "n.m.block.Block", "getIdFromBlock(n.m.block.Block)", block);
                 nameMap.put(name, type);
                 idMap.put(id, type);
@@ -161,7 +162,7 @@ public class GraniteStartupThread extends Thread {
                 String fullName = (String) Mappings.invoke(registry, "n.m.util.RegistryNamespaced", "getNameForObject(Object)", item).toString();
                 String name = fullName.split(":")[1];
 
-                GraniteItemType type = new GraniteItemType(item);
+                GraniteItemType type = (GraniteItemType) MinecraftUtils.wrap(item);
 
                 int id = (int) Mappings.invoke(null, "n.m.item.Item", "getIdFromItem(n.m.item.Item)", item);
                 nameMap.put(name, type);

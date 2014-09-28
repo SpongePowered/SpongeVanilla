@@ -28,8 +28,11 @@ import org.granitemc.granite.utils.Mappings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Composite {
+    public static Map<Class<? extends Composite>, Map<Object, Composite>> instanceMap = new HashMap<>();
     public Object parent;
     public Class<?> clazz;
 
@@ -111,5 +114,23 @@ public abstract class Composite {
 
     public void fieldSet(String fieldName, Object value) {
         fieldSet(clazz, fieldName, value);
+    }
+
+    public static<T extends Composite> T new_(Object parent, Class<T> compositeType) {
+        if (!instanceMap.containsKey(compositeType)) {
+            instanceMap.put(compositeType, new HashMap<Object, Composite>());
+        }
+        if (instanceMap.get(compositeType).containsKey(parent)) {
+            return (T) instanceMap.get(compositeType).get(parent);
+        } else {
+            T composite = null;
+            try {
+                composite = compositeType.getConstructor(Object.class).newInstance(parent);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            instanceMap.get(compositeType).put(compositeType, composite);
+            return composite;
+        }
     }
 }

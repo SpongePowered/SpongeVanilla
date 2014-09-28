@@ -35,6 +35,7 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SCMComposite extends ProxyComposite {
@@ -46,9 +47,6 @@ public class SCMComposite extends ProxyComposite {
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Player p = (Player) MinecraftUtils.wrap(args[1]);
 
-                PlayerJoinEvent event = new PlayerJoinEvent(p);
-                Granite.getEventQueue().fireEvent(event);
-
                 PlayServerComposite psc = new PlayServerComposite(GraniteServerComposite.instance, args[0], (GranitePlayer) p);
 
                 try {
@@ -58,6 +56,17 @@ public class SCMComposite extends ProxyComposite {
                 } catch (IllegalAccessException | NoSuchFieldException e) {
                     e.printStackTrace();
                 }
+
+                try {
+                    proxyCallback.invoke(self, args);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                hook.setWasHandled(true);
+
+                PlayerJoinEvent event = new PlayerJoinEvent(p);
+                Granite.getEventQueue().fireEvent(event);
+
                 return null;
             }
         });
