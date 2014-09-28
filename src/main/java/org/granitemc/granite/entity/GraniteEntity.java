@@ -29,6 +29,7 @@ import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
+import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
 
@@ -125,7 +126,6 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("Y");
     }*/
 
-    @Override
     public String getSplashSound() {
         return (String) invoke("getSplashSound");
     }
@@ -181,7 +181,6 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("canBePushed");
     }
 
-    @Override
     public String getEntityString() {
         return (String) invoke("getEntityString");
     }
@@ -347,12 +346,10 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("a", aqo var1, World world, dt var3, bec var4, float var5);
     }*/
 
-    @Override
     public int getTeleportDirection() {
         return (Integer) invoke("getTeleportDirection");
     }
 
-    @Override
     public boolean doesEntityNotTriggerPressurePlate() {
         return (boolean) invoke("doesEntityNotTriggerPressurePlate");
     }
@@ -496,7 +493,8 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void teleportToPlayer(Player player) {
-        setLocation(new Location(player.getWorld(), player.getX(), player.getY(), player.getZ(), player.getPitch(), player.getYaw()));
+        GranitePlayer player2 = (GranitePlayer) player;
+        setLocation(new Location(player2.getWorld(), player2.getX(), player2.getY(), player2.getZ(), player2.getPitch(), player2.getYaw()));
     }
 
     @Override
@@ -522,7 +520,6 @@ public class GraniteEntity extends Composite implements Entity {
         return new Location(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
     }
 
-    @Override
     public void setLocation(Location location) {
         setWorld(location.getWorld());
         setX(location.getX());
@@ -532,62 +529,49 @@ public class GraniteEntity extends Composite implements Entity {
         setPitch(location.getPitch());
     }
 
-    @Override
     public double getX() {
         return (double) fieldGet("n.m.entity.Entity", "posX");
     }
 
-    @Override
     public void setX(double x) {
         fieldSet("n.m.entity.Entity", "posX", x);
     }
 
-    @Override
     public double getY() {
         return (double) fieldGet("n.m.entity.Entity", "posY");
     }
 
-    @Override
     public void setY(double y) {
         fieldSet("n.m.entity.Entity", "posY", y);
     }
 
-    @Override
     public double getZ() {
         return (double) fieldGet("n.m.entity.Entity", "posZ");
     }
 
-    @Override
     public void setZ(double z) {
         fieldSet("n.m.entity.Entity", "posZ", z);
     }
 
-    @Override
     public float getPitch() {
         return (float) fieldGet("n.m.entity.entity", "rotationPitch");
     }
 
-    @Override
     public void setPitch(float pitch) {
         fieldSet("n.m.entity.Entity", "rotationPitch", pitch);
     }
 
-    @Override
     public float getYaw() {
         return (float) fieldGet("n.m.entity.Entity", "rotationYaw");
     }
 
-    @Override
     public void setYaw(float yaw) {
         fieldSet("n.m.entity.Entity", "rotationYaw", yaw);
     }
 
-    @Override
     public Entity riddenByEntity() {
         return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "riddenByEntity"));
     }
-
-    @Override
     public Entity ridingEntity() {
         return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "ridingEntity"));
     }
