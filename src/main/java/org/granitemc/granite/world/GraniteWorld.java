@@ -26,6 +26,7 @@ package org.granitemc.granite.world;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.world.World;
+import org.granitemc.granite.api.world.WorldBorder;
 import org.granitemc.granite.block.GraniteBlock;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.reflect.composite.Composite;
@@ -52,9 +53,7 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public BlockType getBlockTypeAtPosition(int x, int y, int z) {
-
         Object blockType = invoke("net.minecraft.world.World", "getBlock(n.m.util.ChunkCoordinates)", MinecraftUtils.createChunkCoordinates(x, y, z));
-        //GraniteBlockType.setValue(blockType, "facing", "west");
 
         return new GraniteBlockType(blockType);
     }
@@ -123,6 +122,11 @@ public class GraniteWorld extends Composite implements World {
     @Override
     public void setLevelName(String s) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setLevelName(String)", s);
+    }
+
+    @Override
+    public WorldBorder getWorldBorder() {
+        return new GraniteWorldBorder(this);
     }
 
     @Override
@@ -228,22 +232,18 @@ public class GraniteWorld extends Composite implements World {
     
     //TODO: getGameRules: x
     
-    @Override
     public double getBorderCenterX() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderCenterX");
     }
     
-    @Override
     public double getBorderCenterZ() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderCenterZ");
     }
     
-    @Override
     public double getBorderSize() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSize");
     }
         
-    @Override
     public void setBorderSize(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSize(int)", d);
     }
@@ -264,52 +264,42 @@ public class GraniteWorld extends Composite implements World {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSizeLerpTarget(int)", d);
     }
     
-    @Override
     public void setBorderCenterZ(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderCenterZ(int)", d);
     }
     
-    @Override
     public void setBorderCenterX(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderCenterX(int)", d);
     }
     
-    @Override
     public double getBorderSafeZone() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSafeZone");
     }
         
-    @Override
     public void setBorderSafeZone(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSafeZone(int)", d);
     }
     
-    @Override
     public double getBorderDamagePerBlock() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderDamagePerBlock");
     }
         
-    @Override
     public void setBorderDamagePerBlock(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderDamagePerBlock(int)", d);
     }
-    
-    @Override
+
     public int getBorderWarningBlocks() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderWarningBlocks");
     }
     
-    @Override
     public int getBorderWarningTime() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderWarningTime");
     }
     
-    @Override
     public void setBorderWarningBlocks(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderWarningBlocks(int)", i);
     }
     
-    @Override
     public void setBorderWarningTime(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderWarningTime(int)", i);
     }

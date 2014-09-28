@@ -53,6 +53,8 @@ public interface World {
     
     public void setLevelName(String s);
 
+    public WorldBorder getWorldBorder();
+
     public int getVersion();
     
     public void setVersion(int i);
@@ -86,44 +88,6 @@ public interface World {
     public boolean getAllowCommands();
     
     public void setAllowCommands(boolean b);
-    
-    public double getBorderCenterX();
-    
-    public double getBorderCenterZ();
-    
-    public double getBorderSize();
-        
-    public void setBorderSize(double d);
-
-    // TODO: check if necessary
-    // TODO: extract to WorldBorder class
-    /*public long getBorderSizeLerpTime();
-        
-    public void setBorderSizeLerpTime(long l);
-    
-    public double getBorderSizeLerpTarget();
-        
-    public void setBorderSizeLerpTarget(double d);*/
-    
-    public void setBorderCenterZ(double d);
-    
-    public void setBorderCenterX(double d);
-    
-    public double getBorderSafeZone();
-        
-    public void setBorderSafeZone(double d);
-    
-    public double getBorderDamagePerBlock();
-        
-    public void setBorderDamagePerBlock(double d);
-    
-    public int getBorderWarningBlocks();
-    
-    public int getBorderWarningTime();
-    
-    public void setBorderWarningBlocks(int i);
-    
-    public void setBorderWarningTime(int i);
     
     public boolean getDifficultyLocked();
     
