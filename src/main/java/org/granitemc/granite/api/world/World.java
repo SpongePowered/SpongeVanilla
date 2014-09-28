@@ -24,7 +24,114 @@ package org.granitemc.granite.api.world;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.block.BlockType;
 
 public interface World {
     Block getBlock(int x, int y, int z);
+    
+    public Block getBlock(Object chunkCoordinates);
+
+    public BlockType getBlockTypeAtPosition(int x, int y, int z);
+
+    public void setBlockTypeAtPosition(int x, int y, int z, BlockType type);
+
+    public Object getWorldInfo();
+    
+    public long getSeed();
+    
+    public long getSpawnX();
+
+    public long getSpawnY();
+
+    public long getSpawnZ();
+
+    public long getTime();
+
+    public long getDayTime();
+
+    public void setTime(long t);
+
+    public void setDayTime(long t);
+    
+    public String getLevelName();
+    
+    public void setLevelName(String s);
+
+    public int getVersion();
+    
+    public void setVersion(int i);
+    
+    public boolean isThundering();
+    
+    public void setThundering(boolean b);
+    
+    public int getThunderDuration();
+
+    public void setThunderDuration(int i);
+    
+    public boolean isRaining();
+    
+    public void setRaining(boolean b);
+    
+    public int getRainDuration();
+
+    public void setRainDuration(int i);
+
+    public boolean getUseMapFeatures();
+    
+    public void setUseMapFeatures(boolean b);
+    
+    public boolean isHardcore();
+    
+    public void setHardcore(boolean b);
+    
+    public String getGeneratorOptions();
+        
+    public boolean getAllowCommands();
+    
+    public void setAllowCommands(boolean b);
+    
+    public boolean isInitialized();
+    
+    public void setInitialized(boolean b);
+    
+    public double getBorderCenterX();
+    
+    public double getBorderCenterZ();
+    
+    public double getBorderSize();
+        
+    public void setBorderSize(double d);
+    
+    public long getBorderSizeLerpTime();
+        
+    public void setBorderSizeLerpTime(long l);
+    
+    public double getBorderSizeLerpTarget();
+        
+    public void setBorderSizeLerpTarget(double d);
+    
+    public void setBorderCenterZ(double d);
+    
+    public void setBorderCenterX(double d);
+    
+    public double getBorderSafeZone();
+        
+    public void setBorderSafeZone(double d);
+    
+    public double getBorderDamagePerBlock();
+        
+    public void setBorderDamagePerBlock(double d);
+    
+    public int getBorderWarningBlocks();
+    
+    public int getBorderWarningTime();
+    
+    public void setBorderWarningBlocks(int i);
+    
+    public void setBorderWarningTime(int i);
+    
+    public boolean getDifficultyLocked();
+    
+    public void setDifficultyLocked(boolean b);
 }
