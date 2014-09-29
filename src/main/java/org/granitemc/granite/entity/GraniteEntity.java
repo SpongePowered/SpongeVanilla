@@ -560,7 +560,7 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public float getPitch() {
-        return (float) fieldGet("n.m.entity.entity", "rotationPitch");
+        return (float) fieldGet("n.m.entity.Entity", "rotationPitch");
     }
 
     public void setPitch(float pitch) {
