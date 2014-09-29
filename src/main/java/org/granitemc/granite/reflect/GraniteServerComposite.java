@@ -33,6 +33,7 @@ import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -155,9 +156,8 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
             List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(scm.parent);
 
             for (Object o : playerObjs) {
-                Player p = new GranitePlayer(o);
+                Player p = (Player) MinecraftUtils.wrap(o);
                 ret.add(p);
-                // TODO: cache - so the instances are the same
             }
 
             return ret;
@@ -168,10 +168,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     //TODO: May be important?
-    @Override
-    public void setUserMessage(String var1) {
+    public void setUserMessage(String message) {
         //Obf: b
-        invoke("setUserMessage(String)", var1);
+        invoke("setUserMessage(String)", message);
     }
 
     @Override
@@ -186,16 +185,15 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (boolean) invoke("isHardcore");
     }
 
-    @Override
     public int getOpPermissionLevel() {
         //Obf: p
         return (Integer) invoke("getOpPermissionLevel");
     }
 
     @Override
-    public void saveAllWorlds(boolean var1) {
+    public void saveAllWorlds(boolean outputLogMessage) {
         //Obf: a
-        invoke("saveAllWorlds(boolean)", var1);
+        invoke("saveAllWorlds(boolean)", outputLogMessage);
     }
 
     @Override
@@ -216,7 +214,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (boolean) invoke("isServerRunning");
     }
 
-    @Override
     public void initiateShutdown() {
         //Obf: u
         invoke("initiateShutdown");
@@ -230,7 +227,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
 
     //TODO: Add hook for eventual scheduler
-    @Override
     public void tick() {
         //Obf: y
         invoke("tick");
@@ -255,7 +251,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (String) invoke("getHostname");
     }
 
-    @Override
     public void setHostname(String hostname) {
         //Obf: c
         invoke("setHostname(String)", hostname);
@@ -301,13 +296,11 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (String) invoke("handleRConCommand(String)", command);
     }*/
 
-    @Override
     public boolean isDebuggingEnabled() {
         //Obf: L
         return (boolean) invoke("isDebuggingEnabled");
     }
 
-    @Override
     public String getServerModName() {
         //Obf: getServerModName
         return (String) invoke("getServerModName");
@@ -319,7 +312,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (KeyPair) invoke("getKeyPair");
     }
 
-    @Override
     public void setKeyPair(KeyPair keyPair) {
         //Obf: a
         invoke("setKeyPair(KeyPair", keyPair);
@@ -331,25 +323,21 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (Integer) invoke("getServerPort");
     }
 
-    @Override
     public void setServerPort(int port) {
         //Obf: b
         invoke("setServerPort(int)", port);
     }
 
-    @Override
     public String getServerOwner() {
         //Obf R
         return (String) invoke("getServerOwner");
     }
 
-    @Override
     public void setServerOwner(String serverOwner) {
         //Obf: j
         invoke("setServerOwner(String)", serverOwner);
     }
 
-    @Override
     public boolean isSinglePlayer() {
         //Obf: N
         return (boolean) invoke("isSinglePlayer");
@@ -361,7 +349,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (String) invoke("getFolderName");
     }
 
-    @Override
     public void setFolderName(String folderName) {
         //Obf: k
         invoke("setFolderName(String)", folderName);
@@ -373,13 +360,11 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (boolean) invoke("allowSpawnMonsters");
     }
 
-    @Override
     public boolean canCreateBonusChest(boolean var1) {
         //Obf: c
         return (boolean) invoke("canCreateBonusChest(boolean)", var1);
     }
 
-    @Override
     public void deleteWorldAndStopServer() {
         //Obf: Z
         invoke("deleteWorldAndStopServer");
@@ -391,7 +376,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (boolean) invoke("isSnooperEnabled");
     }
 
-    @Override
     public boolean isDedicatedServer() {
         //Obf: ad
         return (boolean) invoke("isDedicatedServer");
@@ -404,9 +388,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setCanSpawnAnimals(boolean var1) {
+    public void setCanSpawnAnimals(boolean spawnAnimals) {
         //Obf: d
-        invoke("setCanSpawnAnimals(boolean)", var1);
+        invoke("setCanSpawnAnimals(boolean)", spawnAnimals);
     }
 
     @Override
@@ -416,9 +400,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setCanSpawnNPCs(boolean var1) {
+    public void setCanSpawnNPCs(boolean spawnNPCs) {
         //Obf: e
-        invoke("setCanSpawnNPCs(boolean)", var1);
+        invoke("setCanSpawnNPCs(boolean)", spawnNPCs);
     }
 
     @Override
@@ -428,9 +412,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setAllowPvp(boolean var1) {
+    public void setAllowPvp(boolean allowPvP) {
         //Obf: f
-        invoke("setAllowPvp", var1);
+        invoke("setAllowPvp", allowPvP);
     }
 
     @Override
@@ -440,9 +424,9 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     @Override
-    public void setAllowFlight(boolean var1) {
+    public void setAllowFlight(boolean allowFlight) {
         //Obf: g
-        invoke("setAllowFlight(boolean)", var1);
+        invoke("setAllowFlight(boolean)", allowFlight);
     }
 
     @Override
@@ -469,16 +453,14 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (Integer) invoke("getSpawnProtectionSize");
     }
 
-    @Override
     public boolean getForceGamemode() {
         //Obf: av
         return (boolean) invoke("getForceGamemode");
     }
 
-    @Override
-    public void setForceGamemode(boolean var1) {
+    public void setForceGamemode(boolean forceGamemode) {
         //Obf: i
-        invoke("setForceGamemode(boolean)", var1);
+        invoke("setForceGamemode(boolean)", forceGamemode);
     }
 
     @Override
@@ -487,7 +469,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         return (Proxy) invoke("getServerProxy");
     }
 
-    @Override
     public long getCurrentTimeMillis() {
         //Obf: ax
         return (long) invoke("getCurrentTimeMillis");

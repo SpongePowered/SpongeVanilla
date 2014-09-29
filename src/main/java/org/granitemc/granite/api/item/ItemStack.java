@@ -26,19 +26,45 @@ import org.granitemc.granite.api.block.ItemType;
  ****************************************************************************************/
 
 public interface ItemStack {
+    /**
+     * Returns the damage of this ItemStack
+     */
     int getItemDamage();
 
+    /**
+     * Sets the damage of this ItemStack
+     * @param damage The damage to set
+     */
     void setItemDamage(int damage);
 
+    /**
+     * Returns the lore of this ItemStack
+     */
     String[] getItemLore();
 
+    /**
+     * Returns the maximum amount of damage this ItemStack can have
+     */
     int getMaxDamage();
 
+    /**
+     * Returns the display name of this ItemStack
+     */
     String getDisplayName();
 
+    /**
+     * Sets the display name of this ItemStack
+     * @param name The display name to set
+     */
     void setDisplayName(String name);
 
+    /**
+     * Returns whether this ItemStack has a display name
+     */
     boolean hasDisplayName();
 
+    /**
+     * Returns the type of this ItemStack
+     */
     ItemType getType();
 }

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
+import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
@@ -36,6 +37,7 @@ import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.chat.GraniteChatComponentBuilder;
 import org.granitemc.granite.event.GraniteEventQueue;
+import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 
 import java.io.File;
@@ -156,9 +158,8 @@ public class GraniteAPI implements API {
         return new GraniteChatComponentBuilder();
     }
 
-    public ItemStack createItemStack() {
-        return null;
-        //TODO: create item stack
+    public ItemStack createItemStack(ItemType type, int amount) {
+        return new GraniteItemStack(type, amount);
     }
 
     public Server getServer() {

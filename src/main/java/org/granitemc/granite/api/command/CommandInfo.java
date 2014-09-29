@@ -3,7 +3,12 @@
  */
 package org.granitemc.granite.api.command;
 
-/*****************************************************************************************
+import org.granitemc.granite.api.Player;
+
+import java.util.List;
+
+/**
+ * **************************************************************************************
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -24,7 +29,8 @@ package org.granitemc.granite.api.command;
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ * **************************************************************************************
+ */
 
 public class CommandInfo {
     public CommandSender commandSender;
@@ -32,6 +38,7 @@ public class CommandInfo {
     public String usedCommandName;
 
     public CommandContainer command;
+    public List<Player> targets;
 
     /**
      * Returns the sender of this command (either a {@link org.granitemc.granite.api.Player} or a {@link org.granitemc.granite.api.Server})
@@ -59,5 +66,12 @@ public class CommandInfo {
      */
     public CommandContainer getCommand() {
         return command;
+    }
+
+    /**
+     * Returns the targets of this command. This is a list of players selected using the @-notation used by command blocks, or the sender itself if the sender is a player and no other targets were selected.
+     */
+    public List<Player> getTargets() {
+        return targets;
     }
 }

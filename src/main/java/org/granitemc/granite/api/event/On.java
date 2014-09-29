@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
 public @interface On {
     /**
      * An enum for specifying the priority of an event handler.
-     * <p/>
+     *
      * They are run from LOWEST to HIGHEST.
      * MONITOR is executed last, but won't get fired for events that have been cancelled, and will throw an exception if an event is modified.
      */

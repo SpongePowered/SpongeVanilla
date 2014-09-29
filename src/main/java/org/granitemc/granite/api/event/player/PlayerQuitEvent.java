@@ -35,6 +35,9 @@ public class PlayerQuitEvent extends Event {
         this.player = player;
     }
 
+    /**
+     * Returns the player that quit
+     */
     public Player getPlayer() {
         return player;
     }

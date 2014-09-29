@@ -31,113 +31,181 @@ import java.security.KeyPair;
 import java.util.List;
 
 public interface Server extends CommandSender {
-    String getName();
-
-    void sendMessage(String message);
-
+    /**
+     * Returns a list of online players
+     */
     List<Player> getPlayers();
 
-    //TODO: May be important?
-    void setUserMessage(String var1);
-
+    /**
+     * Returns whether structures can spawn
+     */
     boolean canStructuresSpawn();
 
+    /**
+     * Returns whether the server is hardcore
+     */
     boolean isHardcore();
 
-    int getOpPermissionLevel();
+    /**
+     * Saves all worlds
+     * @param outputLogMessage Whether to output a message
+     */
+    void saveAllWorlds(boolean outputLogMessage);
 
-    void saveAllWorlds(boolean var1);
-
+    /**
+     * Stops the server
+     */
     void stopServer();
 
+    /**
+     * Returns the server's hostname
+     */
     String getServerHostname();
 
+    /**
+     * Returns whether the server is running
+     */
+    // TODO: doesn't this always return true? is it even needed?
     boolean isServerRunning();
 
-    void initiateShutdown();
-
+    /**
+     * Returns the server data directory
+     */
     File getDataDirectory();
 
-    //TODO: Add hook for eventual scheduler
-    void tick();
-
+    /**
+     * Returns whether to allow nether
+     */
     boolean getAllowNether();
 
+    /**
+     * Returns the server's hostname
+     */
+    // TODO: isn't this the same as #getServerHostname?
     String getHostname();
 
-    void setHostname(String hostname);
-
+    /**
+     * Returns the port the server is running on
+     */
     int getPort();
 
+    /**
+     * Returns the server's MotD (the message that will be shown in chat to players when joining)
+     */
     String getMotd();
 
+    /**
+     * Returns the version of Minecraft this plugin runs on
+     */
     String getMinecraftVersion();
 
+    /**
+     * Returns the amount of players currently online
+     */
     int getCurrentPlayerCount();
 
+    /**
+     * Returns the maximum amount of players this server can have
+     */
     int getMaxPlayers();
 
-    boolean isDebuggingEnabled();
-
-    String getServerModName();
-
+    /**
+     * Returns this server's key pair
+     */
     KeyPair getKeyPair();
 
-    void setKeyPair(KeyPair keyPair);
-
+    /**
+     * Returns the port the server is running on
+     */
+    // TODO: isn't this the same as #getPort?
     int getServerPort();
 
-    void setServerPort(int port);
-
-    String getServerOwner();
-
-    void setServerOwner(String serverOwner);
-
-    boolean isSinglePlayer();
-
+    /**
+     * Returns the folder name of this server
+     */
     String getFolderName();
 
-    void setFolderName(String folderName);
-
+    /**
+     * Returns whether this server can spawn monsters
+     */
     boolean allowSpawnMonsters();
 
-    boolean canCreateBonusChest(boolean var1);
-
-    void deleteWorldAndStopServer();
-
+    /**
+     * Returns whether Mojang's snooper is enabled
+     */
     boolean isSnooperEnabled();
 
-    boolean isDedicatedServer();
-
+    /**
+     * Returns whether this server can spawn animals
+     */
     boolean getCanSpawnAnimals();
 
-    void setCanSpawnAnimals(boolean var1);
+    /**
+     * Sets whether this server can spawn animals
+     * @param spawnAnimals Whether this server can spawn animals
+     */
+    void setCanSpawnAnimals(boolean spawnAnimals);
 
+    /**
+     * Returns whether this server can spawn NPCs
+     */
     boolean getCanSpawnNPCs();
 
-    void setCanSpawnNPCs(boolean var1);
+    /**
+     * Sets whether this server can spawn NPCs
+     * @param spawnNPCs Whether this server can spawn NPCs
+     */
+    void setCanSpawnNPCs(boolean spawnNPCs);
 
+    /**
+     * Returns whether PvP is enabled
+     */
     boolean isPvpEnabled();
 
-    void setAllowPvp(boolean var1);
+    /**
+     * Sets whether PvP is enabled
+     * @param allowPvP Whether PvP is enabled
+     */
+    void setAllowPvp(boolean allowPvP);
 
+    /**
+     * Returns whether flight is allowed (hovering over the ground for more than 4 seconds via mods - doesn't count creative flying)
+     */
     boolean isFlightAllowed();
 
-    void setAllowFlight(boolean var1);
+    /**
+     * Sets whether flight is allowed (hovering over the ground for more than 4 seconds via mods - doesn't count creative flying)
+     * @param allowFlight Whether flight is allowed
+     */
+    void setAllowFlight(boolean allowFlight);
 
+    /**
+     * Returns whether command blocks are enabled
+     */
     boolean isCommandBlockEnabled();
 
+    /**
+     * Returns whether the GUI is enabled
+     */
     boolean getGuiEnabled();
 
+    /**
+     * Returns the current tick count this server is on
+     */
     int getTickCounter();
 
+    /**
+     * Returns the size of spawn protection
+     */
     int getSpawnProtectionSize();
 
-    boolean getForceGamemode();
+    // TODO: check if needed and what they do
+    //boolean getForceGamemode();
 
-    void setForceGamemode(boolean var1);
+    //void setForceGamemode(boolean forceGamemode);
 
+    /**
+     * Returns the proxy this server is using
+     */
     Proxy getServerProxy();
-
-    long getCurrentTimeMillis();
 }

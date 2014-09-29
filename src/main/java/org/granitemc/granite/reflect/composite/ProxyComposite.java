@@ -73,32 +73,39 @@ public class ProxyComposite extends Composite {
             @Override
             // This method may be invoked thousands of times per second... MAKE IT FAST
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-                if (args.length > 0 && args[0] != null && args[0].getClass().getName() == "mx") {
-                    args = args;
-                }
                 try {
-                    if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
-                        for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
-                            Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
-                            if (hook.wasHandled) {
-                                return ret;
+                    if (args.length > 0 && args[0] != null && args[0].getClass().getName() == "mx") {
+                        args = args;
+                    }
+                    try {
+                        if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
+                            for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
+                                Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
+                                if (hook.wasHandled) {
+                                    return ret;
+                                }
                             }
                         }
+                    } catch (Mappings.MappingNotFoundException ignored) {
                     }
-                } catch (Mappings.MappingNotFoundException ignored) {
-                }
 
-                for (Hook hook : globalHooks) {
-                    Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
-                    if (hook.wasHandled) {
-                        return ret;
+                    for (Hook hook : globalHooks) {
+                        Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
+                        if (hook.wasHandled) {
+                            return ret;
+                        }
                     }
-                }
 
-                try {
-                    return proceed.invoke(self, args);
-                } catch (InvocationTargetException e) {
-                    throw e.getCause();
+                    try {
+                        return proceed.invoke(self, args);
+                    } catch (InvocationTargetException e) {
+                        throw e.getCause();
+                    }
+                } catch (Throwable t) {
+                    if (!Mappings.getClass("net.minecraft.network.ThreadQuickExitException").isInstance(t)) {
+                        t.printStackTrace();
+                    }
+                    throw t;
                 }
             }
         }, createIdentical, constructorArgTypes, constructorArgs);

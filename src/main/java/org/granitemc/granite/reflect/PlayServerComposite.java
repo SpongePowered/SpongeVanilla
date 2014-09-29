@@ -70,18 +70,5 @@ public class PlayServerComposite extends ProxyComposite {
                 return null;
             }
         });
-
-        addHook(new HookListener() {
-            List<String> has = new ArrayList<>();
-
-            @Override
-            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                if (!has.contains(method.toString())) {
-                    has.add(method.toString());
-                    System.out.println(method.toString());
-                }
-                return null;
-            }
-        });
     }
 }

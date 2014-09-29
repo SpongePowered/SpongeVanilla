@@ -6,6 +6,7 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -169,7 +170,7 @@ public class GraniteBlockType extends Composite implements BlockType {
 
             return new GraniteItemStack(itemObject, 1);
         } else {
-            graniteItemStack = new GraniteItemStack(itemStackObject);
+            graniteItemStack = (GraniteItemStack) MinecraftUtils.wrap(itemStackObject);
             graniteItemStack.setStackSize(amount);
             return graniteItemStack;
         }
@@ -196,7 +197,7 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     @Override
     public BlockType setMetadata(String key, Comparable value) {
-        return new GraniteBlockType(setValue(parent, key, value));
+        return (BlockType) MinecraftUtils.wrap(setValue(parent, key, value));
     }
 
     @Override

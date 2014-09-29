@@ -44,18 +44,31 @@ public class EventHandlerContainer {
         this.instance = instance;
     }
 
+    /**
+     * Returns the class type of the event
+     */
     public Class<? extends Event> getEventType() {
         return annotation.event();
     }
 
+    /**
+     * Returns the instance of the event handler this event will be called on
+     */
     public Object getInstance() {
         return instance;
     }
 
+    /**
+     * Returns the plugin that registered the event
+     */
     public PluginContainer getPlugin() {
         return plugin;
     }
 
+    /**
+     * Calls the event handler
+     * @param event The event to call it with
+     */
     public void invoke(Event event) {
         try {
             method.invoke(instance, event);

@@ -45,7 +45,7 @@ public class GraniteItemType extends Composite implements ItemType {
 
     @Override
     public String getName() {
-        return new GraniteItemStack(this).getDisplayName();
+        return new GraniteItemStack(this, 1).getDisplayName();
     }
 
     @Override

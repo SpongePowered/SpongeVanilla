@@ -24,5 +24,9 @@ package org.granitemc.granite.api.event;
  ****************************************************************************************/
 
 public interface EventQueue {
+    /**
+     * Fires an event to the handlers
+     * @param event The event to fire
+     */
     void fireEvent(Event event);
 }

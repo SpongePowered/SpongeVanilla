@@ -24,6 +24,7 @@ package org.granitemc.granite.api;
  ****************************************************************************************/
 
 import org.apache.logging.log4j.Logger;
+import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
@@ -33,23 +34,58 @@ import java.io.File;
 import java.util.List;
 
 public interface API {
+    /**
+     * Returns a plugin by name
+     * @param name The name
+     */
     PluginContainer getPlugin(String name);
 
+    /**
+     * Returns a plugin by main class object
+     * @param plugin The main class object
+     */
     PluginContainer getPlugin(Object plugin);
 
+    /**
+     * Returns a plugin by plugin class
+     * @param pluginClass The plugin class
+     */
     PluginContainer getPlugin(Class<?> pluginClass);
 
+    /**
+     * Loads a plugin from a .jar
+     * @param file The .jar file to load from
+     */
     void loadPluginFromJar(File file);
 
+    /**
+     * Returns all the currently loaded plugins
+     */
     List<PluginContainer> getPlugins();
 
+    /**
+     * Returns the log4j logger
+     */
     Logger getLogger();
 
+    /**
+     * Returns a {@link org.granitemc.granite.api.chat.ChatComponentBuilder}
+     */
     ChatComponentBuilder getChatComponentBuilder();
 
-    ItemStack createItemStack();
+    /**
+     * Creates an {@link org.granitemc.granite.api.item.ItemStack}
+     * @param type The {@link org.granitemc.granite.api.block.ItemType} to create an ItemStack of
+     */
+    ItemStack createItemStack(ItemType type, int amount);
 
+    /**
+     * Returns the {@link org.granitemc.granite.api.Server} of this server
+     */
     Server getServer();
 
+    /**
+     * Returns the server {@link org.granitemc.granite.api.event.EventQueue}
+     */
     EventQueue getEventQueue();
 }

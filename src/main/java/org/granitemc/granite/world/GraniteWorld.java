@@ -25,6 +25,7 @@ package org.granitemc.granite.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.api.world.WorldBorder;
 import org.granitemc.granite.block.GraniteBlock;
@@ -40,7 +41,7 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public Block getBlock(int x, int y, int z) {
-        GraniteBlockType type = new GraniteBlockType(invoke("net.minecraft.world.World", "getBlock(n.m.util.ChunkCoordinates)", MinecraftUtils.createChunkCoordinates(x, y, z)));
+        GraniteBlockType type = (GraniteBlockType) MinecraftUtils.wrap(invoke("net.minecraft.world.World", "getBlock(n.m.util.ChunkCoordinates)", MinecraftUtils.createChunkCoordinates(x, y, z)));
         return new GraniteBlock(x, y, z, type, this);
     }
 
@@ -55,7 +56,7 @@ public class GraniteWorld extends Composite implements World {
     public BlockType getBlockTypeAtPosition(int x, int y, int z) {
         Object blockType = invoke("net.minecraft.world.World", "getBlock(n.m.util.ChunkCoordinates)", MinecraftUtils.createChunkCoordinates(x, y, z));
 
-        return new GraniteBlockType(blockType);
+        return (BlockType) MinecraftUtils.wrap(blockType);
     }
 
     @Override
@@ -77,19 +78,21 @@ public class GraniteWorld extends Composite implements World {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getSeed");
     }
     
-    @Override
     public long getSpawnX() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getSpawnX");
     }
 
-    @Override
     public long getSpawnY() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getSpawnY");
     }
 
-    @Override
     public long getSpawnZ() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getSpawnZ");
+    }
+
+    @Override
+    public Block getSpawnBlock() {
+        return getBlock((int) getSpawnX(), (int) getSpawnY(), (int) getSpawnZ());
     }
 
     @Override
@@ -129,12 +132,10 @@ public class GraniteWorld extends Composite implements World {
         return new GraniteWorldBorder(this);
     }
 
-    @Override
     public int getVersion() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getVersion");
     }
     
-    @Override
     public void setVersion(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setVersion(int)", i);
     }
@@ -207,17 +208,14 @@ public class GraniteWorld extends Composite implements World {
     
     //TODO: setWorldGenerator: a(are)
     
-    @Override
     public String getGeneratorOptions() {
         return (String) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getGeneratorOptions");
     }
         
-    @Override
     public boolean getAllowCommands() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getAllowCommands");
     }
     
-    @Override
     public void setAllowCommands(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setAllowCommands(boolean)", b);
     }
@@ -308,12 +306,10 @@ public class GraniteWorld extends Composite implements World {
 
     //TODO: setDifficulty: a(vt)
     
-    @Override
     public boolean getDifficultyLocked() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getDifficultyLocked");
     }
     
-    @Override
     public void setDifficultyLocked(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setDifficultyLocked(boolean)", b);
     }

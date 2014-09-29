@@ -59,26 +59,45 @@ public class PluginContainer {
         registerEventHandler(instance);
     }
 
+    /**
+     * Returns the ID of this plugin
+     */
     public String getId() {
         return annotation.id();
     }
 
+    /**
+     * Returns the name of this plugin
+     */
     public String getName() {
         return annotation.name();
     }
 
+    /**
+     * Returns the version of this plugin
+     */
     public String getVersion() {
         return annotation.version();
     }
 
+    /**
+     * Returns the instance of the plugin class that was created on load
+     */
     public Object getInstance() {
         return instance;
     }
 
+    /**
+     * Returns the type of the plugin class
+     */
     public Class<?> getMainClass() {
         return mainClass;
     }
 
+    /**
+     * Registers a command handler to this plugin
+     * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.command.Command} annotation
+     */
     public void registerCommandHandler(Object handler) {
         Class<?> clazz = handler.getClass();
 
@@ -91,6 +110,10 @@ public class PluginContainer {
         }
     }
 
+    /**
+     * Registers an event handler to this plugin
+     * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.On} annotation
+     */
     public void registerEventHandler(Object handler) {
         Class<?> clazz = handler.getClass();
 
@@ -107,10 +130,16 @@ public class PluginContainer {
         }
     }
 
+    /**
+     * Returns a map of command names to commands
+     */
     public Map<String, CommandContainer> getCommands() {
         return commands;
     }
 
+    /**
+     * Returns a map of event types to handlers
+     */
     public Map<Class<? extends Event>, List<EventHandlerContainer>> getEvents() {
         return events;
     }

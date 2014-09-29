@@ -29,8 +29,10 @@ import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
+import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.world.GraniteWorld;
 
 import java.util.UUID;
 
@@ -61,22 +63,22 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void setSize(float width, float height) {
-        invoke("setSize", width, height);
+        invoke("n.m.entity.Entity", "setSize(float;float)", width, height);
     }
 
     @Override
     public void setFire(int seconds) {
-        invoke("setFire", seconds);
+        invoke("n.m.entity.Entity", "setFire(int)", seconds);
     }
 
     @Override
     public void extinguish() {
-        invoke("extinguish");
+        invoke("n.m.entity.Entity", "extinguish");
     }
 
     @Override
     public void kill() {
-        invoke("kill");
+        invoke("n.m.entity.Entity", "kill");
     }
 
     //TODO: What does this do?
@@ -97,22 +99,22 @@ public class GraniteEntity extends Composite implements Entity {
     //TODO: Work out what var1 and var2 do (volume/pitch, maybe inverse?)
     @Override
     public void playSound(String soundName, float var1, float var2) {
-        invoke("playSound(String;float;float)", soundName, var1, var2);
+        invoke("n.m.entity.Entity", "playSound(String;float;float)", soundName, var1, var2);
     }
 
     @Override
     public boolean isImmuneToFire() {
-        return (boolean) invoke("isImmuneToFire");
+        return (boolean) invoke("n.m.entity.Entity", "isImmuneToFire");
     }
 
     @Override
     public boolean isWet() {
-        return (boolean) invoke("isWet");
+        return (boolean) invoke("n.m.entity.Entity", "isWet");
     }
 
     @Override
     public boolean isInWater() {
-        return (boolean) invoke("isInWater");
+        return (boolean) invoke("n.m.entity.Entity", "isInWater");
     }
 
     //TODO: What does this do?
@@ -125,9 +127,8 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("Y");
     }*/
 
-    @Override
     public String getSplashSound() {
-        return (String) invoke("getSplashSound");
+        return (String) invoke("n.m.entity.Entity", "getSplashSound");
     }
 
     //TODO: Work out what var1 (class bof) is
@@ -137,7 +138,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void setWorld(World world) {
-        invoke("setWorld", world);
+        invoke("n.m.entity.Entity", "setWorld(n.m.world.World)", ((GraniteWorld) world).parent);
     }
 
     //TODO: Work out what class dt is
@@ -147,7 +148,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public float getDistanceToEntity(Entity entity) {
-        return (float) invoke("getDistanceToEntity", entity);
+        return (float) invoke("n.m.entity.Entity", "getDistanceToEntity(n.m.entity.Entity)", entity);
     }
 
     //TODO: Find out what class dt is
@@ -163,27 +164,26 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public double getDistanceSqToEntity(Entity entity) {
         //Obf:
-        return (double) invoke("getDistanceSqToEntity", entity);
+        return (double) invoke("n.m.entity.Entity", "getDistanceSqToEntity(n.m.entity.Entity)", entity);
     }
 
     @Override
     public void addVelocity(double x, double y, double z) {
-        invoke("addVelocity", x, y, z);
+        invoke("n.m.entity.Entity", "addVelocity(double;double;double)", x, y, z);
     }
 
     @Override
     public boolean canBeCollidedWith() {
-        return (boolean) invoke("canBeCollidedWith");
+        return (boolean) invoke("n.m.entity.Entity", "canBeCollidedWith");
     }
 
     @Override
     public boolean canBePushed() {
-        return (boolean) invoke("canBePushed");
+        return (boolean) invoke("n.m.entity.Entity", "canBePushed");
     }
 
-    @Override
     public String getEntityString() {
-        return (String) invoke("getEntityString");
+        return (String) invoke("n.m.entity.Entity", "getEntityString");
     }
 
     //TODO: find out what adw and alq class is
@@ -208,27 +208,27 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public boolean isEntityAlive() {
-        return (boolean) invoke("isEntityAlive");
+        return (boolean) invoke("n.m.entity.Entity", "isEntityAlive");
     }
 
     @Override
     public boolean isEntityInsideOpaqueBlock() {
-        return (boolean) invoke("isEntityInsideOpaqueBlock");
+        return (boolean) invoke("n.m.entity.Entity", "isEntityInsideOpaqueBlock");
     }
 
     @Override
     public void mountEntity(Entity entity) {
-        invoke("mountEntity", entity);
+        invoke("n.m.entity.Entity", "mountEntity(n.m.entity.Entity)", entity);
     }
 
     @Override
     public boolean isEating() {
-        return (boolean) invoke("isEating");
+        return (boolean) invoke("n.m.entity.Entity", "isEating");
     }
 
     @Override
     public void setEating(boolean eating) {
-        invoke("setEating(boolean)", eating);
+        invoke("n.m.entity.Entity", "setEating(boolean)", eating);
     }
 
     //TODO: add this later
@@ -240,47 +240,47 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack) {
         //Obf: c
-        invoke("setCurrentItemOrArmor", inventoryIndex, itemStack);
+        invoke("n.m.entity.Entity", "setCurrentItemOrArmor(int;n.m.item.ItemStack)", inventoryIndex, itemStack);
     }
 
     @Override
     public boolean isBurning() {
-        return (boolean) invoke("isBurning");
+        return (boolean) invoke("n.m.entity.Entity", "isBurning");
     }
 
     @Override
     public boolean isRiding() {
-        return (boolean) invoke("isRiding");
+        return (boolean) invoke("n.m.entity.Entity", "isRiding");
     }
 
     @Override
     public boolean isSneaking() {
-        return (boolean) invoke("isSneaking");
+        return (boolean) invoke("n.m.entity.Entity", "isSneaking");
     }
 
     @Override
     public void setSneaking(boolean sneaking) {
-        invoke("setSneaking", sneaking);
+        invoke("n.m.entity.Entity", "setSneaking(boolean)", sneaking);
     }
 
     @Override
     public boolean isSprinting() {
-        return (boolean) invoke("isSprinting");
+        return (boolean) invoke("n.m.entity.Entity", "isSprinting");
     }
 
     @Override
     public void setSprinting(boolean sprinting) {
-        invoke("setSprinting", sprinting);
+        invoke("n.m.entity.Entity", "setSprinting(boolean)", sprinting);
     }
 
     @Override
     public boolean isInvisible() {
-        return (boolean) invoke("isInvisible");
+        return (boolean) invoke("n.m.entity.Entity", "isInvisible");
     }
 
     @Override
     public void setInvisible(boolean invisible) {
-        invoke("setInvisible", invisible);
+        invoke("n.m.entity.Entity", "setInvisible(boolean)", invisible);
     }
 
     //TODO: Work out what the flags are?
@@ -294,12 +294,12 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public int getAir() {
-        return (Integer) invoke("getAir");
+        return (Integer) invoke("n.m.entity.Entity", "getAir");
     }
 
     @Override
     public void setAir(int amount) {
-        invoke("setAir", amount);
+        invoke("n.m.entity.Entity", "setAir(int)", amount);
     }
 
     //TODO: Find out what class ads is
@@ -314,27 +314,34 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void setInWeb() {
-        invoke("setInWeb");
+        invoke("n.m.entity.Entity", "setInWeb");
     }
 
     @Override
     public String getCommandSenderName() {
-        return (String) invoke("getCommandSenderName");
+        return (String) invoke("n.m.entity.Entity", "getCommandSenderName");
     }
 
     @Override
     public Entity[] getParts() {
-        return (Entity[]) MinecraftUtils.wrap(invoke("getParts"));
+        Object[] nativeParts = (Object[]) invoke("n.m.entity.Entity", "getParts");
+        Entity[] parts = new Entity[nativeParts.length];
+
+        for (int i = 0; i < nativeParts.length; i++) {
+            parts[i] = (Entity) MinecraftUtils.wrap(nativeParts[i]);
+        }
+
+        return parts;
     }
 
     @Override
     public boolean isEntityEqual(Entity entity) {
-        return (boolean) invoke("isEntityEqual", entity);
+        return (boolean) invoke("n.m.entity.Entity", "isEntityEqual(n.m.entity.Entity)", entity);
     }
 
     @Override
     public boolean canAttackWithItem() {
-        return (boolean) invoke("canAttackWithItem");
+        return (boolean) invoke("n.m.entity.Entity", "canAttackWithItem");
     }
 
     //TODO: Find suitable name and work out what the vars do and their classes
@@ -347,24 +354,22 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("a", aqo var1, World world, dt var3, bec var4, float var5);
     }*/
 
-    @Override
     public int getTeleportDirection() {
-        return (Integer) invoke("getTeleportDirection");
+        return (Integer) invoke("n.m.entity.Entity", "getTeleportDirection");
     }
 
-    @Override
     public boolean doesEntityNotTriggerPressurePlate() {
-        return (boolean) invoke("doesEntityNotTriggerPressurePlate");
+        return (boolean) invoke("n.m.entity.Entity", "doesEntityNotTriggerPressurePlate");
     }
 
     @Override
     public UUID getUniqueID() {
-        return (UUID) invoke("getUniqueID");
+        return (UUID) invoke("n.m.entity.Entity", "getUniqueID");
     }
 
     @Override
     public boolean isPushedByWater() {
-        return (boolean) invoke("isPushedByWater");
+        return (boolean) invoke("n.m.entity.Entity", "isPushedByWater");
     }
 
     //TODO: Find Suitable name and get ho class
@@ -449,7 +454,7 @@ public class GraniteEntity extends Composite implements Entity {
     }*/
 
     public World getWorld() {
-        return (World) MinecraftUtils.wrap(invoke("getWorld"));
+        return (World) MinecraftUtils.wrap(invoke("n.m.entity.Entity", "getWorld"));
     }
 
     /*public Entity f() {
@@ -496,25 +501,24 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void teleportToPlayer(Player player) {
-        setLocation(new Location(player.getWorld(), player.getX(), player.getY(), player.getZ(), player.getPitch(), player.getYaw()));
+        GranitePlayer player2 = (GranitePlayer) player;
+        setLocation(new Location(player2.getWorld(), player2.getX(), player2.getY(), player2.getZ(), player2.getPitch(), player2.getYaw()));
     }
 
     @Override
     public double getDistanceToLocation(Location location) {
         if (getWorld().equals(location.getWorld())) {
-            return (double) invoke("getDistanceToLocation", location.getX(), location.getY(), location.getZ());
+            return (double) invoke("n.m.entity.Entity", "getDistanceToLocation(double;double;double)", location.getX(), location.getY(), location.getZ());
         }
-        Granite.getLogger().error("You cannot get the distance between different worlds");
-        return Double.parseDouble(null);
+        throw new RuntimeException("You cannot get the distance between different worlds");
     }
 
     @Override
     public double getDistanceSqToLocation(Location location) {
         if (getWorld().equals(location.getWorld())) {
-            return (double) invoke("getDistanceSQToLocation", location.getX(), location.getY(), location.getZ());
+            return (double) invoke("n.m.entity.Entity", "getDistanceSqToLocation(double;double;double)", location.getX(), location.getY(), location.getZ());
         }
-        Granite.getLogger().error("You cannot get the distance between different worlds");
-        return Double.parseDouble(null);
+        throw new RuntimeException("You cannot get the distance between different worlds");
     }
 
     @Override
@@ -522,7 +526,6 @@ public class GraniteEntity extends Composite implements Entity {
         return new Location(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
     }
 
-    @Override
     public void setLocation(Location location) {
         setWorld(location.getWorld());
         setX(location.getX());
@@ -532,62 +535,49 @@ public class GraniteEntity extends Composite implements Entity {
         setPitch(location.getPitch());
     }
 
-    @Override
     public double getX() {
         return (double) fieldGet("n.m.entity.Entity", "posX");
     }
 
-    @Override
     public void setX(double x) {
         fieldSet("n.m.entity.Entity", "posX", x);
     }
 
-    @Override
     public double getY() {
         return (double) fieldGet("n.m.entity.Entity", "posY");
     }
 
-    @Override
     public void setY(double y) {
         fieldSet("n.m.entity.Entity", "posY", y);
     }
 
-    @Override
     public double getZ() {
         return (double) fieldGet("n.m.entity.Entity", "posZ");
     }
 
-    @Override
     public void setZ(double z) {
         fieldSet("n.m.entity.Entity", "posZ", z);
     }
 
-    @Override
     public float getPitch() {
         return (float) fieldGet("n.m.entity.entity", "rotationPitch");
     }
 
-    @Override
     public void setPitch(float pitch) {
         fieldSet("n.m.entity.Entity", "rotationPitch", pitch);
     }
 
-    @Override
     public float getYaw() {
         return (float) fieldGet("n.m.entity.Entity", "rotationYaw");
     }
 
-    @Override
     public void setYaw(float yaw) {
         fieldSet("n.m.entity.Entity", "rotationYaw", yaw);
     }
 
-    @Override
     public Entity riddenByEntity() {
         return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "riddenByEntity"));
     }
-
-    @Override
     public Entity ridingEntity() {
         return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "ridingEntity"));
     }

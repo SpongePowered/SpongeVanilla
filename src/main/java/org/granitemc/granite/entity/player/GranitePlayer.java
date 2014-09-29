@@ -71,13 +71,13 @@ public class GranitePlayer extends GraniteEntity implements Player {
     @Override
     public ItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
-        return new GraniteItemStack(invoke("getEquipmentInSlot", slot));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot", slot));
     }
 
     @Override
     public ItemStack getHeldItem() {
         //TODO: Check if this works or need to be invoked differently
-        return new GraniteItemStack(invoke("getHeldItem"));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
     }
 
     @Override

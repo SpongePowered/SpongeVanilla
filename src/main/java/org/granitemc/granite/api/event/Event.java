@@ -30,15 +30,25 @@ public class Event {
     protected On.Priority currentPriority;
     protected boolean processed;
 
+    /**
+     * Returns whether this event is cancelled
+     */
     public boolean isCancelled() {
         return cancelled;
     }
 
+    /**
+     * Sets whether this method is cancelled
+     * @param cancelled Whether this method is cancelled
+     */
     public void setCancelled(boolean cancelled) {
         assertCanModify();
         this.cancelled = cancelled;
     }
 
+    /**
+     * Throws an exception if the current priority is MONITOR
+     */
     private void assertCanModify() {
         if (currentPriority == On.Priority.MONITOR) {
             throw new RuntimeException("Cannot modify event if priority is MONITOR");

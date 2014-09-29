@@ -25,8 +25,10 @@ package org.granitemc.granite.reflect;
  * SOFTWARE.
  ***************************************************************************************
  */
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
@@ -38,6 +40,8 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandComposite extends ProxyComposite {
 
@@ -59,8 +63,9 @@ public class CommandComposite extends ProxyComposite {
                 for (PluginContainer plugin : Granite.getPlugins()) {
                     for (CommandContainer command : plugin.getCommands().values()) {
                         if (command.getName().equalsIgnoreCase(commandArgs[0])) {
-                            dispatchCommand(command, sender, commandArgs);
+                            dispatchCommand(command, sender, commandArgs, args[0]);
                             hook.setWasHandled(true);
+                            return 0;
                         }
                     }
                 }
@@ -70,9 +75,9 @@ public class CommandComposite extends ProxyComposite {
                         for (CommandContainer command : plugin.getCommands().values()) {
                             for (String alias : command.getAliases()) {
                                 if (alias.equalsIgnoreCase(commandArgs[0])) {
-                                    dispatchCommand(command, sender, commandArgs);
+                                    dispatchCommand(command, sender, commandArgs, args[0]);
                                     hook.setWasHandled(true);
-
+                                    return 0;
                                 }
                             }
                         }
@@ -84,12 +89,27 @@ public class CommandComposite extends ProxyComposite {
         });
     }
 
-    public void dispatchCommand(CommandContainer command, CommandSender sender, String[] args) {
+    public void dispatchCommand(CommandContainer command, CommandSender sender, String[] args, Object nativeSender) {
         CommandInfo info = new CommandInfo();
         info.commandSender = sender;
         info.args = ArrayUtils.subarray(args, 1, args.length);
         info.usedCommandName = args[0];
         info.command = command;
+
+        List<Player> targets = new ArrayList<>();
+        for (String arg : args) {
+            for (Object nativeTarget : (List<Object>) Mappings.invoke(null, "n.m.command.PlayerSelector", "matchPlayers(n.m.command.ICommandSender;String;Class)", nativeSender, arg, Mappings.getClass("n.m.entity.player.EntityPlayerMP"))) {
+                targets.add((Player) MinecraftUtils.wrap(nativeTarget));
+            }
+        }
+
+        if (targets.size() == 0) {
+            if (sender instanceof Player) {
+                targets.add((Player) sender);
+            }
+        }
+
+        info.targets = targets;
 
         command.invoke(info);
     }

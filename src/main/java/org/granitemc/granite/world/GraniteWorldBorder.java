@@ -40,7 +40,7 @@ public class GraniteWorldBorder implements WorldBorder {
     }
 
     @Override
-    public Location getBorderCenter() {
+    public Location getCenter() {
         return new Location(world, world.getBorderCenterX(), 0, world.getBorderCenterZ());
     }
 
@@ -55,48 +55,48 @@ public class GraniteWorldBorder implements WorldBorder {
     }
 
     @Override
-    public void setBorderCenter(Location l) {
+    public void setCenter(Location l) {
         world.setBorderCenterX(l.getX());
         world.setBorderCenterZ(l.getZ());
     }
 
     @Override
-    public double getBorderSafeZone() {
+    public double getSafeZone() {
         return world.getBorderSafeZone();
     }
 
     @Override
-    public void setBorderSafeZone(double d) {
+    public void setSafeZone(double d) {
         world.setBorderSafeZone(d);
     }
 
     @Override
-    public double getBorderDamagePerBlock() {
+    public double getDamagePerBlock() {
         return world.getBorderDamagePerBlock();
     }
 
     @Override
-    public void setBorderDamagePerBlock(double d) {
+    public void setDamagePerBlock(double d) {
         world.setBorderDamagePerBlock(d);
     }
 
     @Override
-    public int getBorderWarningBlocks() {
+    public int getWarningBlocks() {
         return world.getBorderWarningBlocks();
     }
 
     @Override
-    public int getBorderWarningTime() {
+    public int getWarningTime() {
         return world.getBorderWarningTime();
     }
 
     @Override
-    public void setBorderWarningBlocks(int i) {
+    public void setWarningBlocks(int i) {
         world.setBorderWarningBlocks(i);
     }
 
     @Override
-    public void setBorderWarningTime(int i) {
+    public void setWarningTime(int i) {
         world.setBorderWarningTime(i);
     }
 }
