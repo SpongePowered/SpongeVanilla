@@ -28,10 +28,13 @@ import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
+import org.granitemc.granite.api.event.block.BlockBreakEvent;
 import org.granitemc.granite.api.event.block.BlockPlaceEvent;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -43,21 +46,44 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ItemInWorldComposite extends ProxyComposite {
-    public ItemInWorldComposite(Object world) {
+    public ItemInWorldComposite(final Object world) {
         super(Mappings.getClass("n.m.server.management.ItemInWorldManager"), new Class[]{
                 Mappings.getClass("n.m.world.World"),
         }, world);
+
+
+        addHook("tryHarvestBlock(n.m.util.ChunkCoordinates)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                //if (!GraniteServerComposite.instance.isOnServerThread()) {
+                Player p = (Player) MinecraftUtils.wrap(fieldGet("thisPlayerMP"));
+
+                World w = p.getWorld();
+
+                Block b = ((GraniteWorld) w).getBlock(args[0]);
+
+                BlockBreakEvent event = new BlockBreakEvent(b, p);
+                Granite.getEventQueue().fireEvent(event);
+
+                /*if (event.isCancelled()) {
+                    hook.setWasHandled(true);
+                    ((GranitePlayer) p).sendBlockUpdate(b);
+                    return false;
+                }*/
+                //}
+                return true;
+            }
+        });
 
         // Holy mother of method signature
         addHook("activateBlockOrUseItem(n.m.entity.player.EntityPlayer;n.m.world.World;n.m.item.ItemStack;n.m.util.ChunkCoordinates;net.minecraft.block.Direction;float;float;float)", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (GraniteServerComposite.instance.isOnServerThread()) {
-                    // TODO: change to ItemStack class (when available and working)
-                    Object itemStack = args[2];
-                    Object item = Mappings.invoke(itemStack, "n.m.item.ItemStack", "getItem");
+                    ItemStack itemStack = (ItemStack) MinecraftUtils.wrap(args[2]);
 
                     //if (Mappings.getClass("n.m.item.ItemBlock").isInstance(item)) {
+
                     Player p = (Player) MinecraftUtils.wrap(args[0]);
 
                     World w = (World) MinecraftUtils.wrap(args[1]);
@@ -75,7 +101,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     int direction = ((Enum) args[4]).ordinal();
 
-                    if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && (int)oldBlock.getType().getMetadata("layers") == 1) {
+                    if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && (int) oldBlock.getType().getMetadata("layers") == 1) {
                         // Not sure what this is for, but it's in MC's source
                         direction = 1;
                     } else if (!(boolean) Mappings.invoke(
@@ -109,29 +135,60 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     BlockType oldBlockType = w.getBlock(x, y, z).getType();
 
-                    boolean retval = false;
-                    try {
-                        retval = (boolean) proxyCallback.invoke(self, args);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
+                    // If the item used is an ItemBlock
+                    if (Mappings.getClass("n.m.item.ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
+                        // Use the "new" method, which gets the BlockType supposed to be placed, places that, and if the event gets cancelled, return it to the old one
+                        // Otherwise, return it to the old one anyway, and let Minecraft itself handle the rest
+                        Method m = Mappings.getMethod("n.m.block.Block", "onBlockPlaced(n.m.world.World;n.m.util.ChunkCoordinates;n.m.block.Direction;float;float;float;int;n.m.entity.EntityLivingBase)");
+                        try {
+                            Object itemType = ((GraniteItemType) itemStack.getType()).parent;
+                            Object blockType = Mappings.invoke(itemType, "n.m.item.ItemBlock", "getBlock");
 
-                    // TODO: set block before calling, fire event, if cancelled, don't call callback at all
+                            BlockType bt = (BlockType) MinecraftUtils.wrap(m.invoke(blockType, args[1], args[3], args[4], args[5], args[6], args[7], 3, args[0]));
 
-                    if (retval) {
-                        Block b = w.getBlock(x, y, z);
-                        if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
-                            BlockPlaceEvent event = new BlockPlaceEvent(b, p);
-                            Granite.getEventQueue().fireEvent(event);
 
-                            if (event.isCancelled()) {
+                            Block b = w.getBlock(x, y, z);
+
+                            if (((GraniteBlockType) bt).parent != null && !bt.typeEquals(BlockTypes.air)) {
+                                b.setType(bt);
+
+                                BlockPlaceEvent event = new BlockPlaceEvent(b, p);
+                                Granite.getEventQueue().fireEvent(event);
+
                                 b.setType(oldBlockType);
-                                ((GranitePlayer) p).sendBlockUpdate(b);
+                                if (event.isCancelled()) {
+                                    ((GranitePlayer) p).sendBlockUpdate(b);
+                                } else {
+                                    hook.setWasHandled(false);
+                                }
+                            }
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        boolean retval = false;
+                        try {
+                            retval = (boolean) proxyCallback.invoke(self, args);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (retval) {
+                            Block b = w.getBlock(x, y, z);
+                            if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
+                                BlockPlaceEvent event = new BlockPlaceEvent(b, p);
+                                Granite.getEventQueue().fireEvent(event);
+
+                                if (event.isCancelled()) {
+                                    b.setType(oldBlockType);
+                                    ((GranitePlayer) p).sendBlockUpdate(b);
+                                }
                             }
                         }
+
+                        hook.setWasHandled(true);
                     }
 
-                    hook.setWasHandled(true);
                 }
 
                 // TODO: fix possible dupe glitch relating to cancellation and skeleton heads

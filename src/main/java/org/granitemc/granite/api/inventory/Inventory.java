@@ -1,7 +1,9 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite.api.inventory;
+
+import org.granitemc.granite.api.item.ItemStack;
 
 /*****************************************************************************************
- * License (MIT)
+ * License (MIT)In
  *
  * Copyright (c) 2014. Granite Team
  *
@@ -23,48 +25,14 @@ package org.granitemc.granite.api;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.api.entity.Entity;
-import org.granitemc.granite.api.inventory.Inventory;
-import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.ItemStack;
+public interface Inventory {
+    ItemStack getItemStack(int slot);
 
-public interface Player extends CommandSender, Entity {
-    /**
-     * Returns whether this player is currently using an item
-     */
-    boolean isUsingItem();
+    int getFirstEmptySlot();
 
-    /**
-     * Stops using an item
-     */
-    void stopUsingItem();
+    //void addItemStack(ItemStack itemStack);
 
-    /**
-     * Clears the item in use
-     */
-    void clearItemInUse();
+    void setItemStack(int slot, ItemStack itemStack);
 
-    /**
-     * Returns the equipment in a slot
-     * @param slot The slot
-     */
-    ItemStack getEquipmentInSlot(int slot);
-
-    /**
-     * Returns the held item
-     */
-    ItemStack getHeldItem();
-
-    /**
-     * Sets an inventory or armor slot
-     * @param slot The slot to set
-     * @param item The {@link org.granitemc.granite.api.item.ItemStack} to set to
-     */
-    void setCurrentItemOrArmor(int slot, ItemStack item);
-
-    /**
-     * Returns this player's inventory
-     */
-    PlayerInventory getInventory();
+    int getSize();
 }

@@ -51,7 +51,7 @@ public class PlayServerComposite extends ProxyComposite {
         addHook("func_147345_a(n.m.network.play.client.C07PacketPlayerDigging)", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                /*if (!GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
 
                     World w = p.getWorld();
@@ -66,7 +66,7 @@ public class PlayServerComposite extends ProxyComposite {
                         ((GranitePlayer) p).sendBlockUpdate(b);
                         return false;
                     }
-                }
+                }*/
                 return null;
             }
         });

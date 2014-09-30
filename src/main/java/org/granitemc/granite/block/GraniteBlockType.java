@@ -42,8 +42,6 @@ import java.util.Random;
 
 public class GraniteBlockType extends Composite implements BlockType {
 
-    private GraniteItemStack graniteItemStack;
-
     public GraniteBlockType(Object parent) {
         super(parent);
 
@@ -170,7 +168,7 @@ public class GraniteBlockType extends Composite implements BlockType {
 
             return new GraniteItemStack(itemObject, 1);
         } else {
-            graniteItemStack = (GraniteItemStack) MinecraftUtils.wrap(itemStackObject);
+            GraniteItemStack graniteItemStack = (GraniteItemStack) MinecraftUtils.wrap(itemStackObject);
             graniteItemStack.setStackSize(amount);
             return graniteItemStack;
         }

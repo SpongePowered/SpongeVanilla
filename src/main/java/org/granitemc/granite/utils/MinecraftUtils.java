@@ -29,6 +29,8 @@ import org.granitemc.granite.chat.GraniteChatComponentTranslation;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.GraniteEntityItem;
 import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.inventory.GraniteInventory;
+import org.granitemc.granite.inventory.GranitePlayerInventory;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.GraniteServerComposite;
@@ -46,6 +48,10 @@ public class MinecraftUtils {
             return GraniteItemStack.new_(object, GraniteEntityItem.class);
         } else if (Mappings.getClass("n.m.entity.Entity").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteEntity.class);
+        } else if (Mappings.getClass("n.m.entity.player.InventoryPlayer").isInstance(object)) {
+            return GraniteItemStack.new_(object, GranitePlayerInventory.class);
+        } else if (Mappings.getClass("n.m.inventory.IInventory").isInstance(object)) {
+            return GraniteItemStack.new_(object, GraniteInventory.class);
         } else if (Mappings.getClass("n.m.block.IBlockWithMetadata").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteBlockType.class);
         } else if (Mappings.getClass("n.m.item.Item").isInstance(object)) {

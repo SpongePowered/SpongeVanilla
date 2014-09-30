@@ -1,0 +1,68 @@
+package org.granitemc.granite.inventory;
+
+import org.granitemc.granite.api.inventory.Inventory;
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.MinecraftUtils;
+
+/*****************************************************************************************
+ * License (MIT)
+ *
+ * Copyright (c) 2014. Granite Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ****************************************************************************************/
+
+public class GraniteInventory extends Composite implements Inventory {
+    public GraniteInventory(Object parent) {
+        super(parent);
+    }
+
+    @Override
+    public ItemStack getItemStack(int slot) {
+        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
+    }
+
+    @Override
+    public int getFirstEmptySlot() {
+        for (int i = 0; i < getSize(); i++) {
+            if (getItemStack(i) == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    //@Override
+    public void addItemStack(ItemStack itemStack) {
+        if (getFirstEmptySlot() > 0) {
+            setItemStack(getFirstEmptySlot(), itemStack);
+        }
+    }
+
+    @Override
+    public void setItemStack(int slot, ItemStack itemStack) {
+        invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
+    }
+
+    @Override
+    public int getSize() {
+        return (int) invoke("n.m.inventory.IInventory", "getSizeInventory");
+    }
+}

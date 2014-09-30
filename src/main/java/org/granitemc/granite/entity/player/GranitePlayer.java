@@ -26,6 +26,8 @@ package org.granitemc.granite.entity.player;
 import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
+import org.granitemc.granite.api.inventory.Inventory;
+import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.chat.GraniteChatComponentText;
@@ -85,6 +87,11 @@ public class GranitePlayer extends GraniteEntity implements Player {
         invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) item).parent);
     }
 
+    @Override
+    public PlayerInventory getInventory() {
+        return (PlayerInventory) MinecraftUtils.wrap(fieldGet("n.m.entity.player.EntityPlayer", "inventory"));
+    }
+
     public void sendBlockUpdate(Block b) {
         try {
             Mappings.invoke(fieldGet("playerNetServerHandler"), "n.m.network.NetHandlerPlayServer", "sendPacket(n.m.network.Packet)",
@@ -99,6 +106,8 @@ public class GranitePlayer extends GraniteEntity implements Player {
             e.printStackTrace();
         }
     }
+
+
 
     /*public void onDeath(DamageSource var1) {
         a(wh var1);
