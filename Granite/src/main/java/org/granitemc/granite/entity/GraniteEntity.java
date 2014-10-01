@@ -582,4 +582,13 @@ public class GraniteEntity extends Composite implements Entity {
         return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "ridingEntity"));
     }
 
+    public void setPosition(double x, double y, double z) {
+        invoke("n.m.entity.Entity", "setPosition(double;double;double)", x, y, z);
+    }
+
+    public void setPositionRotation(double x, double y, double z, float yaw, float pitch) {
+        setYaw(yaw);
+        setPitch(pitch);
+        setPosition(x, y, z);
+    }
 }
