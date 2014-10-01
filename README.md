@@ -42,19 +42,18 @@ Granite will automatically create any files or directories it needs when launche
 
 To-do list
 ------
-- ~~Set-up~~
-- ~~Command proxy~~
-- ~~Plugin loader~~
-- ~~Command API~~
-- ~~Event system~~
-- **API for ~~worlds~~, ~~blocks~~, items, ~~players~~**
-- Essentials-style example plugin
+- ~~Set-up~~ DONE
+- ~~Command proxy~~ DONE
+- ~~Plugin loader~~ DONE
+- ~~Command API~~ DONE
+- ~~Event system~~ DONE
+- ~~API for worlds, blocks, items, players~~ (kinda) DONE
+- **Essentials-style example plugin**
 - Multiworld
 - ??? (More to come)
 
 Secondary tasks
 ------
-- Caching of our wrapper classes
 - Plugin dependencies
 - Configurable join/leave messages
 
