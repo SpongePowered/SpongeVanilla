@@ -28,17 +28,21 @@ maintenance should be a relatively simple affair.  Our hope is that this approac
 
 Usage
 ------
-Granite is very easy to setup:
+Granite is very easy to setup, assuming you have Git and Maven installed:
 
-1.) Obtain or build a jarfile.
+1. Clone our repository:
+   ```https://github.com/GraniteTeam/Granite.git```
 
-2.) Obtain a minecraft_server.jar of the appropriate version (be sure to rename the file to "minecraft_server.jar" if
-it is named anything else (i.e. minecraft_server.1.8.jar)).
+2. Change directory to your local copy of Granite:
+   ```cd Granite```
 
-3.) Launch Granite's jar with the appropriate commandline settings (both Java switches and vanilla Minecraft switches
-are supported).
+3. Build the etire project:
+   ```mvn install```
 
-Granite will automatically create any files or directories it needs when launched.
+4. Run the test script:
+   ```./test.sh```
+
+Windows users will have to do step 4 manually by obtaining a vanilla minecraft_server.jar, and launching the Granite jar from the command line.
 
 To-do list
 ------
