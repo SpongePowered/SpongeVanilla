@@ -57,11 +57,11 @@ To-do list
 - [X] Plugin loader
 - [X] Command API
 - [X] Event system
-- [ ] API for:
-  - [ ] Worlds
-  - [ ] Blocks
-  - [ ] Items
-  - [ ] Players
+- [X] API for:
+  - [X] Worlds
+  - [X] Blocks
+  - [X] Items
+  - [X] Players
 - [ ] Essentials-style example plugin
 - [ ] Multiworld
 - [ ] More awesome stuff
