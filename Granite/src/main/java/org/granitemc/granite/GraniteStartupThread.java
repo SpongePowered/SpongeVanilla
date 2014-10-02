@@ -159,7 +159,7 @@ public class GraniteStartupThread extends Thread {
 
             Object registry = Mappings.getField(itemClass, "itemRegistry").get(null);
             for (Object item : (Iterable) Mappings.getField(itemClass, "itemRegistry").get(null)) {
-                String fullName = (String) Mappings.invoke(registry, "n.m.util.RegistryNamespaced", "getNameForObject(Object)", item).toString();
+                String fullName = Mappings.invoke(registry, "n.m.util.RegistryNamespaced", "getNameForObject(Object)", item).toString();
                 String name = fullName.split(":")[1];
 
                 GraniteItemType type = (GraniteItemType) MinecraftUtils.wrap(item);
@@ -170,7 +170,7 @@ public class GraniteStartupThread extends Thread {
 
                 try {
                     ItemTypes.class.getDeclaredField(name).set(null, type);
-                } catch (IllegalAccessException | NoSuchFieldException e) {
+                } catch (IllegalAccessException | NoSuchFieldException ignored) {
                 }
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {

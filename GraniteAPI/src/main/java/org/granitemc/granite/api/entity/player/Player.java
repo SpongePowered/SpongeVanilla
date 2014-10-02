@@ -1,4 +1,4 @@
-package org.granitemc.granite.api;
+package org.granitemc.granite.api.entity.player;
 
 /*****************************************************************************************
  * License (MIT)
@@ -25,7 +25,6 @@ package org.granitemc.granite.api;
 
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
-import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 

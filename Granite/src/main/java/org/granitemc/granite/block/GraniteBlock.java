@@ -65,11 +65,11 @@ public class GraniteBlock implements Block {
 
     @Override
     public BlockType getType() {
-        return ((GraniteWorld) world).getBlockTypeAtPosition(x, y, z);
+        return world.getBlockTypeAtPosition(x, y, z);
     }
 
     @Override
     public void setType(BlockType type) {
-        ((GraniteWorld) world).setBlockTypeAtPosition(x, y, z, type);
+        world.setBlockTypeAtPosition(x, y, z, type);
     }
 }

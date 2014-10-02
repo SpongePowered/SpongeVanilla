@@ -146,6 +146,6 @@ public class Location implements Cloneable {
     }
 
     public String toString() {
-        return "Location{World:" + getWorld() + ",X:" + getX() + ",Y:" + getY() + ",Z:" + getZ() + ",Pitch:" + getPitch() + ",Yaw:" + getYaw() + "}";
+        return "Location{World:" + getWorld().getLevelName() + ",X:" + getX() + ",Y:" + getY() + ",Z:" + getZ() + ",Pitch:" + getPitch() + ",Yaw:" + getYaw() + "}";
     }
 }

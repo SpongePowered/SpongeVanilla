@@ -23,7 +23,7 @@ package org.granitemc.granite.api.event.block;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.event.Event;
 
