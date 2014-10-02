@@ -48,6 +48,8 @@ Granite is very easy to setup, assuming you have Git and Maven installed:
 
 Windows users will have to do step 4 manually by obtaining a vanilla minecraft_server.jar, and launching the Granite jar from the command line.
 
+You could also use one of our pre-built jars from [Jenkins](http://ci.flaten.it/view/Granite/).
+
 To-do list
 ------
 - [X] Set-up
