@@ -46,20 +46,24 @@ Windows users will have to do step 4 manually by obtaining a vanilla minecraft_s
 
 To-do list
 ------
-- ~~Set-up~~ DONE
-- ~~Command proxy~~ DONE
-- ~~Plugin loader~~ DONE
-- ~~Command API~~ DONE
-- ~~Event system~~ DONE
-- ~~API for worlds, blocks, items, players~~ (kinda) DONE
-- **Essentials-style example plugin**
-- Multiworld
-- ??? (More to come)
+- [X] Set-up
+- [X] Command proxy
+- [X] Plugin loader
+- [X] Command API
+- [X] Event system
+- [ ] API for:
+  - [ ] Worlds
+  - [ ] Blocks
+  - [ ] Items
+  - [ ] Players
+- [ ] Essentials-style example plugin
+- [ ] Multiworld
+- [ ] More awesome stuff
 
 Secondary tasks
 ------
-- Plugin dependencies
-- Configurable join/leave messages
+- [ ] Plugin dependencies
+- [ ] Configurable join/leave messages
 
 Want to Help?
 ------
