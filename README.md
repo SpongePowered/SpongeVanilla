@@ -31,15 +31,19 @@ Usage
 Granite is very easy to setup, assuming you have Git and Maven installed:
 
 1. Clone our repository:
+
    `https://github.com/GraniteTeam/Granite.git`
 
 2. Change directory to your local copy of Granite:
+
    `cd Granite`
 
-3. Build the etire project:
+3. Build the entire project:
+
    `mvn install`
 
 4. Run the test script:
+
    `./test.sh`
 
 Windows users will have to do step 4 manually by obtaining a vanilla minecraft_server.jar, and launching the Granite jar from the command line.
