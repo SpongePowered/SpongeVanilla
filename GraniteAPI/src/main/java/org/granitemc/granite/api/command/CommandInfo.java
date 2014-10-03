@@ -3,7 +3,7 @@
  */
 package org.granitemc.granite.api.command;
 
-import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.entity.player.Player;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class CommandInfo {
     public List<Player> targets;
 
     /**
-     * Returns the sender of this command (either a {@link org.granitemc.granite.api.Player} or a {@link org.granitemc.granite.api.Server})
+     * Returns the sender of this command (either a {@link org.granitemc.granite.api.entity.player.Player} or a {@link org.granitemc.granite.api.Server})
      */
     public CommandSender getCommandSender() {
         return commandSender;

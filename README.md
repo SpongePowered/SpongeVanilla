@@ -28,38 +28,52 @@ maintenance should be a relatively simple affair.  Our hope is that this approac
 
 Usage
 ------
-Granite is very easy to setup:
+Granite is very easy to setup, assuming you have Git and Maven installed:
 
-1.) Obtain or build a jarfile.
+1. Clone our repository:
 
-2.) Obtain a minecraft_server.jar of the appropriate version (be sure to rename the file to "minecraft_server.jar" if
-it is named anything else (i.e. minecraft_server.1.8.jar)).
+   `git clone https://github.com/GraniteTeam/Granite.git`
 
-3.) Launch Granite's jar with the appropriate commandline settings (both Java switches and vanilla Minecraft switches
-are supported).
+2. Change directory to your local copy of Granite:
 
-Granite will automatically create any files or directories it needs when launched.
+   `cd Granite`
+
+3. Build the entire project:
+
+   `mvn install`
+
+4. Run the test script:
+
+   `./test.sh`
+
+Windows users will have to do step 4 manually by obtaining a vanilla minecraft_server.jar, and launching the Granite jar from the command line.
+
+You could also use one of our pre-built jars from [Jenkins](http://ci.flaten.it/view/Granite/).
 
 To-do list
 ------
-- ~~Set-up~~ DONE
-- ~~Command proxy~~ DONE
-- ~~Plugin loader~~ DONE
-- ~~Command API~~ DONE
-- ~~Event system~~ DONE
-- ~~API for worlds, blocks, items, players~~ (kinda) DONE
-- **Essentials-style example plugin**
-- Multiworld
-- ??? (More to come)
+- [X] Set-up
+- [X] Command proxy
+- [X] Plugin loader
+- [X] Command API
+- [X] Event system
+- [X] API for:
+  - [X] Worlds
+  - [X] Blocks
+  - [X] Items
+  - [X] Players
+- [ ] Essentials-style example plugin
+- [ ] Multiworld
+- [ ] More awesome stuff
 
 Secondary tasks
 ------
-- Plugin dependencies
-- Configurable join/leave messages
+- [ ] Plugin dependencies
+- [ ] Configurable join/leave messages
 
 Want to Help?
 ------
-Join us in irc, on esper.net in channel **#granite**.
+Join us on IRC: Esper.net **#granite**
 
 If you'd like to contribute, make a pull request- we read and consider them all very carefully.
 Should you decide to contribute to the project, please read our [contribution guidelines](https://github.com/GraniteTeam/Granite/blob/master/CONTRIBUTING.md).

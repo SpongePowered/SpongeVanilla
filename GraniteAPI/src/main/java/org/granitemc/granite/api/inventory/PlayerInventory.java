@@ -23,7 +23,7 @@ package org.granitemc.granite.api.inventory;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.ItemStack;
 
 public interface PlayerInventory extends Inventory {

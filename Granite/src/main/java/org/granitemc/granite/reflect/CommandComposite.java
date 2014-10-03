@@ -25,17 +25,13 @@ package org.granitemc.granite.reflect;
  * SOFTWARE.
  ***************************************************************************************
  */
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.Player;
-import org.granitemc.granite.api.block.ItemTypes;
+import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.entity.player.GranitePlayer;
-import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;

@@ -25,7 +25,6 @@ package org.granitemc.granite.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.api.world.WorldBorder;
 import org.granitemc.granite.block.GraniteBlock;

@@ -24,9 +24,9 @@ package org.granitemc.granite.reflect;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.event.player.EventPlayerJoin;
 import org.granitemc.granite.api.event.player.EventPlayerQuit;
+import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;

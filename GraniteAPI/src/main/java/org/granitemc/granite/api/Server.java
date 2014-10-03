@@ -24,6 +24,7 @@ package org.granitemc.granite.api;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.command.CommandSender;
+import org.granitemc.granite.api.entity.player.Player;
 
 import java.io.File;
 import java.net.Proxy;
