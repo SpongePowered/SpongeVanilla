@@ -1,4 +1,4 @@
-package org.granitemc.granite.entity;
+package org.granitemc.granite.api.entity.item;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,23 +23,43 @@ package org.granitemc.granite.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.entity.EntityItem;
+import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.utils.MinecraftUtils;
 
-public class GraniteEntityItem extends GraniteEntity implements EntityItem {
-    public GraniteEntityItem(Object parent) {
-        super(parent);
-    }
+public interface EntityItem extends Entity {
 
-    @Override
-    public ItemStack getItemStack() {
-	    return (ItemStack) MinecraftUtils.wrap(invoke("getItemStack"));
-    }
+    void searchForOtherItemsNearby();
 
-    @Override
-    public void setItemStack(ItemStack itemStack) {
-        invoke("setItemStack", ((GraniteItemStack) itemStack).parent);
-    }
+    void setAgeToCreativeDespawnTime();
+
+    void dealFireDamage(int amount);
+
+    String getName();
+
+    ItemStack getEntityItem();
+
+    void setEntityItemStack(ItemStack itemStack);
+
+    String getOwner();
+
+    void setOwner(String owner);
+
+    String getThrower();
+
+    void setThrower(String thrower);
+
+    //func_174872_o()
+    int getAge();
+
+    void setDefaultPickupDelay();
+
+    void setNoPickupDelay();
+
+    void setInfinitePickupDelay();
+
+    void setPickupDelay(int ticks);
+
+    //func_174874_s()
+    boolean canPickUp();
+
 }
