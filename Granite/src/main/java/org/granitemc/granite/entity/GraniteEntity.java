@@ -26,7 +26,7 @@ package org.granitemc.granite.entity;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.api.world.Location;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Composite;
@@ -279,7 +279,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void setInvisible(boolean invisible) {
-        invoke("n.m.entity.Entity", "setInvisible(boolean)", invisible);
+        invoke("n.m.entity.Entity", "isInvisible(boolean)", invisible);
     }
 
     //TODO: Work out what the flags are?

@@ -28,7 +28,7 @@ import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.api.world.Location;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.item.GraniteItemStack;

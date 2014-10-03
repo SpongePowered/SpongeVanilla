@@ -1,6 +1,6 @@
 package org.granitemc.granite.world;
 
-import org.granitemc.granite.api.world.Location;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.api.world.WorldBorder;
 
