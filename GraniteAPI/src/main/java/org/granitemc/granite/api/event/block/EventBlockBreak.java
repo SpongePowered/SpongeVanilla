@@ -27,24 +27,24 @@ import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.event.Event;
 
-public class BlockPlaceEvent extends Event {
+public class EventBlockBreak extends Event {
     Block block;
     Player player;
 
-    public BlockPlaceEvent(Block block, Player player) {
+    public EventBlockBreak(Block block, Player player) {
         this.block = block;
         this.player = player;
     }
 
     /**
-     * Returns the block that was placed
+     * Returns the block that was broken
      */
     public Block getBlock() {
         return block;
     }
 
     /**
-     * Returns the player that placed the block
+     * Returns the player that broke the block
      */
     public Player getPlayer() {
         return player;

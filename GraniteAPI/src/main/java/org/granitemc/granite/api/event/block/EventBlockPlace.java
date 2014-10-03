@@ -1,8 +1,4 @@
-package org.granitemc.granite.api.event.player;
-
-import org.granitemc.granite.api.Player;
-import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.world.Location;
+package org.granitemc.granite.api.event.block;
 
 /*****************************************************************************************
  * License (MIT)
@@ -27,15 +23,28 @@ import org.granitemc.granite.api.world.Location;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-public class PlayerJoinEvent extends Event {
-    private Player player;
+import org.granitemc.granite.api.Player;
+import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.event.Event;
 
-    public PlayerJoinEvent(Player player) {
+public class EventBlockPlace extends Event {
+    Block block;
+    Player player;
+
+    public EventBlockPlace(Block block, Player player) {
+        this.block = block;
         this.player = player;
     }
 
     /**
-     * Returns the player that joined
+     * Returns the block that was placed
+     */
+    public Block getBlock() {
+        return block;
+    }
+
+    /**
+     * Returns the player that placed the block
      */
     public Player getPlayer() {
         return player;

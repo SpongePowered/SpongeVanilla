@@ -28,8 +28,8 @@ import org.granitemc.granite.api.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.event.block.BlockBreakEvent;
-import org.granitemc.granite.api.event.block.BlockPlaceEvent;
+import org.granitemc.granite.api.event.block.EventBlockBreak;
+import org.granitemc.granite.api.event.block.EventBlockPlace;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
@@ -62,7 +62,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                 Block b = ((GraniteWorld) w).getBlock(args[0]);
 
-                BlockBreakEvent event = new BlockBreakEvent(b, p);
+                EventBlockBreak event = new EventBlockBreak(b, p);
                 Granite.getEventQueue().fireEvent(event);
 
                 /*if (event.isCancelled()) {
@@ -152,7 +152,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                             if (((GraniteBlockType) bt).parent != null && !bt.typeEquals(BlockTypes.air)) {
                                 b.setType(bt);
 
-                                BlockPlaceEvent event = new BlockPlaceEvent(b, p);
+                                EventBlockPlace event = new EventBlockPlace(b, p);
                                 Granite.getEventQueue().fireEvent(event);
 
                                 b.setType(oldBlockType);
@@ -176,7 +176,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                         if (retval) {
                             Block b = w.getBlock(x, y, z);
                             if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
-                                BlockPlaceEvent event = new BlockPlaceEvent(b, p);
+                                EventBlockPlace event = new EventBlockPlace(b, p);
                                 Granite.getEventQueue().fireEvent(event);
 
                                 if (event.isCancelled()) {
