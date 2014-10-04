@@ -1,6 +1,8 @@
-package org.granitemc.granite.api.world;
+package org.granitemc.granite.api.utils;
 
-public class Location implements Cloneable {
+import org.granitemc.granite.api.world.World;
+
+public class Location {
 
     private World world;
     private double x;
@@ -143,6 +145,14 @@ public class Location implements Cloneable {
         }
 
         return Math.pow(x - location.x, 2) + Math.pow(y - location.y, 2) + Math.pow(z - location.z, 2);
+    }
+
+    public boolean equals(Object object) {
+        if (object instanceof Location) {
+            Location location = (Location) object;
+            return getWorld() == location.getWorld() && getX() == location.getX() && getY() == location.getY() && getZ() == location.getZ() && getPitch() == location.getPitch() && getYaw() == location.getYaw();
+        }
+        return false;
     }
 
     public String toString() {

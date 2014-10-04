@@ -25,7 +25,7 @@ package org.granitemc.granite.api.entity;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
-import org.granitemc.granite.api.world.Location;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
 import java.util.UUID;
@@ -343,13 +343,13 @@ public interface Entity {
     void teleportToPlayer(Player player);
 
     /**
-     * Returns the distance to a {@link org.granitemc.granite.api.world.Location}
+     * Returns the distance to a {@link org.granitemc.granite.api.utils.Location}
      * @param location The location
      */
     double getDistanceToLocation(Location location);
 
     /**
-     * Returns the squared distance to a location, this is much faster than {@link #getDistanceToLocation(org.granitemc.granite.api.world.Location)}
+     * Returns the squared distance to a location, this is much faster than {@link #getDistanceToLocation(org.granitemc.granite.api.utils.Location)}
      * @param location The location
      */
     double getDistanceSqToLocation(Location location);

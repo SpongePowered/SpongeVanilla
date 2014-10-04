@@ -1,5 +1,7 @@
 package org.granitemc.granite.api.world;
 
+import org.granitemc.granite.api.utils.Location;
+
 /*****************************************************************************************
  * License (MIT)
  *

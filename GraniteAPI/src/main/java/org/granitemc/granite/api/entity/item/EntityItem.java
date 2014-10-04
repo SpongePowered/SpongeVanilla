@@ -1,4 +1,4 @@
-package org.granitemc.granite.api.entity;
+package org.granitemc.granite.api.entity.item;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,7 +23,9 @@ package org.granitemc.granite.api.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 
 public interface EntityItem extends Entity {
     /**
@@ -36,4 +38,38 @@ public interface EntityItem extends Entity {
      * @param itemStack The ItemStack
      */
     void setItemStack(IItemStack itemStack);
+
+    void searchForOtherItemsNearby();
+
+    void setAgeToCreativeDespawnTime();
+
+    void dealFireDamage(int amount);
+
+    String getName();
+
+    ItemStack getEntityItem();
+
+    void setEntityItemStack(ItemStack itemStack);
+
+    String getOwner();
+
+    void setOwner(String owner);
+
+    String getThrower();
+
+    void setThrower(String thrower);
+
+    //func_174872_o()
+    int getAge();
+
+    void setDefaultPickupDelay();
+
+    void setNoPickupDelay();
+
+    void setInfinitePickupDelay();
+
+    void setPickupDelay(int ticks);
+
+    //func_174874_s()
+    boolean canPickUp();
 }
