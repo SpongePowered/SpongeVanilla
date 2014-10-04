@@ -32,7 +32,7 @@ import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.chat.GraniteChatComponentBuilder;
@@ -158,7 +158,7 @@ public class GraniteAPI implements API {
         return new GraniteChatComponentBuilder();
     }
 
-    public ItemStack createItemStack(ItemType type, int amount) {
+    public IItemStack createItemStack(ItemType type, int amount) {
         return new GraniteItemStack(type, amount);
     }
 

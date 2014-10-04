@@ -25,7 +25,7 @@ package org.granitemc.granite.inventory;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
@@ -36,8 +36,8 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     @Override
-    public ItemStack getItemStack(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
+    public IItemStack getItemStack(int slot) {
+        return (IItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
     }
 
     @Override
@@ -51,8 +51,8 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     @Override
-    public ItemStack getSelectedHotbarItem() {
-        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.entity.player.InventoryPlayer", "getCurrentItem"));
+    public IItemStack getSelectedHotbarItem() {
+        return (IItemStack) MinecraftUtils.wrap(invoke("n.m.entity.player.InventoryPlayer", "getCurrentItem"));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     @Override
-    public void setSelectedHotbarItem(ItemStack itemStack) {
+    public void setSelectedHotbarItem(IItemStack itemStack) {
         setItemStack(getSelectedHotbarIndex(), itemStack);
     }
 
@@ -72,55 +72,55 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }*/
 
     @Override
-    public void addItemStack(ItemStack itemStack) {
+    public void addItemStack(IItemStack itemStack) {
         invoke("n.m.entity.player.InventoryPlayer", "addItemStackToInventory(n.m.item.ItemStack)", itemStack);
     }
 
     @Override
-    public ItemStack getHelmetItem() {
+    public IItemStack getHelmetItem() {
         return getItemStack(39);
     }
 
     @Override
-    public ItemStack getChestplateItem() {
+    public IItemStack getChestplateItem() {
         return getItemStack(38);
     }
 
     @Override
-    public ItemStack getLeggingsItem() {
+    public IItemStack getLeggingsItem() {
         return getItemStack(37);
     }
 
     @Override
-    public ItemStack getBootsItem() {
+    public IItemStack getBootsItem() {
         return getItemStack(36);
     }
 
     @Override
-    public void setHelmetItem(ItemStack itemStack) {
+    public void setHelmetItem(IItemStack itemStack) {
         setItemStack(39, itemStack);
     }
 
     @Override
-    public void setChestplateItem(ItemStack itemStack) {
+    public void setChestplateItem(IItemStack itemStack) {
         setItemStack(38, itemStack);
 
     }
 
     @Override
-    public void setLeggingsItem(ItemStack itemStack) {
+    public void setLeggingsItem(IItemStack itemStack) {
         setItemStack(37, itemStack);
 
     }
 
     @Override
-    public void setBootsItem(ItemStack itemStack) {
+    public void setBootsItem(IItemStack itemStack) {
         setItemStack(36, itemStack);
 
     }
 
     @Override
-    public void setItemStack(int slot, ItemStack itemStack) {
+    public void setItemStack(int slot, IItemStack itemStack) {
         invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
     }
 

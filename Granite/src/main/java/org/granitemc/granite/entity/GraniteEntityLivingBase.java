@@ -3,7 +3,7 @@ package org.granitemc.granite.entity;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 
 import java.util.Collection;
 
@@ -248,22 +248,22 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
     }
 
     @Override
-    public ItemStack getHeldItem() {
-        return (ItemStack) invoke("n.m.entity.EntityLivingBase", "getHeldItem");
+    public IItemStack getHeldItem() {
+        return (IItemStack) invoke("n.m.entity.EntityLivingBase", "getHeldItem");
     }
 
     @Override
-    public ItemStack getEquipmentInSlot(int slot) {
-        return (ItemStack) invoke("n.m.entity.EntityLivingBase", "getEquiptmentInSlot, slot");
+    public IItemStack getEquipmentInSlot(int slot) {
+        return (IItemStack) invoke("n.m.entity.EntityLivingBase", "getEquiptmentInSlot, slot");
     }
 
     @Override
-    public ItemStack getCurrentArmor(int armotSlot) {
-        return (ItemStack) invoke("n.m.entity.EntityLivingBase", "getCurrentArmor", armotSlot);
+    public IItemStack getCurrentArmor(int armotSlot) {
+        return (IItemStack) invoke("n.m.entity.EntityLivingBase", "getCurrentArmor", armotSlot);
     }
 
     @Override
-    public void setCurrentItemOrArmor(int slot, ItemStack itemStack) {
+    public void setCurrentItemOrArmor(int slot, IItemStack itemStack) {
         invoke("n.m.entity.EntityLivingBase", "setCurrentItemOrArmot", slot, itemStack);
     }
 
@@ -273,8 +273,8 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
     }
 
     @Override
-    public ItemStack[] getInventory() {
-        return (ItemStack[]) invoke("n.m.entity.EntityLivingBase", "getInventory");
+    public IItemStack[] getInventory() {
+        return (IItemStack[]) invoke("n.m.entity.EntityLivingBase", "getInventory");
     }
 
     @Override

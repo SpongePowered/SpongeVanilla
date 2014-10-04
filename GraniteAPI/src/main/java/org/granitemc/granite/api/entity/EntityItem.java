@@ -23,17 +23,17 @@ package org.granitemc.granite.api.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 
 public interface EntityItem extends Entity {
     /**
      * Gets the ItemStack of this item entity
      */
-    ItemStack getItemStack();
+    IItemStack getItemStack();
 
     /**
      * Sets the ItemStack of this item entity
      * @param itemStack The ItemStack
      */
-    void setItemStack(ItemStack itemStack);
+    void setItemStack(IItemStack itemStack);
 }

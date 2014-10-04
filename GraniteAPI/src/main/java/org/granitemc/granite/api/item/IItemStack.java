@@ -1,4 +1,6 @@
-package org.granitemc.granite.api.entity.player;
+package org.granitemc.granite.api.item;
+
+import org.granitemc.granite.api.block.ItemType;
 
 /*****************************************************************************************
  * License (MIT)
@@ -23,47 +25,57 @@ package org.granitemc.granite.api.entity.player;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
-import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.api.entity.Entity;
-import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.IItemStack;
-
-public interface Player extends CommandSender, Entity {
+public interface IItemStack {
     /**
-     * Returns whether this player is currently using an item
+     * Returns the damage of this ItemStack
      */
-    boolean isUsingItem();
+    int getItemDamage();
 
     /**
-     * Stops using an item
+     * Sets the damage of this ItemStack
+     * @param damage The damage to set
      */
-    void stopUsingItem();
+    void setItemDamage(int damage);
 
     /**
-     * Clears the item in use
+     * Returns the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
      */
-    void clearItemInUse();
+    String[] getItemLore();
 
     /**
-     * Returns the equipment in a slot
-     * @param slot The slot
+     * Sets the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
+     * @param lines A vararg array of strings, one per line
      */
-    IItemStack getEquipmentInSlot(int slot);
+    void setItemLore(String... lines);
 
     /**
-     * Returns the held item
+     * Returns the maximum amount of damage this ItemStack can have
      */
-    IItemStack getHeldItem();
+    int getMaxDamage();
 
     /**
-     * Sets an inventory or armor slot
-     * @param slot The slot to set
-     * @param item The {@link org.granitemc.granite.api.item.IItemStack} to set to
+     * Returns the display name of this ItemStack
      */
-    void setCurrentItemOrArmor(int slot, IItemStack item);
+    String getDisplayName();
 
     /**
-     * Returns this player's inventory
+     * Sets the display name of this ItemStack
+     * @param name The display name to set
      */
-    PlayerInventory getInventory();
+    void setDisplayName(String name);
+
+    /**
+     * Returns whether this ItemStack has a display name
+     */
+    boolean hasDisplayName();
+
+    /**
+     * Returns the type of this ItemStack
+     */
+    ItemType getType();
+
+    /**
+     * Clears any custom display name set on this ItemStack, and returns it to its original name
+     */
+    void clearCustomName();
 }

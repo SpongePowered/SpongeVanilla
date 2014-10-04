@@ -27,7 +27,7 @@ import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
@@ -70,19 +70,19 @@ public class GranitePlayer extends GraniteEntity implements Player {
     }
 
     @Override
-    public ItemStack getEquipmentInSlot(int slot) {
+    public IItemStack getEquipmentInSlot(int slot) {
         //TODO: Check if this works or need to be invoked differently
-        return (ItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot", slot));
+        return (IItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot", slot));
     }
 
     @Override
-    public ItemStack getHeldItem() {
+    public IItemStack getHeldItem() {
         //TODO: Check if this works or need to be invoked differently
-        return (ItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
+        return (IItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
     }
 
     @Override
-    public void setCurrentItemOrArmor(int slot, ItemStack item) {
+    public void setCurrentItemOrArmor(int slot, IItemStack item) {
         invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) item).parent);
     }
 

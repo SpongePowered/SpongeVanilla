@@ -24,7 +24,7 @@ package org.granitemc.granite.api.entity;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
 
@@ -210,10 +210,10 @@ public interface Entity {
     /**
      * Sets an inventory or armor slot
      * @param inventoryIndex The index to set
-     * @param itemStack The {@link org.granitemc.granite.api.item.ItemStack} to set to
+     * @param itemStack The {@link org.granitemc.granite.api.item.IItemStack} to set to
      */
     // TODO: explain index or change
-    void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack);
+    void setCurrentItemOrArmor(int inventoryIndex, IItemStack itemStack);
 
     /**
      * Returns whether this entity is currently burning

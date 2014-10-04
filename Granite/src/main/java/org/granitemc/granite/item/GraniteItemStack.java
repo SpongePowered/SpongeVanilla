@@ -25,15 +25,16 @@ package org.granitemc.granite.item;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GraniteItemStack extends Composite implements ItemStack {
+public class GraniteItemStack extends Composite implements IItemStack {
     private static Map<Object, GraniteItemStack> instanceMap = new HashMap<>();
     public GraniteItemStack(Object ïtemStackInstance) {
         super(ïtemStackInstance);
@@ -68,6 +69,11 @@ public class GraniteItemStack extends Composite implements ItemStack {
         return (ItemType) MinecraftUtils.wrap(invoke("n.m.item.ItemStack", "getItem"));
     }
 
+    @Override
+    public void clearCustomName() {
+        invoke("n.m.item.ItemStack", "clearCustomName");
+    }
+
     public int getItemDamage() {
         return (int) invoke("n.m.item.ItemStack", "getItemDamage");
     }
@@ -77,7 +83,65 @@ public class GraniteItemStack extends Composite implements ItemStack {
     }
 
     public String[] getItemLore() {
-        return (String[]) invoke("n.m.item.ItemStack", "getItemLore");
+        Object tagCompound = invoke("n.m.item.ItemStack", "getTagCompound");
+
+        if (tagCompound != null) {
+            if ((boolean) Mappings.invoke(tagCompound, "n.m.nbt.NBTTagCompound", "hasKey(String;int)", "display", 10)) {
+                Object displayCompound = Mappings.invoke(tagCompound, "n.m.nbt.NBTTagCompound", "getCompoundTag(String)", "display");
+
+                if ((boolean) Mappings.invoke(displayCompound, "n.m.nbt.NBTTagCompound", "hasKey(String;int)", "Lore", 9)) {
+                    Object loreTagList = Mappings.invoke(displayCompound, "n.m.nbt.NBTTagCompound", "getTagList(String;int)", "Lore", 8);
+
+                    int length = (int) Mappings.invoke(loreTagList, "n.m.nbt.NBTTagList", "tagCount");
+
+                    String[] lore = new String[length];
+
+                    for (int i = 0; i < length; i++) {
+                        String loreLine = (String) Mappings.invoke(loreTagList, "n.m.nbt.NBTTagList", "getStringTagAt(int)", i);
+                        lore[i] = loreLine;
+                    }
+
+                    return lore;
+                } else {
+                    return new String[]{};
+                }
+            } else {
+                return new String[]{};
+            }
+        } else {
+            return new String[]{};
+        }
+    }
+
+    @Override
+    public void setItemLore(String... lines) {
+        try {
+            Object loreList = Mappings.getClass("n.m.nbt.NBTTagList").newInstance();
+
+            for (String line : lines) {
+                Object stringTag = Mappings.getClass("n.m.nbt.NBTTagString").getConstructor(String.class).newInstance(line);
+                Mappings.invoke(loreList, "n.m.nbt.NBTTagList", "appendTag(n.m.nbt.NBTBase)", stringTag);
+            }
+
+            Object tagCompound = invoke("n.m.item.ItemStack", "getTagCompound");
+
+            if (tagCompound == null) {
+                tagCompound = Mappings.getClass("n.m.nbt.NBTTagCompound").newInstance();
+                invoke("n.m.item.ItemStack", "setTagCompound(n.m.nbt.NBTTagCompound)", tagCompound);
+            }
+
+            Object displayCompound;
+
+            if (!(boolean) Mappings.invoke(tagCompound, "n.m.nbt.NBTTagCompound", "hasKey(String;int)", "display", 10)) {
+                displayCompound = Mappings.getClass("n.m.nbt.NBTTagCompound").newInstance();
+                Mappings.invoke(tagCompound, "n.m.nbt.NBTTagCompound", "setTag(String;n.m.nbt.NBTBase)", "display", displayCompound);
+            }
+
+            displayCompound = Mappings.invoke(tagCompound, "n.m.nbt.NBTTagCompound", "getCompoundTag(String)", "display");
+            Mappings.invoke(displayCompound, "n.m.nbt.NBTTagCompound", "setTag(String;n.m.nbt.NBTBase)", "Lore", loreList);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getMaxDamage() {

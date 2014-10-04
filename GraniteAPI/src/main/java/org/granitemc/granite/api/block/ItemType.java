@@ -1,6 +1,6 @@
 package org.granitemc.granite.api.block;
 
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 
 /*****************************************************************************************
  * License (MIT)
@@ -52,8 +52,8 @@ public interface ItemType {
     String getTechnicalName();
 
     /**
-     * Creates an {@link org.granitemc.granite.api.item.ItemStack} of this item type
-     * @param amount The amount of items in this {@link org.granitemc.granite.api.item.ItemStack}
+     * Creates an {@link org.granitemc.granite.api.item.IItemStack} of this item type
+     * @param amount The amount of items in this {@link org.granitemc.granite.api.item.IItemStack}
      */
-    ItemStack createItemStack(int amount);
+    IItemStack createItemStack(int amount);
 }

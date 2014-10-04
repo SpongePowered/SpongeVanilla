@@ -1,6 +1,6 @@
 package org.granitemc.granite.api.inventory;
 
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 
 /*****************************************************************************************
  * License (MIT)In
@@ -26,13 +26,13 @@ import org.granitemc.granite.api.item.ItemStack;
  ****************************************************************************************/
 
 public interface Inventory {
-    ItemStack getItemStack(int slot);
+    IItemStack getItemStack(int slot);
 
     int getFirstEmptySlot();
 
     //void addItemStack(ItemStack itemStack);
 
-    void setItemStack(int slot, ItemStack itemStack);
+    void setItemStack(int slot, IItemStack itemStack);
 
     int getSize();
 }

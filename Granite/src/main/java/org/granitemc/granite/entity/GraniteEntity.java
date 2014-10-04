@@ -25,7 +25,7 @@ package org.granitemc.granite.entity;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.entity.Entity;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.world.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
@@ -237,7 +237,7 @@ public class GraniteEntity extends Composite implements Entity {
     }*/
 
     @Override
-    public void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack) {
+    public void setCurrentItemOrArmor(int inventoryIndex, IItemStack itemStack) {
         //Obf: c
         invoke("n.m.entity.Entity", "setCurrentItemOrArmor(int;n.m.item.ItemStack)", inventoryIndex, itemStack);
     }

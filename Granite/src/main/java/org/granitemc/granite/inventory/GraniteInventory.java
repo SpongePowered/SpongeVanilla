@@ -1,7 +1,7 @@
 package org.granitemc.granite.inventory;
 
 import org.granitemc.granite.api.inventory.Inventory;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
@@ -35,8 +35,8 @@ public class GraniteInventory extends Composite implements Inventory {
     }
 
     @Override
-    public ItemStack getItemStack(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
+    public IItemStack getItemStack(int slot) {
+        return (IItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
     }
 
     @Override
@@ -50,14 +50,14 @@ public class GraniteInventory extends Composite implements Inventory {
     }
 
     //@Override
-    public void addItemStack(ItemStack itemStack) {
+    public void addItemStack(IItemStack itemStack) {
         if (getFirstEmptySlot() > 0) {
             setItemStack(getFirstEmptySlot(), itemStack);
         }
     }
 
     @Override
-    public void setItemStack(int slot, ItemStack itemStack) {
+    public void setItemStack(int slot, IItemStack itemStack) {
         invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
     }
 

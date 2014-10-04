@@ -24,7 +24,7 @@ package org.granitemc.granite.api.inventory;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 
 public interface PlayerInventory extends Inventory {
     /**
@@ -35,7 +35,7 @@ public interface PlayerInventory extends Inventory {
     /**
      * Returns the currently selected item in this player's hotbar
      */
-    ItemStack getSelectedHotbarItem();
+    IItemStack getSelectedHotbarItem();
 
     /**
      * Returns the index of the currently selected item in this player's hotbar (0-8)
@@ -46,7 +46,7 @@ public interface PlayerInventory extends Inventory {
      * Sets the item in the currently selected slot in this player's hotbar
      * @param itemStack The ItemStack to set
      */
-    void setSelectedHotbarItem(ItemStack itemStack);
+    void setSelectedHotbarItem(IItemStack itemStack);
 
     /**
      * Moves the hotbar cursor to this index (0-8)
@@ -58,49 +58,49 @@ public interface PlayerInventory extends Inventory {
      * Adds an ItemStack to this inventory
      * @param itemStack The ItemStack to add
      */
-    void addItemStack(ItemStack itemStack);
+    void addItemStack(IItemStack itemStack);
 
     /**
      * Returns this player's helmet item
      */
-    ItemStack getHelmetItem();
+    IItemStack getHelmetItem();
 
     /**
      * Returns this player's chestplate item
      */
-    ItemStack getChestplateItem();
+    IItemStack getChestplateItem();
 
     /**
      * Returns this player's leggings item
      */
-    ItemStack getLeggingsItem();
+    IItemStack getLeggingsItem();
 
     /**
      * Returns this player's boots item
      */
-    ItemStack getBootsItem();
+    IItemStack getBootsItem();
 
     /**
      * Sets this player's helmet item
      * @param itemStack The ItemStack to set
      */
-    void setHelmetItem(ItemStack itemStack);
+    void setHelmetItem(IItemStack itemStack);
 
     /**
      * Sets this player's chestplate item
      * @param itemStack The ItemStack to set
      */
-    void setChestplateItem(ItemStack itemStack);
+    void setChestplateItem(IItemStack itemStack);
 
     /**
      * Sets this player's leggings item
      * @param itemStack The ItemStack to set
      */
-    void setLeggingsItem(ItemStack itemStack);
+    void setLeggingsItem(IItemStack itemStack);
 
     /**
      * Sets this player's boots item
      * @param itemStack The ItemStack to set
      */
-    void setBootsItem(ItemStack itemStack);
+    void setBootsItem(IItemStack itemStack);
 }

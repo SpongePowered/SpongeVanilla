@@ -30,7 +30,7 @@ import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
 import org.granitemc.granite.api.event.block.EventBlockBreak;
 import org.granitemc.granite.api.event.block.EventBlockPlace;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.player.GranitePlayer;
@@ -80,7 +80,7 @@ public class ItemInWorldComposite extends ProxyComposite {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (GraniteServerComposite.instance.isOnServerThread()) {
-                    ItemStack itemStack = (ItemStack) MinecraftUtils.wrap(args[2]);
+                    IItemStack itemStack = (IItemStack) MinecraftUtils.wrap(args[2]);
 
                     //if (Mappings.getClass("n.m.item.ItemBlock").isInstance(item)) {
 

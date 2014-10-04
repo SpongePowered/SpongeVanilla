@@ -34,6 +34,8 @@ public class EventBlockBreak extends Event {
     public EventBlockBreak(Block block, Player player) {
         this.block = block;
         this.player = player;
+
+        player.getInventory().getItemStack(0).getItemLore();
     }
 
     /**

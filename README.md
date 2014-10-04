@@ -9,6 +9,8 @@ The purpose of this project is to take a "hands off" approach to vanilla code.
 That is, we _describe_ the code to our composite layer, without actually including any of it.
 Access is gained by composite classes, reflection, proxy classes and interfaces, and classloaders.
 
+**NOTE: A lot of these APIs are completely untested, and may or may not work. If they don't, feel free to create an issue.**
+
 Goals
 ------
 The primary objective of the Granite project is simple: provide an open-source plugin interface for Minecraft that does not

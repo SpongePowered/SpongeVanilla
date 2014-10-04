@@ -24,7 +24,7 @@ package org.granitemc.granite.entity;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.entity.EntityItem;
-import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.MinecraftUtils;
 
@@ -34,12 +34,12 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
     }
 
     @Override
-    public ItemStack getItemStack() {
-	    return (ItemStack) MinecraftUtils.wrap(invoke("getItemStack"));
+    public IItemStack getItemStack() {
+	    return (IItemStack) MinecraftUtils.wrap(invoke("getItemStack"));
     }
 
     @Override
-    public void setItemStack(ItemStack itemStack) {
+    public void setItemStack(IItemStack itemStack) {
         invoke("setItemStack", ((GraniteItemStack) itemStack).parent);
     }
 }
