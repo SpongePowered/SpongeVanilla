@@ -39,34 +39,11 @@ public interface EntityItem extends Entity {
      */
     void setItemStack(IItemStack itemStack);
 
-    void searchForOtherItemsNearby();
+    Object getOwnerName();
 
-    void setAgeToCreativeDespawnTime();
+    void setOwnerName(String owner);
 
-    void dealFireDamage(int amount);
-
-    String getName();
-
-    ItemStack getEntityItem();
-
-    void setEntityItemStack(ItemStack itemStack);
-
-    String getOwner();
-
-    void setOwner(String owner);
-
-    String getThrower();
-
-    void setThrower(String thrower);
-
-    //func_174872_o()
-    int getAge();
-
-    void setDefaultPickupDelay();
-
-    void setNoPickupDelay();
-
-    void setInfinitePickupDelay();
+    String getThrowerName();
 
     void setPickupDelay(int ticks);
 

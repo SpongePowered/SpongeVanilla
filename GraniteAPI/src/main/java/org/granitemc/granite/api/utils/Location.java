@@ -37,12 +37,12 @@ public class Location {
     }
 
     /**
-     * Sets the world of this location
+     * Returns a new Location with the world set
      *
      * @param world The world
      */
-    public void setWorld(World world) {
-        this.world = world;
+    public Location setWorld(World world) {
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
     /**
@@ -53,12 +53,12 @@ public class Location {
     }
 
     /**
-     * Sets the X position of this location
+     * Returns a new Location with the X position set
      *
      * @param x The X position
      */
-    public void setX(double x) {
-        this.x = x;
+    public Location setX(double x) {
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
     /**
@@ -69,12 +69,12 @@ public class Location {
     }
 
     /**
-     * Sets the Y position of this location
+     * Returns a new Location with the Y position set
      *
      * @param y The Y position
      */
-    public void setY(double y) {
-        this.y = y;
+    public Location setY(double y) {
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
     /**
@@ -85,12 +85,12 @@ public class Location {
     }
 
     /**
-     * Sets the Z position of this location
+     * Returns a new Location with the Z position set
      *
      * @param z The Z position
      */
-    public void setZ(double z) {
-        this.z = z;
+    public Location setZ(double z) {
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
     /**
@@ -101,12 +101,12 @@ public class Location {
     }
 
     /**
-     * Sets the pitch of this location (up/down rotation)
+     * Returns a new Location with the pitch (up/down) rotation set
      *
      * @param pitch The pitch
      */
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
+    public Location setPitch(float pitch) {
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
     /**
@@ -117,16 +117,17 @@ public class Location {
     }
 
     /**
-     * Sets the yaw of this location (left/right rotation)
+     * Returns a new Location with the yaw (left/right) rotation set
      *
      * @param yaw The yaw
      */
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
+    public Location setYaw(float yaw) {
+        return new Location(world, x, y, z, pitch, yaw);
     }
 
     /**
      * Returns the distance between this and another location
+     *
      * @param location The other location
      */
     public double getDistance(Location location) {
@@ -135,6 +136,7 @@ public class Location {
 
     /**
      * Returns the squared distance between this and another location - this is MUCH faster than {@link #getDistance(Location)}
+     *
      * @param location The other location
      */
     public double getDistanceSquared(Location location) {
@@ -147,15 +149,48 @@ public class Location {
         return Math.pow(x - location.x, 2) + Math.pow(y - location.y, 2) + Math.pow(z - location.z, 2);
     }
 
-    public boolean equals(Object object) {
-        if (object instanceof Location) {
-            Location location = (Location) object;
-            return getWorld() == location.getWorld() && getX() == location.getX() && getY() == location.getY() && getZ() == location.getZ() && getPitch() == location.getPitch() && getYaw() == location.getYaw();
-        }
-        return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Location location = (Location) o;
+
+        if (Float.compare(location.pitch, pitch) != 0) return false;
+        if (Double.compare(location.x, x) != 0) return false;
+        if (Double.compare(location.y, y) != 0) return false;
+        if (Float.compare(location.yaw, yaw) != 0) return false;
+        if (Double.compare(location.z, z) != 0) return false;
+        if (!world.equals(location.world)) return false;
+
+        return true;
     }
 
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = world.hashCode();
+        temp = Double.doubleToLongBits(x);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(y);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(z);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (pitch != +0.0f ? Float.floatToIntBits(pitch) : 0);
+        result = 31 * result + (yaw != +0.0f ? Float.floatToIntBits(yaw) : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "Location{World:" + getWorld().getLevelName() + ",X:" + getX() + ",Y:" + getY() + ",Z:" + getZ() + ",Pitch:" + getPitch() + ",Yaw:" + getYaw() + "}";
+        return "Location{" +
+                "world=" + world +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", pitch=" + pitch +
+                ", yaw=" + yaw +
+                '}';
     }
 }

@@ -65,5 +65,5 @@ public interface Player extends CommandSender, Entity {
     /**
      * Returns this player's inventory
      */
-    PlayerInventory getInventory();
+    PlayerInventory getPlayerInventory();
 }

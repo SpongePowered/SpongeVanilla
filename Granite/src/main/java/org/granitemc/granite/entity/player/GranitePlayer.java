@@ -31,6 +31,7 @@ import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntity;
+import org.granitemc.granite.entity.GraniteEntityLivingBase;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
@@ -38,7 +39,7 @@ import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class GranitePlayer extends GraniteEntity implements Player {
+public class GranitePlayer extends GraniteEntityLivingBase implements Player {
     public GranitePlayer(Object parent) {
         super(parent, false);
     }
@@ -86,8 +87,7 @@ public class GranitePlayer extends GraniteEntity implements Player {
         invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) item).parent);
     }
 
-    @Override
-    public PlayerInventory getInventory() {
+    public PlayerInventory getPlayerInventory() {
         return (PlayerInventory) MinecraftUtils.wrap(fieldGet("n.m.entity.player.EntityPlayer", "inventory"));
     }
 

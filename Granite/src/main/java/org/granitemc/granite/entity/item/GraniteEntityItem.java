@@ -24,6 +24,7 @@ package org.granitemc.granite.entity.item;
  ****************************************************************************************/
 
 import org.granitemc.granite.api.entity.item.EntityItem;
+import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.entity.GraniteEntity;
 
@@ -36,17 +37,14 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
         super(parent);
     }
 
-    @Override
     public void searchForOtherItemsNearby() {
         invoke("n.m.entity.item.EntityItem", "searchForOtherItemsNearby");
     }
 
-    @Override
     public void setAgeToCreativeDespawnTime() {
         invoke("n.m.entity.item.EntityItem", "setAgeToCreativeDespawnTime");
     }
 
-    @Override
     public void dealFireDamage(int amount) {
         invoke("n.m.entity.item.EntityItem", "dealFireDamage", amount);
     }
@@ -57,58 +55,55 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
         return (boolean) invoke("n.m.entity.item.EntityItem", "attackEntityFrom", source, amount);
     }*/
 
-    @Override
     public String getName() {
         return (String) invoke("n.m.entity.item.EntityItem", "getName");
     }
 
-    @Override
     public ItemStack getEntityItem() {
         return (ItemStack) invoke("n.m.entity.item.EntityItem", "getEntityItem");
     }
 
-    @Override
     public void setEntityItemStack(ItemStack itemStack) {
         invoke("n.m.entity.item.EntityItem", "setEntityItemStack", itemStack);
     }
 
     @Override
-    public String getOwner() {
-        return (String) invoke("n.m.entity.item.EntityItem", "getOwner");
+    public IItemStack getItemStack() {
+        return null;
     }
 
     @Override
-    public void setOwner(String owner) {
-        invoke("n.m.entity.item.EntityItem", "setOwner", owner);
+    public void setItemStack(IItemStack itemStack) {
+
     }
 
     @Override
-    public String getThrower() {
-        return (String) invoke("n.m.entity.item.EntityItem", "getThrower");
+    public String getOwnerName() {
+        return (String) invoke("n.m.entity.item.EntityItem", "getOwnerName");
     }
 
     @Override
+    public void setOwnerName(String owner) {
+        invoke("n.m.entity.item.EntityItem", "setOwnerName", owner);
+    }
+
+    @Override
+    public String getThrowerName() {
+        return (String) invoke("n.m.entity.item.EntityItem", "getThrowerName");
+    }
+
     public void setThrower(String thrower) {
         invoke("n.m.entity.item.EntityItem", "setThrower", thrower);
     }
 
-    //func_174872_o()
-    @Override
-    public int getAge() {
-        return (Integer) invoke("n.m.entity.item.EntityItem", "getAge");
-    }
-
-    @Override
     public void setDefaultPickupDelay() {
         invoke("n.m.entity.item.EntityItem", "setDefaultPickupDelay");
     }
 
-    @Override
     public void setNoPickupDelay() {
         invoke("n.m.entity.item.EntityItem", "setNoPickupDelay");
     }
 
-    @Override
     public void setInfinitePickupDelay() {
         invoke("n.m.entity.item.EntityItem", "setInfinitePickupDelay");
     }

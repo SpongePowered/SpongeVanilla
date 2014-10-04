@@ -23,6 +23,7 @@ package org.granitemc.granite.utils;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.chat.GraniteChatComponentTranslation;
@@ -73,6 +74,29 @@ public class MinecraftUtils {
         try {
             return ccClass.getConstructor(int.class, int.class, int.class).newInstance(x, y, z);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Object toMinecraftRotations(Rotations graniteRotations) {
+        try {
+            return Mappings.getClass("n.m.util.Rotations").getConstructor(float.class, float.class, float.class)
+                    .newInstance(graniteRotations.getXRotation(), graniteRotations.getYRotation(), graniteRotations.getZRotation());
+        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Rotations fromMinecraftRotations(Object minecraftRotations) {
+        try {
+            return new Rotations(
+                    (float) Mappings.getField("n.m.util.Rotation", "x").get(minecraftRotations),
+                    (float) Mappings.getField("n.m.util.Rotation", "y").get(minecraftRotations),
+                    (float) Mappings.getField("n.m.util.Rotation", "z").get(minecraftRotations)
+            );
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
