@@ -16,24 +16,24 @@ public class Rotations {
         return xRotation;
     }
 
-    public void setXRotation(float xRotation) {
-        this.xRotation = xRotation;
+    public Rotations setXRotation(float xRotation) {
+        return new Rotations(xRotation, yRotation, zRotation);
     }
 
     public float getYRotation() {
         return yRotation;
     }
 
-    public void setYRotation(float yRotation) {
-        this.yRotation = yRotation;
+    public Rotations setYRotation(float yRotation) {
+        return new Rotations(xRotation, yRotation, zRotation);
     }
 
     public float getZRotation() {
         return zRotation;
     }
 
-    public void setZRotation(float zRotation) {
-        this.zRotation = zRotation;
+    public Rotations setZRotation(float zRotation) {
+        return new Rotations(xRotation, yRotation, zRotation);
     }
 
     public boolean equals(Object object) {
