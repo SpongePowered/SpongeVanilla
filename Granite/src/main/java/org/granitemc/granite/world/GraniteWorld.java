@@ -25,6 +25,9 @@ package org.granitemc.granite.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.utils.Facing;
+import org.granitemc.granite.api.utils.RayTraceResult;
+import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.api.world.WorldBorder;
 import org.granitemc.granite.block.GraniteBlock;
@@ -202,7 +205,32 @@ public class GraniteWorld extends Composite implements World {
     public void setHardcore(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setHardcore(boolean)", b);
     }
-    
+
+    @Override
+    public RayTraceResult rayTrace(Vector from, Vector to, boolean stopOnLiquid) {
+        Object ret = invoke("n.m.world.World", "rayTraceBlocks(n.m.util.Vec3;n.m.util.Vec3;boolean)",
+                MinecraftUtils.toMinecraftVector(from), MinecraftUtils.toMinecraftVector(to), stopOnLiquid);
+
+        try {
+            if (((Enum) Mappings.getField("n.m.util.MovingObjectPosition", "typeOfHit").get(ret)).ordinal() != 0) {
+                Block b = getBlock(Mappings.getField("n.m.util.MovingObjectPosition", "blockPos").get(ret));
+
+                Facing f = Facing.values()[((Enum) Mappings.getField("n.m.util.MovingObjectPosition", "field_178784_b").get(ret)).ordinal()];
+                return new RayTraceResult(b, f);
+            } else {
+                return null;
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public RayTraceResult rayTrace(Vector from, Vector direction, double distance, boolean stopOnLiquid) {
+        return rayTrace(from, from.add(direction.normalize().scale(distance)), stopOnLiquid);
+    }
+
     //TODO: getWorldGenerator: u
     
     //TODO: setWorldGenerator: a(are)

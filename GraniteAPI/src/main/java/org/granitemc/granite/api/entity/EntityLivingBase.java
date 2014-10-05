@@ -2,6 +2,9 @@ package org.granitemc.granite.api.entity;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.utils.Location;
+import org.granitemc.granite.api.utils.RayTraceResult;
+import org.granitemc.granite.api.utils.Vector;
 
 import java.util.Collection;
 
@@ -130,6 +133,12 @@ public interface EntityLivingBase extends Entity {
     float getAbsorptionAmount();
 
     void setAbsorptionAmount(float amount);
+
+    Vector getLookDirection();
+
+    RayTraceResult rayTrace(double maxDistance, boolean stopOnLiquid);
+
+    float getEyeHeight();
 
     //TODO: Enable after Team has been made
     /*Team getTeam();

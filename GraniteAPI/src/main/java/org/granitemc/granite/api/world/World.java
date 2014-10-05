@@ -25,6 +25,8 @@ package org.granitemc.granite.api.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.utils.RayTraceResult;
+import org.granitemc.granite.api.utils.Vector;
 
 public interface World {
     /**
@@ -170,6 +172,10 @@ public interface World {
      * @param b Whether this world is hardcore
      */
     public void setHardcore(boolean b);
+
+    RayTraceResult rayTrace(Vector from, Vector to, boolean stopOnLiquid);
+
+    RayTraceResult rayTrace(Vector from, Vector direction, double distance, boolean stopOnLiquid);
 
     // TODO: are these needed?
     //public String getGeneratorOptions();
