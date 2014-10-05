@@ -29,6 +29,7 @@ public class Config {
 
     public static final File mcJar = new File("minecraft_server.jar");
     public static final File configFolder = new File("configuration");
+    public static final File libFolder = new File("lib");
     public static final File pluginsFolder = new File("plugins");
 
     public static void initDirs() {
@@ -37,6 +38,9 @@ public class Config {
 
         if (!pluginsFolder.exists())
             pluginsFolder.mkdirs();
+
+        if (!libFolder.exists())
+            libFolder.mkdirs();
     }
 
 }

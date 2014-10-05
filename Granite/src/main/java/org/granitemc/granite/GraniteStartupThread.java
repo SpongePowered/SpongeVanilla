@@ -62,7 +62,7 @@ public class GraniteStartupThread extends Thread {
         Config.initDirs();
 
         loadMinecraft();
-
+        loadLibraries();
         loadPlugins();
 
         // Edit stuff before the classes are loaded
@@ -76,6 +76,22 @@ public class GraniteStartupThread extends Thread {
         loadItems();
 
         GraniteServerComposite.init();
+    }
+
+    private void loadLibraries() {
+        for (File lib : Config.libFolder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File arg0, String arg1) {
+                return arg1.endsWith(".jar");
+            }
+        })) {
+            Granite.getLogger().info("Loading jarfile lib/%s.", lib.getName());
+            try {
+                ClassLoader.addFile(lib);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void loadPlugins() {
