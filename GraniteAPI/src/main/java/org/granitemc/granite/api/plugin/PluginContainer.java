@@ -29,6 +29,7 @@ import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.On;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,14 +47,26 @@ public class PluginContainer {
 
     public PluginContainer(Class<?> clazz) {
         annotation = clazz.getAnnotation(Plugin.class);
-        this.mainClass = clazz;
-        try {
-            this.instance = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+
         commands = new HashMap<>();
         events = new HashMap<>();
+
+        this.mainClass = clazz;
+    }
+
+    public void instantiatePluginClass() {
+        try {
+            this.instance = mainClass.getConstructor(PluginContainer.class).newInstance(this);
+        } catch (NoSuchMethodException e) {
+            try {
+                this.instance = mainClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         registerCommandHandler(instance);
         registerEventHandler(instance);

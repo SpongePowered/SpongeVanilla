@@ -80,7 +80,7 @@ public class GraniteAPI implements API {
         eventQueue = new GraniteEventQueue();
     }
 
-    public PluginContainer getPlugin(String name) {
+    public PluginContainer getPluginContainer(String name) {
         for (PluginContainer p : plugins) {
             if (Objects.equals(p.getName(), name)) {
                 return p;
@@ -93,11 +93,11 @@ public class GraniteAPI implements API {
         return plugins;
     }
 
-    public PluginContainer getPlugin(Object plugin) {
-        return getPlugin(plugin.getClass());
+    public PluginContainer getPluginContainer(Object plugin) {
+        return getPluginContainerByClass(plugin.getClass());
     }
 
-    public PluginContainer getPlugin(Class<?> pluginClass) {
+    public PluginContainer getPluginContainerByClass(Class<?> pluginClass) {
         if (pluginClass.isAnnotationPresent(Plugin.class)) {
             for (PluginContainer p : plugins) {
                 if (p.getMainClass().equals(pluginClass)) {
@@ -131,6 +131,8 @@ public class GraniteAPI implements API {
                                 getLogger().info("Loaded %s (v%s)!", container.getName(), container.getVersion());
 
                                 plugins.add(container);
+
+                                container.instantiatePluginClass();
 
                                 // TODO: make this part better
                                 for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
