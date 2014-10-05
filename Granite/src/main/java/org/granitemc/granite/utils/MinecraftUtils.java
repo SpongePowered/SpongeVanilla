@@ -92,9 +92,9 @@ public class MinecraftUtils {
     public static Rotations fromMinecraftRotations(Object minecraftRotations) {
         try {
             return new Rotations(
-                    (float) Mappings.getField("n.m.util.Rotation", "x").get(minecraftRotations),
-                    (float) Mappings.getField("n.m.util.Rotation", "y").get(minecraftRotations),
-                    (float) Mappings.getField("n.m.util.Rotation", "z").get(minecraftRotations)
+                    (float) Mappings.getField("n.m.util.Rotations", "x").get(minecraftRotations),
+                    (float) Mappings.getField("n.m.util.Rotations", "y").get(minecraftRotations),
+                    (float) Mappings.getField("n.m.util.Rotations", "z").get(minecraftRotations)
             );
         } catch (IllegalAccessException e) {
             e.printStackTrace();

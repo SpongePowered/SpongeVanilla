@@ -63,7 +63,6 @@ public class PluginContainer {
             } catch (InstantiationException | IllegalAccessException e1) {
                 e1.printStackTrace();
             }
-            e.printStackTrace();
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
