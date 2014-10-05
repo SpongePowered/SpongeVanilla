@@ -1,6 +1,4 @@
-package org.granitemc.granite.api.entity.player;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.api.entity.player;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api.entity.player;
 
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
@@ -46,6 +46,7 @@ public interface Player extends CommandSender, Entity {
 
     /**
      * Returns the equipment in a slot
+     *
      * @param slot The slot
      */
     IItemStack getEquipmentInSlot(int slot);
@@ -57,6 +58,7 @@ public interface Player extends CommandSender, Entity {
 
     /**
      * Sets an inventory or armor slot
+     *
      * @param slot The slot to set
      * @param item The {@link org.granitemc.granite.api.item.IItemStack} to set to
      */

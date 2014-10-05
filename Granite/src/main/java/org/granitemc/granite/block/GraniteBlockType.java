@@ -1,22 +1,4 @@
-package org.granitemc.granite.block;
-
-import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.item.IItemStack;
-import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.reflect.composite.Composite;
-import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-/**
- * **************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -33,12 +15,28 @@ import java.util.Random;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * **************************************************************************************
  */
+
+package org.granitemc.granite.block;
+
+import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.block.BlockTypes;
+import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class GraniteBlockType extends Composite implements BlockType {
 

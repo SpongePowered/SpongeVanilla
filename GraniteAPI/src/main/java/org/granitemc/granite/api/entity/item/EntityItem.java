@@ -1,6 +1,4 @@
-package org.granitemc.granite.api.entity.item;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,15 +15,16 @@ package org.granitemc.granite.api.entity.item;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api.entity.item;
 
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.item.IItemStack;
-import org.granitemc.granite.api.item.ItemStack;
 
 public interface EntityItem extends Entity {
     /**
@@ -35,6 +34,7 @@ public interface EntityItem extends Entity {
 
     /**
      * Sets the ItemStack of this item entity
+     *
      * @param itemStack The ItemStack
      */
     void setItemStack(IItemStack itemStack);

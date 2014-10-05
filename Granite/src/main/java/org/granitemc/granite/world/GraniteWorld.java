@@ -1,6 +1,4 @@
-package org.granitemc.granite.world;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.world;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
@@ -71,12 +71,12 @@ public class GraniteWorld extends Composite implements World {
     public Object getWorldInfo() {
         return invoke("n.m.world.World", "getWorldInfo()");
     }
-    
+
     @Override
     public long getSeed() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getSeed");
     }
-    
+
     public long getSpawnX() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getSpawnX");
     }
@@ -105,7 +105,7 @@ public class GraniteWorld extends Composite implements World {
     }
 
     //TODO:  setSpawn: a(dt)
-    
+
     @Override
     public void setTime(long t) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setTime(long)", t);
@@ -115,12 +115,12 @@ public class GraniteWorld extends Composite implements World {
     public void setDayTime(long t) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setDayTime(long)", t);
     }
-    
+
     @Override
     public String getLevelName() {
         return (String) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getLevelName");
     }
-    
+
     @Override
     public void setLevelName(String s) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setLevelName(String)", s);
@@ -134,21 +134,21 @@ public class GraniteWorld extends Composite implements World {
     public int getVersion() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getVersion");
     }
-    
+
     public void setVersion(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setVersion(int)", i);
     }
-    
+
     @Override
     public boolean isThundering() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "isThundering");
     }
-    
+
     @Override
     public void setThundering(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setThundering(boolean)", b);
     }
-    
+
     @Override
     public int getThunderDuration() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getThunderDuration");
@@ -158,17 +158,17 @@ public class GraniteWorld extends Composite implements World {
     public void setThunderDuration(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setThunderDuration(int)", i);
     }
-    
+
     @Override
     public boolean isRaining() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "isRaining");
     }
-    
+
     @Override
     public void setRaining(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setRaining(boolean)", b);
     }
-    
+
     @Override
     public int getRainDuration() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getRainDuration");
@@ -178,109 +178,109 @@ public class GraniteWorld extends Composite implements World {
     public void setRainDuration(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setRainDuration(int)", i);
     }
-    
+
     //TODO: getGameType: r
-    
+
     @Override
     public boolean getUseMapFeatures() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getUseMapFeatures");
     }
-    
+
     @Override
     public void setUseMapFeatures(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setUseMapFeatures(boolean)", b);
     }
-    
+
     //TODO: setGameType: a(arc)
-    
+
     @Override
     public boolean isHardcore() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "isHardcore");
     }
-    
+
     @Override
     public void setHardcore(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setHardcore(boolean)", b);
     }
-    
+
     //TODO: getWorldGenerator: u
-    
+
     //TODO: setWorldGenerator: a(are)
-    
+
     public String getGeneratorOptions() {
         return (String) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getGeneratorOptions");
     }
-        
+
     public boolean getAllowCommands() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getAllowCommands");
     }
-    
+
     public void setAllowCommands(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setAllowCommands(boolean)", b);
     }
-    
+
     public boolean isInitialized() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "isInitialized");
     }
-    
+
     public void setInitialized(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setInitialized(boolean)", b);
     }
-    
+
     //TODO: getGameRules: x
-    
+
     public double getBorderCenterX() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderCenterX");
     }
-    
+
     public double getBorderCenterZ() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderCenterZ");
     }
-    
+
     public double getBorderSize() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSize");
     }
-        
+
     public void setBorderSize(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSize(int)", d);
     }
-    
+
     public long getBorderSizeLerpTime() {
         return (long) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSizeLerpTime");
     }
-        
+
     public void setBorderSizeLerpTime(long l) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSizeLerpTime(int)", l);
     }
-    
+
     public double getBorderSizeLerpTarget() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSizeLerpTarget");
     }
-        
+
     public void setBorderSizeLerpTarget(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSizeLerpTarget(int)", d);
     }
-    
+
     public void setBorderCenterZ(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderCenterZ(int)", d);
     }
-    
+
     public void setBorderCenterX(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderCenterX(int)", d);
     }
-    
+
     public double getBorderSafeZone() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderSafeZone");
     }
-        
+
     public void setBorderSafeZone(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderSafeZone(int)", d);
     }
-    
+
     public double getBorderDamagePerBlock() {
         return (double) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderDamagePerBlock");
     }
-        
+
     public void setBorderDamagePerBlock(double d) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderDamagePerBlock(int)", d);
     }
@@ -288,27 +288,27 @@ public class GraniteWorld extends Composite implements World {
     public int getBorderWarningBlocks() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderWarningBlocks");
     }
-    
+
     public int getBorderWarningTime() {
         return (int) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getBorderWarningTime");
     }
-    
+
     public void setBorderWarningBlocks(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderWarningBlocks(int)", i);
     }
-    
+
     public void setBorderWarningTime(int i) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setBorderWarningTime(int)", i);
     }
-    
+
     //TODO: getDifficulty: y
 
     //TODO: setDifficulty: a(vt)
-    
+
     public boolean getDifficultyLocked() {
         return (boolean) Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "getDifficultyLocked");
     }
-    
+
     public void setDifficultyLocked(boolean b) {
         Mappings.invoke(getWorldInfo(), "n.m.world.storage.WorldInfo", "setDifficultyLocked(boolean)", b);
     }

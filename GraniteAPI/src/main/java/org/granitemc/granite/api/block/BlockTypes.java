@@ -1,6 +1,4 @@
-package org.granitemc.granite.api.block;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.api.block;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api.block;
 
 import com.google.common.collect.BiMap;
 
@@ -230,6 +230,7 @@ public class BlockTypes {
 
     /**
      * Gets a {@link org.granitemc.granite.api.block.BlockType} by its technical name
+     *
      * @param name The technical name
      */
     public static BlockType getByTechnicalName(String name) {
@@ -242,6 +243,7 @@ public class BlockTypes {
 
     /**
      * Gets a {@link org.granitemc.granite.api.block.BlockType} by its numeric ID
+     *
      * @param id The numeric ID
      */
     public static BlockType getById(int id) {
@@ -250,6 +252,7 @@ public class BlockTypes {
 
     /**
      * Gets the numeric ID from a {@link org.granitemc.granite.api.block.BlockType}
+     *
      * @param type The {@link org.granitemc.granite.api.block.BlockType}
      */
     public static Integer getIdFromBlock(BlockType type) {

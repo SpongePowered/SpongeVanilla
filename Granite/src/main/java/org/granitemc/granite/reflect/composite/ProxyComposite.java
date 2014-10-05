@@ -1,6 +1,4 @@
-package org.granitemc.granite.reflect.composite;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.reflect.composite;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.reflect.composite;
 
 import javassist.util.proxy.MethodHandler;
 import org.granitemc.granite.reflect.ReflectionUtils;
@@ -74,7 +74,7 @@ public class ProxyComposite extends Composite {
             // This method may be invoked thousands of times per second... MAKE IT FAST
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
                 try {
-                    if (args.length > 0 && args[0] != null && args[0].getClass().getName() == "mx") {
+                    if (args.length > 0 && args[0] != null && args[0].getClass().getName().equals("mx")) {
                         args = args;
                     }
                     try {
