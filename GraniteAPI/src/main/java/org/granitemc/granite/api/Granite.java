@@ -38,10 +38,10 @@ public class Granite {
     private static API impl;
 
     /**
-     * @see API#getPlugin(String)
+     * @see API#getPluginContainer(String)
      */
-    public static PluginContainer getPlugin(String name) {
-        return impl.getPlugin(name);
+    public static PluginContainer getPluginContainer(String name) {
+        return impl.getPluginContainer(name);
     }
 
     /**
@@ -52,17 +52,17 @@ public class Granite {
     }
 
     /**
-     * @see API#getPlugin(Object)
+     * @see API#getPluginContainer(Object)
      */
-    public static PluginContainer getPlugin(Object plugin) {
-        return impl.getPlugin(plugin);
+    public static PluginContainer getPluginContainer(Object plugin) {
+        return impl.getPluginContainer(plugin);
     }
 
     /**
-     * @see API#getPlugin(Class)
+     * @see API#getPluginContainerByClass(Class)
      */
-    public static PluginContainer getPlugin(Class<?> pluginClass) {
-        return impl.getPlugin(pluginClass);
+    public static PluginContainer getPluginContainerByClass(Class<?> pluginClass) {
+        return impl.getPluginContainerByClass(pluginClass);
     }
 
     /**

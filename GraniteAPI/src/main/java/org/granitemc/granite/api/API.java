@@ -38,19 +38,19 @@ public interface API {
      * Returns a plugin by name
      * @param name The name
      */
-    PluginContainer getPlugin(String name);
+    PluginContainer getPluginContainer(String name);
 
     /**
      * Returns a plugin by main class object
      * @param plugin The main class object
      */
-    PluginContainer getPlugin(Object plugin);
+    PluginContainer getPluginContainer(Object plugin);
 
     /**
      * Returns a plugin by plugin class
      * @param pluginClass The plugin class
      */
-    PluginContainer getPlugin(Class<?> pluginClass);
+    PluginContainer getPluginContainerByClass(Class<?> pluginClass);
 
     /**
      * Loads a plugin from a .jar
