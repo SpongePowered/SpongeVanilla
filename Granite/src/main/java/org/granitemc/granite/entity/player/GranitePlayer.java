@@ -1,6 +1,4 @@
-package org.granitemc.granite.entity.player;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,20 +15,21 @@ package org.granitemc.granite.entity.player;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.entity.player;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.IItemStack;
-import org.granitemc.granite.api.utils.Location;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
-import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.Mappings;
@@ -71,15 +70,13 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
     }
 
     @Override
-    public IItemStack getEquipmentInSlot(int slot) {
-        //TODO: Check if this works or need to be invoked differently
-        return (IItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot", slot));
+    public ItemStack getEquipmentInSlot(int slot) {
+        return (ItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot", slot));
     }
 
     @Override
-    public IItemStack getHeldItem() {
-        //TODO: Check if this works or need to be invoked differently
-        return (IItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
+    public ItemStack getHeldItem() {
+        return (ItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
     }
 
     @Override
@@ -91,7 +88,7 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
         return (PlayerInventory) MinecraftUtils.wrap(fieldGet("n.m.entity.player.EntityPlayer", "inventory"));
     }
 
-    public void sendBlockUpdate(Block b) {
+    public void sendBlockUpdate(Block block) {
         try {
             Mappings.invoke(fieldGet("playerNetServerHandler"), "n.m.network.NetHandlerPlayServer", "sendPacket(n.m.network.Packet)",
                     Mappings.getClass("n.m.network.play.client.S23PacketBlockChange").getConstructor(
@@ -99,14 +96,12 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
                             Mappings.getClass("n.m.util.ChunkCoordinates")
                     ).newInstance(
                             ((GraniteWorld) getWorld()).parent,
-                            MinecraftUtils.createChunkCoordinates(b.getX(), b.getY(), b.getZ())
+                            MinecraftUtils.createChunkCoordinates(block.getX(), block.getY(), block.getZ())
                     ));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
-
-
 
     /*public void onDeath(DamageSource var1) {
         a(wh var1);
@@ -119,20 +114,5 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
      *              Granite Methods                  *
      *                                               *
      *************************************************/
-
-    @Override
-    public Location getLocation() {
-        return new Location(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
-    }
-
-    @Override
-    public void setLocation(Location location) {
-        setWorld(location.getWorld());
-        setX(location.getX());
-        setY(location.getY());
-        setZ(location.getZ());
-        setYaw(location.getYaw());
-        setPitch(location.getPitch());
-    }
 
 }

@@ -1,6 +1,4 @@
-package org.granitemc.granite.api;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.api;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api;
 
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.player.Player;
@@ -49,6 +49,7 @@ public interface Server extends CommandSender {
 
     /**
      * Saves all worlds
+     *
      * @param outputLogMessage Whether to output a message
      */
     void saveAllWorlds(boolean outputLogMessage);
@@ -143,6 +144,7 @@ public interface Server extends CommandSender {
 
     /**
      * Sets whether this server can spawn animals
+     *
      * @param spawnAnimals Whether this server can spawn animals
      */
     void setCanSpawnAnimals(boolean spawnAnimals);
@@ -154,6 +156,7 @@ public interface Server extends CommandSender {
 
     /**
      * Sets whether this server can spawn NPCs
+     *
      * @param spawnNPCs Whether this server can spawn NPCs
      */
     void setCanSpawnNPCs(boolean spawnNPCs);
@@ -165,6 +168,7 @@ public interface Server extends CommandSender {
 
     /**
      * Sets whether PvP is enabled
+     *
      * @param allowPvP Whether PvP is enabled
      */
     void setAllowPvp(boolean allowPvP);
@@ -176,6 +180,7 @@ public interface Server extends CommandSender {
 
     /**
      * Sets whether flight is allowed (hovering over the ground for more than 4 seconds via mods - doesn't count creative flying)
+     *
      * @param allowFlight Whether flight is allowed
      */
     void setAllowFlight(boolean allowFlight);

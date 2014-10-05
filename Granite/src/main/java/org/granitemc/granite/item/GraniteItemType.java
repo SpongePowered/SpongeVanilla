@@ -1,6 +1,4 @@
-package org.granitemc.granite.item;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.item;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.item;
 
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.item.IItemStack;
@@ -33,32 +33,26 @@ public class GraniteItemType extends Composite implements ItemType {
         super(parent);
     }
 
-    @Override
     public int getMaxStackSize() {
         return (int) fieldGet("n.m.item.Item", "maxStackSize");
     }
 
-    @Override
     public int getMaxDamage() {
         return (int) fieldGet("n.m.item.Item", "maxDamage");
     }
 
-    @Override
     public String getName() {
         return new GraniteItemStack(this, 1).getDisplayName();
     }
 
-    @Override
     public int getNumericId() {
         return (int) invoke("n.m.item.Item", "getIdFromItem");
     }
 
-    @Override
     public String getTechnicalName() {
         return null;
     }
 
-    @Override
     public IItemStack createItemStack(int amount) {
         return new GraniteItemStack(this, amount);
     }

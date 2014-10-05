@@ -1,7 +1,4 @@
-package org.granitemc.granite.api.block;
-
-/**
- * **************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -18,12 +15,13 @@ package org.granitemc.granite.api.block;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * **************************************************************************************
  */
+
+package org.granitemc.granite.api.block;
 
 public interface BlockType {
     /**
@@ -78,7 +76,6 @@ public interface BlockType {
 
     /**
      * Creates a *NEW* {@link org.granitemc.granite.api.block.BlockType} with this metadata value set - {@link org.granitemc.granite.api.block.BlockType}s are immutable
-
      *
      * @param key   The metadata key to set (e.g. variant, power, facing)
      * @param value The metadata value to set to (e.g. spruce, 8, north)

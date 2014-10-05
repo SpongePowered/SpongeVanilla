@@ -1,6 +1,4 @@
-package org.granitemc.granite.inventory;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.inventory;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.inventory;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
@@ -35,32 +35,26 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
         super(parent);
     }
 
-    @Override
     public IItemStack getItemStack(int slot) {
         return (IItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
     }
 
-    @Override
     public int getFirstEmptySlot() {
         return (int) invoke("n.m.inventory.IInventory", "getFirstEmptyStack");
     }
 
-    @Override
     public Player getPlayer() {
         return (Player) MinecraftUtils.wrap(fieldGet("player"));
     }
 
-    @Override
     public IItemStack getSelectedHotbarItem() {
         return (IItemStack) MinecraftUtils.wrap(invoke("n.m.entity.player.InventoryPlayer", "getCurrentItem"));
     }
 
-    @Override
     public int getSelectedHotbarIndex() {
         return (int) fieldGet("currentItem");
     }
 
-    @Override
     public void setSelectedHotbarItem(IItemStack itemStack) {
         setItemStack(getSelectedHotbarIndex(), itemStack);
     }
@@ -71,60 +65,46 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
 
     }*/
 
-    @Override
     public void addItemStack(IItemStack itemStack) {
         invoke("n.m.entity.player.InventoryPlayer", "addItemStackToInventory(n.m.item.ItemStack)", itemStack);
     }
 
-    @Override
     public IItemStack getHelmetItem() {
         return getItemStack(39);
     }
 
-    @Override
     public IItemStack getChestplateItem() {
         return getItemStack(38);
     }
 
-    @Override
     public IItemStack getLeggingsItem() {
         return getItemStack(37);
     }
 
-    @Override
     public IItemStack getBootsItem() {
         return getItemStack(36);
     }
 
-    @Override
     public void setHelmetItem(IItemStack itemStack) {
         setItemStack(39, itemStack);
     }
 
-    @Override
     public void setChestplateItem(IItemStack itemStack) {
         setItemStack(38, itemStack);
-
     }
 
-    @Override
     public void setLeggingsItem(IItemStack itemStack) {
         setItemStack(37, itemStack);
-
     }
 
-    @Override
     public void setBootsItem(IItemStack itemStack) {
         setItemStack(36, itemStack);
-
     }
 
-    @Override
     public void setItemStack(int slot, IItemStack itemStack) {
         invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
     }
 
-    @Override
     public int getSize() {
         return (int) invoke("n.m.inventory.IInventory", "getSizeInventory");
     }

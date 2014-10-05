@@ -1,6 +1,4 @@
-package org.granitemc.granite.reflect;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,17 +15,19 @@ package org.granitemc.granite.reflect;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.reflect;
 
 import com.google.common.collect.Lists;
 import org.granitemc.granite.GraniteAPI;
 import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.Server;
+import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -75,7 +75,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         final GraniteServerComposite me = this;
 
         // Inject SCM
-        addHook("func_152361_a(n.m.server.management.ServerConfigurationManager)", new HookListener() {
+        addHook("setConfigManager(n.m.server.management.ServerConfigurationManager)", new HookListener() {
             SCMComposite comp = null;
 
             @Override

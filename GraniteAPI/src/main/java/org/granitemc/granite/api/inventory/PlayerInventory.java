@@ -1,6 +1,4 @@
-package org.granitemc.granite.api.inventory;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.api.inventory;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api.inventory;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
@@ -44,6 +44,7 @@ public interface PlayerInventory extends Inventory {
 
     /**
      * Sets the item in the currently selected slot in this player's hotbar
+     *
      * @param itemStack The ItemStack to set
      */
     void setSelectedHotbarItem(IItemStack itemStack);
@@ -56,6 +57,7 @@ public interface PlayerInventory extends Inventory {
 
     /**
      * Adds an ItemStack to this inventory
+     *
      * @param itemStack The ItemStack to add
      */
     void addItemStack(IItemStack itemStack);
@@ -82,24 +84,28 @@ public interface PlayerInventory extends Inventory {
 
     /**
      * Sets this player's helmet item
+     *
      * @param itemStack The ItemStack to set
      */
     void setHelmetItem(IItemStack itemStack);
 
     /**
      * Sets this player's chestplate item
+     *
      * @param itemStack The ItemStack to set
      */
     void setChestplateItem(IItemStack itemStack);
 
     /**
      * Sets this player's leggings item
+     *
      * @param itemStack The ItemStack to set
      */
     void setLeggingsItem(IItemStack itemStack);
 
     /**
      * Sets this player's boots item
+     *
      * @param itemStack The ItemStack to set
      */
     void setBootsItem(IItemStack itemStack);

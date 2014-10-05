@@ -1,8 +1,4 @@
-package org.granitemc.granite.api.item;
-
-import org.granitemc.granite.api.block.ItemType;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -19,11 +15,15 @@ import org.granitemc.granite.api.block.ItemType;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api.item;
+
+import org.granitemc.granite.api.block.ItemType;
 
 public interface IItemStack {
     /**
@@ -33,6 +33,7 @@ public interface IItemStack {
 
     /**
      * Sets the damage of this ItemStack
+     *
      * @param damage The damage to set
      */
     void setItemDamage(int damage);
@@ -44,6 +45,7 @@ public interface IItemStack {
 
     /**
      * Sets the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
+     *
      * @param lines A vararg array of strings, one per line
      */
     void setItemLore(String... lines);
@@ -60,6 +62,7 @@ public interface IItemStack {
 
     /**
      * Sets the display name of this ItemStack
+     *
      * @param name The display name to set
      */
     void setDisplayName(String name);

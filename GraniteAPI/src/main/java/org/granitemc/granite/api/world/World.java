@@ -1,6 +1,4 @@
-package org.granitemc.granite.api.world;
-
-/*****************************************************************************************
+/*
  * License (MIT)
  *
  * Copyright (c) 2014. Granite Team
@@ -17,11 +15,13 @@ package org.granitemc.granite.api.world;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ****************************************************************************************/
+ */
+
+package org.granitemc.granite.api.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
@@ -31,6 +31,7 @@ import org.granitemc.granite.api.utils.Vector;
 public interface World {
     /**
      * Returns the {@link org.granitemc.granite.api.block.Block} at the specified location
+     *
      * @param x The X position
      * @param y The Y position
      * @param z The Z position
@@ -39,6 +40,7 @@ public interface World {
 
     /**
      * Returns the {@link org.granitemc.granite.api.block.BlockType} at the specified location
+     *
      * @param x The X position
      * @param y The Y position
      * @param z The Z position
@@ -47,9 +49,10 @@ public interface World {
 
     /**
      * Sets the {@link org.granitemc.granite.api.block.BlockType} at the specified location
-     * @param x The X position
-     * @param y The Y position
-     * @param z The Z position
+     *
+     * @param x    The X position
+     * @param y    The Y position
+     * @param z    The Z position
      * @param type The type to set
      */
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type);
@@ -76,12 +79,14 @@ public interface World {
 
     /**
      * Sets the time of this world
+     *
      * @param t The time
      */
     public void setTime(long t);
 
     /**
      * Sets the day time of this world
+     *
      * @param t The time
      */
     public void setDayTime(long t);
@@ -93,6 +98,7 @@ public interface World {
 
     /**
      * Sets the level name of this world
+     *
      * @param s The level name
      */
     public void setLevelName(String s);
@@ -104,7 +110,7 @@ public interface World {
 
     // TODO: is this needed?
     //public int getVersion();
-    
+
     //public void setVersion(int i);
 
     /**
@@ -114,6 +120,7 @@ public interface World {
 
     /**
      * Sets whether it's currently thundering in this world
+     *
      * @param b Whether it's thundering
      */
     public void setThundering(boolean b);
@@ -125,6 +132,7 @@ public interface World {
 
     /**
      * Sets for how long thundering will continue
+     *
      * @param i How long thundering will continue
      */
     public void setThunderDuration(int i);
@@ -136,6 +144,7 @@ public interface World {
 
     /**
      * Sets whether it's currently raining in this world
+     *
      * @param b Whether it's raining
      */
     public void setRaining(boolean b);
@@ -147,6 +156,7 @@ public interface World {
 
     /**
      * Sets for how long raining will continue
+     *
      * @param i How long raining will continue
      */
     public void setRainDuration(int i);
@@ -158,6 +168,7 @@ public interface World {
 
     /**
      * Sets whether this world uses map features (e.g. strongholds)
+     *
      * @param b Whether this world uses map features
      */
     public void setUseMapFeatures(boolean b);
@@ -169,6 +180,7 @@ public interface World {
 
     /**
      * Sets whether this world is hardcore
+     *
      * @param b Whether this world is hardcore
      */
     public void setHardcore(boolean b);
@@ -179,12 +191,12 @@ public interface World {
 
     // TODO: are these needed?
     //public String getGeneratorOptions();
-        
+
     //public boolean getAllowCommands();
-    
+
     //public void setAllowCommands(boolean b);
-    
+
     //public boolean getDifficultyLocked();
-    
+
     //public void setDifficultyLocked(boolean b);
 }
