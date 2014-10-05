@@ -7,7 +7,7 @@ Note: This is _not_ Sponge!
 
 The purpose of this project is to take a "hands off" approach to vanilla code.
 That is, we _describe_ the code to our composite layer, without actually including any of it.
-Access is gained by composite classes, reflection, proxy classes and interfaces, and classloaders.
+Access is gained by composite classes, reflection, proxy classes, interfaces, and classloaders.
 
 **NOTE: A lot of these APIs are completely untested, and may or may not work. If they don't, feel free to create an issue.**
 
@@ -64,6 +64,7 @@ To-do list
   - [X] Blocks
   - [X] Items
   - [X] Players
+  - [X] Entities
 - [ ] Essentials-style example plugin
 - [ ] Multiworld
 - [ ] More awesome stuff

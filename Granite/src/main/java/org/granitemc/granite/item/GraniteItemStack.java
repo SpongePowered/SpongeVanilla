@@ -69,7 +69,6 @@ public class GraniteItemStack extends Composite implements IItemStack {
         return (ItemType) MinecraftUtils.wrap(invoke("n.m.item.ItemStack", "getItem"));
     }
 
-    @Override
     public void clearCustomName() {
         invoke("n.m.item.ItemStack", "clearCustomName");
     }
@@ -113,7 +112,6 @@ public class GraniteItemStack extends Composite implements IItemStack {
         }
     }
 
-    @Override
     public void setItemLore(String... lines) {
         try {
             Object loreList = Mappings.getClass("n.m.nbt.NBTTagList").newInstance();

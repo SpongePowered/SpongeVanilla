@@ -23,6 +23,7 @@ package org.granitemc.granite.api.entity;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ****************************************************************************************/
 
+import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.utils.Location;
@@ -35,9 +36,6 @@ public interface Entity {
      * Returns the entity ID
      */
     int getEntityId();
-
-    //TODO: this is new in 1.8
-    /*void G();*/
 
     boolean equals(Object object);
 
@@ -70,15 +68,6 @@ public interface Entity {
      */
     void kill();
 
-    //TODO: What does this do?
-    /*void m();*/
-
-    //TODO: What does this do?
-    /*void Q();*/
-
-    //TODO: What does this do?
-    /*void a(dt var1, atr var2);*/
-
     /**
      * Plays a sound to the entity
      * @param soundName The name of the sound played
@@ -103,18 +92,18 @@ public interface Entity {
     // TODO: Check if this is the same as #isWet
     boolean isInWater();
 
-    //TODO: What does this do?
-    /*void X();
-
-    //TODO: What does this do?
-    /*void Y();
-    
-    String getSplashSound();
+    /**
+     * Resets the height of the entity
+     */
+    void resetHeight();
 
     //TODO: Work out what var1 (class bof) is
-    /*boolean isInsideOfMaterial(bof var1);*/
+    /*boolean isInsideOfMaterial(Material var1);*/
 
-    //String getSplashSound();
+    /**
+     * Returns the world the Entity is currently in
+     */
+    World getWorld();
 
     /**
      * Sets the {@link org.granitemc.granite.api.world.World} this entity is in
@@ -161,21 +150,13 @@ public interface Entity {
      */
     boolean canBePushed();
 
-    //String getEntityString();
 
-    //TODO: find out what adw and alq class is
-    //TODO: find a good name for functions
-    //TODO: what do the vars do?
-    /*adw s(alq var1, int var2);*/
-
-    //TODO: find out what adw and alq class is
-    //TODO: find a good name for functions
-    //TODO: what do the vars do?
-    /*adw a(alq var1, int var2, float var3);*/
-
-    //TODO: find out what adw is
-    //TODO: what do the var2 does?
-    /*adw entityDropItem(ItemStack itemStack, float var2);*/
+    /**
+     * Drops a ItemStack at the entity's position. yPos adds to the current yPos of the Entity
+     * @param itemStack ItemStack
+     * @param yPos Adds to the current Y position of the Entity
+     */
+    EntityItem entityDropItem(IItemStack itemStack, float yPos);
 
     /**
      * Returns whether this entity is alive
@@ -204,8 +185,10 @@ public interface Entity {
      */
     void setEating(boolean eating);
 
-    //TODO: add this later
-    /*ItemStack[] getInventory();*/
+    /**
+     * Returns a ItemStack array of the inventory
+     */
+    IItemStack[] getInventory();
 
     /**
      * Sets an inventory or armor slot
@@ -258,10 +241,18 @@ public interface Entity {
      */
     void setInvisible(boolean invisible);
 
-    //TODO: Work out what the flags are?
-    /*boolean getFlag(int flag);*/
+    /**
+     * Returns if the flag is true or false
+     * @param flag 0 is burning, 1 is sneaking, 2 is riding something, 3 is sprinting, 4 is eating
+     */
+    boolean getFlag(int flag);
 
-    /*void setFlag(int flag, boolean var2);*/
+    /**
+     * Sets flags for the Entity
+     * @param flag 0 is burning, 1 is sneaking, 2 is riding something, 3 is sprinting, 4 is eating
+     * @param bool Sets the flag to true or false
+     */
+    void setFlag(int flag, boolean bool);
 
     /**
      * Returns how much air this entity has left
@@ -273,12 +264,6 @@ public interface Entity {
      * @param amount How much air this entity has left
      */
     void setAir(int amount);
-
-    //TODO: Find out what class ads is
-    /*void onStruckByLightning(ads var1);*/
-
-    //TODO: Work out a suitable name and what the vars do
-    /*boolean j(double var1, double var2, double var3);*/
 
     /**
      * Sets this entity to be in a web
@@ -307,16 +292,15 @@ public interface Entity {
      */
     boolean canAttackWithItem();
 
-    //TODO: Find suitable name and work out what the vars do and their classes
-    /*float a(aqo var1, World world, dt var3, bec var4);*/
+    /**
+     * Returns the Minecraft yaw direction. i.e 180 is north
+     */
+    int getTeleportDirection();
 
-    //TODO: Find suitable name and work out what the vars do and their classes
-    /*boolean a(aqo var1, World world, dt var3, bec var4, float var5);*/
-
-    //TODO: Figure out what this does
-    //int getTeleportDirection();
-
-    //boolean doesEntityNotTriggerPressurePlate();
+    /**
+     * Returns if the entity can trigger a pressure plate
+     */
+    boolean doesEntityNotTriggerPressurePlate();
 
     /**
      * Returns the UUID of this entity
@@ -329,12 +313,57 @@ public interface Entity {
     boolean isPushedByWater();
 
     //TODO: Find Suitable name and get ho class
-    /*ho e_();*/
+    /*ho getDisplayName();*/
 
     /**
-     * Returns the {@link org.granitemc.granite.api.world.World} this entity is in
+     * Sets the name above an Entity to the String given
+     * @param name The custom name
      */
-    World getWorld();
+    void setCustomNameTag(String name);
+
+    /**
+     * Returns the custom name given to the entity
+     */
+    String getCustomNameTag();
+
+    /**
+     * Returns if the Entity has a custom name
+     */
+    boolean hasCustomName();
+
+    /**
+     * Sets if the name tag should be rendered or not
+     * @param bool if it should be rendered
+     */
+    void setAlwaysRenderNameTag(boolean bool);
+
+    /**
+     * Returns if the name tag is being rendered
+     */
+    boolean getAlwaysRenderNameTag();
+
+    /**
+     * Sets the Entity's x, y, z and then updates the player
+     * @param xPos Entity X position
+     * @param yPos Entity Y position
+     * @param zPos Entity Z position
+     */
+    void setPosition(double xPos, double yPos, double zPos);
+
+    /**
+     *
+     * @param xPos Entity X position
+     * @param yPos Entity Y position
+     * @param zPos Entity Z position
+     * @param pitch Entity Pitch
+     * @param yaw Entity Yaw
+     */
+    void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw);
+
+    /**
+     * Returns if the Entity is outside the world boarder
+     */
+    boolean isOutsideBorder();
 
     /**
      * Teleports the entity to a player
@@ -360,14 +389,18 @@ public interface Entity {
     Location getLocation();
 
     /**
+     * Sets the location of the entity
+     * @param location The location
+     */
+    void setLocation(Location location);
+
+    /**
      * Returns the entity currently riding this entity (or null)
      */
-    // TODO: rename this so it makes more sense
-    //Entity getRiddenByEntity();
+    Entity getEntityRidingThis();
 
     /**
      * Returns the entity we are currently riding (or null)
      */
-    // TODO: rename this so it makes more sense
-    //Entity getRidingEntity();
+    Entity getEntityRiddenByThis();
 }

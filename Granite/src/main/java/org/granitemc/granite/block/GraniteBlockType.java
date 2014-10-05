@@ -47,13 +47,13 @@ public class GraniteBlockType extends Composite implements BlockType {
 
         minecraftMetadataValuePossibilities = new HashMap<>();
 
-        Method setValue = Mappings.getMethod("n.m.block.BlockWithMetadata", "setValue(n.m.block.BlockMetadataValue;Comparable)");
-        Field values = Mappings.getField("n.m.block.BlockWithMetadata", "values");
+        Method setValue = Mappings.getMethod("n.m.block.BlockState$StateImplementation", "setValue(n.m.block.properties.IProperty;Comparable)");
+        Field values = Mappings.getField("n.m.block.BlockState$StateImplementation", "values");
 
         try {
             Map valuesMap = (Map) values.get(parent);
             for (Object v : valuesMap.keySet()) {
-                String name = (String) Mappings.invoke(v, "n.m.block.BlockMetadataValue", "getName()");
+                String name = (String) Mappings.invoke(v, "n.m.block.properties.IProperty", "getName()");
                 minecraftMetadataValuePossibilities.put(name, v);
             }
         } catch (IllegalAccessException e) {
@@ -73,7 +73,7 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     private Object setValue(Object blockWithMetadata, String key, Comparable value) {
         try {
-            Method setValue = Mappings.getMethod("n.m.block.BlockWithMetadata", "setValue(n.m.block.BlockMetadataValue;Comparable)");
+            Method setValue = Mappings.getMethod("n.m.block.BlockState$StateImplementation", "setValue(n.m.block.properties.IProperty;Comparable)");
             setValue.setAccessible(true);
 
             Object valueType = minecraftMetadataValuePossibilities.get(key);
@@ -190,7 +190,7 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     @Override
     public Comparable getMetadata(String key) {
-        return (Comparable) invoke("getValue(n.m.block.BlockMetadataValue)", minecraftMetadataValuePossibilities.get(key));
+        return (Comparable) invoke("getValue(n.m.block.properties.IProperty)", minecraftMetadataValuePossibilities.get(key));
     }
 
     @Override
@@ -215,6 +215,6 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     public Object getBlockObject() {
-        return invoke("n.m.block.BlockWithMetadata", "getBlock");
+        return invoke("n.m.block.BlockState$StateImplementation", "getBlock");
     }
 }

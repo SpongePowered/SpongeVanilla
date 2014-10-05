@@ -34,12 +34,10 @@ public class GraniteInventory extends Composite implements Inventory {
         super(parent);
     }
 
-    @Override
     public IItemStack getItemStack(int slot) {
         return (IItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
     }
 
-    @Override
     public int getFirstEmptySlot() {
         for (int i = 0; i < getSize(); i++) {
             if (getItemStack(i) == null) {
@@ -49,19 +47,16 @@ public class GraniteInventory extends Composite implements Inventory {
         return -1;
     }
 
-    //@Override
     public void addItemStack(IItemStack itemStack) {
         if (getFirstEmptySlot() > 0) {
             setItemStack(getFirstEmptySlot(), itemStack);
         }
     }
 
-    @Override
     public void setItemStack(int slot, IItemStack itemStack) {
         invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
     }
 
-    @Override
     public int getSize() {
         return (int) invoke("n.m.inventory.IInventory", "getSizeInventory");
     }

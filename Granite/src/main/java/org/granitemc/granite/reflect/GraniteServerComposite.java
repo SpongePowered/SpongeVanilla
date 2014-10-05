@@ -26,8 +26,8 @@ package org.granitemc.granite.reflect;
 import com.google.common.collect.Lists;
 import org.granitemc.granite.GraniteAPI;
 import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.Server;
+import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -75,7 +75,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         final GraniteServerComposite me = this;
 
         // Inject SCM
-        addHook("func_152361_a(n.m.server.management.ServerConfigurationManager)", new HookListener() {
+        addHook("setConfigManager(n.m.server.management.ServerConfigurationManager)", new HookListener() {
             SCMComposite comp = null;
 
             @Override

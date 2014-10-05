@@ -27,8 +27,8 @@ public class GraniteEntityArmorStand extends GraniteEntityLivingBase implements 
     }
 
     @Override
-    public ItemStack getCurrentArmor(int slot) {
-        return (ItemStack) invoke("n.m.entity.item.EntityArmorStand", "getCurrentArmor", slot);
+    public ItemStack getCurrentArmor(int armorSlot) {
+        return (ItemStack) invoke("n.m.entity.item.EntityArmorStand", "getCurrentArmor", armorSlot);
     }
 
     public void setCurrentItemOrArmor(int slot, ItemStack itemStack) {

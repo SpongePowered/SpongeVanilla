@@ -33,32 +33,26 @@ public class GraniteItemType extends Composite implements ItemType {
         super(parent);
     }
 
-    @Override
     public int getMaxStackSize() {
         return (int) fieldGet("n.m.item.Item", "maxStackSize");
     }
 
-    @Override
     public int getMaxDamage() {
         return (int) fieldGet("n.m.item.Item", "maxDamage");
     }
 
-    @Override
     public String getName() {
         return new GraniteItemStack(this, 1).getDisplayName();
     }
 
-    @Override
     public int getNumericId() {
         return (int) invoke("n.m.item.Item", "getIdFromItem");
     }
 
-    @Override
     public String getTechnicalName() {
         return null;
     }
 
-    @Override
     public IItemStack createItemStack(int amount) {
         return new GraniteItemStack(this, amount);
     }

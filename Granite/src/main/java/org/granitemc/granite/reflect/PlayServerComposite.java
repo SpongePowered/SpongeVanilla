@@ -39,7 +39,7 @@ public class PlayServerComposite extends ProxyComposite {
                 Mappings.getClass("n.m.entity.player.EntityPlayerMP")
         }, server.parent, networkManager, entityPlayer.parent);
 
-        addHook("func_147345_a(n.m.network.play.client.C07PacketPlayerDigging)", new HookListener() {
+        addHook("processPlayerDigging(n.m.network.play.client.C07PacketPlayerDigging)", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 /*if (!GraniteServerComposite.instance.isOnServerThread()) {
