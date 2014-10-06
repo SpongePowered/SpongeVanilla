@@ -27,7 +27,6 @@ import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.chat.ChatComponentText;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
@@ -80,7 +79,7 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
     }
 
     @Override
-    public void setCurrentItemOrArmor(int slot, IItemStack item) {
+    public void setCurrentItemOrArmor(int slot, ItemStack item) {
         invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) item).parent);
     }
 

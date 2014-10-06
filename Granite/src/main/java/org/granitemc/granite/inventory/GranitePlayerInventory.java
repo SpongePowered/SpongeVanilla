@@ -25,7 +25,7 @@ package org.granitemc.granite.inventory;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
@@ -35,8 +35,8 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
         super(parent);
     }
 
-    public IItemStack getItemStack(int slot) {
-        return (IItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
+    public ItemStack getItemStack(int slot) {
+        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
     }
 
     public int getFirstEmptySlot() {
@@ -47,15 +47,15 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
         return (Player) MinecraftUtils.wrap(fieldGet("player"));
     }
 
-    public IItemStack getSelectedHotbarItem() {
-        return (IItemStack) MinecraftUtils.wrap(invoke("n.m.entity.player.InventoryPlayer", "getCurrentItem"));
+    public ItemStack getSelectedHotbarItem() {
+        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.entity.player.InventoryPlayer", "getCurrentItem"));
     }
 
     public int getSelectedHotbarIndex() {
         return (int) fieldGet("currentItem");
     }
 
-    public void setSelectedHotbarItem(IItemStack itemStack) {
+    public void setSelectedHotbarItem(ItemStack itemStack) {
         setItemStack(getSelectedHotbarIndex(), itemStack);
     }
 
@@ -65,43 +65,43 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
 
     }*/
 
-    public void addItemStack(IItemStack itemStack) {
+    public void addItemStack(ItemStack itemStack) {
         invoke("n.m.entity.player.InventoryPlayer", "addItemStackToInventory(n.m.item.ItemStack)", itemStack);
     }
 
-    public IItemStack getHelmetItem() {
+    public ItemStack getHelmetItem() {
         return getItemStack(39);
     }
 
-    public IItemStack getChestplateItem() {
+    public ItemStack getChestplateItem() {
         return getItemStack(38);
     }
 
-    public IItemStack getLeggingsItem() {
+    public ItemStack getLeggingsItem() {
         return getItemStack(37);
     }
 
-    public IItemStack getBootsItem() {
+    public ItemStack getBootsItem() {
         return getItemStack(36);
     }
 
-    public void setHelmetItem(IItemStack itemStack) {
+    public void setHelmetItem(ItemStack itemStack) {
         setItemStack(39, itemStack);
     }
 
-    public void setChestplateItem(IItemStack itemStack) {
+    public void setChestplateItem(ItemStack itemStack) {
         setItemStack(38, itemStack);
     }
 
-    public void setLeggingsItem(IItemStack itemStack) {
+    public void setLeggingsItem(ItemStack itemStack) {
         setItemStack(37, itemStack);
     }
 
-    public void setBootsItem(IItemStack itemStack) {
+    public void setBootsItem(ItemStack itemStack) {
         setItemStack(36, itemStack);
     }
 
-    public void setItemStack(int slot, IItemStack itemStack) {
+    public void setItemStack(int slot, ItemStack itemStack) {
         invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
     }
 

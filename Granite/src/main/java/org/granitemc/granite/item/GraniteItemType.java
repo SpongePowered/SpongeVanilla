@@ -24,7 +24,7 @@
 package org.granitemc.granite.item;
 
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 
 public class GraniteItemType extends Composite implements ItemType {
@@ -53,7 +53,7 @@ public class GraniteItemType extends Composite implements ItemType {
         return null;
     }
 
-    public IItemStack createItemStack(int amount) {
+    public ItemStack createItemStack(int amount) {
         return new GraniteItemStack(this, amount);
     }
 }

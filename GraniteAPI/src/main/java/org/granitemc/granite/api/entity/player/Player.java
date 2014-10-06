@@ -24,10 +24,9 @@
 package org.granitemc.granite.api.entity.player;
 
 import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.inventory.PlayerInventory;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 
 public interface Player extends CommandSender, EntityLivingBase {
     /**
@@ -50,20 +49,20 @@ public interface Player extends CommandSender, EntityLivingBase {
      *
      * @param slot The slot
      */
-    IItemStack getEquipmentInSlot(int slot);
+    ItemStack getEquipmentInSlot(int slot);
 
     /**
      * Returns the held item
      */
-    IItemStack getHeldItem();
+    ItemStack getHeldItem();
 
     /**
      * Sets an inventory or armor slot
      *
      * @param slot The slot to set
-     * @param item The {@link org.granitemc.granite.api.item.IItemStack} to set to
+     * @param item The {@link org.granitemc.granite.api.item.ItemStack} to set to
      */
-    void setCurrentItemOrArmor(int slot, IItemStack item);
+    void setCurrentItemOrArmor(int slot, ItemStack item);
 
     /**
      * Returns this player's inventory

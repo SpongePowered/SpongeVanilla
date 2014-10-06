@@ -23,16 +23,16 @@
 
 package org.granitemc.granite.api.inventory;
 
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 
 public interface Inventory {
-    IItemStack getItemStack(int slot);
+    ItemStack getItemStack(int slot);
 
     int getFirstEmptySlot();
 
     //void addItemStack(ItemStack itemStack);
 
-    void setItemStack(int slot, IItemStack itemStack);
+    void setItemStack(int slot, ItemStack itemStack);
 
     int getSize();
 }

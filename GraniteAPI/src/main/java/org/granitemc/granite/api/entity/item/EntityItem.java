@@ -24,20 +24,20 @@
 package org.granitemc.granite.api.entity.item;
 
 import org.granitemc.granite.api.entity.Entity;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 
 public interface EntityItem extends Entity {
     /**
      * Gets the ItemStack of this item entity
      */
-    IItemStack getItemStack();
+    ItemStack getItemStack();
 
     /**
      * Sets the ItemStack of this item entity
      *
      * @param itemStack The ItemStack
      */
-    void setItemStack(IItemStack itemStack);
+    void setItemStack(ItemStack itemStack);
 
     Object getOwnerName();
 

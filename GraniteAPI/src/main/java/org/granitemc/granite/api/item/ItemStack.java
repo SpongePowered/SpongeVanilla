@@ -23,67 +23,62 @@
 
 package org.granitemc.granite.api.item;
 
-import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.ItemType;
 
-public class ItemStack implements IItemStack {
-    IItemStack parent;
+public interface ItemStack {
+    /**
+     * Returns the damage of this ItemStack
+     */
+    int getItemDamage();
 
-    public ItemStack(ItemType type) {
-        parent = Granite.createItemStack(type, type.getMaxStackSize());
-    }
+    /**
+     * Sets the damage of this ItemStack
+     *
+     * @param damage The damage to set
+     */
+    void setItemDamage(int damage);
 
-    public ItemStack(ItemType type, int amount) {
-        parent = Granite.createItemStack(type, amount);
-    }
+    /**
+     * Returns the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
+     */
+    String[] getItemLore();
 
-    @Override
-    public int getItemDamage() {
-        return parent.getItemDamage();
-    }
+    /**
+     * Sets the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
+     *
+     * @param lines A vararg array of strings, one per line
+     */
+    void setItemLore(String... lines);
 
-    @Override
-    public void setItemDamage(int damage) {
-        parent.setItemDamage(damage);
-    }
+    /**
+     * Returns the maximum amount of damage this ItemStack can have
+     */
+    int getMaxDamage();
 
-    @Override
-    public String[] getItemLore() {
-        return parent.getItemLore();
-    }
+    /**
+     * Returns the display name of this ItemStack
+     */
+    String getDisplayName();
 
-    @Override
-    public void setItemLore(String... lines) {
-        parent.setItemLore(lines);
-    }
+    /**
+     * Sets the display name of this ItemStack
+     *
+     * @param name The display name to set
+     */
+    void setDisplayName(String name);
 
-    @Override
-    public int getMaxDamage() {
-        return parent.getMaxDamage();
-    }
+    /**
+     * Returns whether this ItemStack has a display name
+     */
+    boolean hasDisplayName();
 
-    @Override
-    public String getDisplayName() {
-        return parent.getDisplayName();
-    }
+    /**
+     * Returns the type of this ItemStack
+     */
+    ItemType getType();
 
-    @Override
-    public void setDisplayName(String name) {
-        parent.setDisplayName(name);
-    }
-
-    @Override
-    public boolean hasDisplayName() {
-        return parent.hasDisplayName();
-    }
-
-    @Override
-    public ItemType getType() {
-        return parent.getType();
-    }
-
-    @Override
-    public void clearCustomName() {
-        parent.clearCustomName();
-    }
+    /**
+     * Clears any custom display name set on this ItemStack, and returns it to its original name
+     */
+    void clearCustomName();
 }

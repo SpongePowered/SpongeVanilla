@@ -24,7 +24,6 @@
 package org.granitemc.granite.entity.item;
 
 import org.granitemc.granite.api.entity.item.EntityItem;
-import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.entity.GraniteEntity;
 
@@ -68,12 +67,12 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
     }
 
     @Override
-    public IItemStack getItemStack() {
+    public ItemStack getItemStack() {
         return null;
     }
 
     @Override
-    public void setItemStack(IItemStack itemStack) {
+    public void setItemStack(ItemStack itemStack) {
 
     }
 

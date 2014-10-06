@@ -24,7 +24,6 @@
 package org.granitemc.granite.api.entity;
 
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.utils.Vector;
@@ -133,7 +132,7 @@ public interface EntityLivingBase extends Entity {
 
     ItemStack getCurrentArmor(int armotSlot);
 
-    void setCurrentItemOrArmor(int slot, IItemStack itemStack);
+    void setCurrentItemOrArmor(int slot, ItemStack itemStack);
 
     void setSprinting(boolean sprinting);
 

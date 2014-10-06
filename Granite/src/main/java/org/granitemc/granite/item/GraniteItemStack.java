@@ -25,7 +25,7 @@ package org.granitemc.granite.item;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
@@ -34,7 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GraniteItemStack extends Composite implements IItemStack {
+public class GraniteItemStack extends Composite implements ItemStack {
     private static Map<Object, GraniteItemStack> instanceMap = new HashMap<>();
 
     public GraniteItemStack(Object ïtemStackInstance) {

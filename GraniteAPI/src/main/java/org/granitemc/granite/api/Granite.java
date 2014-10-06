@@ -26,7 +26,7 @@ package org.granitemc.granite.api;
 import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.event.EventQueue;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
@@ -96,7 +96,7 @@ public class Granite {
     /**
      * @see API#createItemStack(org.granitemc.granite.api.block.ItemType, int)
      */
-    public static IItemStack createItemStack(ItemType type, int amount) {
+    public static ItemStack createItemStack(ItemType type, int amount) {
         return impl.createItemStack(type, amount);
     }
 }

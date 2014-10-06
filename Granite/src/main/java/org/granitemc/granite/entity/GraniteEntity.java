@@ -26,7 +26,7 @@ package org.granitemc.granite.entity;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
@@ -123,7 +123,7 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("n.m.entity.Entity", "canBePushed");
     }
 
-    public EntityItem entityDropItem(IItemStack itemStack, float yPos) {
+    public EntityItem entityDropItem(ItemStack itemStack, float yPos) {
         return (EntityItem) MinecraftUtils.wrap(invoke("entityDropItem", itemStack, yPos));
     }
 
@@ -147,11 +147,11 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("n.m.entity.Entity", "setEating(boolean)", eating);
     }
 
-    public IItemStack[] getInventory() {
-        return (IItemStack[]) MinecraftUtils.wrap(invoke("n.m.entity.Entity", "getInventory"));
+    public ItemStack[] getInventory() {
+        return (ItemStack[]) MinecraftUtils.wrap(invoke("n.m.entity.Entity", "getInventory"));
     }
 
-    public void setCurrentItemOrArmor(int inventoryIndex, IItemStack itemStack) {
+    public void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack) {
         invoke("n.m.entity.Entity", "setCurrentItemOrArmor(int;n.m.item.ItemStack)", inventoryIndex, itemStack);
     }
 

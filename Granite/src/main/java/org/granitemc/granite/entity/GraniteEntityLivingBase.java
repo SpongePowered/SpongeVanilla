@@ -26,7 +26,6 @@ package org.granitemc.granite.entity;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.utils.Vector;
@@ -244,7 +243,7 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         return (ItemStack) MinecraftUtils.wrap(invoke("n.m.entity.EntityLivingBase", "getCurrentArmor", armorSlot));
     }
 
-    public void setCurrentItemOrArmor(int slot, IItemStack itemStack) {
+    public void setCurrentItemOrArmor(int slot, ItemStack itemStack) {
         invoke("n.m.entity.EntityLivingBase", "setCurrentItemOrArmot", slot, itemStack);
     }
 

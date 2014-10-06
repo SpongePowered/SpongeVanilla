@@ -25,7 +25,7 @@ package org.granitemc.granite.api.entity;
 
 import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
@@ -164,7 +164,7 @@ public interface Entity {
      * @param itemStack ItemStack
      * @param yPos      Adds to the current Y position of the Entity
      */
-    EntityItem entityDropItem(IItemStack itemStack, float yPos);
+    EntityItem entityDropItem(ItemStack itemStack, float yPos);
 
     /**
      * Returns whether this entity is alive
@@ -198,16 +198,16 @@ public interface Entity {
     /**
      * Returns a ItemStack array of the inventory
      */
-    IItemStack[] getInventory();
+    ItemStack[] getInventory();
 
     /**
      * Sets an inventory or armor slot
      *
      * @param inventoryIndex The index to set
-     * @param itemStack      The {@link org.granitemc.granite.api.item.IItemStack} to set to
+     * @param itemStack      The {@link org.granitemc.granite.api.item.ItemStack} to set to
      */
     // TODO: explain index or change
-    void setCurrentItemOrArmor(int inventoryIndex, IItemStack itemStack);
+    void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack);
 
     /**
      * Returns whether this entity is currently burning
