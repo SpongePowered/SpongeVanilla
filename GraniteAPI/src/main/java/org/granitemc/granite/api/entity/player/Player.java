@@ -24,11 +24,11 @@
 package org.granitemc.granite.api.entity.player;
 
 import org.granitemc.granite.api.command.CommandSender;
-import org.granitemc.granite.api.entity.Entity;
+import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.IItemStack;
 
-public interface Player extends CommandSender, Entity {
+public interface Player extends CommandSender, EntityLivingBase {
     /**
      * Returns whether this player is currently using an item
      */

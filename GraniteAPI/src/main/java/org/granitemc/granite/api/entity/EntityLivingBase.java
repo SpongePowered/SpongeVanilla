@@ -25,7 +25,6 @@ package org.granitemc.granite.api.entity;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
-import org.granitemc.granite.api.item.ItemStack;
 
 import java.util.Collection;
 
@@ -125,17 +124,17 @@ public interface EntityLivingBase extends Entity {
 
     void kill();
 
-    ItemStack getHeldItem();
+    IItemStack getHeldItem();
 
-    ItemStack getEquipmentInSlot(int slot);
+    IItemStack getEquipmentInSlot(int slot);
 
-    ItemStack getCurrentArmor(int armotSlot);
+    IItemStack getCurrentArmor(int armotSlot);
 
     void setCurrentItemOrArmor(int slot, IItemStack itemStack);
 
     void setSprinting(boolean sprinting);
 
-    ItemStack[] getInventory();
+    IItemStack[] getInventory();
 
     void dismountEntity(Entity entity);
 
