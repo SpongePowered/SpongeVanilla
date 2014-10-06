@@ -142,7 +142,7 @@ public class GraniteAPI implements API {
                                 }
                             }
                         }
-                    } catch (ClassNotFoundException e) {
+                    } catch (NoClassDefFoundError | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }

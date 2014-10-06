@@ -24,6 +24,7 @@
 package org.granitemc.granite.utils;
 
 import org.granitemc.granite.api.utils.Rotations;
+import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.chat.GraniteChatComponentTranslation;
@@ -92,11 +93,33 @@ public class MinecraftUtils {
     public static Rotations fromMinecraftRotations(Object minecraftRotations) {
         try {
             return new Rotations(
-                    (float) Mappings.getField("n.m.util.Rotation", "x").get(minecraftRotations),
-                    (float) Mappings.getField("n.m.util.Rotation", "y").get(minecraftRotations),
-                    (float) Mappings.getField("n.m.util.Rotation", "z").get(minecraftRotations)
+                    (float) Mappings.getField("n.m.util.Rotations", "x").get(minecraftRotations),
+                    (float) Mappings.getField("n.m.util.Rotations", "y").get(minecraftRotations),
+                    (float) Mappings.getField("n.m.util.Rotations", "z").get(minecraftRotations)
             );
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Vector fromMinecraftVector(Object minecraftVector) {
+        try {
+            return new Vector(
+                    (float) Mappings.getField("n.m.util.Vec3", "xCoord").get(minecraftVector),
+                    (float) Mappings.getField("n.m.util.Vec3", "yCoord").get(minecraftVector),
+                    (float) Mappings.getField("n.m.util.Vec3", "zCoord").get(minecraftVector)
+            );
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static Object toMinecraftVector(Vector graniteVector) {
+        try {
+            return Mappings.getClass("n.m.util.Vec3").getConstructor(double.class, double.class, double.class)
+                    .newInstance(graniteVector.getX(), graniteVector.getY(), graniteVector.getZ());
+        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;

@@ -23,11 +23,18 @@
 
 package org.granitemc.granite.reflect;
 
+import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.entity.player.Player;
+import org.granitemc.granite.api.event.player.EventPlayerInteract;
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GranitePlayer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.MinecraftUtils;
+import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.Method;
 
@@ -42,24 +49,43 @@ public class PlayServerComposite extends ProxyComposite {
         addHook("processPlayerDigging(n.m.network.play.client.C07PacketPlayerDigging)", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                /*if (!GraniteServerComposite.instance.isOnServerThread()) {
+                if (!GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
 
                     World w = p.getWorld();
 
                     Block b = ((GraniteWorld) w).getBlock(Mappings.invoke(args[0], args[0].getClass(), "getPosition()"));
 
-                    BlockBreakEvent event = new BlockBreakEvent(b, p);
-                    Granite.getEventQueue().fireEvent(event);
+                    EventPlayerInteract epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.LEFT_CLICK_BLOCK, b);
+                    Granite.getEventQueue().fireEvent(epi);
 
-                    if (event.isCancelled()) {
+                    if (epi.isCancelled()) {
                         hook.setWasHandled(true);
-                        ((GranitePlayer) p).sendBlockUpdate(b);
-                        return false;
                     }
-                }*/
+                }
                 return null;
             }
         });
+
+        /*addHook("func_147346_a(n.m.network.play.client.C08PacketPlayerBlockPlacement)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                    Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
+
+                    World w = p.getWorld();
+
+                    Block b = ((GraniteWorld) w).getBlock(Mappings.invoke(args[0], args[0].getClass(), "getPosition()"));
+
+                    EventPlayerInteract epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.LEFT_CLICK_BLOCK, b);
+                    Granite.getEventQueue().fireEvent(epi);
+
+                    if (epi.isCancelled()) {
+                        hook.setWasHandled(true);
+                    }
+                }
+                return null;
+            }
+        });*/
     }
 }

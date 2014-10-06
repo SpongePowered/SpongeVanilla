@@ -24,6 +24,7 @@
 package org.granitemc.granite.api.entity.player;
 
 import org.granitemc.granite.api.command.CommandSender;
+import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.IItemStack;

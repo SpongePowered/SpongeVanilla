@@ -25,6 +25,9 @@ package org.granitemc.granite.api.entity;
 
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.utils.RayTraceResult;
+import org.granitemc.granite.api.utils.Vector;
 
 import java.util.Collection;
 
@@ -124,17 +127,17 @@ public interface EntityLivingBase extends Entity {
 
     void kill();
 
-    IItemStack getHeldItem();
+    ItemStack getHeldItem();
 
-    IItemStack getEquipmentInSlot(int slot);
+    ItemStack getEquipmentInSlot(int slot);
 
-    IItemStack getCurrentArmor(int armotSlot);
+    ItemStack getCurrentArmor(int armotSlot);
 
     void setCurrentItemOrArmor(int slot, IItemStack itemStack);
 
     void setSprinting(boolean sprinting);
 
-    IItemStack[] getInventory();
+    ItemStack[] getInventory();
 
     void dismountEntity(Entity entity);
 
@@ -153,6 +156,12 @@ public interface EntityLivingBase extends Entity {
     float getAbsorptionAmount();
 
     void setAbsorptionAmount(float amount);
+
+    Vector getLookDirection();
+
+    RayTraceResult rayTrace(double maxDistance, boolean stopOnLiquid);
+
+    float getEyeHeight();
 
     //TODO: Enable after Team has been made
     /*Team getTeam();

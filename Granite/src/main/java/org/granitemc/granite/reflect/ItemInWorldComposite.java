@@ -30,7 +30,9 @@ import org.granitemc.granite.api.block.BlockTypes;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.block.EventBlockBreak;
 import org.granitemc.granite.api.event.block.EventBlockPlace;
+import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.player.GranitePlayer;
@@ -65,11 +67,11 @@ public class ItemInWorldComposite extends ProxyComposite {
                 EventBlockBreak event = new EventBlockBreak(b, p);
                 Granite.getEventQueue().fireEvent(event);
 
-                /*if (event.isCancelled()) {
+                if (event.isCancelled()) {
                     hook.setWasHandled(true);
                     ((GranitePlayer) p).sendBlockUpdate(b);
                     return false;
-                }*/
+                }
                 //}
                 return true;
             }
@@ -187,12 +189,31 @@ public class ItemInWorldComposite extends ProxyComposite {
                         }
 
                         hook.setWasHandled(true);
+                        return retval;
                     }
 
                 }
 
                 // TODO: fix possible dupe glitch relating to cancellation and skeleton heads
 
+                return true;
+            }
+        });
+
+        addHook("tryUseItem(n.m.entity.player.EntityPlayer;n.m.world.World;n.m.item.ItemStack)", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
+                Player p = (Player) MinecraftUtils.wrap(args[0]);
+
+                RayTraceResult rtr = p.rayTrace(3, false);
+                if (rtr != null) {
+                    EventPlayerInteract epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.RIGHT_CLICK_BLOCK, rtr.getBlock());
+                    Granite.getEventQueue().fireEvent(epi);
+
+                    if (epi.isCancelled()) {
+                        hook.setWasHandled(true);
+                    }
+                }
                 return null;
             }
         });

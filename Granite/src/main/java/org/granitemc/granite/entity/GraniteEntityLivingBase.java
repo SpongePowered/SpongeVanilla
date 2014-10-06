@@ -28,6 +28,8 @@ import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.IItemStack;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.utils.RayTraceResult;
+import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.util.Collection;
@@ -289,6 +291,26 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
     public void setAbsorptionAmount(float amount) {
         invoke("n.m.entity.EntityLivingBase", "setAbsorptionAmount", amount);
     }
+
+    @Override
+    public Vector getLookDirection() {
+        return MinecraftUtils.fromMinecraftVector(invoke("n.m.entity.Entity", "getLook", 1.0F));
+    }
+
+    @Override
+    public RayTraceResult rayTrace(double maxDistance, boolean stopOnLiquid) {
+        Vector eyeVector = new Vector(getX(), getY(), getZ());
+        eyeVector.setY(eyeVector.getY() + getEyeHeight());
+
+        return getWorld().rayTrace(eyeVector, getLookDirection(), maxDistance, stopOnLiquid);
+    }
+
+    @Override
+    public float getEyeHeight() {
+        return (float) invoke("n.m.entity.Entity", "getEyeHeight");
+    }
+
+
 
     //TODO: Enable after Team has been made
     /*

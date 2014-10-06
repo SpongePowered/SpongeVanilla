@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.utils;
+
 /*
  * License (MIT)
  *
@@ -15,32 +17,35 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.utils;
+public enum Facing {
+    DOWN,
+    UP,
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST;
 
-import java.io.File;
-
-public class Config {
-
-    public static final File mcJar = new File("minecraft_server.jar");
-    public static final File configFolder = new File("configuration");
-    public static final File libFolder = new File("lib");
-    public static final File pluginsFolder = new File("plugins");
-
-    public static void initDirs() {
-        if (!configFolder.exists())
-            configFolder.mkdirs();
-
-        if (!pluginsFolder.exists())
-            pluginsFolder.mkdirs();
-
-        if (!libFolder.exists())
-            libFolder.mkdirs();
+    public Vector toVector() {
+        switch (this) {
+            case DOWN:
+                return new Vector(0, -1, 0);
+            case UP:
+                return new Vector(0, 1, 0);
+            case NORTH:
+                return new Vector(0, 0, -1);
+            case SOUTH:
+                return new Vector(0, 0, 1);
+            case WEST:
+                return new Vector(-1, 0, 0);
+            case EAST:
+                return new Vector(1, 0, 0);
+        }
+        return new Vector(0, 0, 0);
     }
-
 }
