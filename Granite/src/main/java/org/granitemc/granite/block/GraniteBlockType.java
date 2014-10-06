@@ -25,7 +25,7 @@ package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.item.IItemStack;
+import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
@@ -136,7 +136,7 @@ public class GraniteBlockType extends Composite implements BlockType {
         return parent.toString().split(":")[1].split("\\[")[0].split(",")[0];
     }
 
-    public IItemStack getItemStack(int amount) {
+    public ItemStack getItemStack(int amount) {
         // Super messy, it works, don't touch (pls)
 
         if (typeEquals(BlockTypes.air)) return null;

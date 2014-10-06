@@ -25,11 +25,12 @@ package org.granitemc.granite.chat;
 
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.chat.IChatComponentBuilder;
 
-public class GraniteChatComponentBuilder implements ChatComponentBuilder {
+public class GraniteChatComponentBuilder implements IChatComponentBuilder {
     private ChatComponent component;
 
-    public ChatComponentBuilder text(String text) {
+    public IChatComponentBuilder text(String text) {
         if (component == null) {
             component = new GraniteChatComponentText(text);
         } else {
@@ -39,7 +40,7 @@ public class GraniteChatComponentBuilder implements ChatComponentBuilder {
     }
 
     @Override
-    public ChatComponentBuilder translation(String key, Object... args) {
+    public IChatComponentBuilder translation(String key, Object... args) {
         ChatComponent component = new GraniteChatComponentTranslation(key, args);
         if (this.component == null) {
             this.component = component;
@@ -49,7 +50,7 @@ public class GraniteChatComponentBuilder implements ChatComponentBuilder {
         return this;
     }
 
-    public ChatComponentBuilder component(ChatComponent component) {
+    public IChatComponentBuilder component(ChatComponent component) {
         if (this.component == null) {
             this.component = component;
         } else {

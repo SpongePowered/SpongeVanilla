@@ -26,6 +26,7 @@ package org.granitemc.granite.api;
 import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.chat.IChatComponentBuilder;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.PluginContainer;
@@ -75,7 +76,7 @@ public interface API {
     /**
      * Returns a {@link org.granitemc.granite.api.chat.ChatComponentBuilder}
      */
-    ChatComponentBuilder getChatComponentBuilder();
+    IChatComponentBuilder createChatComponentBuilder();
 
     /**
      * Creates an {@link org.granitemc.granite.api.item.ItemStack}

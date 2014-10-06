@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.chat;
+
 /*
  * License (MIT)
  *
@@ -15,45 +17,37 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.chat;
+public interface IChatComponentBuilder {
+    /**
+     * Adds a text string to the end of this {@link ChatComponentBuilder}
+     *
+     * @param text The text string
+     */
+    IChatComponentBuilder text(String text);
 
-import org.granitemc.granite.api.Granite;
+    /**
+     * Adds a translation to the end of this {@link ChatComponentBuilder}
+     *
+     * @param key  The key of the translation
+     * @param args The object arguments to pass to the translation
+     */
+    IChatComponentBuilder translation(String key, Object... args);
 
-public class ChatComponentBuilder implements IChatComponentBuilder {
-    IChatComponentBuilder parent;
+    /**
+     * Adds a component to the end of this {@link ChatComponentBuilder}
+     *
+     * @param component The component
+     */
+    IChatComponentBuilder component(ChatComponent component);
 
-    public ChatComponentBuilder() {
-        parent = Granite.createChatComponentBuilder().parent;
-    }
-
-    public ChatComponentBuilder(IChatComponentBuilder parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public ChatComponentBuilder text(String text) {
-        return new ChatComponentBuilder(parent.text(text));
-    }
-
-    @Override
-    public ChatComponentBuilder translation(String key, Object... args) {
-        return new ChatComponentBuilder(parent.translation(key, args));
-    }
-
-    @Override
-    public ChatComponentBuilder component(ChatComponent component) {
-        return new ChatComponentBuilder(parent.component(component));
-    }
-
-    @Override
-    public ChatComponent build() {
-        return parent.build();
-    }
+    /**
+     * Returns the underlying {@link ChatComponent}
+     */
+    ChatComponent build();
 }
-

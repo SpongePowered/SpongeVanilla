@@ -29,7 +29,7 @@ import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.chat.IChatComponentBuilder;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
@@ -156,7 +156,7 @@ public class GraniteAPI implements API {
         return logger;
     }
 
-    public ChatComponentBuilder getChatComponentBuilder() {
+    public IChatComponentBuilder createChatComponentBuilder() {
         return new GraniteChatComponentBuilder();
     }
 
