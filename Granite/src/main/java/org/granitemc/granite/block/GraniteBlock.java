@@ -25,6 +25,7 @@ package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
 public class GraniteBlock implements Block {
@@ -71,4 +72,9 @@ public class GraniteBlock implements Block {
     public void setType(BlockType type) {
         world.setBlockTypeAtPosition(x, y, z, type);
     }
+
+	@Override
+	public Location getLocation() {
+		return new Location(world, x, y, z);
+	}
 }
