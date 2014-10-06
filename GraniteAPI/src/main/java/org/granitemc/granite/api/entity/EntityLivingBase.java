@@ -126,17 +126,17 @@ public interface EntityLivingBase extends Entity {
 
     void kill();
 
-    ItemStack getHeldItem();
+    IItemStack getHeldItem();
 
-    ItemStack getEquipmentInSlot(int slot);
+    IItemStack getEquipmentInSlot(int slot);
 
-    ItemStack getCurrentArmor(int armotSlot);
+    IItemStack getCurrentArmor(int armotSlot);
 
     void setCurrentItemOrArmor(int slot, ItemStack itemStack);
 
     void setSprinting(boolean sprinting);
 
-    ItemStack[] getInventory();
+    IItemStack[] getInventory();
 
     void dismountEntity(Entity entity);
 

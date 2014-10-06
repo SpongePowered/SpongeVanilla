@@ -23,6 +23,7 @@
 
 package org.granitemc.granite.api.block;
 
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
 public interface Block {
@@ -57,4 +58,9 @@ public interface Block {
      * @param type The type to set
      */
     void setType(BlockType type);
+    
+    /**
+     * Returns the {@link org.granitemc.granite.api.utils.Location} of this block
+     */
+	Location getLocation();
 }
