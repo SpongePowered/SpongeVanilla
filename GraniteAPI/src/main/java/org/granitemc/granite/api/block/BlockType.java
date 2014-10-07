@@ -23,6 +23,8 @@
 
 package org.granitemc.granite.api.block;
 
+import org.granitemc.granite.api.item.ItemStack;
+
 public interface BlockType {
     /**
      * Returns how much velocity is maintained while moving on top of this block
@@ -111,4 +113,11 @@ public interface BlockType {
      * Returns the technical name of this block (i.e. what's after the colon in minecraft:grass, minecraft:coal_ore, etc.)
      */
     String getTechnicalName();
+
+    /**
+     * Creates an {@link org.granitemc.granite.api.item.ItemStack} of this block type
+     *
+     * @param amount The amount of items in this {@link org.granitemc.granite.api.item.ItemStack}
+     */
+    ItemStack create(int amount);
 }

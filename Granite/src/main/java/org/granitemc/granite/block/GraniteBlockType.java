@@ -136,6 +136,11 @@ public class GraniteBlockType extends Composite implements BlockType {
         return parent.toString().split(":")[1].split("\\[")[0].split(",")[0];
     }
 
+    @Override
+    public ItemStack create(int amount) {
+        return getItemStack(amount);
+    }
+
     public ItemStack getItemStack(int amount) {
         // Super messy, it works, don't touch (pls)
 
