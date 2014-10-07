@@ -56,5 +56,5 @@ public interface ItemType {
      *
      * @param amount The amount of items in this {@link org.granitemc.granite.api.item.ItemStack}
      */
-    ItemStack createItemStack(int amount);
+    ItemStack create(int amount);
 }

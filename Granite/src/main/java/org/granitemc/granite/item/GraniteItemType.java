@@ -53,7 +53,7 @@ public class GraniteItemType extends Composite implements ItemType {
         return null;
     }
 
-    public ItemStack createItemStack(int amount) {
+    public ItemStack create(int amount) {
         return new GraniteItemStack(this, amount);
     }
 }
