@@ -55,39 +55,39 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public void setSize(float width, float height) {
-        invoke("n.m.entity.Entity", "setSize(float;float)", width, height);
+        invoke("Entity", "setSize", width, height);
     }
 
     public void setFire(int seconds) {
-        invoke("n.m.entity.Entity", "setFire(int)", seconds);
+        invoke("setFire", seconds);
     }
 
     public void extinguish() {
-        invoke("n.m.entity.Entity", "extinguish");
+        invoke("Entity", "extinguish");
     }
 
     public void kill() {
-        invoke("n.m.entity.Entity", "kill");
+        invoke("Entity", "kill");
     }
 
     public void playSound(String soundName, float volume, float pitch) {
-        invoke("n.m.entity.Entity", "playSound(String;float;float)", soundName, volume, pitch);
+        invoke("Entity", "playSound", soundName, volume, pitch);
     }
 
     public boolean isImmuneToFire() {
-        return (boolean) invoke("n.m.entity.Entity", "isImmuneToFire");
+        return (boolean) invoke("Entity", "isImmuneToFire");
     }
 
     public boolean isWet() {
-        return (boolean) invoke("n.m.entity.Entity", "isWet");
+        return (boolean) invoke("Entity", "isWet");
     }
 
     public boolean isInWater() {
-        return (boolean) invoke("n.m.entity.Entity", "isInWater");
+        return (boolean) invoke("Entity", "isInWater");
     }
 
     public void resetHeight() {
-        invoke("n.m.entity.Entity", "resetHeight");
+        invoke("Entity", "resetHeight");
     }
 
     // TODO: bof is Material
@@ -96,31 +96,31 @@ public class GraniteEntity extends Composite implements Entity {
     }*/
 
     public World getWorld() {
-        return (World) MinecraftUtils.wrap(invoke("n.m.entity.Entity", "getWorld"));
+        return (World) MinecraftUtils.wrap(invoke("getWorld"));
     }
 
     public void setWorld(World world) {
-        invoke("n.m.entity.Entity", "setWorld(n.m.world.World)", ((GraniteWorld) world).parent);
+        invoke("setWorld", ((GraniteWorld) world).parent);
     }
 
     public float getDistanceToEntity(Entity entity) {
-        return (float) invoke("n.m.entity.Entity", "getDistanceToEntity(n.m.entity.Entity)", entity);
+        return (float) invoke("Entity", "getDistanceToEntity", entity);
     }
 
     public double getDistanceSqToEntity(Entity entity) {
-        return (double) invoke("n.m.entity.Entity", "getDistanceSqToEntity(n.m.entity.Entity)", entity);
+        return (double) invoke("Entity", "getDistanceSqToEntity", entity);
     }
 
     public void addVelocity(double x, double y, double z) {
-        invoke("n.m.entity.Entity", "addVelocity(double;double;double)", x, y, z);
+        invoke("Entity", "addVelocity", x, y, z);
     }
 
     public boolean canBeCollidedWith() {
-        return (boolean) invoke("n.m.entity.Entity", "canBeCollidedWith");
+        return (boolean) invoke("Entity", "canBeCollidedWith");
     }
 
     public boolean canBePushed() {
-        return (boolean) invoke("n.m.entity.Entity", "canBePushed");
+        return (boolean) invoke("Entity", "canBePushed");
     }
 
     public EntityItem entityDropItem(ItemStack itemStack, float yPos) {
@@ -128,63 +128,63 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public boolean isEntityAlive() {
-        return (boolean) invoke("n.m.entity.Entity", "isEntityAlive");
+        return (boolean) invoke("Entity", "isEntityAlive");
     }
 
     public boolean isEntityInsideOpaqueBlock() {
-        return (boolean) invoke("n.m.entity.Entity", "isEntityInsideOpaqueBlock");
+        return (boolean) invoke("Entity", "isEntityInsideOpaqueBlock");
     }
 
     public void mountEntity(Entity entity) {
-        invoke("n.m.entity.Entity", "mountEntity(n.m.entity.Entity)", entity);
+        invoke("Entity", "mountEntity", entity);
     }
 
     public boolean isEating() {
-        return (boolean) invoke("n.m.entity.Entity", "isEating");
+        return (boolean) invoke("Entity", "isEating");
     }
 
     public void setEating(boolean eating) {
-        invoke("n.m.entity.Entity", "setEating(boolean)", eating);
+        invoke("Entity", "setEating", eating);
     }
 
     public ItemStack[] getInventory() {
-        return (ItemStack[]) MinecraftUtils.wrap(invoke("n.m.entity.Entity", "getInventory"));
+        return (ItemStack[]) MinecraftUtils.wrap(invoke("Entity", "getInventory"));
     }
 
     public void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack) {
-        invoke("n.m.entity.Entity", "setCurrentItemOrArmor(int;n.m.item.ItemStack)", inventoryIndex, itemStack);
+        invoke("Entity", "setCurrentItemOrArmor", inventoryIndex, itemStack);
     }
 
     public boolean isBurning() {
-        return (boolean) invoke("n.m.entity.Entity", "isBurning");
+        return (boolean) invoke("Entity", "isBurning");
     }
 
     public boolean isRiding() {
-        return (boolean) invoke("n.m.entity.Entity", "isRiding");
+        return (boolean) invoke("Entity", "isRiding");
     }
 
     public boolean isSneaking() {
-        return (boolean) invoke("n.m.entity.Entity", "isSneaking");
+        return (boolean) invoke("Entity", "isSneaking");
     }
 
     public void setSneaking(boolean sneaking) {
-        invoke("n.m.entity.Entity", "setSneaking(boolean)", sneaking);
+        invoke("Entity", "setSneaking", sneaking);
     }
 
     public boolean isSprinting() {
-        return (boolean) invoke("n.m.entity.Entity", "isSprinting");
+        return (boolean) invoke("Entity", "isSprinting");
     }
 
     public void setSprinting(boolean sprinting) {
-        invoke("n.m.entity.Entity", "setSprinting(boolean)", sprinting);
+        invoke("Entity", "setSprinting", sprinting);
     }
 
     public boolean isInvisible() {
-        return (boolean) invoke("n.m.entity.Entity", "isInvisible");
+        return (boolean) invoke("Entity", "isInvisible");
     }
 
     public void setInvisible(boolean invisible) {
-        invoke("n.m.entity.Entity", "isInvisible(boolean)", invisible);
+        invoke("Entity", "isInvisible", invisible);
     }
 
     public boolean getFlag(int flag) {
@@ -196,23 +196,23 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public int getAir() {
-        return (Integer) invoke("n.m.entity.Entity", "getAir");
+        return (Integer) invoke("Entity", "getAir");
     }
 
     public void setAir(int amount) {
-        invoke("n.m.entity.Entity", "setAir(int)", amount);
+        invoke("Entity", "setAir", amount);
     }
 
     public void setInWeb() {
-        invoke("n.m.entity.Entity", "setInWeb");
+        invoke("Entity", "setInWeb");
     }
 
     public String getCommandSenderName() {
-        return (String) invoke("n.m.entity.Entity", "getCommandSenderName");
+        return (String) invoke("Entity", "getCommandSenderName");
     }
 
     public Entity[] getParts() {
-        Object[] nativeParts = (Object[]) invoke("n.m.entity.Entity", "getParts");
+        Object[] nativeParts = (Object[]) invoke("Entity", "getParts");
         Entity[] parts = new Entity[nativeParts.length];
 
         for (int i = 0; i < nativeParts.length; i++) {
@@ -223,27 +223,27 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public boolean isEntityEqual(Entity entity) {
-        return (boolean) invoke("n.m.entity.Entity", "isEntityEqual(n.m.entity.Entity)", entity);
+        return (boolean) invoke("Entity", "isEntityEqual", entity);
     }
 
     public boolean canAttackWithItem() {
-        return (boolean) invoke("n.m.entity.Entity", "canAttackWithItem");
+        return (boolean) invoke("Entity", "canAttackWithItem");
     }
 
     public int getTeleportDirection() {
-        return (Integer) invoke("n.m.entity.Entity", "getTeleportDirection");
+        return (Integer) invoke("Entity", "getTeleportDirection");
     }
 
     public boolean doesEntityNotTriggerPressurePlate() {
-        return (boolean) invoke("n.m.entity.Entity", "doesEntityNotTriggerPressurePlate");
+        return (boolean) invoke("Entity", "doesEntityNotTriggerPressurePlate");
     }
 
     public UUID getUniqueID() {
-        return (UUID) invoke("n.m.entity.Entity", "getUniqueID");
+        return (UUID) invoke("Entity", "getUniqueID");
     }
 
     public boolean isPushedByWater() {
-        return (boolean) invoke("n.m.entity.Entity", "isPushedByWater");
+        return (boolean) invoke("Entity", "isPushedByWater");
     }
 
     // TODO: wait until IChatComponent has been wrapped
@@ -252,35 +252,35 @@ public class GraniteEntity extends Composite implements Entity {
     }*/
 
     public void setCustomNameTag(String name) {
-        invoke("n.m.entity.Entity", "setCustomNameTag", name);
+        invoke("Entity", "setCustomNameTag", name);
     }
 
     public String getCustomNameTag() {
-        return (String) invoke("n.m.entity.Entity", "getCustomNameTag");
+        return (String) invoke("Entity", "getCustomNameTag");
     }
 
     public boolean hasCustomName() {
-        return (boolean) invoke("n.m.entity.Entity", "hasCustomName");
+        return (boolean) invoke("Entity", "hasCustomName");
     }
 
     public void setAlwaysRenderNameTag(boolean bool) {
-        invoke("n.m.entity.Entity", "setAlwaysRenderNameTag", bool);
+        invoke("Entity", "setAlwaysRenderNameTag", bool);
     }
 
     public boolean getAlwaysRenderNameTag() {
-        return (boolean) invoke("n.m.entity.Entity", "getAlwaysRenderNameTag");
+        return (boolean) invoke("Entity", "getAlwaysRenderNameTag");
     }
 
     public void setPosition(double xPos, double yPos, double zPos) {
-        invoke("n.m.entity.Entity", "setPosition", xPos, yPos, zPos);
+        invoke("Entity", "setPosition", xPos, yPos, zPos);
     }
 
     public void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw) {
-        invoke("n.m.entity.Entity", "setPositionAndRotation", xPos, yPos, zPos, pitch, yaw);
+        invoke("Entity", "setPositionAndRotation", xPos, yPos, zPos, pitch, yaw);
     }
 
     public boolean isOutsideBorder() {
-        return (boolean) invoke("n.m.entity.Entity", "isOutsideBorder");
+        return (boolean) invoke("Entity", "isOutsideBorder");
     }
 
     /**
@@ -294,14 +294,14 @@ public class GraniteEntity extends Composite implements Entity {
 
     public double getDistanceToLocation(Location location) {
         if (getLocation().getWorld().equals(location.getWorld())) {
-            return (double) invoke("n.m.entity.Entity", "getDistanceToLocation(double;double;double)", location.getX(), location.getY(), location.getZ());
+            return (double) invoke("Entity", "getDistanceToLocation", location.getX(), location.getY(), location.getZ());
         }
         throw new RuntimeException("You cannot get the distance between different worlds");
     }
 
     public double getDistanceSqToLocation(Location location) {
         if (getLocation().getWorld().equals(location.getWorld())) {
-            return (double) invoke("n.m.entity.Entity", "getDistanceSqToLocation(double;double;double)", location.getX(), location.getY(), location.getZ());
+            return (double) invoke("Entity", "getDistanceSqToLocation", location.getX(), location.getY(), location.getZ());
         }
         throw new RuntimeException("You cannot get the distance between different worlds");
     }
@@ -320,51 +320,51 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public double getX() {
-        return (double) fieldGet("n.m.entity.Entity", "posX");
+        return (double) fieldGet("Entity", "posX");
     }
 
     public void setX(double xPos) {
-        fieldSet("n.m.entity.Entity", "posX", xPos);
+        fieldSet("Entity", "posX", xPos);
     }
 
     public double getY() {
-        return (double) fieldGet("n.m.entity.Entity", "posY");
+        return (double) fieldGet("Entity", "posY");
     }
 
     public void setY(double yPos) {
-        fieldSet("n.m.entity.Entity", "posY", yPos);
+        fieldSet("Entity", "posY", yPos);
     }
 
     public double getZ() {
-        return (double) fieldGet("n.m.entity.Entity", "posZ");
+        return (double) fieldGet("Entity", "posZ");
     }
 
     public void setZ(double zPos) {
-        fieldSet("n.m.entity.Entity", "posZ", zPos);
+        fieldSet("Entity", "posZ", zPos);
     }
 
     public float getPitch() {
-        return (float) fieldGet("n.m.entity.Entity", "rotationPitch");
+        return (float) fieldGet("Entity", "rotationPitch");
     }
 
     public void setPitch(float pitch) {
-        fieldSet("n.m.entity.Entity", "rotationPitch", pitch);
+        fieldSet("Entity", "rotationPitch", pitch);
     }
 
     public float getYaw() {
-        return (float) fieldGet("n.m.entity.Entity", "rotationYaw");
+        return (float) fieldGet("Entity", "rotationYaw");
     }
 
     public void setYaw(float yaw) {
-        fieldSet("n.m.entity.Entity", "rotationYaw", yaw);
+        fieldSet("Entity", "rotationYaw", yaw);
     }
 
     public Entity getEntityRidingThis() {
-        return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "riddenByEntity"));
+        return (Entity) MinecraftUtils.wrap(fieldGet("Entity", "riddenByEntity"));
     }
 
     public Entity getEntityRiddenByThis() {
-        return (Entity) MinecraftUtils.wrap(fieldGet("n.m.entity.Entity", "ridingEntity"));
+        return (Entity) MinecraftUtils.wrap(fieldGet("Entity", "ridingEntity"));
     }
 
 }

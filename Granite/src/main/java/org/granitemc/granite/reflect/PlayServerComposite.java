@@ -40,13 +40,13 @@ import java.lang.reflect.Method;
 
 public class PlayServerComposite extends ProxyComposite {
     public PlayServerComposite(GraniteServerComposite server, Object networkManager, GranitePlayer entityPlayer) {
-        super(Mappings.getClass("n.m.network.NetHandlerPlayServer"), new Class[]{
-                Mappings.getClass("n.m.server.MinecraftServer"),
-                Mappings.getClass("n.m.network.NetworkManager"),
-                Mappings.getClass("n.m.entity.player.EntityPlayerMP")
+        super(Mappings.getClass("NetHandlerPlayServer"), new Class[]{
+                Mappings.getClass("MinecraftServer"),
+                Mappings.getClass("NetworkManager"),
+                Mappings.getClass("EntityPlayerMP")
         }, server.parent, networkManager, entityPlayer.parent);
 
-        addHook("processPlayerDigging(n.m.network.play.client.C07PacketPlayerDigging)", new HookListener() {
+        addHook("processPlayerDigging", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (!GraniteServerComposite.instance.isOnServerThread()) {
@@ -54,7 +54,7 @@ public class PlayServerComposite extends ProxyComposite {
 
                     World w = p.getWorld();
 
-                    Block b = ((GraniteWorld) w).getBlock(Mappings.invoke(args[0], args[0].getClass(), "getPosition()"));
+                    Block b = ((GraniteWorld) w).getBlock(Mappings.invoke(args[0], "getPosition"));
 
                     EventPlayerInteract epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.LEFT_CLICK_BLOCK, b);
                     Granite.getEventQueue().fireEvent(epi);
@@ -67,7 +67,7 @@ public class PlayServerComposite extends ProxyComposite {
             }
         });
 
-        /*addHook("func_147346_a(n.m.network.play.client.C08PacketPlayerBlockPlacement)", new HookListener() {
+        /*addHook("func_147346_a(C08PacketPlayerBlockPlacement)", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (!GraniteServerComposite.instance.isOnServerThread()) {

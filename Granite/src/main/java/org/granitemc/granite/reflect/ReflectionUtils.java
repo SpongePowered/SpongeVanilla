@@ -30,10 +30,8 @@ import javassist.util.proxy.ProxyFactory;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitemc.granite.utils.Mappings;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.invoke.MethodHandle;
+import java.lang.reflect.*;
 import java.util.Objects;
 
 public class ReflectionUtils {
@@ -46,6 +44,7 @@ public class ReflectionUtils {
             .put(double.class, Double.class)
             .put(boolean.class, Boolean.class)
             .put(char.class, Character.class)
+            .put(void.class, Void.class)
             .build();
 
     /**
@@ -106,22 +105,11 @@ public class ReflectionUtils {
      * @return The object returned by the method
      * @throws InvocationTargetException
      */
-    public static Object invoke(Object instance, Method m, Object... args) throws InvocationTargetException {
+    public static Object invoke(Object instance, MethodHandle m, Object... args) throws InvocationTargetException {
         try {
-            Class<?>[] paramTypes = m.getParameterTypes();
-
-            for (int i = 0; i < args.length; i++) {
-                Object obj = args[i];
-                Class<?> actual = obj.getClass();
-                Class<?> expected = paramTypes[i].getClass();
-
-                if (areTypesCompatible(actual, expected)) {
-                    args[i] = expected.cast(obj);
-                }
-            }
             return m.invoke(instance, args);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
         return null;
     }
@@ -173,28 +161,35 @@ public class ReflectionUtils {
     }
 
     public static Class<?> getClassByName(String name) {
+        boolean array = name.endsWith("[]");
+        name = name.replaceAll("\\[\\]", "");
 
-        try {
-            return Mappings.getClass(name);
-        } catch (Mappings.MappingNotFoundException ignored) {
-        }
+        Class<?> clazz = null;
 
         for (Class<?> primitive : primitives.keySet()) {
             if (Objects.equals(primitive.getName(), name)) {
-                return primitive;
+                clazz = primitive;
             }
         }
 
+        if (name.split("\\.").length == 1 && !name.toLowerCase().equals(name)) {
+            clazz = Mappings.getClass(name);
+        }
+
         try {
-            return Class.forName(name);
+            clazz = Class.forName(name);
         } catch (ClassNotFoundException ignored) {
         }
 
         try {
-            return Class.forName("java.lang." + name);
+            clazz = Class.forName("java.lang." + name);
         } catch (ClassNotFoundException ignored) {
         }
-        return null;
+
+        if (array) {
+            clazz = Array.newInstance(clazz, 0).getClass();
+        }
+        return clazz;
     }
 
     public static String getMethodSignature(Method m) {

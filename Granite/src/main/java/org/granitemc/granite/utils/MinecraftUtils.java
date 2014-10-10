@@ -42,36 +42,36 @@ import java.lang.reflect.InvocationTargetException;
 
 public class MinecraftUtils {
     public static Object wrap(Object object) {
-        if (Mappings.getClass("n.m.server.MinecraftServer").isInstance(object)) {
+        if (Mappings.getClass("MinecraftServer").isInstance(object)) {
             return GraniteServerComposite.instance;
-        } else if (Mappings.getClass("n.m.entity.player.EntityPlayerMP").isInstance(object)) {
+        } else if (Mappings.getClass("EntityPlayerMP").isInstance(object)) {
             return GraniteItemStack.new_(object, GranitePlayer.class);
-        } else if (Mappings.getClass("n.m.entity.EntityItem").isInstance(object)) {
+        } else if (Mappings.getClass("EntityItem").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteEntityItem.class);
-        } else if (Mappings.getClass("n.m.entity.Entity").isInstance(object)) {
+        } else if (Mappings.getClass("Entity").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteEntity.class);
-        } else if (Mappings.getClass("n.m.entity.player.InventoryPlayer").isInstance(object)) {
+        } else if (Mappings.getClass("InventoryPlayer").isInstance(object)) {
             return GraniteItemStack.new_(object, GranitePlayerInventory.class);
-        } else if (Mappings.getClass("n.m.inventory.IInventory").isInstance(object)) {
+        } else if (Mappings.getClass("IInventory").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteInventory.class);
-        } else if (Mappings.getClass("n.m.block.IBlockWithMetadata").isInstance(object)) {
+        } else if (Mappings.getClass("IBlockWithMetadata").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteBlockType.class);
-        } else if (Mappings.getClass("n.m.item.Item").isInstance(object)) {
+        } else if (Mappings.getClass("Item").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteItemType.class);
-        } else if (Mappings.getClass("n.m.world.World").isInstance(object)) {
+        } else if (Mappings.getClass("World").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteWorld.class);
-        } else if (Mappings.getClass("n.m.util.ChatComponentText").isInstance(object)) {
+        } else if (Mappings.getClass("ChatComponentText").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteChatComponentText.class);
-        } else if (Mappings.getClass("n.m.util.ChatComponentTranslation").isInstance(object)) {
+        } else if (Mappings.getClass("ChatComponentTranslation").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteChatComponentTranslation.class);
-        } else if (Mappings.getClass("n.m.item.ItemStack").isInstance(object)) {
+        } else if (Mappings.getClass("ItemStack").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteItemStack.class);
         }
         return null;
     }
 
-    public static Object createChunkCoordinates(int x, int y, int z) {
-        Class<?> ccClass = Mappings.getClass("n.m.util.ChunkCoordinates");
+    public static Object createBlockPos(int x, int y, int z) {
+        Class<?> ccClass = Mappings.getClass("BlockPos");
         try {
             return ccClass.getConstructor(int.class, int.class, int.class).newInstance(x, y, z);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -82,7 +82,7 @@ public class MinecraftUtils {
 
     public static Object toMinecraftRotations(Rotations graniteRotations) {
         try {
-            return Mappings.getClass("n.m.util.Rotations").getConstructor(float.class, float.class, float.class)
+            return Mappings.getClass("Rotations").getConstructor(float.class, float.class, float.class)
                     .newInstance(graniteRotations.getXRotation(), graniteRotations.getYRotation(), graniteRotations.getZRotation());
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
@@ -93,9 +93,9 @@ public class MinecraftUtils {
     public static Rotations fromMinecraftRotations(Object minecraftRotations) {
         try {
             return new Rotations(
-                    (float) Mappings.getField("n.m.util.Rotations", "x").get(minecraftRotations),
-                    (float) Mappings.getField("n.m.util.Rotations", "y").get(minecraftRotations),
-                    (float) Mappings.getField("n.m.util.Rotations", "z").get(minecraftRotations)
+                    (float) Mappings.getField("Rotations", "x").get(minecraftRotations),
+                    (float) Mappings.getField("Rotations", "y").get(minecraftRotations),
+                    (float) Mappings.getField("Rotations", "z").get(minecraftRotations)
             );
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -106,9 +106,9 @@ public class MinecraftUtils {
     public static Vector fromMinecraftVector(Object minecraftVector) {
         try {
             return new Vector(
-                    (float) Mappings.getField("n.m.util.Vec3", "xCoord").get(minecraftVector),
-                    (float) Mappings.getField("n.m.util.Vec3", "yCoord").get(minecraftVector),
-                    (float) Mappings.getField("n.m.util.Vec3", "zCoord").get(minecraftVector)
+                    (float) Mappings.getField("Vec3", "xCoord").get(minecraftVector),
+                    (float) Mappings.getField("Vec3", "yCoord").get(minecraftVector),
+                    (float) Mappings.getField("Vec3", "zCoord").get(minecraftVector)
             );
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -117,7 +117,7 @@ public class MinecraftUtils {
     }
     public static Object toMinecraftVector(Vector graniteVector) {
         try {
-            return Mappings.getClass("n.m.util.Vec3").getConstructor(double.class, double.class, double.class)
+            return Mappings.getClass("Vec3").getConstructor(double.class, double.class, double.class)
                     .newInstance(graniteVector.getX(), graniteVector.getY(), graniteVector.getZ());
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();

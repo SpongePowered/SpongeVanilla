@@ -31,6 +31,7 @@ import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,13 +46,13 @@ public class GraniteBlockType extends Composite implements BlockType {
 
         minecraftMetadataValuePossibilities = new HashMap<>();
 
-        Method setValue = Mappings.getMethod("n.m.block.BlockState$StateImplementation", "setValue(n.m.block.properties.IProperty;Comparable)");
-        Field values = Mappings.getField("n.m.block.BlockState$StateImplementation", "values");
+        MethodHandle setValue = Mappings.getMethod("BlockState$StateImplementation", "setValue");
+        Field values = Mappings.getField("BlockState$StateImplementation", "values");
 
         try {
             Map valuesMap = (Map) values.get(parent);
             for (Object v : valuesMap.keySet()) {
-                String name = (String) Mappings.invoke(v, "n.m.block.properties.IProperty", "getName()");
+                String name = (String) Mappings.invoke(v, "getName");
                 minecraftMetadataValuePossibilities.put(name, v);
             }
         } catch (IllegalAccessException e) {
@@ -71,21 +72,20 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     private Object setValue(Object blockWithMetadata, String key, Comparable value) {
         try {
-            Method setValue = Mappings.getMethod("n.m.block.BlockState$StateImplementation", "setValue(n.m.block.properties.IProperty;Comparable)");
-            setValue.setAccessible(true);
+            MethodHandle setValue = Mappings.getMethod("BlockState$StateImplementation", "setValue");
 
             Object valueType = minecraftMetadataValuePossibilities.get(key);
 
             Object actualValue = value;
 
-            if (valueType.getClass().isAssignableFrom(Mappings.getClass("n.m.block.BlockMetadataEnumValue"))) {
-                Map map = (Map) Mappings.getField("n.m.block.BlockMetadataEnumValue", "valuesMap").get(valueType);
+            if (valueType.getClass().isAssignableFrom(Mappings.getClass("BlockMetadataEnumValue"))) {
+                Map map = (Map) Mappings.getField("BlockMetadataEnumValue", "valuesMap").get(valueType);
                 actualValue = map.get(value);
             }
 
             return setValue.invoke(blockWithMetadata, valueType, actualValue);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
         return null;
     }
@@ -146,23 +146,23 @@ public class GraniteBlockType extends Composite implements BlockType {
 
         if (typeEquals(BlockTypes.air)) return null;
 
-        Object itemStackObject = Mappings.invoke(invoke("getBlock"), "n.m.block.Block", "createStackedBlock(n.m.block.IBlockWithMetadata)", parent);
+        Object itemStackObject = Mappings.invoke(invoke("getBlock"), "createStackedBlock", parent);
 
-        if (Mappings.invoke(itemStackObject, "n.m.item.ItemStack", "getItem") == null) {
-            Object itemObject = Mappings.invoke(null, "n.m.item.Item", "getItemFromBlock(n.m.block.Block)", invoke("getBlock"));
+        if (Mappings.invoke(itemStackObject, "getItem") == null) {
+            Object itemObject = Mappings.invoke(null, "getItemFromBlock", invoke("getBlock"));
 
             if (itemObject == null) {
-                itemObject = Mappings.invoke(null, "n.m.item.Item", "getItemFromName(String)", "minecraft:" + getTechnicalName());
+                itemObject = Mappings.invoke(null, "getItemFromName", "minecraft:" + getTechnicalName());
             }
 
             if (itemObject == null) {
-                itemObject = Mappings.invoke(getBlockObject(), "n.m.block.Block", "getItemDropped(n.m.block.IBlockWithMetadata;java.util.Random;int)", parent, new Random(), 1);
+                itemObject = Mappings.invoke(getBlockObject(), "Block", "getItemDropped", parent, new Random(), 1);
             }
 
             if (itemObject == null) {
                 try {
-                    itemObject = Mappings.getClass("n.m.item.ItemBlock")
-                            .getConstructor(Mappings.getClass("n.m.block.Block"))
+                    itemObject = Mappings.getClass("ItemBlock")
+                            .getConstructor(Mappings.getClass("Block"))
                             .newInstance(getBlockObject());
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
@@ -183,7 +183,7 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     public String getUnlocalizedName() {
-        return (String) fieldGet(invoke("getBlock"), Mappings.getClass("n.m.block.Block"), "unlocalizedName");
+        return (String) fieldGet(invoke("getBlock"), "unlocalizedName");
     }
 
     @Override
@@ -193,7 +193,7 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     @Override
     public Comparable getMetadata(String key) {
-        return (Comparable) invoke("getValue(n.m.block.properties.IProperty)", minecraftMetadataValuePossibilities.get(key));
+        return (Comparable) invoke("getValue", minecraftMetadataValuePossibilities.get(key));
     }
 
     @Override
@@ -218,6 +218,6 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     public Object getBlockObject() {
-        return invoke("n.m.block.BlockState$StateImplementation", "getBlock");
+        return invoke("BlockState$StateImplementation", "getBlock");
     }
 }

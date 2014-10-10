@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 public class GraniteStartupThread extends Thread {
@@ -68,10 +69,16 @@ public class GraniteStartupThread extends Thread {
         // Edit stuff before the classes are loaded
         BytecodeModifier.modify();
 
+        try {
+            Class.forName("od").getMethod("c").invoke(null);
+        } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        //Mappings.invoke(null, "Bootstrap", "func_151354_b");
+
         // Load mappings AFTER editing is done, otherwise it'll break
         Mappings.load();
 
-        Mappings.invoke(null, "n.m.init.Bootstrap", "func_151354_b");
         loadBlocks();
         loadItems();
 
@@ -124,7 +131,7 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void loadBlocks() {
-        Class<?> blockClass = Mappings.getClass("n.m.block.Block");
+        Class<?> blockClass = Mappings.getClass("Block");
 
         try {
             Field nameField = Mappings.getField(blockClass, "blockWithMetadata");
@@ -148,7 +155,7 @@ public class GraniteStartupThread extends Thread {
                 Collection variants = (Collection) Mappings.getField(metadata.getClass(), "variants").get(metadata);
 
                 GraniteBlockType type = (GraniteBlockType) MinecraftUtils.wrap(variants.iterator().next());
-                int id = (int) Mappings.invoke(null, "n.m.block.Block", "getIdFromBlock(n.m.block.Block)", block);
+                int id = (int) Mappings.invokeStatic("Block", "getIdFromBlock", block);
                 nameMap.put(name, type);
                 idMap.put(id, type);
 
@@ -160,7 +167,7 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void loadItems() {
-        Class<?> itemClass = Mappings.getClass("n.m.item.Item");
+        Class<?> itemClass = Mappings.getClass("Item");
 
         try {
             Field nameMapField = ItemTypes.class.getDeclaredField("nameMap");
@@ -175,12 +182,12 @@ public class GraniteStartupThread extends Thread {
 
             Object registry = Mappings.getField(itemClass, "itemRegistry").get(null);
             for (Object item : (Iterable) Mappings.getField(itemClass, "itemRegistry").get(null)) {
-                String fullName = Mappings.invoke(registry, "n.m.util.RegistryNamespaced", "getNameForObject(Object)", item).toString();
+                String fullName = Mappings.invoke(registry, "getNameForObject", item).toString();
                 String name = fullName.split(":")[1];
 
                 GraniteItemType type = (GraniteItemType) MinecraftUtils.wrap(item);
 
-                int id = (int) Mappings.invoke(null, "n.m.item.Item", "getIdFromItem(n.m.item.Item)", item);
+                int id = (int) Mappings.invokeStatic("Item", "getIdFromItem", item);
                 nameMap.put(name, type);
                 idMap.put(id, type);
 

@@ -44,17 +44,18 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ItemInWorldComposite extends ProxyComposite {
     public ItemInWorldComposite(final Object world) {
-        super(Mappings.getClass("n.m.server.management.ItemInWorldManager"), new Class[]{
-                Mappings.getClass("n.m.world.World"),
+        super(Mappings.getClass("ItemInWorldManager"), new Class[]{
+                Mappings.getClass("World"),
         }, world);
 
 
-        addHook("tryHarvestBlock(n.m.util.ChunkCoordinates)", new HookListener() {
+        addHook("tryHarvestBlock", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 //if (!GraniteServerComposite.instance.isOnServerThread()) {
@@ -77,23 +78,22 @@ public class ItemInWorldComposite extends ProxyComposite {
             }
         });
 
-        // Holy mother of method signature
-        addHook("activateBlockOrUseItem(n.m.entity.player.EntityPlayer;n.m.world.World;n.m.item.ItemStack;n.m.util.ChunkCoordinates;net.minecraft.block.Direction;float;float;float)", new HookListener() {
+        addHook("activateBlockOrUseItem", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (GraniteServerComposite.instance.isOnServerThread()) {
                     ItemStack itemStack = (ItemStack) MinecraftUtils.wrap(args[2]);
 
-                    //if (Mappings.getClass("n.m.item.ItemBlock").isInstance(item)) {
+                    //if (Mappings.getClass("ItemBlock").isInstance(item)) {
 
                     Player p = (Player) MinecraftUtils.wrap(args[0]);
 
                     World w = (World) MinecraftUtils.wrap(args[1]);
 
                     Object chunkCoordinates = args[3];
-                    int preX = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getX");
-                    int preY = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getY");
-                    int preZ = (int) Mappings.invoke(chunkCoordinates, "n.m.util.ChunkCoordinates", "getZ");
+                    int preX = (int) Mappings.invoke(chunkCoordinates, "getX");
+                    int preY = (int) Mappings.invoke(chunkCoordinates, "getY");
+                    int preZ = (int) Mappings.invoke(chunkCoordinates, "getZ");
 
                     int x = preX;
                     int y = preY;
@@ -108,10 +108,9 @@ public class ItemInWorldComposite extends ProxyComposite {
                         direction = 1;
                     } else if (!(boolean) Mappings.invoke(
                             ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
-                            "n.m.block.Block",
-                            "isReplaceable(n.m.world.World;n.m.util.ChunkCoordinates)",
+                            "isReplaceable",
                             ((GraniteWorld) w).parent,
-                            MinecraftUtils.createChunkCoordinates(x, y, z)
+                            MinecraftUtils.createBlockPos(x, y, z)
                     )) {
                         switch (direction) {
                             case 0:
@@ -138,13 +137,13 @@ public class ItemInWorldComposite extends ProxyComposite {
                     BlockType oldBlockType = w.getBlock(x, y, z).getType();
 
                     // If the item used is an ItemBlock
-                    if (Mappings.getClass("n.m.item.ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
+                    if (Mappings.getClass("ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
                         // Use the "new" method, which gets the BlockType supposed to be placed, places that, and if the event gets cancelled, return it to the old one
                         // Otherwise, return it to the old one anyway, and let Minecraft itself handle the rest
-                        Method m = Mappings.getMethod("n.m.block.Block", "onBlockPlaced(n.m.world.World;n.m.util.ChunkCoordinates;n.m.block.Direction;float;float;float;int;n.m.entity.EntityLivingBase)");
+                        MethodHandle m = Mappings.getMethod("Block", "onBlockPlaced");
                         try {
                             Object itemType = ((GraniteItemType) itemStack.getType()).parent;
-                            Object blockType = Mappings.invoke(itemType, "n.m.item.ItemBlock", "getBlock");
+                            Object blockType = Mappings.invoke(itemType, "ItemBlock", "getBlock");
 
                             BlockType bt = (BlockType) MinecraftUtils.wrap(m.invoke(blockType, args[1], args[3], args[4], args[5], args[6], args[7], 3, args[0]));
 
@@ -164,8 +163,8 @@ public class ItemInWorldComposite extends ProxyComposite {
                                     hook.setWasHandled(false);
                                 }
                             }
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            e.printStackTrace();
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
                         }
                     } else {
                         boolean retval = false;
@@ -200,7 +199,7 @@ public class ItemInWorldComposite extends ProxyComposite {
             }
         });
 
-        addHook("tryUseItem(n.m.entity.player.EntityPlayer;n.m.world.World;n.m.item.ItemStack)", new HookListener() {
+        addHook("tryUseItem", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Player p = (Player) MinecraftUtils.wrap(args[0]);

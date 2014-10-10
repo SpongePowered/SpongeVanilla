@@ -37,33 +37,33 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
     }
 
     public void searchForOtherItemsNearby() {
-        invoke("n.m.entity.item.EntityItem", "searchForOtherItemsNearby");
+        invoke("EntityItem", "searchForOtherItemsNearby");
     }
 
     public void setAgeToCreativeDespawnTime() {
-        invoke("n.m.entity.item.EntityItem", "setAgeToCreativeDespawnTime");
+        invoke("EntityItem", "setAgeToCreativeDespawnTime");
     }
 
     public void dealFireDamage(int amount) {
-        invoke("n.m.entity.item.EntityItem", "dealFireDamage", amount);
+        invoke("EntityItem", "dealFireDamage", amount);
     }
 
     //TODO: Enable after DamageSource has been created
     /*@Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        return (boolean) invoke("n.m.entity.item.EntityItem", "attackEntityFrom", source, amount);
+        return (boolean) invoke("EntityItem", "attackEntityFrom", source, amount);
     }*/
 
     public String getName() {
-        return (String) invoke("n.m.entity.item.EntityItem", "getName");
+        return (String) invoke("EntityItem", "getName");
     }
 
     public ItemStack getEntityItem() {
-        return (ItemStack) invoke("n.m.entity.item.EntityItem", "getEntityItem");
+        return (ItemStack) invoke("EntityItem", "getEntityItem");
     }
 
     public void setEntityItemStack(ItemStack itemStack) {
-        invoke("n.m.entity.item.EntityItem", "setEntityItemStack", itemStack);
+        invoke("EntityItem", "setEntityItemStack", itemStack);
     }
 
     @Override
@@ -78,44 +78,44 @@ public class GraniteEntityItem extends GraniteEntity implements EntityItem {
 
     @Override
     public String getOwnerName() {
-        return (String) invoke("n.m.entity.item.EntityItem", "getOwnerName");
+        return (String) invoke("EntityItem", "getOwnerName");
     }
 
     @Override
     public void setOwnerName(String owner) {
-        invoke("n.m.entity.item.EntityItem", "setOwnerName", owner);
+        invoke("EntityItem", "setOwnerName", owner);
     }
 
     @Override
     public String getThrowerName() {
-        return (String) invoke("n.m.entity.item.EntityItem", "getThrowerName");
+        return (String) invoke("EntityItem", "getThrowerName");
     }
 
     public void setThrower(String thrower) {
-        invoke("n.m.entity.item.EntityItem", "setThrower", thrower);
+        invoke("EntityItem", "setThrower", thrower);
     }
 
     public void setDefaultPickupDelay() {
-        invoke("n.m.entity.item.EntityItem", "setDefaultPickupDelay");
+        invoke("EntityItem", "setDefaultPickupDelay");
     }
 
     public void setNoPickupDelay() {
-        invoke("n.m.entity.item.EntityItem", "setNoPickupDelay");
+        invoke("EntityItem", "setNoPickupDelay");
     }
 
     public void setInfinitePickupDelay() {
-        invoke("n.m.entity.item.EntityItem", "setInfinitePickupDelay");
+        invoke("EntityItem", "setInfinitePickupDelay");
     }
 
     @Override
     public void setPickupDelay(int ticks) {
-        invoke("n.m.entity.item.EntityItem", "setPickupDelay", ticks);
+        invoke("EntityItem", "setPickupDelay", ticks);
     }
 
     //func_174874_s()
     @Override
     public boolean canPickUp() {
-        return (boolean) invoke("n.m.entity.item.EntityItem", "canPickup");
+        return (boolean) invoke("EntityItem", "canPickup");
     }
 
     //TODO: Set not despawnable?

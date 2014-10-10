@@ -23,6 +23,8 @@
 
 package org.granitemc.granite.api.entity.player;
 
+import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.inventory.PlayerInventory;
@@ -68,4 +70,16 @@ public interface Player extends CommandSender, EntityLivingBase {
      * Returns this player's inventory
      */
     PlayerInventory getPlayerInventory();
+
+    /**
+     * Sends a (potentially fake) block update to the player.
+     *
+     * This will change the block to the specified block type, but only for this player.
+     * The block change will not happen to the server, or to other players.
+     * Useful for showing fake blocks to the player.
+     *
+     * @param block The block to update
+     * @param type  The block type to change the block to (to the player)
+     */
+    void sendBlockUpdate(Block block, BlockType type);
 }

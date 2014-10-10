@@ -25,7 +25,9 @@ package org.granitemc.granite.reflect.composite;
 
 import org.granitemc.granite.reflect.ReflectionUtils;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.SignatureParser;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -54,67 +56,48 @@ public abstract class Composite {
         this(clazz, ReflectionUtils.getTypes(constructorArgs), constructorArgs);
     }
 
-    public Object invoke(Object instance, Method m, Object... args) {
-        try {
-            return ReflectionUtils.invoke(instance, m, args);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public Object invoke(Object instance, MethodHandle m, Object... args) {
+        return Mappings.invoke(instance, m, args);
     }
 
-    public Object invoke(Method m, Object... args) {
+    public Object invoke(MethodHandle m, Object... args) {
         return invoke(parent, m, args);
     }
 
-    public Object invoke(String methodSignature, Object... args) {
-        return invoke(Mappings.getMethod(clazz, methodSignature), args);
+    public Object invoke(String methodName, Object... args) {
+        return invoke(Mappings.getMethod(clazz, methodName), args);
     }
 
-    public Object invoke(String className, String methodSignature, Object... args) {
+    /*public Object invoke(String className, SignatureParser.MethodSignature methodSignature, Object... args) {
         return invoke(Mappings.getMethod(className, methodSignature), args);
-    }
+    }*/
 
-    public Object fieldGet(Object instance, Class<?> clazz, String fieldName) {
+    public Object fieldGet(Object instance, String fieldName) {
         try {
-            return Mappings.getField(clazz, fieldName).get(instance);
+            return Mappings.getField(instance.getClass(), fieldName).get(instance);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Object fieldGet(Class<?> clazz, String fieldName) {
-        return fieldGet(parent, clazz, fieldName);
-    }
-
-    public Object fieldGet(String className, String fieldName) {
-        return fieldGet(Mappings.getClass(className), fieldName);
-    }
-
     public Object fieldGet(String fieldName) {
-        return fieldGet(clazz, fieldName);
+        return fieldGet(parent, fieldName);
     }
 
-    public void fieldSet(Object instance, Class<?> clazz, String fieldName, Object value) {
+
+    public void fieldSet(Object instance, String fieldName, Object value) {
         try {
-            Mappings.getField(clazz, fieldName).set(instance, value);
+            Mappings.getField(instance.getClass(), fieldName).set(instance, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    public void fieldSet(Class<?> clazz, String fieldName, Object value) {
-        fieldSet(parent, clazz, fieldName, value);
-    }
-
-    public void fieldSet(String className, String fieldName, Object value) {
-        fieldSet(Mappings.getClass(className), fieldName, value);
-    }
-
     public void fieldSet(String fieldName, Object value) {
-        fieldSet(clazz, fieldName, value);
+        fieldSet(parent, fieldName, value);
     }
+
 
     public static <T extends Composite> T new_(Object parent, Class<T> compositeType) {
         if (!instanceMap.containsKey(compositeType)) {

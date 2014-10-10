@@ -24,9 +24,11 @@
 package org.granitemc.granite.reflect.composite;
 
 
+import java.lang.invoke.MethodHandle;
+
 public class Hook {
     HookListener listener;
-    String methodSignature;
+    MethodHandle method;
 
     boolean wasHandled;
 

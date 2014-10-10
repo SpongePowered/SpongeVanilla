@@ -31,20 +31,20 @@ import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteChatComponentTranslation extends Composite implements ChatComponentTranslation {
     public GraniteChatComponentTranslation(String key, Object... values) {
-        super(Mappings.getClass("n.m.util.ChatComponentTranslation"), new Class[]{String.class, Object[].class}, key, values);
+        super(Mappings.getClass("ChatComponentTranslation"), new Class[]{String.class, Object[].class}, key, values);
     }
 
     public ChatComponent add(String text) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
+        return (ChatComponent) MinecraftUtils.wrap(invoke("IChatComponent", "appendText", text));
     }
 
     public ChatComponent add(ChatComponent component) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
+        return (ChatComponent) MinecraftUtils.wrap(invoke("IChatComponent", "appendSibling", component));
     }
 
     @Override
     public String getText() {
-        return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
+        return (String) invoke("IChatComponent", "getUnformattedTextForChat");
     }
 
     @Override

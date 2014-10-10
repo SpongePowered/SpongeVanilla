@@ -26,7 +26,11 @@ package org.granitemc.granite.reflect.composite;
 import javassist.util.proxy.MethodHandler;
 import org.granitemc.granite.reflect.ReflectionUtils;
 import org.granitemc.granite.utils.Mappings;
+import org.granitemc.granite.utils.SignatureParser;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,15 +42,37 @@ public class ProxyComposite extends Composite {
     private Map<String, List<Hook>> hooks;
     private List<Hook> globalHooks;
 
-    public void addHook(String methodSignature, HookListener listener) {
-        if (!hooks.containsKey(Mappings.expandShortcuts(methodSignature))) {
-            hooks.put(Mappings.expandShortcuts(methodSignature), new ArrayList<Hook>());
+    public String createSignature(MethodHandle methodHandle) {
+        Field f = null;
+        try {
+            f = Class.forName("java.lang.invoke.DirectMethodHandle").getDeclaredField("member");
+        } catch (NoSuchFieldException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        f.setAccessible(true);
+
+        try {
+            return f.get(methodHandle).toString();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public void addHook(MethodHandle methodHandle, HookListener listener) {
+        String key = createSignature(methodHandle);
+        if (!hooks.containsKey(key)) {
+            hooks.put(key, new ArrayList<Hook>());
         }
 
         Hook hook = new Hook();
         hook.listener = listener;
-        hook.methodSignature = Mappings.expandShortcuts(methodSignature);
-        hooks.get(Mappings.expandShortcuts(methodSignature)).add(hook);
+        hook.method = methodHandle;
+        hooks.get(key).add(hook);
+    }
+
+    public void addHook(String methodName, HookListener listener) {
+        addHook(Mappings.getMethod(parent.getClass().getSuperclass(), methodName), listener);
     }
 
     public void addHook(HookListener listener) {
@@ -73,20 +99,16 @@ public class ProxyComposite extends Composite {
             @Override
             // This method may be invoked thousands of times per second... MAKE IT FAST
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+                thisMethod.setAccessible(true);
                 try {
-                    if (args.length > 0 && args[0] != null && args[0].getClass().getName().equals("mx")) {
-                        args = args;
-                    }
-                    try {
-                        if (hooks.containsKey(Mappings.getMethodSignature(thisMethod))) {
-                            for (Hook hook : hooks.get(Mappings.getMethodSignature(thisMethod))) {
-                                Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
-                                if (hook.wasHandled) {
-                                    return ret;
-                                }
+                    MethodHandle mh = MethodHandles.lookup().unreflect(thisMethod);
+                    if (hooks.containsKey(createSignature(mh))) {
+                        for (Hook hook : hooks.get(createSignature(mh))) {
+                            Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
+                            if (hook.wasHandled) {
+                                return ret;
                             }
                         }
-                    } catch (Mappings.MappingNotFoundException ignored) {
                     }
 
                     for (Hook hook : globalHooks) {
@@ -102,7 +124,7 @@ public class ProxyComposite extends Composite {
                         throw e.getCause();
                     }
                 } catch (Throwable t) {
-                    if (!Mappings.getClass("net.minecraft.network.ThreadQuickExitException").isInstance(t)) {
+                    if (!Mappings.getClass("ThreadQuickExitException").isInstance(t)) {
                         t.printStackTrace();
                     }
                     throw t;

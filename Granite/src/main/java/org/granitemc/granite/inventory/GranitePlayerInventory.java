@@ -36,11 +36,11 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     public ItemStack getItemStack(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.inventory.IInventory", "getStackInSlot(int)", slot));
+        return (ItemStack) MinecraftUtils.wrap(invoke("IInventory", "getStackInSlot", slot));
     }
 
     public int getFirstEmptySlot() {
-        return (int) invoke("n.m.inventory.IInventory", "getFirstEmptyStack");
+        return (int) invoke("IInventory", "getFirstEmptyStack");
     }
 
     public Player getPlayer() {
@@ -48,7 +48,7 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     public ItemStack getSelectedHotbarItem() {
-        return (ItemStack) MinecraftUtils.wrap(invoke("n.m.entity.player.InventoryPlayer", "getCurrentItem"));
+        return (ItemStack) MinecraftUtils.wrap(invoke("InventoryPlayer", "getCurrentItem"));
     }
 
     public int getSelectedHotbarIndex() {
@@ -66,7 +66,7 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }*/
 
     public void addItemStack(ItemStack itemStack) {
-        invoke("n.m.entity.player.InventoryPlayer", "addItemStackToInventory(n.m.item.ItemStack)", itemStack);
+        invoke("InventoryPlayer", "addItemStackToInventory", itemStack);
     }
 
     public ItemStack getHelmetItem() {
@@ -102,10 +102,10 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     public void setItemStack(int slot, ItemStack itemStack) {
-        invoke("n.m.inventory.IInventory", "setInventorySlotContents(int;n.m.item.ItemStack)", slot, ((GraniteItemStack) itemStack).parent);
+        invoke("IInventory", "setInventorySlotContents", slot, ((GraniteItemStack) itemStack).parent);
     }
 
     public int getSize() {
-        return (int) invoke("n.m.inventory.IInventory", "getSizeInventory");
+        return (int) invoke("IInventory", "getSizeInventory");
     }
 }

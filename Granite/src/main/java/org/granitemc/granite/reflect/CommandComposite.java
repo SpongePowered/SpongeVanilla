@@ -43,9 +43,9 @@ import java.util.List;
 public class CommandComposite extends ProxyComposite {
 
     public CommandComposite() {
-        super(Mappings.getClass("n.m.command.ServerCommandManager"), new Class[]{});
+        super(Mappings.getClass("ServerCommandManager"), new Class[]{});
 
-        addHook("executeCommand(n.m.command.ICommandSender;String)", new HookListener() {
+        addHook("executeCommand", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 String[] commandArgs = ((String) args[1]).split(" ");
@@ -96,7 +96,7 @@ public class CommandComposite extends ProxyComposite {
         List<Player> targets = new ArrayList<>();
         for (int i = 0; i < info.args.length; i++) {
             String arg = info.args[i];
-            for (Object nativeTarget : (List<Object>) Mappings.invoke(null, "n.m.command.PlayerSelector", "matchPlayers(n.m.command.ICommandSender;String;Class)", nativeSender, arg, Mappings.getClass("n.m.entity.player.EntityPlayerMP"))) {
+            for (Object nativeTarget : (List<Object>) Mappings.invoke(null, "PlayerSelector", "matchPlayers", nativeSender, arg, Mappings.getClass("EntityPlayerMP"))) {
                 targets.add((Player) MinecraftUtils.wrap(nativeTarget));
                 info.args = ArrayUtils.remove(info.args, i);
             }

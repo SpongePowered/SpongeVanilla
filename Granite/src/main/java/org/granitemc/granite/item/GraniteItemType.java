@@ -34,11 +34,11 @@ public class GraniteItemType extends Composite implements ItemType {
     }
 
     public int getMaxStackSize() {
-        return (int) fieldGet("n.m.item.Item", "maxStackSize");
+        return (int) fieldGet("Item", "maxStackSize");
     }
 
     public int getMaxDamage() {
-        return (int) fieldGet("n.m.item.Item", "maxDamage");
+        return (int) fieldGet("Item", "maxDamage");
     }
 
     public String getName() {
@@ -46,7 +46,7 @@ public class GraniteItemType extends Composite implements ItemType {
     }
 
     public int getNumericId() {
-        return (int) invoke("n.m.item.Item", "getIdFromItem");
+        return (int) invoke("Item", "getIdFromItem");
     }
 
     public String getTechnicalName() {

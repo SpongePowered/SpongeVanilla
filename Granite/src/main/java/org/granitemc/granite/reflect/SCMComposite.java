@@ -40,9 +40,9 @@ import java.lang.reflect.Method;
 
 public class SCMComposite extends ProxyComposite {
     public SCMComposite(GraniteServerComposite server) {
-        super(Mappings.getClass("n.m.server.dedicated.DedicatedPlayerList"), new Class[]{Mappings.getClass("n.m.server.dedicated.DedicatedServer")}, server.parent);
+        super(Mappings.getClass("DedicatedPlayerList"), new Class[]{Mappings.getClass("DedicatedServer")}, server.parent);
 
-        addHook("initializeConnectionToPlayer(n.m.network.NetworkManager;n.m.entity.player.EntityPlayerMP)", new HookListener() {
+        addHook("initializeConnectionToPlayer", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Player p = (Player) MinecraftUtils.wrap(args[1]);
@@ -71,7 +71,7 @@ public class SCMComposite extends ProxyComposite {
             }
         });
 
-        addHook("playerLoggedOut(n.m.entity.player.EntityPlayerMP)", new HookListener() {
+        addHook("playerLoggedOut", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Player player = (Player) MinecraftUtils.wrap(args[0]);
@@ -82,7 +82,7 @@ public class SCMComposite extends ProxyComposite {
             }
         });
 
-        addHook("func_148545_a(com.mojang.authlib.GameProfile)", new HookListener() {
+        addHook("func_148545_a", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Object world = GraniteServerComposite.instance.worldServerForDimension(0);

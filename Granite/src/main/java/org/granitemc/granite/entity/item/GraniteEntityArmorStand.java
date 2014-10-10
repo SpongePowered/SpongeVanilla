@@ -41,171 +41,171 @@ public class GraniteEntityArmorStand extends GraniteEntityLivingBase implements 
 
     @Override
     public ItemStack getHeldItem() {
-        return (ItemStack) invoke("n.m.entity.item.EntityArmorStand", "getHeldItem");
+        return (ItemStack) invoke("EntityArmorStand", "getHeldItem");
     }
 
     @Override
     public ItemStack getEquipmentInSlot(int slot) {
-        return (ItemStack) invoke("n.m.entity.item.EntityArmorStand", "getEquipmentInSlot", slot);
+        return (ItemStack) invoke("EntityArmorStand", "getEquipmentInSlot", slot);
     }
 
     @Override
     public ItemStack getCurrentArmor(int armorSlot) {
-        return (ItemStack) invoke("n.m.entity.item.EntityArmorStand", "getCurrentArmor", armorSlot);
+        return (ItemStack) invoke("EntityArmorStand", "getCurrentArmor", armorSlot);
     }
 
     public void setCurrentItemOrArmor(int slot, ItemStack itemStack) {
-        invoke("n.m.entity.item.EntityArmorStand", "setCurrentItemOrArmor", slot, itemStack);
+        invoke("EntityArmorStand", "setCurrentItemOrArmor", slot, itemStack);
     }
 
     @Override
     public ItemStack[] getInventory() {
-        return (ItemStack[]) invoke("n.m.entity.item.EntityArmorStand", "getInventory");
+        return (ItemStack[]) invoke("EntityArmorStand", "getInventory");
     }
 
     @Override
     public boolean canBePushed() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "canBePushed");
+        return (boolean) invoke("EntityArmorStand", "canBePushed");
     }
 
     // TODO: Enable when DamageSource has been made
     /*@Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "attackEntityFrom", source, amount);
+        return (boolean) invoke("EntityArmorStand", "attackEntityFrom", source, amount);
     }*/
 
     public void playParticles() {
-        invoke("n.m.entity.item.EntityArmorStand", "playParticles");
+        invoke("EntityArmorStand", "playParticles");
     }
 
     public void dropBlock() {
-        invoke("n.m.entity.item.EntityArmorStand", "dropBlock");
+        invoke("EntityArmorStand", "dropBlock");
     }
 
     public void dropContents() {
-        invoke("n.m.entity.item.EntityArmorStand", "dropContents");
+        invoke("EntityArmorStand", "dropContents");
     }
 
     @Override
     public void setInvisible(boolean invisible) {
-        invoke("n.m.entity.item.EntityArmorStand", "isInvisible", invisible);
+        invoke("EntityArmorStand", "isInvisible", invisible);
     }
 
     @Override
     public boolean isChild() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "isChild");
+        return (boolean) invoke("EntityArmorStand", "isChild");
     }
 
     // func_174812_G
     @Override
     public void kill() {
-        invoke("n.m.entity.item.EntityArmorStand", "kill");
+        invoke("EntityArmorStand", "kill");
     }
 
     // func_180427_aV()
     @Override
     public boolean isInvisible() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "isInvisible");
+        return (boolean) invoke("EntityArmorStand", "isInvisible");
     }
 
     @Override
     public void setSmall(boolean size) {
-        invoke("n.m.entity.item.EntityArmorStand", "setSmall", size);
+        invoke("EntityArmorStand", "setSmall", size);
     }
 
     @Override
     public boolean isSmall() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "isSmall");
+        return (boolean) invoke("EntityArmorStand", "isSmall");
     }
 
     @Override
     public void setNoGravity(boolean gravity) {
-        invoke("n.m.entity.item.EntityArmorStand", "setNoGravity", gravity);
+        invoke("EntityArmorStand", "setNoGravity", gravity);
     }
 
     @Override
     public boolean hasNoGravity() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "hasNoGravity");
+        return (boolean) invoke("EntityArmorStand", "hasNoGravity");
     }
 
     @Override
     public void setShowArms(boolean showArms) {
-        invoke("n.m.entity.item.EntityArmorStand", "setShowArms", showArms);
+        invoke("EntityArmorStand", "setShowArms", showArms);
     }
 
     @Override
     public boolean getShowArms() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "getShowArms");
+        return (boolean) invoke("EntityArmorStand", "getShowArms");
     }
 
     @Override
     public void setNoBasePlate(boolean basePlate) {
-        invoke("n.m.entity.item.EntityArmorStand", "setNoBasePlate", basePlate);
+        invoke("EntityArmorStand", "setNoBasePlate", basePlate);
     }
 
     @Override
     public boolean hasNoBasePlate() {
-        return (boolean) invoke("n.m.entity.item.EntityArmorStand", "hasNoBasePlate");
+        return (boolean) invoke("EntityArmorStand", "hasNoBasePlate");
     }
 
     @Override
     public void setHeadRotation(Rotations rotations) {
-        invoke("n.m.entity.item.EntityArmorStand", "setHeadRotation", MinecraftUtils.toMinecraftRotations(rotations));
+        invoke("EntityArmorStand", "setHeadRotation", MinecraftUtils.toMinecraftRotations(rotations));
     }
 
     @Override
     public void setBodyRotation(Rotations rotations) {
-        invoke("n.m.entity.item.EntityArmorStand", "setBodyRotation", MinecraftUtils.toMinecraftRotations(rotations));
+        invoke("EntityArmorStand", "setBodyRotation", MinecraftUtils.toMinecraftRotations(rotations));
     }
 
     @Override
     public void setLeftArmRotation(Rotations rotations) {
-        invoke("n.m.entity.item.EntityArmorStand", "setLeftArmRotation", MinecraftUtils.toMinecraftRotations(rotations));
+        invoke("EntityArmorStand", "setLeftArmRotation", MinecraftUtils.toMinecraftRotations(rotations));
     }
 
     @Override
     public void setRightArmRotation(Rotations rotations) {
-        invoke("n.m.entity.item.EntityArmorStand", "setRightArmRotation", MinecraftUtils.toMinecraftRotations(rotations));
+        invoke("EntityArmorStand", "setRightArmRotation", MinecraftUtils.toMinecraftRotations(rotations));
     }
 
     @Override
     public void setLeftLegRotation(Rotations rotations) {
-        invoke("n.m.entity.item.EntityArmorStand", "setLeftLegRotation", MinecraftUtils.toMinecraftRotations(rotations));
+        invoke("EntityArmorStand", "setLeftLegRotation", MinecraftUtils.toMinecraftRotations(rotations));
     }
 
     @Override
     public void setRightLegRotation(Rotations rotations) {
-        invoke("n.m.entity.item.EntityArmorStand", "setRightLegRotation", MinecraftUtils.toMinecraftRotations(rotations));
+        invoke("EntityArmorStand", "setRightLegRotation", MinecraftUtils.toMinecraftRotations(rotations));
     }
 
     @Override
     public Rotations getHeadRotation() {
-        return MinecraftUtils.fromMinecraftRotations(invoke("n.m.entity.item.EntityArmorStand", "getHeadRostion"));
+        return MinecraftUtils.fromMinecraftRotations(invoke("EntityArmorStand", "getHeadRostion"));
     }
 
     @Override
     public Rotations getBodyRotation() {
-        return MinecraftUtils.fromMinecraftRotations(invoke("n.m.entity.item.EntityArmorStand", "getBodyRotation"));
+        return MinecraftUtils.fromMinecraftRotations(invoke("EntityArmorStand", "getBodyRotation"));
     }
 
     @Override
     public Rotations getLeftArmRotation() {
-        return MinecraftUtils.fromMinecraftRotations(invoke("n.m.entity.item.EntityArmorStand", "getLeftArmRotation"));
+        return MinecraftUtils.fromMinecraftRotations(invoke("EntityArmorStand", "getLeftArmRotation"));
     }
 
     @Override
     public Rotations getRightArmRotation() {
-        return MinecraftUtils.fromMinecraftRotations(invoke("n.m.entity.item.EntityArmorStand", "getRightArmRotation"));
+        return MinecraftUtils.fromMinecraftRotations(invoke("EntityArmorStand", "getRightArmRotation"));
     }
 
     @Override
     public Rotations getLeftLegRotation() {
-        return MinecraftUtils.fromMinecraftRotations(invoke("n.m.entity.item.EntityArmorStand", "getLeftLegRotation"));
+        return MinecraftUtils.fromMinecraftRotations(invoke("EntityArmorStand", "getLeftLegRotation"));
     }
 
     @Override
     public Rotations getRightLegRotation() {
-        return MinecraftUtils.fromMinecraftRotations(invoke("n.m.entity.item.EntityArmorStand", "getRightLegRotation"));
+        return MinecraftUtils.fromMinecraftRotations(invoke("EntityArmorStand", "getRightLegRotation"));
     }
 
 }

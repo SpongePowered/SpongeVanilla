@@ -52,14 +52,14 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }
 
     public GraniteServerComposite(File worldsLocation) {
-        super(Mappings.getClass("n.m.server.dedicated.DedicatedServer"), new Class[]{File.class}, worldsLocation);
+        super(Mappings.getClass("DedicatedServer"), new Class[]{File.class}, worldsLocation);
 
         injectLogger();
         injectCommand();
         injectSelf();
         injectSCM();
 
-        addHook("tick()", new HookListener() {
+        addHook("tick", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 GraniteAPI.instance.tick();
@@ -68,14 +68,14 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         });
 
         // Start this baby
-        invoke("n.m.server.MinecraftServer", "startServerThread");
+        invoke("startServerThread");
     }
 
     private void injectSCM() {
         final GraniteServerComposite me = this;
 
         // Inject SCM
-        addHook("setConfigManager(n.m.server.management.ServerConfigurationManager)", new HookListener() {
+        addHook("setConfigManager", new HookListener() {
             SCMComposite comp = null;
 
             @Override
@@ -86,7 +86,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
                 }
 
                 try {
-                    proxyCallback.invoke(self, Mappings.getClass("n.m.server.management.ServerConfigurationManager").cast(comp.parent));
+                    proxyCallback.invoke(self, Mappings.getClass("ServerConfigurationManager").cast(comp.parent));
                     hook.setWasHandled(true);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
@@ -101,7 +101,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     private void injectLogger() {
         // Inject logger, I don't think this is needed but I'll do it anyway just to be on the safe side
-        Field loggerField = Mappings.getField("n.m.server.MinecraftServer", "logger");
+        Field loggerField = Mappings.getField("MinecraftServer", "logger");
         ReflectionUtils.forceStaticAccessible(loggerField);
         try {
             loggerField.set(null, Granite.getLogger());
@@ -115,7 +115,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         CommandComposite commandComposite = new CommandComposite();
 
         // Inject command composite
-        Field commandManagerField = Mappings.getField("n.m.server.MinecraftServer", "commandManager");
+        Field commandManagerField = Mappings.getField("MinecraftServer", "commandManager");
         ReflectionUtils.forceStaticAccessible(commandManagerField);
         try {
             commandManagerField.set(this.parent, commandComposite.parent);
@@ -129,7 +129,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 // This is needed, for some reason. I don't know. Ask Jason.
-                if (method.getReturnType().equals(Mappings.getClass("n.m.server.MinecraftServer"))) {
+                if (method.getReturnType().getName().equals(Mappings.getClass("MinecraftServer").getName())) {
                     hook.setWasHandled(true);
                     return parent;
                 }
@@ -140,7 +140,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     @Override
     public String getName() {
-        return (String) invoke("n.m.command.ICommandSender", "getName");
+        return (String) invoke("ICommandSender", "getName");
     }
 
     @Override
@@ -152,7 +152,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     public List<Player> getPlayers() {
         List<Player> ret = Lists.newArrayList();
         try {
-            List<Object> playerObjs = (List<Object>) Mappings.getField("n.m.server.management.ServerConfigurationManager", "playerEntityList").get(scm.parent);
+            List<Object> playerObjs = (List<Object>) Mappings.getField("ServerConfigurationManager", "playerEntityList").get(scm.parent);
 
             for (Object o : playerObjs) {
                 Player p = (Player) MinecraftUtils.wrap(o);
@@ -169,7 +169,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     //TODO: May be important?
     public void setUserMessage(String message) {
         //Obf: b
-        invoke("setUserMessage(String)", message);
+        invoke("setUserMessage", message);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     @Override
     public void saveAllWorlds(boolean outputLogMessage) {
         //Obf: a
-        invoke("saveAllWorlds(boolean)", outputLogMessage);
+        invoke("saveAllWorlds", outputLogMessage);
     }
 
     @Override
@@ -252,7 +252,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public void setHostname(String hostname) {
         //Obf: c
-        invoke("setHostname(String)", hostname);
+        invoke("setHostname", hostname);
     }
 
     @Override
@@ -324,7 +324,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public void setServerPort(int port) {
         //Obf: b
-        invoke("setServerPort(int)", port);
+        invoke("setServerPort", port);
     }
 
     public String getServerOwner() {
@@ -334,7 +334,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public void setServerOwner(String serverOwner) {
         //Obf: j
-        invoke("setServerOwner(String)", serverOwner);
+        invoke("setServerOwner", serverOwner);
     }
 
     public boolean isSinglePlayer() {
@@ -350,7 +350,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public void setFolderName(String folderName) {
         //Obf: k
-        invoke("setFolderName(String)", folderName);
+        invoke("setFolderName", folderName);
     }
 
     @Override
@@ -361,7 +361,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public boolean canCreateBonusChest(boolean var1) {
         //Obf: c
-        return (boolean) invoke("canCreateBonusChest(boolean)", var1);
+        return (boolean) invoke("canCreateBonusChest", var1);
     }
 
     public void deleteWorldAndStopServer() {
@@ -389,7 +389,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     @Override
     public void setCanSpawnAnimals(boolean spawnAnimals) {
         //Obf: d
-        invoke("setCanSpawnAnimals(boolean)", spawnAnimals);
+        invoke("setCanSpawnAnimals", spawnAnimals);
     }
 
     @Override
@@ -401,7 +401,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     @Override
     public void setCanSpawnNPCs(boolean spawnNPCs) {
         //Obf: e
-        invoke("setCanSpawnNPCs(boolean)", spawnNPCs);
+        invoke("setCanSpawnNPCs", spawnNPCs);
     }
 
     @Override
@@ -425,7 +425,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     @Override
     public void setAllowFlight(boolean allowFlight) {
         //Obf: g
-        invoke("setAllowFlight(boolean)", allowFlight);
+        invoke("setAllowFlight", allowFlight);
     }
 
     @Override
@@ -459,7 +459,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public void setForceGamemode(boolean forceGamemode) {
         //Obf: i
-        invoke("setForceGamemode(boolean)", forceGamemode);
+        invoke("setForceGamemode", forceGamemode);
     }
 
     @Override
@@ -480,10 +480,10 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     }*/
 
     public Object worldServerForDimension(int var1) {
-        return invoke("n.m.server.MinecraftServer", "worldServerForDimension(int)", var1);
+        return invoke("worldServerForDimension", var1);
     }
 
     public boolean isOnServerThread() {
-        return fieldGet("n.m.server.MinecraftServer", "serverThread") == Thread.currentThread();
+        return fieldGet("serverThread") == Thread.currentThread();
     }
 }

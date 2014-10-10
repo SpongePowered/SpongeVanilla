@@ -57,7 +57,7 @@ bin/
 logs/
 /world/
 *.properties
-*.json
+run/*.json
 eula.txt
 run/
 crash-reports/

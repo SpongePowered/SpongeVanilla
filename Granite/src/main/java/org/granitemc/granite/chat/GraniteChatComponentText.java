@@ -31,7 +31,7 @@ import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteChatComponentText extends Composite implements ChatComponentText {
     public GraniteChatComponentText(String text) {
-        super(Mappings.getClass("n.m.util.ChatComponentText"), new Class[]{String.class}, text);
+        super(Mappings.getClass("ChatComponentText"), new Class[]{String.class}, text);
     }
 
     public GraniteChatComponentText(Object parent, Object... args) {
@@ -39,14 +39,14 @@ public class GraniteChatComponentText extends Composite implements ChatComponent
     }
 
     public ChatComponent add(String text) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendText(String)", text));
+        return (ChatComponent) MinecraftUtils.wrap(invoke("IChatComponent", "appendText", text));
     }
 
     public ChatComponent add(ChatComponent component) {
-        return (ChatComponent) MinecraftUtils.wrap(invoke("n.m.util.IChatComponent", "appendSibling(String)", component));
+        return (ChatComponent) MinecraftUtils.wrap(invoke("IChatComponent", "appendSibling", component));
     }
 
     public String getText() {
-        return (String) invoke("n.m.util.IChatComponent", "getUnformattedTextForChat");
+        return (String) invoke("IChatComponent", "getUnformattedTextForChat");
     }
 }
