@@ -38,7 +38,8 @@
         "a(Laqu;Ldt;Lahd;)Z": "isBlockProtected",
         "B()V": "startServerThread",
         "a(I)Lqt;": "worldServerForDimension",
-        "i()Z": "startServer"
+        "i()Z": "startServer",
+        "w()Ljava/io/File;": "getDataDirectory"
       },
       "fields": {
         "v": "configurationManager",
@@ -286,7 +287,7 @@
         "p()I": "getZ"
       },
       "fields": {}
-    }
+    },
     "WorldInfo": {
       "name": "bqo",
       "methods": {
