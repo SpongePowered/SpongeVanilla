@@ -63,7 +63,7 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type) {
-        invoke("World", "setBlock", MinecraftUtils.createBlockPos(x, y, z), ((GraniteBlockType) type).parent);
+        invoke("setBlock", MinecraftUtils.createBlockPos(x, y, z), ((GraniteBlockType) type).parent);
     }
 
     // TODO: No direct method to get dimension in MC1.8
@@ -208,11 +208,11 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public RayTraceResult rayTrace(Vector from, Vector to, boolean stopOnLiquid) {
-        Object ret = invoke("World", "rayTraceBlocks",
+        Object ret = invoke("rayTraceBlocks",
                 MinecraftUtils.toMinecraftVector(from), MinecraftUtils.toMinecraftVector(to), stopOnLiquid);
 
         try {
-            if (((Enum) Mappings.getField("MovingObjectPosition", "typeOfHit").get(ret)).ordinal() != 0) {
+            if (ret != null && ((Enum) Mappings.getField("MovingObjectPosition", "typeOfHit").get(ret)).ordinal() != 0) {
                 Block b = getBlock(Mappings.getField("MovingObjectPosition", "blockPos").get(ret));
 
                 Facing f = Facing.values()[((Enum) Mappings.getField("MovingObjectPosition", "field_178784_b").get(ret)).ordinal()];

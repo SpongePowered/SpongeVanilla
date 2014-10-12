@@ -67,7 +67,7 @@ public class GraniteItemStack extends Composite implements ItemStack {
     }
 
     public ItemType getType() {
-        return (ItemType) MinecraftUtils.wrap(invoke("ItemStack", "getItem"));
+        return (ItemType) MinecraftUtils.wrap(invoke("getItem"));
     }
 
     public void clearCustomName() {

@@ -293,7 +293,7 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
 
     @Override
     public Vector getLookDirection() {
-        return MinecraftUtils.fromMinecraftVector(invoke("Entity", "getLook", 1.0F));
+        return MinecraftUtils.fromMinecraftVector(invoke("getLook", 1.0F));
     }
 
     @Override
@@ -306,7 +306,7 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
 
     @Override
     public float getEyeHeight() {
-        return (float) invoke("Entity", "getEyeHeight");
+        return (float) invoke("getEyeHeight");
     }
 
 

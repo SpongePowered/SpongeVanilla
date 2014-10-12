@@ -106,9 +106,9 @@ public class MinecraftUtils {
     public static Vector fromMinecraftVector(Object minecraftVector) {
         try {
             return new Vector(
-                    (float) Mappings.getField("Vec3", "xCoord").get(minecraftVector),
-                    (float) Mappings.getField("Vec3", "yCoord").get(minecraftVector),
-                    (float) Mappings.getField("Vec3", "zCoord").get(minecraftVector)
+                    (double) Mappings.getField("Vec3", "xCoord").get(minecraftVector),
+                    (double) Mappings.getField("Vec3", "yCoord").get(minecraftVector),
+                    (double) Mappings.getField("Vec3", "zCoord").get(minecraftVector)
             );
         } catch (IllegalAccessException e) {
             e.printStackTrace();

@@ -149,14 +149,14 @@ public class GraniteBlockType extends Composite implements BlockType {
         Object itemStackObject = Mappings.invoke(invoke("getBlock"), "createStackedBlock", parent);
 
         if (Mappings.invoke(itemStackObject, "getItem") == null) {
-            Object itemObject = Mappings.invoke(null, "getItemFromBlock", invoke("getBlock"));
+            Object itemObject = Mappings.invokeStatic("Item", "getItemFromBlock", invoke("getBlock"));
 
             if (itemObject == null) {
-                itemObject = Mappings.invoke(null, "getItemFromName", "minecraft:" + getTechnicalName());
+                itemObject = Mappings.invokeStatic("Item", "getItemFromName", "minecraft:" + getTechnicalName());
             }
 
             if (itemObject == null) {
-                itemObject = Mappings.invoke(getBlockObject(), "Block", "getItemDropped", parent, new Random(), 1);
+                itemObject = Mappings.invoke(getBlockObject(), "getItemDropped", parent, new Random(), 1);
             }
 
             if (itemObject == null) {
@@ -218,6 +218,6 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     public Object getBlockObject() {
-        return invoke("BlockState$StateImplementation", "getBlock");
+        return invoke("getBlock");
     }
 }

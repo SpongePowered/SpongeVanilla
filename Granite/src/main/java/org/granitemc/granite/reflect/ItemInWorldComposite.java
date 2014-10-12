@@ -143,10 +143,9 @@ public class ItemInWorldComposite extends ProxyComposite {
                         MethodHandle m = Mappings.getMethod("Block", "onBlockPlaced");
                         try {
                             Object itemType = ((GraniteItemType) itemStack.getType()).parent;
-                            Object blockType = Mappings.invoke(itemType, "ItemBlock", "getBlock");
+                            Object blockType = Mappings.invoke(itemType, "getBlock");
 
                             BlockType bt = (BlockType) MinecraftUtils.wrap(m.invoke(blockType, args[1], args[3], args[4], args[5], args[6], args[7], 3, args[0]));
-
 
                             Block b = w.getBlock(x, y, z);
 
@@ -158,7 +157,8 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                                 b.setType(oldBlockType);
                                 if (event.isCancelled()) {
-                                    ((GranitePlayer) p).sendBlockUpdate(b);
+                                    p.sendBlockUpdate(b, oldBlockType);
+                                    hook.setWasHandled(true);
                                 } else {
                                     hook.setWasHandled(false);
                                 }
@@ -205,13 +205,17 @@ public class ItemInWorldComposite extends ProxyComposite {
                 Player p = (Player) MinecraftUtils.wrap(args[0]);
 
                 RayTraceResult rtr = p.rayTrace(3, false);
+                EventPlayerInteract epi;
                 if (rtr != null) {
-                    EventPlayerInteract epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.RIGHT_CLICK_BLOCK, rtr.getBlock());
-                    Granite.getEventQueue().fireEvent(epi);
+                    epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.RIGHT_CLICK_BLOCK, rtr.getBlock());
+                } else {
+                    epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.RIGHT_CLICK_AIR, null);
+                }
 
-                    if (epi.isCancelled()) {
-                        hook.setWasHandled(true);
-                    }
+                Granite.getEventQueue().fireEvent(epi);
+
+                if (epi.isCancelled()) {
+                    hook.setWasHandled(true);
                 }
                 return null;
             }

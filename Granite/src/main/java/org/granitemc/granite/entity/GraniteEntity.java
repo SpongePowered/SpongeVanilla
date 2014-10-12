@@ -320,43 +320,43 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     public double getX() {
-        return (double) fieldGet("Entity", "posX");
+        return (double) fieldGet("posX");
     }
 
     public void setX(double xPos) {
-        fieldSet("Entity", "posX", xPos);
+        fieldSet("posX", xPos);
     }
 
     public double getY() {
-        return (double) fieldGet("Entity", "posY");
+        return (double) fieldGet("posY");
     }
 
     public void setY(double yPos) {
-        fieldSet("Entity", "posY", yPos);
+        fieldSet("posY", yPos);
     }
 
     public double getZ() {
-        return (double) fieldGet("Entity", "posZ");
+        return (double) fieldGet("posZ");
     }
 
     public void setZ(double zPos) {
-        fieldSet("Entity", "posZ", zPos);
+        fieldSet("posZ", zPos);
     }
 
     public float getPitch() {
-        return (float) fieldGet("Entity", "rotationPitch");
+        return (float) fieldGet("rotationPitch");
     }
 
     public void setPitch(float pitch) {
-        fieldSet("Entity", "rotationPitch", pitch);
+        fieldSet("rotationPitch", pitch);
     }
 
     public float getYaw() {
-        return (float) fieldGet("Entity", "rotationYaw");
+        return (float) fieldGet("rotationYaw");
     }
 
     public void setYaw(float yaw) {
-        fieldSet("Entity", "rotationYaw", yaw);
+        fieldSet("rotationYaw", yaw);
     }
 
     public Entity getEntityRidingThis() {

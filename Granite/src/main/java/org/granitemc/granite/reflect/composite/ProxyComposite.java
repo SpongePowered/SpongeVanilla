@@ -42,19 +42,24 @@ public class ProxyComposite extends Composite {
     private Map<String, List<Hook>> hooks;
     private List<Hook> globalHooks;
 
-    public String createSignature(MethodHandle methodHandle) {
-        Field f = null;
+    static Field f = null;
+    static {
         try {
             f = Class.forName("java.lang.invoke.DirectMethodHandle").getDeclaredField("member");
         } catch (NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         f.setAccessible(true);
+    }
 
-        try {
-            return f.get(methodHandle).toString();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+
+    public String createSignature(MethodHandle methodHandle) {
+        if (!methodHandle.isVarargsCollector()) {
+            try {
+                return f.get(methodHandle).toString();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
