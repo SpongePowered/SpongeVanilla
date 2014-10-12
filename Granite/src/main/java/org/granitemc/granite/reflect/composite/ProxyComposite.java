@@ -43,20 +43,9 @@ public class ProxyComposite extends Composite {
     private List<Hook> globalHooks;
 
     public String createSignature(MethodHandle methodHandle) {
-        Field f = null;
-        try {
-            f = Class.forName("java.lang.invoke.DirectMethodHandle").getDeclaredField("member");
-        } catch (NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        f.setAccessible(true);
+        String name = Mappings.getMethodName(clazz, methodHandle);
 
-        try {
-            return f.get(methodHandle).toString();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return name + methodHandle.type().toMethodDescriptorString();
     }
 
     public void addHook(MethodHandle methodHandle, HookListener listener) {
