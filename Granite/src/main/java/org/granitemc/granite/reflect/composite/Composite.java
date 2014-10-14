@@ -25,11 +25,9 @@ package org.granitemc.granite.reflect.composite;
 
 import org.granitemc.granite.reflect.ReflectionUtils;
 import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.SignatureParser;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,9 +50,9 @@ public abstract class Composite {
         }
     }
 
-    public Composite(Class<?> clazz, Object... constructorArgs) {
+    /*public Composite(Class<?> clazz, Object... constructorArgs) {
         this(clazz, ReflectionUtils.getTypes(constructorArgs), constructorArgs);
-    }
+    }*/
 
     public Object invoke(Object instance, MethodHandle m, Object... args) {
         return Mappings.invoke(instance, m, args);
