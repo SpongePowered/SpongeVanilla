@@ -228,10 +228,11 @@ public class ItemTypes {
      *
      * @param type The {@link org.granitemc.granite.api.block.ItemType}
      */
-    public static Integer getIdFromItem(ItemType type) {
-        // The maps store the item types with their default metadata
-        // "type" may have non-default metadata, and therefore the lookup fails
-        // Therefore, we're getting the default metadata of "type"
-        return idMap.inverse().get(getByName(type.getTechnicalName()));
+    public static int getIdFromItem(ItemType type) {
+        return idMap.inverse().get(type);
+    }
+
+    public static String getNameFromItem(ItemType type) {
+        return nameMap.inverse().get(type);
     }
 }

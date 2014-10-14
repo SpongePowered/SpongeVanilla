@@ -25,12 +25,12 @@ package org.granitemc.granite.entity.player;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.chat.ChatComponentText;
+import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.chat.GraniteChatComponentText;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.Mappings;
@@ -66,8 +66,12 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
 
     @Override
     public void sendMessage(String message) {
-        ChatComponentText component = new GraniteChatComponentText(message);
-        invoke("addChatComponentMessage", ((GraniteChatComponentText) component).parent);
+        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(new TextComponent(message)));
+    }
+
+    @Override
+    public void sendMessage(ChatComponent component) {
+        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
     }
 
     @Override

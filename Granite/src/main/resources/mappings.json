@@ -536,7 +536,8 @@
         "ad()Z": "canBeCollidedWith",
         "aH()Z": "doesEntityNotTriggerPressurePlate",
         "h(Lwv;)D": "getDistanceSqToEntity",
-        "e(FF)V": "fall"
+        "e(FF)V": "fall",
+        "ag()Ljava/lang/String;": "getEntityString"
       },
       "fields": {
         "s": "posX",
@@ -669,8 +670,42 @@
       "methods": {"d()Latr;": "getBlock"},
       "fields": {}
     },
-    "WorldGenerator": {
-      "name": "are"
+    "WorldType": {
+      "name": "are",
+      "fields": {
+        "b": "DEFAULT"
+      }
+    },
+    "StringTranslate": {
+      "name": "fj",
+      "methods": {
+        "a(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;": "translateKeyFormat",
+        "a()Lfj;": "getInstance"
+      }
+    },
+    "S0CPacketSpawnPlayer": {
+      "name": "iq",
+      "fields": {
+        "i": "field_148960_i"
+      }
+    },
+    "DataWatcher": {
+      "name": "xv"
+    },
+    "S07PacketRespawn": {
+      "name": "kp"
+    },
+    "EnumDifficulty": {
+      "name": "vt"
+    },
+    "WorldSettings$GameType": {
+      "name": "arc"
+    },
+    "IChatComponent$Serializer": {
+      "name": "hp",
+      "methods": {
+        "a(Ljava/lang/String;)Lho;": "jsonToComponent"
+      }
     }
   }
 }

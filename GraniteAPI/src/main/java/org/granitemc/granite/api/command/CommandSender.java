@@ -23,6 +23,8 @@
 
 package org.granitemc.granite.api.command;
 
+import org.granitemc.granite.api.chat.ChatComponent;
+
 public interface CommandSender {
     /**
      * Returns the name of this {@link org.granitemc.granite.api.command.CommandSender}
@@ -34,6 +36,7 @@ public interface CommandSender {
      *
      * @param message The message to send
      */
-    // TODO: use ChatComponent here
     void sendMessage(String message);
+
+    void sendMessage(ChatComponent component);
 }

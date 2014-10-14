@@ -29,13 +29,11 @@ import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.chat.IChatComponentBuilder;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.chat.GraniteChatComponentBuilder;
 import org.granitemc.granite.event.GraniteEventQueue;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.GraniteServerComposite;
@@ -56,6 +54,7 @@ import java.util.jar.JarFile;
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class GraniteAPI implements API {
     public static GraniteAPI instance;
+    public static GraniteAPIHelper helper;
 
     private List<PluginContainer> plugins;
     private Logger logger;
@@ -63,11 +62,18 @@ public class GraniteAPI implements API {
     private GraniteEventQueue eventQueue;
 
     public static void init() {
-
         try {
             Field impl = Granite.class.getDeclaredField("impl");
             impl.setAccessible(true);
             impl.set(null, instance = new GraniteAPI());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field impl = Granite.class.getDeclaredField("helper");
+            impl.setAccessible(true);
+            impl.set(null, helper = new GraniteAPIHelper());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -154,10 +160,6 @@ public class GraniteAPI implements API {
 
     public Logger getLogger() {
         return logger;
-    }
-
-    public IChatComponentBuilder createChatComponentBuilder() {
-        return new GraniteChatComponentBuilder();
     }
 
     public ItemStack createItemStack(ItemType type, int amount) {

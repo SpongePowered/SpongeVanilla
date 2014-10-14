@@ -137,7 +137,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                     BlockType oldBlockType = w.getBlock(x, y, z).getType();
 
                     // If the item used is an ItemBlock
-                    if (Mappings.getClass("ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
+                    if (itemStack != null && Mappings.getClass("ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
                         // Use the "new" method, which gets the BlockType supposed to be placed, places that, and if the event gets cancelled, return it to the old one
                         // Otherwise, return it to the old one anyway, and let Minecraft itself handle the rest
                         MethodHandle m = Mappings.getMethod("Block", "onBlockPlaced");

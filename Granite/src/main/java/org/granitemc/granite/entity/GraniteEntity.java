@@ -367,4 +367,9 @@ public class GraniteEntity extends Composite implements Entity {
         return (Entity) MinecraftUtils.wrap(fieldGet("Entity", "ridingEntity"));
     }
 
+    @Override
+    public String getType() {
+        return (String) invoke("getEntityString");
+    }
+
 }

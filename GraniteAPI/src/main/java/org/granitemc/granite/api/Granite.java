@@ -24,10 +24,7 @@
 package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.Logger;
-import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.event.EventQueue;
-import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
@@ -37,6 +34,7 @@ import java.util.List;
 public class Granite {
     // Set dynamically via reflection at runtime
     private static API impl;
+    private static APIHelper helper;
 
     /**
      * @see API#getPluginContainer(String)
@@ -94,14 +92,7 @@ public class Granite {
         return impl.getEventQueue();
     }
 
-    /**
-     * @see API#createItemStack(org.granitemc.granite.api.block.ItemType, int)
-     */
-    public static ItemStack createItemStack(ItemType type, int amount) {
-        return impl.createItemStack(type, amount);
-    }
-
-    public static ChatComponentBuilder createChatComponentBuilder() {
-        return new ChatComponentBuilder(impl.createChatComponentBuilder());
+    public static APIHelper getAPIHelper() {
+        return helper;
     }
 }

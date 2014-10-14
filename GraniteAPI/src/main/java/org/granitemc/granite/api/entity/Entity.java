@@ -427,4 +427,9 @@ public interface Entity {
      * Returns the entity we are currently riding (or null)
      */
     Entity getEntityRiddenByThis();
+
+    /**
+     * Returns the type string of this entity (e.g. Zombie for zombie, and CaveSpider for cave spider)
+     */
+    String getType();
 }

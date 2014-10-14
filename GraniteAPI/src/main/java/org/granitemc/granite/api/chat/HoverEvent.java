@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.chat;
+
 /*
  * License (MIT)
  *
@@ -15,46 +17,22 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.item;
+import org.json.simple.JSONObject;
 
-import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.block.ItemTypes;
-import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.reflect.composite.Composite;
+public abstract class HoverEvent {
+    protected abstract String getAction();
+    public abstract Object getValue();
 
-public class GraniteItemType extends Composite implements ItemType {
+    JSONObject toConfigObject() {
+        JSONObject obj = new JSONObject();
+        obj.put("action", getAction());
+        obj.put("value", getValue());
 
-    public GraniteItemType(Object parent) {
-        super(parent);
-    }
-
-    public int getMaxStackSize() {
-        return (int) fieldGet("maxStackSize");
-    }
-
-    public int getMaxDamage() {
-        return (int) fieldGet("maxDamage");
-    }
-
-    public String getName() {
-        return new GraniteItemStack(this, 1).getDisplayName();
-    }
-
-    public int getNumericId() {
-        return (int) invoke("getIdFromItem");
-    }
-
-    public String getTechnicalName() {
-        return ItemTypes.getNameFromItem(this);
-    }
-
-    public ItemStack create(int amount) {
-        return new GraniteItemStack(this, amount);
-    }
-}
+        return obj;
+    }}

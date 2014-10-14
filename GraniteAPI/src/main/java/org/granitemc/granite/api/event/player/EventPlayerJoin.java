@@ -23,6 +23,9 @@
 
 package org.granitemc.granite.api.event.player;
 
+import org.granitemc.granite.api.chat.ChatColor;
+import org.granitemc.granite.api.chat.ChatComponentBuilder;
+import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.Event;
 
@@ -31,6 +34,8 @@ public class EventPlayerJoin extends Event {
 
     public EventPlayerJoin(Player player) {
         this.player = player;
+
+        player.sendMessage(new ChatComponentBuilder().text("Welcome to ").bold(true).color(ChatColor.GREEN).showText(new TextComponent("One Two Three").setItalic(true)).text("Granite!").clearHover().color(ChatColor.WHITE).bold(false).text(" Enjoy your ").obfuscated(true).text("stay").build());
     }
 
     /**

@@ -27,6 +27,7 @@ import com.google.common.collect.Lists;
 import org.granitemc.granite.GraniteAPI;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
+import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -140,12 +141,17 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     @Override
     public String getName() {
-        return (String) invoke("ICommandSender", "getName");
+        return (String) invoke("getName");
     }
 
     @Override
     public void sendMessage(String message) {
         Granite.getLogger().info(message);
+    }
+
+    @Override
+    public void sendMessage(ChatComponent component) {
+        Granite.getLogger().info(component.toPlainText(true));
     }
 
     @Override
@@ -313,7 +319,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     public void setKeyPair(KeyPair keyPair) {
         //Obf: a
-        invoke("setKeyPair(KeyPair", keyPair);
+        invoke("setKeyPair", keyPair);
     }
 
     @Override
