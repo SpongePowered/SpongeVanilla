@@ -25,6 +25,7 @@ package org.granitemc.granite.api;
 
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.entity.Entity;
+import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
 
 public interface APIHelper {
@@ -36,4 +37,6 @@ public interface APIHelper {
     String getEntityNBTCompoundString(String type, String name, String id);
 
     String getTranslation(String key, Object... args);
+
+    Inventory createInventory(String name, int size);
 }

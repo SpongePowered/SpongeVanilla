@@ -28,10 +28,12 @@ import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.entity.player.Player;
+import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
+import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
@@ -125,6 +127,11 @@ public class GranitePlayer extends GraniteEntityLivingBase implements Player {
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void openInventory(Inventory inventory) {
+        invoke("displayGUIChest", ((GraniteInventory) inventory).parent);
     }
 
     /*public void onDeath(DamageSource var1) {

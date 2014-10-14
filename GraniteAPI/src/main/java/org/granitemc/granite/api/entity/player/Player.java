@@ -27,6 +27,7 @@ import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.EntityLivingBase;
+import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 
@@ -82,4 +83,10 @@ public interface Player extends CommandSender, EntityLivingBase {
      * @param type  The block type to change the block to (to the player)
      */
     void sendBlockUpdate(Block block, BlockType type);
+
+    /**
+     * Opens the specified inventory on this player's screen.
+     * @param inventory The inventory
+     */
+    void openInventory(Inventory inventory);
 }

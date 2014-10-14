@@ -26,7 +26,9 @@ package org.granitemc.granite;
 import org.granitemc.granite.api.APIHelper;
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.entity.Entity;
+import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.MinecraftUtils;
 
@@ -56,5 +58,10 @@ public class GraniteAPIHelper implements APIHelper {
     @Override
     public String getTranslation(String key, Object... args) {
         return MinecraftUtils.getTranslation(key, args);
+    }
+
+    @Override
+    public Inventory createInventory(String name, int size) {
+        return new GraniteInventory(name, size);
     }
 }

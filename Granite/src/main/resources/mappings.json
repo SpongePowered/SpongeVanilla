@@ -27,7 +27,9 @@
     },
     "EntityPlayerMP": {
       "name": "qw",
-      "methods": {},
+      "methods": {
+        "a(Lvq;)V": "displayGUIChest"
+      },
       "fields": {"a": "playerNetServerHandler"}
     },
     "MinecraftServer": {
@@ -706,6 +708,9 @@
       "methods": {
         "a(Ljava/lang/String;)Lho;": "jsonToComponent"
       }
+    },
+    "InventoryBasic": {
+      "name": "wa"
     }
   }
 }
