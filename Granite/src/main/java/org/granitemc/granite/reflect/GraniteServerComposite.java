@@ -45,6 +45,7 @@ import java.util.List;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {
     public static GraniteServerComposite instance;
+	public CommandComposite commandComposite;
 
     private SCMComposite scm;
 
@@ -113,7 +114,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     private void injectCommand() {
         // Create command composite
-        CommandComposite commandComposite = new CommandComposite();
+        commandComposite = new CommandComposite();
 
         // Inject command composite
         Field commandManagerField = Mappings.getField("MinecraftServer", "commandManager");
