@@ -44,251 +44,251 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
     }
 
     public void killByVoidDamage() {
-        invoke("EntityLivingBase", "killByVoidDamage");
+        invoke("killByVoidDamage");
     }
 
     public boolean canBreatheUnderwater() {
-        return (boolean) invoke("EntityLivingBase", "canBreathUnderwater");
+        return (boolean) invoke("canBreathUnderwater");
     }
 
     public boolean isChild() {
-        return (boolean) invoke("EntityLivingBase", "isChild");
+        return (boolean) invoke("isChild");
     }
 
     public boolean isAdult() {
-        return (boolean) invoke("EntityLivingBase", "isAdult");
+        return (boolean) invoke("isAdult");
     }
 
     public int decreaseAirSupply(int amount) {
-        return (int) invoke("EntityLivingBase", "decreaseAirSupply", amount);
+        return (int) invoke("decreaseAirSupply", amount);
     }
 
     public int getExperiencePoints(Player player) {
-        return (Integer) invoke("EntityLivingBase", "getExperiencePoints", player);
+        return (Integer) invoke("getExperiencePoints", player);
     }
 
     public boolean isPlayer() {
-        return (boolean) invoke("EntityLivingBase", "isPlayer");
+        return (boolean) invoke("isPlayer");
     }
 
     public EntityLivingBase getAITarget() {
-        return (EntityLivingBase) invoke("EntityLivingBase", "getAITarget");
+        return (EntityLivingBase) invoke("getAITarget");
     }
 
     public int getRevengeTimer() {
-        return (Integer) invoke("EntityLivingBase", "getRevengeTimer");
+        return (Integer) invoke("getRevengeTimer");
     }
 
     public void setRevengeTarget(EntityLivingBase entity) {
-        invoke("EntityLivingBase", "setRevengeTarget");
+        invoke("setRevengeTarget");
     }
 
     public EntityLivingBase getLastAttacker() {
-        return (EntityLivingBase) invoke("EntityLivingBase", "getLastAttacker");
+        return (EntityLivingBase) invoke("getLastAttacker");
     }
 
     public int getLastAttackerTime() {
-        return (Integer) invoke("EntityLivingBase", "getLastAttackerTimer");
+        return (Integer) invoke("getLastAttackerTimer");
     }
 
     public void setLastAttacker(Entity entity) {
-        invoke("EntityLivingBase", "setLastAttacker", entity);
+        invoke("setLastAttacker", entity);
     }
 
     public int getAge() {
-        return (Integer) invoke("EntityLivingBase", "getAge");
+        return (Integer) invoke("getAge");
     }
 
     public void clearActivePotions() {
-        invoke("EntityLivingBase", "clearActivePotions");
+        invoke("clearActivePotions");
     }
 
     public Collection getActivePotionEffects() {
-        return (Collection) invoke("EntityLivingBase", "getActivePotionEffects");
+        return (Collection) invoke("getActivePotionEffects");
     }
 
     public boolean isPotionActive(int potion) {
-        return (boolean) invoke("EntityLivingBase", "isPotionActive", potion);
+        return (boolean) invoke("isPotionActive", potion);
     }
 
     //TODO: Enable after Potion is made
     /*
     public boolean isPotionActive(Potion potion) {
-        return (boolean) invoke("EntityLivingBase", "isPotionActive", potion);
+        return (boolean) invoke("isPotionActive", potion);
     }
 
     public PotionEffect getActivePotionEffect(Potion potion) {
-        return (PotionEffect) invoke("EntityLivingBase", "getActivePotionEffect", potion);
+        return (PotionEffect) invoke("getActivePotionEffect", potion);
     }
 
 
     public void addPotionEffect(PotionEffect potion) {
-        invoke("EntityLivingBase", "addPotionEffect", potion);
+        invoke("addPotionEffect", potion);
     }
 
     public boolean isPotionApplicable(PotionEffect potion) {
-        invoke (boolean) ("EntityLivingBase", "isPotionApplicable", potion);
+        invoke (boolean) ("isPotionApplicable", potion);
     }*/
 
     public boolean isEntityUndead() {
-        return (boolean) invoke("EntityLivingBase", "isEntityUndead");
+        return (boolean) invoke("isEntityUndead");
     }
 
     public void removePotionEffectClient(int potion) {
-        invoke("EntityLivingBase", "removePotionEffectClient", potion);
+        invoke("removePotionEffectClient", potion);
     }
 
     public void removePotionEffect(int potion) {
-        invoke("EntityLivingBase", "removePotionEffect", potion);
+        invoke("removePotionEffect", potion);
     }
 
     public void heal(float amount) {
-        invoke("EntityLivingBase", "heal", amount);
+        invoke("heal", amount);
     }
 
     public final float getHealth() {
-        return (float) invoke("EntityLivingBase", "getHealth");
+        return (float) invoke("getHealth");
     }
 
     public void setHealth(float amount) {
-        invoke("EntityLivingBase", "setHealth", amount);
+        invoke("setHealth", amount);
     }
 
     //TODO: Enable after DamageSource is made
     /*
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        return (boolean) invoke("EntityLivingBase", "attackEntityFrom", source, amount);
+        return (boolean) invoke("attackEntityFrom", source, amount);
     }*/
 
     //TODO: Work out parameters
     public void knockBack(Entity entity, float p_70653_2_, double p_70653_3_, double p_70653_5_) {
-        invoke("EntityLivingBase", "knockBack", entity, p_70653_2_, p_70653_3_, p_70653_5_);
+        invoke("knockBack", entity, p_70653_2_, p_70653_3_, p_70653_5_);
     }
 
     public String getHurtSound() {
-        return (String) invoke("EntityLivingBase", "getHurtSound");
+        return (String) invoke("getHurtSound");
     }
 
     public String getDeathSound() {
-        return (String) invoke("EntityLivingBase", "getDeathSound");
+        return (String) invoke("getDeathSound");
     }
 
     public boolean isOnLadder() {
-        return (boolean) invoke("EntityLivingBase", "inOnLadder");
+        return (boolean) invoke("inOnLadder");
     }
 
     public boolean isEntityAlive() {
-        return (boolean) invoke("EntityLivingBase", "isEntityAlive");
+        return (boolean) invoke("isEntityAlive");
     }
 
     public void fall(float distance, float damageMultiplier) {
-        invoke("EntityLivingBase", "fall", distance, damageMultiplier);
+        invoke("fall", distance, damageMultiplier);
     }
 
     public String getFallDamageSound(int blocksFallen) {
-        return (String) invoke("EntityLivingBase", "getFallDamageSound", blocksFallen);
+        return (String) invoke("getFallDamageSound", blocksFallen);
     }
 
     public void performHurtAnimation() {
-        invoke("EntityLivingBase", "preformHurtAnimation");
+        invoke("preformHurtAnimation");
     }
 
     public int getTotalArmorValue() {
-        return (Integer) invoke("EntityLivingBase", "getTotalArmorValue");
+        return (Integer) invoke("getTotalArmorValue");
     }
 
     //TODO: Work out what the float does on this method & enable after DamageSource has been made
     /*
     public float applyArmorCalculations(DamageSource damageSource, float p_70655_2_) {
-        return (float) invoke("EntityLivingBase", "applyArmorCalculations", damageSource, p_70655_2_);
+        return (float) invoke("applyArmorCalculations", damageSource, p_70655_2_);
     }
 
     public float applyPotionDamageCalculations(DamageSource damageSource, float p_70672_2_) {
-        return (float) invoke("EntityLivingBase", "applyPotionDamageCalculations", damageSource, p_70672_2_);
+        return (float) invoke("applyPotionDamageCalculations", damageSource, p_70672_2_);
     }
 
     public void damageEntity(DamageSource damageSource, float p_70665_2_) {
-        invoke("EntityLivingBase", "damageEntity", damageSource, p_70665_2_);
+        invoke("damageEntity", damageSource, p_70665_2_);
     }*/
 
     public final float getMaxHealth() {
-        return (float) invoke("EntityLivingBase", "getMaxHealth");
+        return (float) invoke("getMaxHealth");
     }
 
     public final int getArrowCountInEntity() {
-        return (Integer) invoke("EntityLivingBase", "getArrowCountInEntity");
+        return (Integer) invoke("getArrowCountInEntity");
     }
 
     public final void setArrowCountInEntity(int amount) {
-        invoke("EntityLivingBase", "setArrowCountInEntity", amount);
+        invoke("setArrowCountInEntity", amount);
     }
 
     public void swingItem() {
-        invoke("EntityLivingBase", "swingItem");
+        invoke("swingItem");
     }
 
     public void kill() {
-        invoke("EntityLivingBase", "kill");
+        invoke("kill");
     }
 
     public ItemStack getHeldItem() {
-        return (ItemStack) MinecraftUtils.wrap(invoke("EntityLivingBase", "getHeldItem"));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
     }
 
     public ItemStack getEquipmentInSlot(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("EntityLivingBase", "getEquipmentInSlot, slot"));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot, slot"));
     }
 
     public ItemStack getCurrentArmor(int armorSlot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("EntityLivingBase", "getCurrentArmor", armorSlot));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getCurrentArmor", armorSlot));
     }
 
     public void setCurrentItemOrArmor(int slot, ItemStack itemStack) {
-        invoke("EntityLivingBase", "setCurrentItemOrArmot", slot, itemStack);
+        invoke("setCurrentItemOrArmot", slot, itemStack);
     }
 
     public void setSprinting(boolean sprinting) {
-        invoke("EntityLivingBase", "setSprinting", sprinting);
+        invoke("setSprinting", sprinting);
     }
 
     public ItemStack[] getInventory() {
-        return (ItemStack[]) MinecraftUtils.wrap(invoke("EntityLivingBase", "getInventory"));
+        return (ItemStack[]) MinecraftUtils.wrap(invoke("getInventory"));
     }
 
     public void dismountEntity(Entity entity) {
-        invoke("EntityLivingBase", "dismountEntity", entity);
+        invoke("dismountEntity", entity);
     }
 
     public void jump() {
-        invoke("EntityLivingBase", "jump");
+        invoke("jump");
     }
 
     public float getAIMoveSpeed() {
-        return (float) invoke("EntityLivingBase", "getAIMoveSpeed");
+        return (float) invoke("getAIMoveSpeed");
     }
 
     public void setAIMoveSpeed(float speed) {
-        invoke("EntityLivingBase", "setAIMoveSpeed", speed);
+        invoke("setAIMoveSpeed", speed);
     }
 
     public void mountEntity(Entity entity) {
-        invoke("EntityLivingBase", "mountEntity", entity);
+        invoke("mountEntity", entity);
     }
 
     public void setJumping(boolean jumping) {
-        invoke("EntityLivingBase", "setJumping", jumping);
+        invoke("setJumping", jumping);
     }
 
     public boolean canEntityBeSeen(Entity entity) {
-        return (boolean) invoke("EntityLivingBase", "canEntityBeSeen", entity);
+        return (boolean) invoke("canEntityBeSeen", entity);
     }
 
     public float getAbsorptionAmount() {
-        return (float) invoke("EntityLivingBase", "getAbsorptionAmount");
+        return (float) invoke("getAbsorptionAmount");
     }
 
     public void setAbsorptionAmount(float amount) {
-        invoke("EntityLivingBase", "setAbsorptionAmount", amount);
+        invoke("setAbsorptionAmount", amount);
     }
 
     @Override
@@ -314,15 +314,15 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
     //TODO: Enable after Team has been made
     /*
     public Team getTeam() {
-        return (Team) invoke("EntityLivingBase", "getTeam");
+        return (Team) invoke("getTeam");
     }
 
     public boolean isOnSameTeam(EntityLivingBase entity) {
-        return (boolean) invoke("EntityLivingBase", "isOnSameTeam", entity);
+        return (boolean) invoke("isOnSameTeam", entity);
     }
 
     public boolean isOnTeam(Team team) {
-        return (boolean) invoke("EntityLivingBase", "isOnTeam", team);
+        return (boolean) invoke("isOnTeam", team);
     }*/
 
 }
