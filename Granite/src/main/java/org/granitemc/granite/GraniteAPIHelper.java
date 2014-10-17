@@ -62,6 +62,7 @@ public class GraniteAPIHelper implements APIHelper {
 
     @Override
     public Inventory createInventory(String name, int size) {
+        if (size < 9) size = 9;
         return new GraniteInventory(name, size);
     }
 }
