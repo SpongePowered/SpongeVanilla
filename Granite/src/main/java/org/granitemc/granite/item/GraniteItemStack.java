@@ -31,6 +31,7 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.InvocationTargetException;
+import org.granitemc.granite.api.block.ItemTypes;
 
 public class GraniteItemStack extends Composite implements ItemStack {
     public GraniteItemStack(Object itemStackInstance) {
@@ -108,7 +109,47 @@ public class GraniteItemStack extends Composite implements ItemStack {
             return new String[]{};
         }
     }
+    
+    public void setPages(String author, String title, String... lines){
+        
+        // Bleh... ugggggly.
+        int currId = this.getType().getNumericId();
+        int bookid1 = ItemTypes.writable_book.getNumericId();
+        int bookid2 = ItemTypes.written_book.getNumericId();
+        
+        // If the ItemType isn't a Book, quietly ignore? - or hard exception here?
+        // Not being able to compare strong types makes me feel squishy inside
+        if( currId != bookid1 & currId != bookid2)
+            return;
+        
+        try {
+            Object pagesList = Mappings.getClass("NBTTagList").newInstance();
 
+            for (String line : lines) {
+                Object stringTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(line);
+                Mappings.invoke(pagesList, "appendTag", stringTag);
+            }
+            
+            Object tagCompound = invoke("getTagCompound");
+            if (tagCompound == null) {
+                tagCompound = Mappings.getClass("NBTTagCompound").newInstance();
+                invoke("setTagCompound", tagCompound);
+            }
+            
+            Object titleTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(title);            
+            Object authorTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(author);            
+            
+            if (!(boolean) Mappings.invoke(tagCompound, "hasKey", "pages", 10)) {                
+                Mappings.invoke(tagCompound, "setTag", "title", titleTag);
+                Mappings.invoke(tagCompound, "setTag", "author", authorTag);
+                Mappings.invoke(tagCompound, "setTag", "pages", pagesList);
+            }
+           
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void setItemLore(String... lines) {
         try {
             Object loreList = Mappings.getClass("NBTTagList").newInstance();
@@ -137,6 +178,15 @@ public class GraniteItemStack extends Composite implements ItemStack {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+    
+    public String[] getPages() {
+        Object tagCompound = invoke("getTagCompound");
+        if (tagCompound == null) {
+            return null;
+        }
+        String[] pages = (String[]) Mappings.invoke(tagCompound, "getTag", "pages");
+        return pages;
     }
 
     public int getMaxDamage() {
