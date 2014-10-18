@@ -740,8 +740,8 @@
     }
   }
   "Entity": {
-    name": "wv",
-    methods": {
+    "name": "wv",
+    "methods": {
       "F()I": "getEntityID",
       "J()V": "setDead",
       "a(FF)V": "setSize",
