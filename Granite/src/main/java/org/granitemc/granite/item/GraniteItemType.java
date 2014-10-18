@@ -24,6 +24,7 @@
 package org.granitemc.granite.item;
 
 import org.granitemc.granite.api.block.ItemType;
+import org.granitemc.granite.api.block.ItemTypes;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 
@@ -34,11 +35,11 @@ public class GraniteItemType extends Composite implements ItemType {
     }
 
     public int getMaxStackSize() {
-        return (int) fieldGet("Item", "maxStackSize");
+        return (int) fieldGet("maxStackSize");
     }
 
     public int getMaxDamage() {
-        return (int) fieldGet("Item", "maxDamage");
+        return (int) fieldGet("maxDamage");
     }
 
     public String getName() {
@@ -46,11 +47,11 @@ public class GraniteItemType extends Composite implements ItemType {
     }
 
     public int getNumericId() {
-        return (int) invoke("Item", "getIdFromItem");
+        return (int) invoke("getIdFromItem");
     }
 
     public String getTechnicalName() {
-        return null;
+        return ItemTypes.getNameFromItem(this);
     }
 
     public ItemStack create(int amount) {

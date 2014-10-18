@@ -200,12 +200,22 @@ public interface Entity {
 
     boolean sendCommandFeedback();
 
-    /**
-     * Granite Methods
-     */
-
     Location getLocation();
 
     void setLocation(Location location);
 
+    /**
+     * Returns the entity currently riding this entity (or null)
+     */
+    Entity getEntityRidingThis();
+
+    /**
+     * Returns the entity we are currently riding (or null)
+     */
+    Entity getEntityRiddenByThis();
+
+    /**
+     * Returns the type string of this entity (e.g. Zombie for zombie, and CaveSpider for cave spider)
+     */
+    String getType();
 }

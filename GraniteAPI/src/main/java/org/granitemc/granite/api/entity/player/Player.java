@@ -1,20 +1,22 @@
 package org.granitemc.granite.api.entity.player;
 
+import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.entity.item.EntityItem;
+import org.granitemc.granite.api.inventory.Inventory;
+import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public interface Player extends EntityLivingBase {
-
-    /**
-     * EntityPlayer
-     */
 
     boolean isUsingItem();
 
@@ -166,12 +168,6 @@ public interface Player extends EntityLivingBase {
 
     boolean replaceItemInInventory(int slot, ItemStack itemStack);
 
-
-    /**
-     * EntityPlayerMP
-     */
-
-
     void addExperienceLevel(int amount);
 
     void addSelfToInternalCraftingInventory();
@@ -190,7 +186,7 @@ public interface Player extends EntityLivingBase {
 
     /*void displayGui(IInteractionObject guiOwner);*/
 
-    /*void displayGUIChest(IInventory chestInventory);*/
+    void displayGUIChest(Inventory chestInventory);
 
     /*void displayVillagerTradeGui(IMerchant villager);*/
 
@@ -243,5 +239,17 @@ public interface Player extends EntityLivingBase {
     void attackTargetEntityWithCurrentItem(Entity targetEntity);
 
     long getLastActiveTime();
+
+    void sendBlockUpdate(Block block, BlockType type);
+
+    PlayerInventory getPlayerInventory();
+
+    void sendPacket(Object packet);
+
+    void sendBlockUpdate(Block block);
+
+    void sendMessage(String message);
+
+    void sendMessage(ChatComponent component);
 
 }

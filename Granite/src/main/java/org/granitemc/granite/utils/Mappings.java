@@ -270,7 +270,7 @@ public class Mappings {
         return getMethod(getCtClass(clazz), methodName);
     }
 
-    public static String getMethodName(Class<?> clazz, MethodHandle methodHandle) {
+    /*public static String getMethodName(Class<?> clazz, MethodHandle methodHandle) {
         return methods.get(getCtClass(clazz)).inverse().get(methodHandle);
     }
 
@@ -281,7 +281,7 @@ public class Mappings {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     public static Object invoke(Object object, String methodName, Object... args) {
         return invoke(object, getMethod(getCtClass(object.getClass()), methodName), args);

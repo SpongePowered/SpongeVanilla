@@ -96,7 +96,7 @@ public class CommandComposite extends ProxyComposite {
         List<Player> targets = new ArrayList<>();
         for (int i = 0; i < info.args.length; i++) {
             String arg = info.args[i];
-            for (Object nativeTarget : (List<Object>) Mappings.invoke(null, "PlayerSelector", "matchPlayers", nativeSender, arg, Mappings.getClass("EntityPlayerMP"))) {
+            for (Object nativeTarget : (List<Object>) Mappings.invokeStatic("PlayerSelector", "matchPlayers", nativeSender, arg, Mappings.getClass("EntityPlayerMP"))) {
                 targets.add((Player) MinecraftUtils.wrap(nativeTarget));
                 info.args = ArrayUtils.remove(info.args, i);
             }

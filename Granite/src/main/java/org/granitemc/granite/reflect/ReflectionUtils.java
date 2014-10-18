@@ -204,7 +204,7 @@ public class ReflectionUtils {
         Class<?>[] ret = new Class<?>[objects.length];
 
         for (int i = 0; i < objects.length; i++) {
-            ret[i] = objects.getClass();
+            ret[i] = objects[i].getClass();
         }
 
         return ret;

@@ -31,14 +31,10 @@ import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GraniteItemStack extends Composite implements ItemStack {
-    private static Map<Object, GraniteItemStack> instanceMap = new HashMap<>();
-
-    public GraniteItemStack(Object ïtemStackInstance) {
-        super(ïtemStackInstance);
+    public GraniteItemStack(Object itemStackInstance) {
+        super(itemStackInstance);
     }
 
     public GraniteItemStack(Object itemTypeInstance, int size) {
@@ -67,37 +63,37 @@ public class GraniteItemStack extends Composite implements ItemStack {
     }
 
     public ItemType getType() {
-        return (ItemType) MinecraftUtils.wrap(invoke("ItemStack", "getItem"));
+        return (ItemType) MinecraftUtils.wrap(invoke("getItem"));
     }
 
     public void clearCustomName() {
-        invoke("ItemStack", "clearCustomName");
+        invoke("clearCustomName");
     }
 
     public int getItemDamage() {
-        return (int) invoke("ItemStack", "getItemDamage");
+        return (int) invoke("getItemDamage");
     }
 
     public void setItemDamage(int damage) {
-        invoke("ItemStack", "setItemDamage", damage);
+        invoke("setItemDamage", damage);
     }
 
     public String[] getItemLore() {
-        Object tagCompound = invoke("ItemStack", "getTagCompound");
+        Object tagCompound = invoke("getTagCompound");
 
         if (tagCompound != null) {
-            if ((boolean) Mappings.invoke(tagCompound, "NBTTagCompound", "hasKey", "display", 10)) {
-                Object displayCompound = Mappings.invoke(tagCompound, "NBTTagCompound", "getCompoundTag", "display");
+            if ((boolean) Mappings.invoke(tagCompound, "hasKey", "display", 10)) {
+                Object displayCompound = Mappings.invoke(tagCompound, "getCompoundTag", "display");
 
-                if ((boolean) Mappings.invoke(displayCompound, "NBTTagCompound", "hasKey", "Lore", 9)) {
-                    Object loreTagList = Mappings.invoke(displayCompound, "NBTTagCompound", "getTagList", "Lore", 8);
+                if ((boolean) Mappings.invoke(displayCompound, "hasKey", "Lore", 9)) {
+                    Object loreTagList = Mappings.invoke(displayCompound, "getTagList", "Lore", 8);
 
-                    int length = (int) Mappings.invoke(loreTagList, "NBTTagList", "tagCount");
+                    int length = (int) Mappings.invoke(loreTagList, "tagCount");
 
                     String[] lore = new String[length];
 
                     for (int i = 0; i < length; i++) {
-                        String loreLine = (String) Mappings.invoke(loreTagList, "NBTTagList", "getStringTagAt", i);
+                        String loreLine = (String) Mappings.invoke(loreTagList, "getStringTagAt", i);
                         lore[i] = loreLine;
                     }
 
@@ -119,25 +115,25 @@ public class GraniteItemStack extends Composite implements ItemStack {
 
             for (String line : lines) {
                 Object stringTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(line);
-                Mappings.invoke(loreList, "NBTTagList", "appendTag", stringTag);
+                Mappings.invoke(loreList, "appendTag", stringTag);
             }
 
-            Object tagCompound = invoke("ItemStack", "getTagCompound");
+            Object tagCompound = invoke("getTagCompound");
 
             if (tagCompound == null) {
                 tagCompound = Mappings.getClass("NBTTagCompound").newInstance();
-                invoke("ItemStack", "setTagCompound", tagCompound);
+                invoke("setTagCompound", tagCompound);
             }
 
             Object displayCompound;
 
-            if (!(boolean) Mappings.invoke(tagCompound, "NBTTagCompound", "hasKey", "display", 10)) {
+            if (!(boolean) Mappings.invoke(tagCompound, "hasKey", "display", 10)) {
                 displayCompound = Mappings.getClass("NBTTagCompound").newInstance();
-                Mappings.invoke(tagCompound, "NBTTagCompound", "setTag", "display", displayCompound);
+                Mappings.invoke(tagCompound, "setTag", "display", displayCompound);
             }
 
-            displayCompound = Mappings.invoke(tagCompound, "NBTTagCompound", "getCompoundTag", "display");
-            Mappings.invoke(displayCompound, "NBTTagCompound", "setTag", "Lore", loreList);
+            displayCompound = Mappings.invoke(tagCompound, "getCompoundTag", "display");
+            Mappings.invoke(displayCompound, "setTag", "Lore", loreList);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -152,11 +148,11 @@ public class GraniteItemStack extends Composite implements ItemStack {
     }
 
     public void setDisplayName(String name) {
-        parent = invoke("ItemStack", "setStackDisplayName", name);
+        parent = invoke("setStackDisplayName", name);
     }
 
     public boolean hasDisplayName() {
-        return (boolean) invoke("ItemStack", "hasDisplayName");
+        return (boolean) invoke("hasDisplayName");
     }
 
     public int getStackSize() {

@@ -66,6 +66,18 @@
             <artifactId>guava</artifactId>
             <version>18.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>1.11</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -120,6 +132,7 @@
                                     <include>org.apache.logging.log4j:log4j-api</include>
                                     <include>org.apache.logging.log4j:log4j-core</include>
                                     <include>com.google.guava:guava</include>
+                                    <include>com.googlecode.json-simple:json-simple</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

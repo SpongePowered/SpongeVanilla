@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.chat;
+
 /*
  * License (MIT)
  *
@@ -15,35 +17,43 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.event.player;
+public enum ChatColor {
+    BLACK('0', "black"),
+    DARK_BLUE('1', "dark_blue"),
+    DARK_GREEN('2', "dark_green"),
+    DARK_AQUA('3', "dark_aqua"),
+    DARK_RED('4', "dark_red"),
+    DARK_PURPLE('5', "dark_purple"),
+    GOLD('6', "gold"),
+    GRAY('7', "gray"),
+    DARK_GRAY('8', "dark_gray"),
+    BLUE('9', "blue"),
+    GREEN('a', "green"),
+    AQUA('b', "aqua"),
+    RED('c', "red"),
+    LIGHT_PURPLE('d', "light_purple"),
+    YELLOW('e', "yellow"),
+    WHITE('f', "white");
+    //RESET('r', "reset");
+    private final String name;
+    private final char id;
 
-import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.block.ItemTypes;
-import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.inventory.Inventory;
-
-public class EventPlayerJoin extends Event {
-    private Player player;
-
-    public EventPlayerJoin(Player player) {
-        this.player = player;
-
-        Inventory i = Granite.getAPIHelper().createInventory("Test 123", 6);
-        i.setItemStack(5, ItemTypes.baked_potato.create(5));
-        player.openInventory(i);
+    ChatColor(char id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    /**
-     * Returns the player that joined
-     */
-    public Player getPlayer() {
-        return player;
+    public String getName() {
+        return name;
+    }
+
+    public char getId() {
+        return id;
     }
 }

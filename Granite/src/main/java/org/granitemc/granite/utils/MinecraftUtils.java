@@ -24,11 +24,10 @@
 package org.granitemc.granite.utils;
 
 import org.granitemc.granite.api.utils.Location;
+import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.chat.GraniteChatComponentText;
-import org.granitemc.granite.chat.GraniteChatComponentTranslation;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.item.GraniteEntityItem;
 import org.granitemc.granite.entity.player.GraniteEntityPlayer;
@@ -63,10 +62,6 @@ public class MinecraftUtils {
             return GraniteItemStack.new_(object, GraniteItemType.class);
         } else if (Mappings.getClass("World").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteWorld.class);
-        } else if (Mappings.getClass("ChatComponentText").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteChatComponentText.class);
-        } else if (Mappings.getClass("ChatComponentTranslation").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteChatComponentTranslation.class);
         } else if (Mappings.getClass("ItemStack").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteItemStack.class);
         }
@@ -121,9 +116,9 @@ public class MinecraftUtils {
     public static Vector fromMinecraftVector(Object minecraftVector) {
         try {
             return new Vector(
-                    (float) Mappings.getField("Vec3", "xCoord").get(minecraftVector),
-                    (float) Mappings.getField("Vec3", "yCoord").get(minecraftVector),
-                    (float) Mappings.getField("Vec3", "zCoord").get(minecraftVector)
+                    (double) Mappings.getField("Vec3", "xCoord").get(minecraftVector),
+                    (double) Mappings.getField("Vec3", "yCoord").get(minecraftVector),
+                    (double) Mappings.getField("Vec3", "zCoord").get(minecraftVector)
             );
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -138,5 +133,14 @@ public class MinecraftUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getTranslation(String key, Object... args) {
+        return (String) Mappings.invoke(Mappings.invokeStatic("StringTranslate", "getInstance"), "translateKeyFormat", key, args);
+    }
+
+    public static Object toMinecraftChatComponent(ChatComponent component) {
+        String json = component.toJson();
+        return Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
     }
 }

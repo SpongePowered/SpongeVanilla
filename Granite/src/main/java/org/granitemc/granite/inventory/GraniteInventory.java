@@ -27,15 +27,20 @@ import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteInventory extends Composite implements Inventory {
+    public GraniteInventory(String name, int size) {
+        super(Mappings.getClass("InventoryBasic"), new Class[]{String.class, boolean.class, int.class}, name, true, size);
+    }
+
     public GraniteInventory(Object parent) {
         super(parent);
     }
 
     public ItemStack getItemStack(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("IInventory", "getStackInSlot", slot));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getStackInSlot", slot));
     }
 
     public int getFirstEmptySlot() {
@@ -54,10 +59,10 @@ public class GraniteInventory extends Composite implements Inventory {
     }
 
     public void setItemStack(int slot, ItemStack itemStack) {
-        invoke("IInventory", "setInventorySlotContents", slot, ((GraniteItemStack) itemStack).parent);
+        invoke("setInventorySlotContents", slot, ((GraniteItemStack) itemStack).parent);
     }
 
     public int getSize() {
-        return (int) invoke("IInventory", "getSizeInventory");
+        return (int) invoke("getSizeInventory");
     }
 }

@@ -1,4 +1,4 @@
-package org.granitemc.granite.api.chat;
+package org.granitemc.granite.api.chat.click;
 
 /*
  * License (MIT)
@@ -23,31 +23,32 @@ package org.granitemc.granite.api.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public interface IChatComponentBuilder {
-    /**
-     * Adds a text string to the end of this {@link ChatComponentBuilder}
-     *
-     * @param text The text string
-     */
-    IChatComponentBuilder text(String text);
+import org.granitemc.granite.api.chat.ClickEvent;
 
-    /**
-     * Adds a translation to the end of this {@link ChatComponentBuilder}
-     *
-     * @param key  The key of the translation
-     * @param args The object arguments to pass to the translation
-     */
-    IChatComponentBuilder translation(String key, Object... args);
+import java.net.URL;
 
-    /**
-     * Adds a component to the end of this {@link ChatComponentBuilder}
-     *
-     * @param component The component
-     */
-    IChatComponentBuilder component(ChatComponent component);
+public class ClickEventOpenURL extends ClickEvent {
+    URL url;
 
-    /**
-     * Returns the underlying {@link ChatComponent}
-     */
-    ChatComponent build();
+    public ClickEventOpenURL(URL url) {
+        this.url = url;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    @Override
+    protected String getAction() {
+        return "open_url";
+    }
+
+    @Override
+    public Object getValue() {
+        return url.toString();
+    }
 }

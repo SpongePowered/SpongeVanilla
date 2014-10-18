@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.chat.click;
+
 /*
  * License (MIT)
  *
@@ -15,35 +17,36 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.event.player;
+import org.granitemc.granite.api.chat.ClickEvent;
 
-import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.block.ItemTypes;
-import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.inventory.Inventory;
+public class ClickEventSuggestCommand extends ClickEvent {
+    String command;
 
-public class EventPlayerJoin extends Event {
-    private Player player;
-
-    public EventPlayerJoin(Player player) {
-        this.player = player;
-
-        Inventory i = Granite.getAPIHelper().createInventory("Test 123", 6);
-        i.setItemStack(5, ItemTypes.baked_potato.create(5));
-        player.openInventory(i);
+    public ClickEventSuggestCommand(String command) {
+        this.command = command;
     }
 
-    /**
-     * Returns the player that joined
-     */
-    public Player getPlayer() {
-        return player;
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    @Override
+    protected String getAction() {
+        return "suggest_command";
+    }
+
+    @Override
+    public Object getValue() {
+        return command;
     }
 }

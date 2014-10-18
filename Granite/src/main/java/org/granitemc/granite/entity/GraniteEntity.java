@@ -264,6 +264,10 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("setInPortal");
     }
 
+    public boolean isEating() {
+        return (boolean) invoke("isEating");
+    }
+
     @Override
     public int getPortalCooldown() {
         return (int) invoke("getPortalCooldown");
@@ -317,11 +321,6 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setInvisible(boolean invisible) {
         invoke("setInvisible", invisible);
-    }
-
-    @Override
-    public boolean isEating() {
-        return (boolean) invoke("isEating");
     }
 
     @Override
@@ -380,6 +379,14 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) MinecraftUtils.wrap(invoke("hitByEntity", entity));
     }
 
+    public int getTeleportDirection() {
+        return (Integer) invoke("getTeleportDirection");
+    }
+
+    public boolean isPushedByWater() {
+        return (boolean) invoke("isPushedByWater");
+    }
+
     /*@Override
     public boolean isEntityInvulnerable(DamageSource damageSource) {
         return (boolean) MinecraftUtils.wrap(invoke("getExplosionResistance", damageSource));
@@ -420,22 +427,18 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("setCustomNameTag", nameTag);
     }
 
-    @Override
     public String getCustomNameTag() {
         return (String) invoke("getCustomNameTag");
     }
 
-    @Override
     public boolean hasCustomName() {
         return (boolean) invoke("hasCustomName");
     }
 
-    @Override
-    public void setAlwaysRenderNameTag(boolean renderNameTag) {
-        invoke("setAlwaysRenderNameTag", renderNameTag);
+    public void setAlwaysRenderNameTag(boolean bool) {
+        invoke("setAlwaysRenderNameTag", bool);
     }
 
-    @Override
     public boolean getAlwaysRenderNameTag() {
         return (boolean) invoke("getAlwaysRenderNameTag");
     }
@@ -445,9 +448,16 @@ public class GraniteEntity extends Composite implements Entity {
         return (float) invoke("getEyeHeight");
     }
 
-    @Override
+    public void setPosition(double xPos, double yPos, double zPos) {
+        invoke("setPosition", xPos, yPos, zPos);
+    }
+
+    public void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw) {
+        invoke("setPositionAndRotation", xPos, yPos, zPos, pitch, yaw);
+    }
+
     public boolean isOutsideBorder() {
-        return (boolean) invoke("isOutSideBorder");
+        return (boolean) invoke("isOutsideBorder");
     }
 
     /*@Override
@@ -494,6 +504,19 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setLocation(Location location) {
         invoke("setPositionAndRotation", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+    }
+
+    public Entity getEntityRidingThis() {
+        return (Entity) MinecraftUtils.wrap(fieldGet("riddenByEntity"));
+    }
+
+    public Entity getEntityRiddenByThis() {
+        return (Entity) MinecraftUtils.wrap(fieldGet("ridingEntity"));
+    }
+
+    @Override
+    public String getType() {
+        return (String) invoke("getEntityString");
     }
 
 }
