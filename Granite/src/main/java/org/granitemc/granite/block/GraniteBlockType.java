@@ -34,7 +34,6 @@ import org.granitemc.granite.utils.MinecraftUtils;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -90,53 +89,43 @@ public class GraniteBlockType extends Composite implements BlockType {
         return null;
     }
 
-    @Override
     public float getSlipperiness() {
         return (float) fieldGet("slipperiness");
     }
 
-    @Override
     public int getLightOpacity() {
         return (int) fieldGet("lightOpacity");
     }
 
-    @Override
     public int getLightValue() {
         return (int) fieldGet("lightValue");
     }
 
-    @Override
     public float getHardness() {
         return (float) fieldGet("blockHardness");
     }
 
-    @Override
     public float getBlastResistance() {
         return (float) fieldGet("blockResistance");
     }
 
-    @Override
     public boolean isOpaque() {
         return getLightOpacity() == 0;
     }
 
-    @Override
     public boolean isTransparent() {
         return !isOpaque();
     }
 
-    @Override
     public boolean canBlockGrass() {
         return (boolean) fieldGet("canBlockGrass");
     }
 
-    @Override
     public String getTechnicalName() {
         // Hacky hack
         return parent.toString().split(":")[1].split("\\[")[0].split(",")[0];
     }
 
-    @Override
     public ItemStack create(int amount) {
         return getItemStack(amount);
     }
@@ -177,7 +166,6 @@ public class GraniteBlockType extends Composite implements BlockType {
         }
     }
 
-    @Override
     public String getName() {
         return getItemStack(1).getDisplayName();
     }
@@ -186,22 +174,18 @@ public class GraniteBlockType extends Composite implements BlockType {
         return (String) fieldGet(invoke("getBlock"), "unlocalizedName");
     }
 
-    @Override
     public int getNumericId() {
         return BlockTypes.getIdFromBlock(this);
     }
 
-    @Override
     public Comparable getMetadata(String key) {
         return (Comparable) invoke("getValue", minecraftMetadataValuePossibilities.get(key));
     }
 
-    @Override
     public BlockType setMetadata(String key, Comparable value) {
         return (BlockType) MinecraftUtils.wrap(setValue(parent, key, value));
     }
 
-    @Override
     public boolean equals(BlockType that) {
         GraniteBlockType thatGbt = ((GraniteBlockType) that);
         if (!thatGbt.getUnlocalizedName().equals(thatGbt.getUnlocalizedName())) return false;
@@ -211,7 +195,6 @@ public class GraniteBlockType extends Composite implements BlockType {
         return true;
     }
 
-    @Override
     public boolean typeEquals(BlockType that) {
         GraniteBlockType thatGbt = ((GraniteBlockType) that);
         return getUnlocalizedName().equals(thatGbt.getUnlocalizedName());

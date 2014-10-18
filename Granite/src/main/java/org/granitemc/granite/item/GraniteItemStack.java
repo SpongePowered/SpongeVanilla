@@ -62,7 +62,7 @@ public class GraniteItemStack extends Composite implements ItemStack {
     }
 
     public GraniteItemStack(BlockType type, int size) {
-        this(((GraniteItemStack) ((GraniteItemType) type).create(size)).parent);
+        this(((GraniteItemStack) (type).create(size)).parent);
         //super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Block"), int.class}, ((GraniteBlockType) type).getBlockObject(), size);
     }
 

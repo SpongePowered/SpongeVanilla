@@ -28,6 +28,11 @@ import org.granitemc.granite.api.world.World;
 
 public interface Block {
     /**
+     * Returns the {@link org.granitemc.granite.api.world.World} this block is in
+     */
+    World getWorld();
+
+    /**
      * Returns the X position of this block
      */
     int getX();
@@ -43,21 +48,21 @@ public interface Block {
     int getZ();
 
     /**
-     * Returns the {@link org.granitemc.granite.api.world.World} this block is in
+     * Returns the {@link org.granitemc.granite.api.block.BlockType}
      */
-    World getWorld();
+    BlockType getBlockType();
 
     /**
-     * Returns the {@link org.granitemc.granite.api.block.BlockType} of this block
+     * Returns the {@link org.granitemc.granite.api.block.BlockType} of this block at the location specified
      */
-    BlockType getType();
+    BlockType getBlockTypeAtLocation();
 
     /**
-     * Sets the {@link org.granitemc.granite.api.block.BlockType} of this block - this will edit the block
+     * Sets the {@link org.granitemc.granite.api.block.BlockType} of this block at the location specified - this will edit the block
      *
      * @param type The type to set
      */
-    void setType(BlockType type);
+    void setBlockTypeAtLocation(BlockType type);
     
     /**
      * Returns the {@link org.granitemc.granite.api.utils.Location} of this block

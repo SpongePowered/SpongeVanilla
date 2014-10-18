@@ -32,10 +32,11 @@ import org.granitemc.granite.api.event.block.EventBlockBreak;
 import org.granitemc.granite.api.event.block.EventBlockPlace;
 import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -70,7 +71,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                 if (event.isCancelled()) {
                     hook.setWasHandled(true);
-                    ((GranitePlayer) p).sendBlockUpdate(b);
+                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
                     return false;
                 }
                 //}
@@ -103,14 +104,14 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     int direction = ((Enum) args[4]).ordinal();
 
-                    if (oldBlock.getType().typeEquals(BlockTypes.snow_layer) && (int) oldBlock.getType().getMetadata("layers") == 1) {
+                    if (oldBlock.getBlockTypeAtLocation().typeEquals(BlockTypes.snow_layer) && (int) oldBlock.getBlockTypeAtLocation().getMetadata("layers") == 1) {
                         // Not sure what this is for, but it's in MC's source
                         direction = 1;
                     } else if (!(boolean) Mappings.invoke(
-                            ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
+                            ((GraniteBlockType) oldBlock.getBlockTypeAtLocation()).getBlockObject(),
                             "isReplaceable",
                             ((GraniteWorld) w).parent,
-                            MinecraftUtils.createBlockPos(x, y, z)
+                            MinecraftUtils.toMinecraftLocation(new Location(x, y, z))
                     )) {
                         switch (direction) {
                             case 0:
@@ -134,7 +135,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                         }
                     }
 
-                    BlockType oldBlockType = w.getBlock(x, y, z).getType();
+                    BlockType oldBlockType = w.getBlock(x, y, z).getBlockTypeAtLocation();
 
                     // If the item used is an ItemBlock
                     if (Mappings.getClass("ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
@@ -151,14 +152,14 @@ public class ItemInWorldComposite extends ProxyComposite {
                             Block b = w.getBlock(x, y, z);
 
                             if (((GraniteBlockType) bt).parent != null && !bt.typeEquals(BlockTypes.air)) {
-                                b.setType(bt);
+                                b.setBlockTypeAtLocation(bt);
 
                                 EventBlockPlace event = new EventBlockPlace(b, p);
                                 Granite.getEventQueue().fireEvent(event);
 
-                                b.setType(oldBlockType);
+                                b.setBlockTypeAtLocation(oldBlockType);
                                 if (event.isCancelled()) {
-                                    ((GranitePlayer) p).sendBlockUpdate(b);
+                                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
                                 } else {
                                     hook.setWasHandled(false);
                                 }
@@ -176,13 +177,13 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                         if (retval) {
                             Block b = w.getBlock(x, y, z);
-                            if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
+                            if (((GraniteBlockType) b.getBlockTypeAtLocation()).parent != null && !b.getBlockTypeAtLocation().typeEquals(BlockTypes.air)) {
                                 EventBlockPlace event = new EventBlockPlace(b, p);
                                 Granite.getEventQueue().fireEvent(event);
 
                                 if (event.isCancelled()) {
-                                    b.setType(oldBlockType);
-                                    ((GranitePlayer) p).sendBlockUpdate(b);
+                                    b.setBlockTypeAtLocation(oldBlockType);
+                                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
                                 }
                             }
                         }

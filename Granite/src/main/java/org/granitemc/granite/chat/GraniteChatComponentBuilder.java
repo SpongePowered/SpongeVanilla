@@ -24,7 +24,6 @@
 package org.granitemc.granite.chat;
 
 import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.ChatComponentBuilder;
 import org.granitemc.granite.api.chat.IChatComponentBuilder;
 
 public class GraniteChatComponentBuilder implements IChatComponentBuilder {
@@ -39,7 +38,6 @@ public class GraniteChatComponentBuilder implements IChatComponentBuilder {
         return this;
     }
 
-    @Override
     public IChatComponentBuilder translation(String key, Object... args) {
         ChatComponent component = new GraniteChatComponentTranslation(key, args);
         if (this.component == null) {

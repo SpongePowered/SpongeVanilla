@@ -28,8 +28,10 @@ import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
+import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.api.world.World;
-import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.entity.player.GraniteEntityPlayer;
+import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
@@ -42,329 +44,456 @@ public class GraniteEntity extends Composite implements Entity {
         super(parent);
     }
 
-    public GraniteEntity(Object parent, boolean bool) {
-        super(parent);
-    }
-
+    @Override
     public int getEntityId() {
         return (Integer) invoke("getEntityID");
     }
 
+    @Override
     public void setDead() {
         invoke("setDead");
     }
 
+    @Override
     public void setSize(float width, float height) {
-        invoke("Entity", "setSize", width, height);
+        invoke("setSite", width, height);
     }
 
+    @Override
+    public int getMaxInPortalTime() {
+        return (Integer) invoke("getMaxTimeInPortal");
+    }
+
+    @Override
+    public void setOnFireFromLava() {
+        invoke("setOnFireFromLava");
+    }
+
+    @Override
     public void setFire(int seconds) {
         invoke("setFire", seconds);
     }
 
+    @Override
     public void extinguish() {
-        invoke("Entity", "extinguish");
+        invoke("extinguish");
     }
 
+    @Override
     public void kill() {
-        invoke("Entity", "kill");
+        invoke("kill");
     }
 
-    public void playSound(String soundName, float volume, float pitch) {
-        invoke("Entity", "playSound", soundName, volume, pitch);
+    @Override
+    public String getSwimSound() {
+        return (String) invoke("getSwimSound");
     }
 
+    @Override
+    public void playSound(String name, float volume, float pitch) {
+        invoke("playSound", name, volume, pitch);
+    }
+
+    @Override
+    public boolean isSilent() {
+        return (boolean) invoke("isSilent");
+    }
+
+    @Override
+    public void dealFireDamage(int amount) {
+        invoke("dealFireDamage", amount);
+    }
+
+    @Override
     public boolean isImmuneToFire() {
-        return (boolean) invoke("Entity", "isImmuneToFire");
+        return (boolean) invoke("isImmuneToFire");
     }
 
+    @Override
+    public void fall(float distance, float damageMultiplier) {
+        invoke("fall", distance, damageMultiplier);
+    }
+
+    @Override
     public boolean isWet() {
-        return (boolean) invoke("Entity", "isWet");
+        return (boolean) invoke("isWet");
     }
 
+    @Override
     public boolean isInWater() {
-        return (boolean) invoke("Entity", "isInWater");
+        return (boolean) invoke("isInWater");
     }
 
-    public void resetHeight() {
-        invoke("Entity", "resetHeight");
+    @Override
+    public void createRunningParticles() {
+        invoke("createRunningParticles");
     }
 
-    // TODO: bof is Material
-    /*public boolean isInsideOfMaterial(Material var1) {
-        return (boolean) invoke("isInsideOfMaterial");
-    }*/
-
-    public World getWorld() {
-        return (World) MinecraftUtils.wrap(invoke("getWorld"));
+    @Override
+    public String getSplashSound() {
+        return (String) invoke("getSplashSound");
     }
 
+    @Override
+    public boolean isInLava() {
+        return (boolean) invoke("isInLava");
+    }
+
+    @Override
+    public void moveFlying(float strafe, float forward, float friction) {
+        invoke("moveFlying", strafe, forward, friction);
+    }
+
+    @Override
     public void setWorld(World world) {
         invoke("setWorld", ((GraniteWorld) world).parent);
     }
 
+    @Override
     public float getDistanceToEntity(Entity entity) {
-        return (float) invoke("Entity", "getDistanceToEntity", entity);
+        if (getLocation().getWorld().equals(entity.getWorld())) {
+            return (float) invoke("getDistanceToEntity", entity);
+        }
+        throw new RuntimeException("You cannot get the distance between different worlds");
     }
 
+    @Override
+    public double getDistanceSq(Location location) {
+        if (getLocation().getWorld().equals(location.getWorld())) {
+            return (double) invoke("getDistanceSq", location.getX(), location.getY(), location.getZ());
+        }
+        throw new RuntimeException("You cannot get the distance between different worlds");
+    }
+
+    @Override
+    public double getDistanceSqToCenter(Location location) {
+        if (getLocation().getWorld().equals(location.getWorld())) {
+            return (double) invoke("getDistanceSq", location.getX(), location.getY(), location.getZ());
+        }
+        throw new RuntimeException("You cannot get the distance between different worlds");
+    }
+
+    @Override
+    public double getDistance(Location location) {
+        if (getLocation().getWorld().equals(location.getWorld())) {
+            return (double) invoke("getDistance", location.getX(), location.getY(), location.getZ());
+        }
+        throw new RuntimeException("You cannot get the distance between different worlds");
+    }
+
+    @Override
     public double getDistanceSqToEntity(Entity entity) {
-        return (double) invoke("Entity", "getDistanceSqToEntity", entity);
+        if (getLocation().getWorld().equals(entity.getWorld())) {
+            return (double) invoke("getDistanceSq", entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ());
+        }
+        throw new RuntimeException("You cannot get the distance between different worlds");
     }
 
+    @Override
     public void addVelocity(double x, double y, double z) {
-        invoke("Entity", "addVelocity", x, y, z);
+        invoke("addVelocity", x, y, z);
     }
 
+    @Override
+    public void setBeenAttacked() {
+        invoke("setBeenAttacked");
+    }
+
+    /*@Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        return (boolean) invoke("attackEntityFrom", source, amount);
+    }*/
+
+    @Override
+    public Vector getLook(float vec) {
+        return MinecraftUtils.fromMinecraftVector(invoke("getLook", vec));
+    }
+
+    @Override
     public boolean canBeCollidedWith() {
-        return (boolean) invoke("Entity", "canBeCollidedWith");
+        return (boolean) invoke("canBeCollidedWith");
     }
 
+    @Override
     public boolean canBePushed() {
-        return (boolean) invoke("Entity", "canBePushed");
+        return (boolean) invoke("canBePushed");
     }
 
-    public EntityItem entityDropItem(ItemStack itemStack, float yPos) {
-        return (EntityItem) MinecraftUtils.wrap(invoke("entityDropItem", itemStack, yPos));
+    @Override
+    public String getEntityString() {
+        return (String) invoke("getEntityString");
     }
 
+    @Override
+    public EntityItem entityDropItem(ItemStack itemStack, float offsetY) {
+        return (EntityItem) MinecraftUtils.wrap(invoke("entityDropItem", itemStack, offsetY));
+    }
+
+    @Override
     public boolean isEntityAlive() {
-        return (boolean) invoke("Entity", "isEntityAlive");
+        return (boolean) invoke("isEntityAlive");
     }
 
+    @Override
     public boolean isEntityInsideOpaqueBlock() {
-        return (boolean) invoke("Entity", "isEntityInsideOpaqueBlock");
+        return (boolean) invoke("isEntityInsideOpaqueBlock");
     }
 
+    @Override
+    public boolean interactFirst(Player player) {
+        return (boolean) invoke("interactFirst", ((GraniteEntityPlayer) player).parent);
+    }
+
+    @Override
+    public double getMountedYOffset() {
+        return (double) invoke("getMountedYOffset");
+    }
+
+    @Override
     public void mountEntity(Entity entity) {
-        invoke("Entity", "mountEntity", entity);
+        invoke("mountEntity", ((GraniteEntity) entity).parent);
     }
 
-    public boolean isEating() {
-        return (boolean) invoke("Entity", "isEating");
+    @Override
+    public Vector getLookVec() {
+        return MinecraftUtils.fromMinecraftVector(invoke("getLookVec"));
     }
 
-    public void setEating(boolean eating) {
-        invoke("Entity", "setEating", eating);
+    @Override
+    public void setInPortal() {
+        invoke("setInPortal");
     }
 
+    @Override
+    public int getPortalCooldown() {
+        return (int) invoke("getPortalCooldown");
+    }
+
+    @Override
     public ItemStack[] getInventory() {
-        return (ItemStack[]) MinecraftUtils.wrap(invoke("Entity", "getInventory"));
+        return (ItemStack[]) MinecraftUtils.wrap(invoke("getInventory"));
     }
 
-    public void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack) {
-        invoke("Entity", "setCurrentItemOrArmor", inventoryIndex, itemStack);
+    @Override
+    public void setCurrentItemOrArmor(int slot, ItemStack itemStack) {
+        invoke("setCurrentItemOrArmor", slot, ((GraniteItemStack) itemStack).parent);
     }
 
+    @Override
     public boolean isBurning() {
-        return (boolean) invoke("Entity", "isBurning");
+        return (boolean) invoke("isBurning");
     }
 
+    @Override
     public boolean isRiding() {
-        return (boolean) invoke("Entity", "isRiding");
+        return (boolean) invoke("isRiding");
     }
 
+    @Override
     public boolean isSneaking() {
-        return (boolean) invoke("Entity", "isSneaking");
+        return (boolean) invoke("isSneaking");
     }
 
+    @Override
     public void setSneaking(boolean sneaking) {
-        invoke("Entity", "setSneaking", sneaking);
+        invoke("setSneaking", sneaking);
     }
 
+    @Override
     public boolean isSprinting() {
-        return (boolean) invoke("Entity", "isSprinting");
+        return (boolean) invoke("isSprinting");
     }
 
+    @Override
     public void setSprinting(boolean sprinting) {
-        invoke("Entity", "setSprinting", sprinting);
+        invoke("setSprinting", sprinting);
     }
 
+    @Override
     public boolean isInvisible() {
-        return (boolean) invoke("Entity", "isInvisible");
+        return (boolean) invoke("isInvisible");
     }
 
+    @Override
     public void setInvisible(boolean invisible) {
-        invoke("Entity", "isInvisible", invisible);
+        invoke("setInvisible", invisible);
     }
 
+    @Override
+    public boolean isEating() {
+        return (boolean) invoke("isEating");
+    }
+
+    @Override
     public boolean getFlag(int flag) {
         return (boolean) invoke("getFlag", flag);
     }
 
-    public void setFlag(int flag, boolean bool) {
-        invoke("setFlag", flag, bool);
+    @Override
+    public void setFlag(int flag, boolean set) {
+        invoke("setFlag", flag, set);
     }
 
+    @Override
     public int getAir() {
-        return (Integer) invoke("Entity", "getAir");
+        return (Integer) invoke("getAir");
     }
 
-    public void setAir(int amount) {
-        invoke("Entity", "setAir", amount);
+    @Override
+    public void setAir(int air) {
+        invoke("setAir", air);
     }
 
+    @Override
     public void setInWeb() {
-        invoke("Entity", "setInWeb");
+        invoke("setInWeb");
     }
 
-    public String getCommandSenderName() {
-        return (String) invoke("Entity", "getCommandSenderName");
+    @Override
+    public String getName() {
+        return (String) invoke("getName");
     }
 
+    @Override
     public Entity[] getParts() {
-        Object[] nativeParts = (Object[]) invoke("Entity", "getParts");
+        Object[] nativeParts = (Object[]) invoke("getParts");
         Entity[] parts = new Entity[nativeParts.length];
 
         for (int i = 0; i < nativeParts.length; i++) {
             parts[i] = (Entity) MinecraftUtils.wrap(nativeParts[i]);
         }
-
         return parts;
     }
 
+    @Override
     public boolean isEntityEqual(Entity entity) {
-        return (boolean) invoke("Entity", "isEntityEqual", entity);
+        return (boolean) invoke("isEntityEqual", ((GraniteEntity) entity).parent);
     }
 
+    @Override
     public boolean canAttackWithItem() {
-        return (boolean) invoke("Entity", "canAttackWithItem");
+        return (boolean) invoke("canAttackWithItem");
     }
 
-    public int getTeleportDirection() {
-        return (Integer) invoke("Entity", "getTeleportDirection");
+    @Override
+    public boolean hitByEntity(Entity entity) {
+        return (boolean) MinecraftUtils.wrap(invoke("hitByEntity", entity));
     }
 
-    public boolean doesEntityNotTriggerPressurePlate() {
-        return (boolean) invoke("Entity", "doesEntityNotTriggerPressurePlate");
-    }
-
-    public UUID getUniqueID() {
-        return (UUID) invoke("Entity", "getUniqueID");
-    }
-
-    public boolean isPushedByWater() {
-        return (boolean) invoke("Entity", "isPushedByWater");
-    }
-
-    // TODO: wait until IChatComponent has been wrapped
-    /*public ho getDisplayName() {
-        return (ho) invoke("getDisplayName");
+    /*@Override
+    public boolean isEntityInvulnerable(DamageSource damageSource) {
+        return (boolean) MinecraftUtils.wrap(invoke("getExplosionResistance", damageSource));
     }*/
 
-    public void setCustomNameTag(String name) {
-        invoke("Entity", "setCustomNameTag", name);
+    @Override
+    public void travelToDimension(int dimensionId) {
+        invoke("travelToDimension", dimensionId);
     }
 
+    /*@Override
+    public float getExplosionResistance(Explosion explosion, World world, Location location, IBlockState blockState) {
+        return (float) MinecraftUtil.wrap(invoke("getExplosionResistance", explosion, world, location, blockState));
+    }*/
+
+    @Override
+    public int getMaxFallHeight() {
+        return (Integer) invoke("getMaxFallHeight");
+    }
+
+    @Override
+    public boolean doesEntityNotTriggerPressurePlate() {
+        return (boolean) invoke("doesEntityNotTriggerPressurePlate");
+    }
+
+    @Override
+    public UUID getUniqueID() {
+        return (UUID) invoke("getUniqueID");
+    }
+
+    /*@Override
+    public IChatComponent getDisplayName() {
+        return (IChatComponent) MinecraftUtil.wrap(invoke("getDisplayName"));
+    }*/
+
+    @Override
+    public void setCustomNameTag(String nameTag) {
+        invoke("setCustomNameTag", nameTag);
+    }
+
+    @Override
     public String getCustomNameTag() {
-        return (String) invoke("Entity", "getCustomNameTag");
+        return (String) invoke("getCustomNameTag");
     }
 
+    @Override
     public boolean hasCustomName() {
-        return (boolean) invoke("Entity", "hasCustomName");
+        return (boolean) invoke("hasCustomName");
     }
 
-    public void setAlwaysRenderNameTag(boolean bool) {
-        invoke("Entity", "setAlwaysRenderNameTag", bool);
+    @Override
+    public void setAlwaysRenderNameTag(boolean renderNameTag) {
+        invoke("setAlwaysRenderNameTag", renderNameTag);
     }
 
+    @Override
     public boolean getAlwaysRenderNameTag() {
-        return (boolean) invoke("Entity", "getAlwaysRenderNameTag");
+        return (boolean) invoke("getAlwaysRenderNameTag");
     }
 
-    public void setPosition(double xPos, double yPos, double zPos) {
-        invoke("Entity", "setPosition", xPos, yPos, zPos);
+    @Override
+    public float getEyeHeight() {
+        return (float) invoke("getEyeHeight");
     }
 
-    public void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw) {
-        invoke("Entity", "setPositionAndRotation", xPos, yPos, zPos, pitch, yaw);
-    }
-
+    @Override
     public boolean isOutsideBorder() {
-        return (boolean) invoke("Entity", "isOutsideBorder");
+        return (boolean) invoke("isOutSideBorder");
     }
+
+    /*@Override
+    public void addChatMessage(IChatComponent message) {
+        MinecraftUtils.wrap(invoke("addChatMessage", message));
+    }*/
+
+    @Override
+    public boolean canCommandSenderUseCommand(int permissionLevel, String command) {
+        return (boolean) invoke("canCommandSenderUseCommand", permissionLevel, command);
+    }
+
+    @Override
+    public Vector getPositionVector() {
+        return MinecraftUtils.fromMinecraftVector(invoke("getPositionVector"));
+    }
+
+    @Override
+    public World getWorld() {
+        return (World) MinecraftUtils.wrap(invoke("getEntityWorld"));
+    }
+
+    @Override
+    public Entity getCommandSenderEntity() {
+        return (Entity) MinecraftUtils.wrap(invoke("getCommandSenderEntity"));
+    }
+
+    @Override
+    public boolean sendCommandFeedback() {
+        return (boolean) invoke("sendCommandFeedback");
+    }
+
 
     /**
      * Granite Methods
      */
 
-    public void teleportToPlayer(Player player) {
-        GranitePlayer player2 = (GranitePlayer) player;
-        setLocation(player2.getLocation());
-    }
 
-    public double getDistanceToLocation(Location location) {
-        if (getLocation().getWorld().equals(location.getWorld())) {
-            return (double) invoke("Entity", "getDistanceToLocation", location.getX(), location.getY(), location.getZ());
-        }
-        throw new RuntimeException("You cannot get the distance between different worlds");
-    }
-
-    public double getDistanceSqToLocation(Location location) {
-        if (getLocation().getWorld().equals(location.getWorld())) {
-            return (double) invoke("Entity", "getDistanceSqToLocation", location.getX(), location.getY(), location.getZ());
-        }
-        throw new RuntimeException("You cannot get the distance between different worlds");
-    }
-
+    @Override
     public Location getLocation() {
-        return new Location(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
+        return new Location((double) fieldGet(this, "posX"), (double) fieldGet(this, "posY"), (double) fieldGet(this, "posZ"), (float) fieldGet(this, "rotationYaw"), (float) fieldGet(this, "rotationPitch"));
     }
 
+    @Override
     public void setLocation(Location location) {
-        setWorld(location.getWorld());
-        setX(location.getX());
-        setY(location.getY());
-        setZ(location.getZ());
-        setYaw(location.getYaw());
-        setPitch(location.getPitch());
-    }
-
-    public double getX() {
-        return (double) fieldGet("Entity", "posX");
-    }
-
-    public void setX(double xPos) {
-        fieldSet("Entity", "posX", xPos);
-    }
-
-    public double getY() {
-        return (double) fieldGet("Entity", "posY");
-    }
-
-    public void setY(double yPos) {
-        fieldSet("Entity", "posY", yPos);
-    }
-
-    public double getZ() {
-        return (double) fieldGet("Entity", "posZ");
-    }
-
-    public void setZ(double zPos) {
-        fieldSet("Entity", "posZ", zPos);
-    }
-
-    public float getPitch() {
-        return (float) fieldGet("Entity", "rotationPitch");
-    }
-
-    public void setPitch(float pitch) {
-        fieldSet("Entity", "rotationPitch", pitch);
-    }
-
-    public float getYaw() {
-        return (float) fieldGet("Entity", "rotationYaw");
-    }
-
-    public void setYaw(float yaw) {
-        fieldSet("Entity", "rotationYaw", yaw);
-    }
-
-    public Entity getEntityRidingThis() {
-        return (Entity) MinecraftUtils.wrap(fieldGet("Entity", "riddenByEntity"));
-    }
-
-    public Entity getEntityRiddenByThis() {
-        return (Entity) MinecraftUtils.wrap(fieldGet("Entity", "ridingEntity"));
+        invoke("setPositionAndRotation", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
 }

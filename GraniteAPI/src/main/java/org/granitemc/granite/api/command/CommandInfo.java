@@ -26,6 +26,7 @@
  */
 package org.granitemc.granite.api.command;
 
+
 import org.granitemc.granite.api.entity.player.Player;
 
 import java.util.List;

@@ -42,17 +42,14 @@ public class GraniteChatComponentTranslation extends Composite implements ChatCo
         return (ChatComponent) MinecraftUtils.wrap(invoke("IChatComponent", "appendSibling", component));
     }
 
-    @Override
     public String getText() {
         return (String) invoke("IChatComponent", "getUnformattedTextForChat");
     }
 
-    @Override
     public Object[] getArguments() {
         return (Object[]) fieldGet("formatArgs");
     }
 
-    @Override
     public String getKey() {
         return (String) fieldGet("key");
     }

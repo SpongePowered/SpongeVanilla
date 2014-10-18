@@ -29,51 +29,56 @@ import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
 public class GraniteBlock implements Block {
+    private World world;
     private int x;
     private int y;
     private int z;
     private BlockType type;
-    private World world;
 
-    public GraniteBlock(int x, int y, int z, GraniteBlockType type, World world) {
+    public GraniteBlock(Location location, GraniteBlockType type) {
+        this.world = location.getWorld();
+        this.x = (int) location.getX();
+        this.y = (int) location.getY();
+        this.z = (int) location.getZ();
+        this.type = type;
+    }
+
+    public GraniteBlock(World world, int x, int y, int z, GraniteBlockType type) {
+        this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
         this.type = type;
-        this.world = world;
     }
 
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public int getZ() {
-        return z;
-    }
-
-    @Override
     public World getWorld() {
         return world;
     }
 
-    @Override
-    public BlockType getType() {
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public BlockType getBlockType() {
+        return type;
+    }
+
+    public BlockType getBlockTypeAtLocation() {
         return world.getBlockTypeAtPosition(x, y, z);
     }
 
-    @Override
-    public void setType(BlockType type) {
+    public void setBlockTypeAtLocation(BlockType type) {
         world.setBlockTypeAtPosition(x, y, z, type);
     }
 
-	@Override
 	public Location getLocation() {
 		return new Location(world, x, y, z);
 	}

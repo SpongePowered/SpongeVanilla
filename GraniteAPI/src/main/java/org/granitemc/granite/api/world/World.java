@@ -25,10 +25,19 @@ package org.granitemc.granite.api.world;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.utils.Vector;
 
 public interface World {
+
+    /**
+     * Returns the {@link org.granitemc.granite.api.block.Block} at the specified location
+     *
+     * @param location The location
+     */
+    Block getBlock(Location location);
+
     /**
      * Returns the {@link org.granitemc.granite.api.block.Block} at the specified location
      *
@@ -106,7 +115,7 @@ public interface World {
     /**
      * Returns the world border of this world
      */
-    public WorldBorder getWorldBorder();
+//    public WorldBorder getWorldBorder();
 
     // TODO: is this needed?
     //public int getVersion();
