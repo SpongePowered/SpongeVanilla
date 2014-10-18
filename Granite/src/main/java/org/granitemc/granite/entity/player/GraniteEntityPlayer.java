@@ -1,19 +1,27 @@
 package org.granitemc.granite.entity.player;
 
+import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
+import org.granitemc.granite.api.inventory.Inventory;
+import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
+import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Player {
@@ -21,10 +29,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public GraniteEntityPlayer(Object parent) {
         super(parent);
     }
-
-    /**
-     * Entity Player
-     */
 
     @Override
     public boolean isUsingItem() {
@@ -287,12 +291,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
         return (boolean) invoke("replaceItemInInventory", slot, ((GraniteItemStack) itemStack).parent);
     }
 
-
-    /**
-     * Entity Player MP
-     */
-
-
     @Override
     public void addExperienceLevel(int amount) {
         invoke("addExperienceLevel", amount);
@@ -336,9 +334,10 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public void displayGui(IInteractionObject guiOwner) {
     }*/
 
-    /*@Override
-    public void displayGUIChest(IInventory chestInventory) {
-    }*/
+    @Override
+    public void displayGUIChest(Inventory chestInventory) {
+        invoke("displayGUIChest", ((GraniteInventory) chestInventory).parent);
+    }
 
     /*@Override
     public void displayVillagerTradeGui(IMerchant villager) {
@@ -399,10 +398,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
         invoke("setPlayerHealthUpdated");
     }
 
-    /*@Override
-    public void addChatComponentMessage(IChatComponent p_146105_1_) {
-    }*/
-
     @Override
     public void setItemInUse(ItemStack itemStack, int p_71008_2_) {
         invoke("setItemInUse", ((GraniteItemStack) itemStack).parent, p_71008_2_);
@@ -415,10 +410,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     /*@Override
     public void setGameType(WorldSettings.GameType gameType) {
-    }*/
-
-    /*@Override
-    public void addChatMessage(IChatComponent message) {
     }*/
 
     @Override
@@ -459,6 +450,58 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     @Override
     public long getLastActiveTime() {
         return (long) invoke("getLastActiveTime");
+    }
+
+    @Override
+    public PlayerInventory getPlayerInventory() {
+        return (PlayerInventory) MinecraftUtils.wrap(fieldGet("EntityPlayer", "inventory"));
+    }
+
+    @Override
+    public void sendPacket(Object packet) {
+        Mappings.invoke(fieldGet("playerNetServerHandler"), "sendPacket", packet);
+    }
+
+    @Override
+    public void sendBlockUpdate(Block block) {
+        try {
+            sendPacket(Mappings.getClass("S23PacketBlockChange").getConstructor(
+                    Mappings.getClass("World"),
+                    Mappings.getClass("BlockPos")
+            ).newInstance(
+                    ((GraniteWorld) getWorld()).parent,
+                    MinecraftUtils.toMinecraftLocation(new Location(block.getX(), block.getY(), block.getZ()))
+            ));
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendBlockUpdate(Block block, BlockType type) {
+        try {
+            Object packet = Mappings.getClass("S23PacketBlockChange").getConstructor(
+                    Mappings.getClass("World"),
+                    Mappings.getClass("BlockPos")
+            ).newInstance(
+                    ((GraniteWorld) getWorld()).parent,
+                    MinecraftUtils.toMinecraftLocation(new Location(block.getX(), block.getY(), block.getZ()))
+            );
+            fieldSet(packet, "field_148883_d", ((GraniteBlockType) type).parent);
+            sendPacket(packet);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(new TextComponent(message)));
+    }
+
+    @Override
+    public void sendMessage(ChatComponent component) {
+        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
     }
 
 }

@@ -3,7 +3,6 @@ package org.granitemc.granite.api.entity.player;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.entity.item.EntityItem;
@@ -13,7 +12,6 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public interface Player extends EntityLivingBase {

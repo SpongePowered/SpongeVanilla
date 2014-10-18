@@ -24,9 +24,7 @@
 package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.Logger;
-import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.event.EventQueue;
-import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;

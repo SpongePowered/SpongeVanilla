@@ -7,7 +7,6 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.utils.Vector;
-import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.MinecraftUtils;
 

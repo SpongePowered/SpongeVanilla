@@ -23,8 +23,8 @@
 
 package org.granitemc.granite.utils;
 
-import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.block.GraniteBlockType;

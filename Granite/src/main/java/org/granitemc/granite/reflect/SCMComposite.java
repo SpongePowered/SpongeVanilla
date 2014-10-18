@@ -27,7 +27,7 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.player.EventPlayerJoin;
 import org.granitemc.granite.api.event.player.EventPlayerQuit;
-import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -47,7 +47,7 @@ public class SCMComposite extends ProxyComposite {
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Player p = (Player) MinecraftUtils.wrap(args[1]);
 
-                PlayServerComposite psc = new PlayServerComposite(GraniteServerComposite.instance, args[0], (GranitePlayer) p);
+                PlayServerComposite psc = new PlayServerComposite(GraniteServerComposite.instance, args[0], (GraniteEntityPlayer) p);
 
                 try {
                     Field f = self.getClass().getSuperclass().getSuperclass().getDeclaredField("_playServerArgument");

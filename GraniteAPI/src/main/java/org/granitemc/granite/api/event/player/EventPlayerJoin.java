@@ -37,7 +37,7 @@ public class EventPlayerJoin extends Event {
 
         Inventory i = Granite.getAPIHelper().createInventory("Test 123", 6);
         i.setItemStack(5, ItemTypes.baked_potato.create(5));
-        player.openInventory(i);
+        player.displayGUIChest(i);
     }
 
     /**

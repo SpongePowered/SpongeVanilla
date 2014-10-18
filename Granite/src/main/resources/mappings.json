@@ -25,16 +25,6 @@
       "methods": {},
       "fields": {}
     },
-<<<<<<< HEAD
-=======
-    "EntityPlayerMP": {
-      "name": "qw",
-      "methods": {
-        "a(Lvq;)V": "displayGUIChest"
-      },
-      "fields": {"a": "playerNetServerHandler"}
-    },
->>>>>>> origin/master
     "MinecraftServer": {
       "name": "net.minecraft.server.MinecraftServer",
       "methods": {
@@ -282,7 +272,6 @@
       },
       "fields": {}
     },
-<<<<<<< HEAD
     "ServerConfigurationManager": {
       "name": "sn",
       "methods": {
@@ -375,8 +364,6 @@
       },
       "fields": {}
     },
-=======
->>>>>>> origin/master
     "WorldInfo": {
       "name": "bqo",
       "methods": {
@@ -476,8 +463,6 @@
         "h": "time"
       }
     },
-<<<<<<< HEAD
-=======
     "ServerConfigurationManager": {
       "name": "sn",
       "methods": {
@@ -650,7 +635,6 @@
       },
       "fields": {}
     },
->>>>>>> origin/master
     "NBTBase": {
       "name": "gd",
       "methods": {},
