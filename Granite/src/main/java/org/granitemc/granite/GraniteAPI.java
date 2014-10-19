@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
+import org.granitemc.granite.api.ServerConfig;
 import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
@@ -61,6 +62,8 @@ public class GraniteAPI implements API {
 
     private GraniteEventQueue eventQueue;
 
+    private ServerConfig config;
+
     public static void init() {
         try {
             Field impl = Granite.class.getDeclaredField("impl");
@@ -84,6 +87,8 @@ public class GraniteAPI implements API {
         logger = LogManager.getFormatterLogger("Granite");
 
         eventQueue = new GraniteEventQueue();
+
+        config = new GraniteServerConfig();
     }
 
     public PluginContainer getPluginContainer(String name) {
@@ -173,6 +178,11 @@ public class GraniteAPI implements API {
     @Override
     public EventQueue getEventQueue() {
         return eventQueue;
+    }
+
+    @Override
+    public ServerConfig getServerConfig() {
+        return config;
     }
 
     public void tick() {

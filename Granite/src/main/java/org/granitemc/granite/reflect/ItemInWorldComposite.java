@@ -32,10 +32,11 @@ import org.granitemc.granite.api.event.block.EventBlockBreak;
 import org.granitemc.granite.api.event.block.EventBlockPlace;
 import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.entity.player.GranitePlayer;
+import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -70,7 +71,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                 if (event.isCancelled()) {
                     hook.setWasHandled(true);
-                    ((GranitePlayer) p).sendBlockUpdate(b);
+                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
                     return false;
                 }
                 //}
@@ -110,7 +111,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                             ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
                             "isReplaceable",
                             ((GraniteWorld) w).parent,
-                            MinecraftUtils.createBlockPos(x, y, z)
+                            MinecraftUtils.toMinecraftLocation(new Location(x, y, z))
                     )) {
                         switch (direction) {
                             case 0:
@@ -157,6 +158,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                                 b.setType(oldBlockType);
                                 if (event.isCancelled()) {
+                                    p.sendBlockUpdate(b);
                                     p.sendBlockUpdate(b, oldBlockType);
                                     hook.setWasHandled(true);
                                 } else {
@@ -182,7 +184,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                                 if (event.isCancelled()) {
                                     b.setType(oldBlockType);
-                                    ((GranitePlayer) p).sendBlockUpdate(b);
+                                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
                                 }
                             }
                         }

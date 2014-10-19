@@ -23,27 +23,14 @@
 
 package org.granitemc.granite.api.event.player;
 
-import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.block.ItemTypes;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.inventory.Inventory;
 
 public class EventPlayerJoin extends Event {
     private Player player;
 
     public EventPlayerJoin(Player player) {
         this.player = player;
-
-        /*Inventory i = Granite.getAPIHelper().createInventory("Test 123", 2*9);
-        i.setItemStack(5, ItemTypes.baked_potato.create(5));
-        player.openInventory(i);*/
-
-        Inventory i = Granite.getAPIHelper().createInventory("TEST", 9);
-        i.setItemStack(1, ItemTypes.apple.create(10));
-        //info.commandSender.sendMessage("TOtal Size: " + i.getItemStack(1).getDisplayName());
-
-        player.openInventory(i);
     }
 
     /**

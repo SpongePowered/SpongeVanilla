@@ -44,6 +44,7 @@ public class EventPlayerInteract extends Event {
         RIGHT_CLICK_AIR,
         RIGHT_CLICK_BLOCK
     }
+
     private Player player;
     private InteractType interactType;
     private Block block;

@@ -1,34 +1,13 @@
-/*
- * License (MIT)
- *
- * Copyright (c) 2014. Granite Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the
- * following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package org.granitemc.granite.entity;
 
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.utils.Vector;
+import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 import java.util.Collection;
@@ -39,76 +18,94 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         super(parent);
     }
 
-    public GraniteEntityLivingBase(Object parent, boolean bool) {
-        super(parent);
+    @Override
+    public void killByVoid() {
+        invoke("killByVoid");
     }
 
-    public void killByVoidDamage() {
-        invoke("killByVoidDamage");
-    }
-
+    @Override
     public boolean canBreatheUnderwater() {
-        return (boolean) invoke("canBreathUnderwater");
+        return (boolean) invoke("canBreatheUnderwater");
     }
 
+    @Override
     public boolean isChild() {
         return (boolean) invoke("isChild");
     }
 
+    @Override
     public boolean isAdult() {
         return (boolean) invoke("isAdult");
     }
 
+    @Override
     public int decreaseAirSupply(int amount) {
         return (int) invoke("decreaseAirSupply", amount);
     }
 
+    @Override
     public int getExperiencePoints(Player player) {
         return (Integer) invoke("getExperiencePoints", player);
     }
 
+    @Override
     public boolean isPlayer() {
         return (boolean) invoke("isPlayer");
     }
 
+    @Override
     public EntityLivingBase getAITarget() {
-        return (EntityLivingBase) invoke("getAITarget");
+        return (EntityLivingBase) MinecraftUtils.wrap(invoke("getAITarget"));
     }
 
+    @Override
     public int getRevengeTimer() {
         return (Integer) invoke("getRevengeTimer");
     }
 
-    public void setRevengeTarget(EntityLivingBase entity) {
-        invoke("setRevengeTarget");
+    @Override
+    public void setRevengeTarget(EntityLivingBase entityLivingBase) {
+        invoke("setRevengeTarget", ((GraniteEntityLivingBase) entityLivingBase).parent);
     }
 
+    @Override
     public EntityLivingBase getLastAttacker() {
-        return (EntityLivingBase) invoke("getLastAttacker");
+        return (EntityLivingBase) MinecraftUtils.wrap(invoke("getLastAttacker"));
     }
 
+    @Override
     public int getLastAttackerTime() {
-        return (Integer) invoke("getLastAttackerTimer");
+        return (Integer) invoke("getLastAttackerTime");
     }
 
+    @Override
     public void setLastAttacker(Entity entity) {
-        invoke("setLastAttacker", entity);
+        invoke("setLastAttacker", ((GraniteEntity) entity).parent);
     }
 
+    @Override
     public int getAge() {
         return (Integer) invoke("getAge");
     }
 
+    @Override
     public void clearActivePotions() {
         invoke("clearActivePotions");
     }
 
+    @Override
     public Collection getActivePotionEffects() {
         return (Collection) invoke("getActivePotionEffects");
     }
 
+    @Override
     public boolean isPotionActive(int potion) {
         return (boolean) invoke("isPotionActive", potion);
+    }
+
+    @Override
+    public boolean isEntityUndead() {
+        return (boolean) invoke("isEntityUndead");
     }
 
     //TODO: Enable after Potion is made
@@ -130,28 +127,38 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         invoke (boolean) ("isPotionApplicable", potion);
     }*/
 
-    public boolean isEntityUndead() {
-        return (boolean) invoke("isEntityUndead");
-    }
-
     public void removePotionEffectClient(int potion) {
         invoke("removePotionEffectClient", potion);
     }
 
+    @Override
     public void removePotionEffect(int potion) {
         invoke("removePotionEffect", potion);
     }
 
+    @Override
     public void heal(float amount) {
         invoke("heal", amount);
     }
 
-    public final float getHealth() {
+    @Override
+    public float getHealth() {
         return (float) invoke("getHealth");
     }
 
+    @Override
     public void setHealth(float amount) {
         invoke("setHealth", amount);
+    }
+
+    @Override
+    public void renderBrokenItemStack(ItemStack itemStack) {
+        invoke("renderBrokenItemStack", ((GraniteItemStack) itemStack).parent);
+    }
+
+    @Override
+    public void knockBack(Entity entity, float par1, double par2, double par3) {
+        invoke("knockBack", ((GraniteEntity) entity).parent, par1, par2, par3);
     }
 
     //TODO: Enable after DamageSource is made
@@ -160,17 +167,19 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         return (boolean) invoke("attackEntityFrom", source, amount);
     }*/
 
-    //TODO: Work out parameters
-    public void knockBack(Entity entity, float p_70653_2_, double p_70653_3_, double p_70653_5_) {
-        invoke("knockBack", entity, p_70653_2_, p_70653_3_, p_70653_5_);
-    }
-
+    @Override
     public String getHurtSound() {
         return (String) invoke("getHurtSound");
     }
 
+    @Override
     public String getDeathSound() {
         return (String) invoke("getDeathSound");
+    }
+
+    @Override
+    public void addRandomArmor() {
+        invoke("addRandomArmor");
     }
 
     public boolean isOnLadder() {
@@ -185,6 +194,7 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         invoke("fall", distance, damageMultiplier);
     }
 
+    @Override
     public String getFallDamageSound(int blocksFallen) {
         return (String) invoke("getFallDamageSound", blocksFallen);
     }
@@ -193,6 +203,7 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         invoke("preformHurtAnimation");
     }
 
+    @Override
     public int getTotalArmorValue() {
         return (Integer) invoke("getTotalArmorValue");
     }
@@ -223,6 +234,7 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         invoke("setArrowCountInEntity", amount);
     }
 
+    @Override
     public void swingItem() {
         invoke("swingItem");
     }
@@ -231,12 +243,24 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         invoke("kill");
     }
 
+    @Override
     public ItemStack getHeldItem() {
         return (ItemStack) MinecraftUtils.wrap(invoke("getHeldItem"));
     }
 
+    @Override
     public ItemStack getEquipmentInSlot(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot, slot"));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getEquipmentInSlot", slot));
+    }
+
+    @Override
+    public float getSoundVolume() {
+        return (float) invoke("getSoundVolume");
+    }
+
+    @Override
+    public float getSoundPitch() {
+        return (float) invoke("getSoundPitch");
     }
 
     public ItemStack getCurrentArmor(int armorSlot) {
@@ -255,12 +279,30 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         return (ItemStack[]) MinecraftUtils.wrap(invoke("getInventory"));
     }
 
+    @Override
     public void dismountEntity(Entity entity) {
+        invoke("dismountEntity", ((GraniteEntity) entity).parent);
         invoke("dismountEntity", entity);
     }
 
+    @Override
     public void jump() {
         invoke("jump");
+    }
+
+    @Override
+    public void moveEntityWithHeading(float yaw, float pitch) {
+        invoke("moveEntityWithHeading", yaw, pitch);
+    }
+
+    @Override
+    public boolean attackEntityAsMob(Entity entity) {
+        return (boolean) invoke("attackEntityAsMob", ((GraniteEntity) entity).parent);
+    }
+
+    @Override
+    public boolean isPlayerSleeping() {
+        return (boolean) invoke("isPlayerSleeping");
     }
 
     public float getAIMoveSpeed() {
@@ -279,37 +321,44 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
         invoke("setJumping", jumping);
     }
 
-    public boolean canEntityBeSeen(Entity entity) {
-        return (boolean) invoke("canEntityBeSeen", entity);
+    @Override
+    public Vector getLook(float par1) {
+        return MinecraftUtils.fromMinecraftVector(invoke("getLook", par1));
     }
 
+    @Override
+    public boolean canEntityBeSeen(Entity entity) {
+        return (boolean) invoke("canEntityBeSeen", ((GraniteEntity) entity).parent);
+    }
+
+    @Override
     public float getAbsorptionAmount() {
         return (float) invoke("getAbsorptionAmount");
     }
 
+    @Override
     public void setAbsorptionAmount(float amount) {
         invoke("setAbsorptionAmount", amount);
     }
 
     @Override
-    public Vector getLookDirection() {
-        return MinecraftUtils.fromMinecraftVector(invoke("getLook", 1.0F));
+    public boolean isOnSameTeam(EntityLivingBase entityLivingBase) {
+        return (boolean) invoke("isOnTheSameTeam", ((GraniteEntityLivingBase) entityLivingBase).parent);
     }
 
     @Override
     public RayTraceResult rayTrace(double maxDistance, boolean stopOnLiquid) {
-        Vector eyeVector = new Vector(getX(), getY(), getZ());
+        Location location = getLocation();
+        Vector eyeVector = new Vector(location.getX(), location.getY(), location.getZ());
         eyeVector.setY(eyeVector.getY() + getEyeHeight());
 
-        return getWorld().rayTrace(eyeVector, getLookDirection(), maxDistance, stopOnLiquid);
+        return getWorld().rayTrace(eyeVector, getLook(1.0f), maxDistance, stopOnLiquid);
     }
 
-    @Override
+
     public float getEyeHeight() {
         return (float) invoke("getEyeHeight");
     }
-
-
 
     //TODO: Enable after Team has been made
     /*

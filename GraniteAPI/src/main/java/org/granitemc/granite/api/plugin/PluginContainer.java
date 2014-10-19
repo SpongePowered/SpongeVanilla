@@ -83,8 +83,6 @@ public class PluginContainer {
                 }
             }
         }
-
-        dataDirectory
     }
 
     public void enable() {
@@ -103,7 +101,8 @@ public class PluginContainer {
         registerCommandHandler(instance);
         registerEventHandler(instance);
 
-        config = new CfgFile();
+        dataDirectory = new File(Granite.getServerConfig().getPluginDataDirectory(), getName());
+        config = new CfgFile(new File(dataDirectory, "config.conf"));
 
         try {
             for (Method m : onEnableHandlers) {
@@ -220,5 +219,9 @@ public class PluginContainer {
 
     public CfgFile getConfig() {
         return config;
+    }
+
+    public File getDataDirectory() {
+        return dataDirectory;
     }
 }

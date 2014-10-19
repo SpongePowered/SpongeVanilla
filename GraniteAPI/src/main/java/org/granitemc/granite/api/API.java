@@ -78,4 +78,6 @@ public interface API {
      * Returns the server {@link org.granitemc.granite.api.event.EventQueue}
      */
     EventQueue getEventQueue();
+
+    ServerConfig getServerConfig();
 }

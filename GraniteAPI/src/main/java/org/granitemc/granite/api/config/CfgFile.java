@@ -1,7 +1,6 @@
 package org.granitemc.granite.api.config;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class CfgFile extends CfgObject {
@@ -18,8 +17,10 @@ public class CfgFile extends CfgObject {
 
     public void loadOnce(File file) {
         try {
+            file.getAbsoluteFile().getParentFile().mkdirs();
+            if (!file.exists()) file.createNewFile();
             this.value = ((CfgObject) CfgValue.read(file)).value;
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

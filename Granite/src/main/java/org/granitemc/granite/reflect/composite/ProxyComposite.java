@@ -26,7 +26,6 @@ package org.granitemc.granite.reflect.composite;
 import javassist.util.proxy.MethodHandler;
 import org.granitemc.granite.reflect.ReflectionUtils;
 import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.SignatureParser;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

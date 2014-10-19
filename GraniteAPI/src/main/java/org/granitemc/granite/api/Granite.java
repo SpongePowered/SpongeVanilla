@@ -95,4 +95,8 @@ public class Granite {
     public static APIHelper getAPIHelper() {
         return helper;
     }
+
+    public static ServerConfig getServerConfig() {
+        return impl.getServerConfig();
+    }
 }

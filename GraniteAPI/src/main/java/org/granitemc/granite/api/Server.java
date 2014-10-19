@@ -214,6 +214,4 @@ public interface Server extends CommandSender {
      * Returns the proxy this server is using
      */
     Proxy getServerProxy();
-
-    ServerConfig getServerConfig();
 }

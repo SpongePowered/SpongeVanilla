@@ -101,7 +101,10 @@ public abstract class CfgValue {
             } else if (val instanceof CfgObject) {
                 Map<String, ConfigValue> raw = new HashMap<>();
 
-                for (Map.Entry<String, CfgValue> entry : ((CfgObject) val).entrySet()) {
+                Map<String, CfgValue> merged = new HashMap<>();
+                merged.putAll(((CfgObject) val).defaults);
+                merged.putAll(((CfgObject) val).value);
+                for (Map.Entry<String, CfgValue> entry : merged.entrySet()) {
                     raw.put(entry.getKey(), toHoconValue(entry.getValue()));
                 }
 
@@ -116,6 +119,19 @@ public abstract class CfgValue {
             e.printStackTrace();
         }
         return value;
+    }
+
+    public static CfgValue fromObject(Object obj) {
+        CfgValue cfgValue;
+        if (obj instanceof Map) {
+            cfgValue = new CfgObject((Map<String, CfgValue>) obj);
+        } else if (obj instanceof List) {
+            cfgValue = new CfgList((List<CfgValue>) obj);
+        } else {
+            cfgValue = new CfgPrimitive((Serializable) obj);
+        }
+
+        return cfgValue;
     }
 
     public static CfgValue read(Reader reader) {
@@ -145,7 +161,9 @@ public abstract class CfgValue {
     }
 
     public void write(File file) throws IOException {
-        write(new FileWriter(file));
+        FileWriter f = new FileWriter(file);
+        write(f);
+        f.close();
     }
 
     public void write(Writer writer) throws IOException {

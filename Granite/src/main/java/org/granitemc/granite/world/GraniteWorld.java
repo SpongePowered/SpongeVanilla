@@ -26,10 +26,10 @@ package org.granitemc.granite.world;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.utils.Facing;
+import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.api.world.World;
-import org.granitemc.granite.api.world.WorldBorder;
 import org.granitemc.granite.block.GraniteBlock;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.reflect.composite.Composite;
@@ -39,6 +39,11 @@ import org.granitemc.granite.utils.MinecraftUtils;
 public class GraniteWorld extends Composite implements World {
     public GraniteWorld(Object parent) {
         super(parent);
+    }
+
+    @Override
+    public Block getBlock(Location location) {
+        return getBlock((int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     @Override
@@ -56,14 +61,14 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public BlockType getBlockTypeAtPosition(int x, int y, int z) {
-        Object blockType = invoke("getBlock", MinecraftUtils.createBlockPos(x, y, z));
+        Object blockType = invoke("getBlock", MinecraftUtils.toMinecraftLocation(new Location(x, y, z)));
 
         return (BlockType) MinecraftUtils.wrap(blockType);
     }
 
     @Override
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type) {
-        invoke("setBlock", MinecraftUtils.createBlockPos(x, y, z), ((GraniteBlockType) type).parent);
+        invoke("setBlock", MinecraftUtils.toMinecraftLocation(new Location(x, y, z)), ((GraniteBlockType) type).parent);
     }
 
     // TODO: No direct method to get dimension in MC1.8
@@ -129,10 +134,10 @@ public class GraniteWorld extends Composite implements World {
         Mappings.invoke(getWorldInfo(), "setLevelName", s);
     }
 
-    @Override
+/*    @Override
     public WorldBorder getWorldBorder() {
         return new GraniteWorldBorder(this);
-    }
+    }*/
 
     public int getVersion() {
         return (int) Mappings.invoke(getWorldInfo(), "getVersion");

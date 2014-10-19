@@ -27,395 +27,181 @@ import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
+import org.granitemc.granite.api.utils.Vector;
 import org.granitemc.granite.api.world.World;
 
 import java.util.UUID;
 
 public interface Entity {
-    /**
-     * Returns the entity ID
-     */
+
     int getEntityId();
 
-    boolean equals(Object object);
-
-    /**
-     * Sets the entity to be dead
-     */
     void setDead();
 
-    /**
-     * Sets the size of this entity
-     *
-     * @param width  The width in blocks
-     * @param height The height in blocks
-     */
-    // TODO: check if this actually does anything
     void setSize(float width, float height);
 
-    /**
-     * Sets this entity on fire
-     *
-     * @param seconds The amount of seconds
-     */
+    int getMaxInPortalTime();
+
+    void setOnFireFromLava();
+
     void setFire(int seconds);
 
-    /**
-     * Extinguishes any fire
-     */
     void extinguish();
 
-    /**
-     * Kills this entity
-     */
     void kill();
 
-    /**
-     * Plays a sound to the entity
-     *
-     * @param soundName The name of the sound played
-     * @param volume    The volume of the sound to be played, where 1.0F is normal
-     * @param pitch     The pitch of the sound to be played, where 1.0F is normal
-     */
-    void playSound(String soundName, float volume, float pitch);
+    String getSwimSound();
 
-    /**
-     * Returns whether the entity is immune to fire
-     */
+    void playSound(String name, float volume, float pitch);
+
+    boolean isSilent();
+
+    void dealFireDamage(int amount);
+
     boolean isImmuneToFire();
 
-    /**
-     * Returns whether the entity is wet
-     */
+    void fall(float distance, float damageMultiplier);
+
     boolean isWet();
 
-    /**
-     * Returns whether the entity is in water
-     */
-    // TODO: Check if this is the same as #isWet
     boolean isInWater();
 
-    /**
-     * Resets the height of the entity
-     */
-    void resetHeight();
+    void createRunningParticles();
 
-    //TODO: Work out what var1 (class bof) is
-    /*boolean isInsideOfMaterial(Material var1);*/
+    String getSplashSound();
 
-    /**
-     * Returns the world the Entity is currently in
-     */
-    World getWorld();
+    boolean isInLava();
 
-    /**
-     * Sets the {@link org.granitemc.granite.api.world.World} this entity is in
-     *
-     * @param world The world
-     */
+    void moveFlying(float strafe, float forward, float friction);
+
     void setWorld(World world);
 
-    //TODO: Work out what class dt is
-    /*void a(dt var1, float var2, float var3);*/
-
-    /**
-     * Returns the distance to another entity
-     *
-     * @param entity The other entity
-     */
     float getDistanceToEntity(Entity entity);
 
-    //TODO: Find out what class dt is
-    /*double b(dt var1);*/
+    double getDistanceSq(Location location);
 
-    //TODO: Find out what class dt is
-    /*double c(dt var1);*/
+    double getDistanceSqToCenter(Location location);
 
-    /**
-     * Returns the squared distance to another entity, this is much faster than {@link #getDistanceToEntity(Entity)}
-     *
-     * @param entity The other entity
-     */
+    double getDistance(Location location);
+
     double getDistanceSqToEntity(Entity entity);
 
-    /**
-     * Adds velocity to this entity
-     *
-     * @param x X velocity
-     * @param y Y velocity
-     * @param z Z velocity
-     */
     void addVelocity(double x, double y, double z);
 
-    /**
-     * Returns whether this entity can be collided with
-     */
+    void setBeenAttacked();
+
+    /*boolean attackEntityFrom(DamageSource source, float amount);*/
+
+    Vector getLook(float vec);
+
     boolean canBeCollidedWith();
 
-    /**
-     * Returns whether this entity can be pushed
-     */
     boolean canBePushed();
 
+    String getEntityString();
 
-    /**
-     * Drops a ItemStack at the entity's position. yPos adds to the current yPos of the Entity
-     *
-     * @param itemStack ItemStack
-     * @param yPos      Adds to the current Y position of the Entity
-     */
-    EntityItem entityDropItem(ItemStack itemStack, float yPos);
+    EntityItem entityDropItem(ItemStack itemStack, float offsetY);
 
-    /**
-     * Returns whether this entity is alive
-     */
     boolean isEntityAlive();
 
-    /**
-     * Returns whether this entity is inside an opaque block
-     */
     boolean isEntityInsideOpaqueBlock();
 
-    /**
-     * Mounts this entity on top of another entity
-     *
-     * @param entity The other entity
-     */
+    boolean interactFirst(Player player);
+
+    double getMountedYOffset();
+
     void mountEntity(Entity entity);
 
-    /**
-     * Returns whether this entity is eating
-     */
-    boolean isEating();
+    Vector getLookVec();
 
-    /**
-     * Sets whether this entity is eating
-     *
-     * @param eating Whether this entity is eating
-     */
-    void setEating(boolean eating);
+    void setInPortal();
 
-    /**
-     * Returns a ItemStack array of the inventory
-     */
+    int getPortalCooldown();
+
     ItemStack[] getInventory();
 
-    /**
-     * Sets an inventory or armor slot
-     *
-     * @param inventoryIndex The index to set
-     * @param itemStack      The {@link org.granitemc.granite.api.item.ItemStack} to set to
-     */
-    // TODO: explain index or change
-    void setCurrentItemOrArmor(int inventoryIndex, ItemStack itemStack);
+    void setCurrentItemOrArmor(int slot, ItemStack itemStack);
 
-    /**
-     * Returns whether this entity is currently burning
-     */
     boolean isBurning();
 
-    /**
-     * Returns whether this entity is currently riding another entity
-     */
     boolean isRiding();
 
-    /**
-     * Returns whether this entity is currently sneaking
-     */
     boolean isSneaking();
 
-    /**
-     * Sets whether this entity is sneaking
-     *
-     * @param sneaking Whether this entity is sneaking
-     */
     void setSneaking(boolean sneaking);
 
-    /**
-     * Returns whether this entity is sprinting
-     */
     boolean isSprinting();
 
-    /**
-     * Sets whether this entity is sneaking
-     *
-     * @param sprinting Whether this entity is sneaking
-     */
     void setSprinting(boolean sprinting);
 
-    /**
-     * Returns whether this entity is invisible
-     */
     boolean isInvisible();
 
-    /**
-     * Sets whether this entity is invisible
-     *
-     * @param invisible Whether this entity is invisible
-     */
     void setInvisible(boolean invisible);
 
-    /**
-     * Returns if the flag is true or false
-     *
-     * @param flag 0 is burning, 1 is sneaking, 2 is riding something, 3 is sprinting, 4 is eating
-     */
+    boolean isEating();
+
     boolean getFlag(int flag);
 
-    /**
-     * Sets flags for the Entity
-     *
-     * @param flag 0 is burning, 1 is sneaking, 2 is riding something, 3 is sprinting, 4 is eating
-     * @param bool Sets the flag to true or false
-     */
-    void setFlag(int flag, boolean bool);
+    void setFlag(int flag, boolean set);
 
-    /**
-     * Returns how much air this entity has left
-     */
     int getAir();
 
-    /**
-     * Sets how much air this entity has left
-     *
-     * @param amount How much air this entity has left
-     */
-    void setAir(int amount);
+    void setAir(int air);
 
-    /**
-     * Sets this entity to be in a web
-     */
     void setInWeb();
 
-    /**
-     * Returns the command sender name of this entity
-     */
-    String getCommandSenderName();
+    String getName();
 
-    /**
-     * Returns the parts of this entity
-     */
-    // TODO: figure out what this thing
     Entity[] getParts();
 
-    /**
-     * Returns whether this entity is equal to another entity
-     *
-     * @param entity The other entity
-     */
     boolean isEntityEqual(Entity entity);
 
-    /**
-     * Returns whether this entity can attack with an item
-     */
     boolean canAttackWithItem();
 
-    /**
-     * Returns the Minecraft yaw direction. i.e 180 is north
-     */
-    int getTeleportDirection();
+    boolean hitByEntity(Entity entity);
 
-    /**
-     * Returns if the entity can trigger a pressure plate
-     */
+    /*boolean isEntityInvulnerable(DamageSource p_180431_1_);*/
+
+    void travelToDimension(int dimensionId);
+
+    /*float getExplosionResistance(Explosion p_180428_1_, World worldIn, Location location, IBlockState p_180428_4_);*/
+
+    int getMaxFallHeight();
+
     boolean doesEntityNotTriggerPressurePlate();
 
-    /**
-     * Returns the UUID of this entity
-     */
     UUID getUniqueID();
 
-    /**
-     * Returns whether this entity is currently being pushed by water
-     */
-    boolean isPushedByWater();
+    /*IChatComponent getDisplayName();*/
 
-    //TODO: Find Suitable name and get ho class
-    /*ho getDisplayName();*/
+    void setCustomNameTag(String nameTag);
 
-    /**
-     * Sets the name above an Entity to the String given
-     *
-     * @param name The custom name
-     */
-    void setCustomNameTag(String name);
-
-    /**
-     * Returns the custom name given to the entity
-     */
     String getCustomNameTag();
 
-    /**
-     * Returns if the Entity has a custom name
-     */
     boolean hasCustomName();
 
-    /**
-     * Sets if the name tag should be rendered or not
-     *
-     * @param bool if it should be rendered
-     */
-    void setAlwaysRenderNameTag(boolean bool);
+    void setAlwaysRenderNameTag(boolean renderNameTag);
 
-    /**
-     * Returns if the name tag is being rendered
-     */
     boolean getAlwaysRenderNameTag();
 
-    /**
-     * Sets the Entity's x, y, z and then updates the player
-     *
-     * @param xPos Entity X position
-     * @param yPos Entity Y position
-     * @param zPos Entity Z position
-     */
-    void setPosition(double xPos, double yPos, double zPos);
+    float getEyeHeight();
 
-    /**
-     * @param xPos  Entity X position
-     * @param yPos  Entity Y position
-     * @param zPos  Entity Z position
-     * @param pitch Entity Pitch
-     * @param yaw   Entity Yaw
-     */
-    void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw);
-
-    /**
-     * Returns if the Entity is outside the world boarder
-     */
     boolean isOutsideBorder();
 
-    /**
-     * Teleports the entity to a player
-     *
-     * @param player The player to teleport to
-     */
-    void teleportToPlayer(Player player);
+    /*void addChatMessage(IChatComponent message);*/
 
-    /**
-     * Returns the distance to a {@link org.granitemc.granite.api.utils.Location}
-     *
-     * @param location The location
-     */
-    double getDistanceToLocation(Location location);
+    boolean canCommandSenderUseCommand(int permissionLevel, String command);
 
-    /**
-     * Returns the squared distance to a location, this is much faster than {@link #getDistanceToLocation(org.granitemc.granite.api.utils.Location)}
-     *
-     * @param location The location
-     */
-    double getDistanceSqToLocation(Location location);
+    Vector getPositionVector();
 
-    /**
-     * Returns the location of this entity
-     */
+    World getWorld();
+
+    Entity getCommandSenderEntity();
+
+    boolean sendCommandFeedback();
+
     Location getLocation();
 
-    /**
-     * Sets the location of the entity
-     *
-     * @param location The location
-     */
     void setLocation(Location location);
 
     /**

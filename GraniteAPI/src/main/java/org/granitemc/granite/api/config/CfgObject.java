@@ -1,10 +1,13 @@
 package org.granitemc.granite.api.config;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class CfgObject extends CfgCollection implements Map<String, CfgValue> {
     Map<String, CfgValue> value;
+    CfgObject defaults;
 
     public CfgObject() {
         value = new HashMap<>();
@@ -60,20 +63,20 @@ public class CfgObject extends CfgCollection implements Map<String, CfgValue> {
 
     @Override
     public CfgValue get(Object key) {
-        return value.get(key);
+        CfgValue ret = super.get((String) key);
+        if (ret == null) {
+            if (defaults == null) defaults = new CfgObject();
+            ret = defaults.get(key);
+        }
+        return ret;
+    }
+
+    public CfgValue get(String path) {
+        return get((Object) path);
     }
 
     public CfgValue put(String key, Object value) {
-        CfgValue cfgValue;
-        if (value instanceof Map) {
-            cfgValue = new CfgObject((Map<String, CfgValue>) value);
-        } else if (value instanceof List) {
-            cfgValue = new CfgList((List<CfgValue>) value);
-        } else {
-            cfgValue = new CfgPrimitive((Serializable) value);
-        }
-
-        return put(key, cfgValue);
+        return put(key, CfgValue.fromObject(value));
     }
 
     @Override
@@ -128,5 +131,14 @@ public class CfgObject extends CfgCollection implements Map<String, CfgValue> {
         return "CfgObject{" +
                 "value=" + value +
                 '}';
+    }
+
+    public void addDefault(String path, CfgValue value) {
+        if (defaults == null) defaults = new CfgObject();
+        defaults.put(path, value);
+    }
+
+    public void addDefault(String path, Object value) {
+        addDefault(path, CfgValue.fromObject(value));
     }
 }
