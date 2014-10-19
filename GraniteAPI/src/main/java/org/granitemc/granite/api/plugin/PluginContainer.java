@@ -68,7 +68,7 @@ public class PluginContainer {
 
         for (Method m : clazz.getDeclaredMethods()) {
             if (m.isAnnotationPresent(OnEnable.class)) {
-                if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
+                if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
                     onEnableHandlers.add(m);
                 } else {
                     Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
@@ -76,7 +76,7 @@ public class PluginContainer {
             }
 
             if (m.isAnnotationPresent(OnDisable.class)) {
-                if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
+                if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
                     onDisableHandlers.add(m);
                 } else {
                     Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
@@ -189,7 +189,7 @@ public class PluginContainer {
             if (m.isAnnotationPresent(On.class)) {
                 EventHandlerContainer evt = new EventHandlerContainer(this, handler, m);
 
-                if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == evt.getEventType()) {
+                if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == evt.getEventType()) {
 
                     if (!events.containsKey(evt.getEventType())) {
                         events.put(evt.getEventType(), new ArrayList<EventHandlerContainer>());
