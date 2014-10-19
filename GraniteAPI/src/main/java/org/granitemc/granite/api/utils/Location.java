@@ -39,8 +39,8 @@ public class Location {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.pitch = Float.parseFloat(null);
-        this.yaw = Float.parseFloat(null);
+        this.pitch = 0;
+        this.yaw = 0;
     }
 
     public Location(final double x, final double y, final double z, final float pitch, final float yaw) {
