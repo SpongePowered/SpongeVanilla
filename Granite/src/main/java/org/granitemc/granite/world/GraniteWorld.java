@@ -69,7 +69,7 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type) {
-        invoke("World", "setBlock", MinecraftUtils.toMinecraftLocation(new Location(x, y, z)), ((GraniteBlockType) type).parent);
+        invoke("setBlock", MinecraftUtils.toMinecraftLocation(new Location(x, y, z)), ((GraniteBlockType) type).parent);
     }
 
     // TODO: No direct method to get dimension in MC1.8

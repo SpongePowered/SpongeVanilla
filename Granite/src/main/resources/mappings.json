@@ -881,7 +881,8 @@
         "b(Ljava/lang/String;)Ljava/util/UUID;":"getOfflineUUID",
         "a(Lvx;)Z":"canOpen",
         "t_()Z":"sendCommandFeedback",
-        "d(ILamj;)Z":"replaceItemInInventory"
+        "d(ILamj;)Z":"replaceItemInInventory",
+        "b(Lho;)V":"addChatComponentMessage"
       },
       "fields":{}
     },
