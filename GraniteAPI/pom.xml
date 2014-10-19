@@ -78,6 +78,19 @@
             <artifactId>jansi</artifactId>
             <version>1.11</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.2.1</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -133,6 +146,8 @@
                                     <include>org.apache.logging.log4j:log4j-core</include>
                                     <include>com.google.guava:guava</include>
                                     <include>com.googlecode.json-simple:json-simple</include>
+                                    <include>org.fusesource.jansi:jansi</include>
+                                    <include>com.typesafe:config</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
