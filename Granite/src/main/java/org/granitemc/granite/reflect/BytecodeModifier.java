@@ -33,7 +33,7 @@ import java.util.Set;
 
 public class BytecodeModifier {
     // This contains our own mini-mappings
-    // Since all this MUST happen before mappings load
+    // Since all this MUST happen before mappings read
     public static final String DedicatedServer = "po";
     public static final String DedicatedServer_StartServer = "i";
 

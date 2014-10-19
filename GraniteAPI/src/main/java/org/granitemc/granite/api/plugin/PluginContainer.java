@@ -23,12 +23,15 @@
 
 package org.granitemc.granite.api.plugin;
 
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.command.Command;
 import org.granitemc.granite.api.command.CommandContainer;
+import org.granitemc.granite.api.config.CfgFile;
 import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.On;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -45,6 +48,13 @@ public class PluginContainer {
     private Map<String, CommandContainer> commands;
     private Map<Class<? extends Event>, List<EventHandlerContainer>> events;
 
+    private List<Method> onEnableHandlers;
+    private List<Method> onDisableHandlers;
+
+    private File dataDirectory;
+
+    private CfgFile config;
+
     public PluginContainer(Class<?> clazz) {
         annotation = clazz.getAnnotation(Plugin.class);
 
@@ -52,9 +62,32 @@ public class PluginContainer {
         events = new HashMap<>();
 
         this.mainClass = clazz;
+
+        onEnableHandlers = new ArrayList<>();
+        onDisableHandlers = new ArrayList<>();
+
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(OnEnable.class)) {
+                if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
+                    onEnableHandlers.add(m);
+                } else {
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
+                }
+            }
+
+            if (m.isAnnotationPresent(OnDisable.class)) {
+                if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
+                    onDisableHandlers.add(m);
+                } else {
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
+                }
+            }
+        }
+
+        dataDirectory
     }
 
-    public void instantiatePluginClass() {
+    public void enable() {
         try {
             this.instance = mainClass.getConstructor(PluginContainer.class).newInstance(this);
         } catch (NoSuchMethodException e) {
@@ -69,6 +102,28 @@ public class PluginContainer {
 
         registerCommandHandler(instance);
         registerEventHandler(instance);
+
+        config = new CfgFile();
+
+        try {
+            for (Method m : onEnableHandlers) {
+                m.invoke(instance, this);
+            }
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disable() {
+        try {
+            for (Method m : onDisableHandlers) {
+                m.invoke(instance, this);
+            }
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -93,7 +148,7 @@ public class PluginContainer {
     }
 
     /**
-     * Returns the instance of the plugin class that was created on load
+     * Returns the instance of the plugin class that was created on read
      */
     public Object getInstance() {
         return instance;
@@ -135,11 +190,16 @@ public class PluginContainer {
             if (m.isAnnotationPresent(On.class)) {
                 EventHandlerContainer evt = new EventHandlerContainer(this, handler, m);
 
-                if (!events.containsKey(evt.getEventType())) {
-                    events.put(evt.getEventType(), new ArrayList<EventHandlerContainer>());
-                }
+                if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == evt.getEventType()) {
 
-                events.get(evt.getEventType()).add(evt);
+                    if (!events.containsKey(evt.getEventType())) {
+                        events.put(evt.getEventType(), new ArrayList<EventHandlerContainer>());
+                    }
+
+                    events.get(evt.getEventType()).add(evt);
+                } else {
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a " + evt.getEventType().getName());
+                }
             }
         }
     }
@@ -156,5 +216,9 @@ public class PluginContainer {
      */
     public Map<Class<? extends Event>, List<EventHandlerContainer>> getEvents() {
         return events;
+    }
+
+    public CfgFile getConfig() {
+        return config;
     }
 }

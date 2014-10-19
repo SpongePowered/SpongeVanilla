@@ -24,9 +24,7 @@
 package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.Logger;
-import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.event.EventQueue;
-import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
@@ -57,7 +55,7 @@ public interface API {
     /**
      * Loads a plugin from a .jar
      *
-     * @param file The .jar file to load from
+     * @param file The .jar file to read from
      */
     void loadPluginFromJar(File file);
 

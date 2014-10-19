@@ -43,8 +43,8 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public Block getBlock(int x, int y, int z) {
-        GraniteBlockType type = (GraniteBlockType) MinecraftUtils.wrap(invoke("getBlock", MinecraftUtils.createBlockPos(x, y, z)));
-        return new GraniteBlock(x, y, z, type, this);
+        //GraniteBlockType type = (GraniteBlockType) MinecraftUtils.wrap(invoke("getBlock", MinecraftUtils.createBlockPos(x, y, z)));
+        return new GraniteBlock(x, y, z, this);
     }
 
     public Block getBlock(Object chunkCoordinates) {

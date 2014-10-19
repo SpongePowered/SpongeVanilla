@@ -32,14 +32,12 @@ public class GraniteBlock implements Block {
     private int x;
     private int y;
     private int z;
-    private BlockType type;
     private World world;
 
-    public GraniteBlock(int x, int y, int z, GraniteBlockType type, World world) {
+    public GraniteBlock(int x, int y, int z, World world) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.type = type;
         this.world = world;
     }
 

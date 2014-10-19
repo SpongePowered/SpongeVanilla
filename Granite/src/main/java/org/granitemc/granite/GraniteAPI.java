@@ -138,7 +138,7 @@ public class GraniteAPI implements API {
 
                                 plugins.add(container);
 
-                                container.instantiatePluginClass();
+                                container.enable();
 
                                 // TODO: make this part better
                                 for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {

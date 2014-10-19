@@ -35,8 +35,14 @@ public class EventPlayerJoin extends Event {
     public EventPlayerJoin(Player player) {
         this.player = player;
 
-        Inventory i = Granite.getAPIHelper().createInventory("Test 123", 6);
+        /*Inventory i = Granite.getAPIHelper().createInventory("Test 123", 2*9);
         i.setItemStack(5, ItemTypes.baked_potato.create(5));
+        player.openInventory(i);*/
+
+        Inventory i = Granite.getAPIHelper().createInventory("TEST", 9);
+        i.setItemStack(1, ItemTypes.apple.create(10));
+        //info.commandSender.sendMessage("TOtal Size: " + i.getItemStack(1).getDisplayName());
+
         player.openInventory(i);
     }
 
