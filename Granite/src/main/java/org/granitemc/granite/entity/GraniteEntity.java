@@ -498,7 +498,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public Location getLocation() {
-        return new Location((double) fieldGet(this, "posX"), (double) fieldGet(this, "posY"), (double) fieldGet(this, "posZ"), (float) fieldGet(this, "rotationYaw"), (float) fieldGet(this, "rotationPitch"));
+        return new Location(getWorld(), (double) fieldGet("posX"), (double) fieldGet("posY"), (double) fieldGet("posZ"), (float) fieldGet("rotationYaw"), (float) fieldGet("rotationPitch"));
     }
 
     @Override
