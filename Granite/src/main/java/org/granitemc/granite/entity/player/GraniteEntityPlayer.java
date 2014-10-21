@@ -363,6 +363,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public void updateCraftingInventory(Container p_71110_1_, List p_71110_2_) {
     }*/
 
+    // TODO: could be interesting
     /*@Override
     public void sendProgressBarUpdate(Container p_71112_1_, int p_71112_2_, int p_71112_3_) {
     }*/
@@ -453,7 +454,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     @Override
     public PlayerInventory getPlayerInventory() {
-        return (PlayerInventory) MinecraftUtils.wrap(fieldGet("EntityPlayer", "inventory"));
+        return (PlayerInventory) MinecraftUtils.wrap(fieldGet("inventory"));
     }
 
     @Override
@@ -502,5 +503,4 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public void sendMessage(ChatComponent component) {
         invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
     }
-
 }

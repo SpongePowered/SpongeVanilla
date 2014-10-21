@@ -23,6 +23,7 @@
 
 package org.granitemc.granite.reflect.composite;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public interface HookListener {
@@ -36,5 +37,5 @@ public interface HookListener {
      * @param args          The arguments passed to the method
      * @return The object that (should be) returned from the method. Will only be needed if the hook was handled.
      */
-    public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args);
+    public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException;
 }

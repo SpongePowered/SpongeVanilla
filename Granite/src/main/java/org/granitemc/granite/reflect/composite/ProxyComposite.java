@@ -108,9 +108,15 @@ public class ProxyComposite extends Composite {
                     MethodHandle mh = MethodHandles.lookup().unreflect(thisMethod);
                     if (hooks.containsKey(createSignature(mh))) {
                         for (Hook hook : hooks.get(createSignature(mh))) {
-                            Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
-                            if (hook.wasHandled) {
-                                return ret;
+                            try {
+                                hook.wasHandled = false;
+                                Object ret = hook.listener.activate(self, thisMethod, proceed, hook, args);
+
+                                if (hook.wasHandled) {
+                                    return ret;
+                                }
+                            } catch (InvocationTargetException e) {
+                                throw e.getCause();
                             }
                         }
                     }

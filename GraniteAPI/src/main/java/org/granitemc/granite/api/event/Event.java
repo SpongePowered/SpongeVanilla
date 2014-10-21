@@ -48,7 +48,7 @@ public class Event {
     /**
      * Throws an exception if the current priority is MONITOR
      */
-    private void assertCanModify() {
+    protected void assertCanModify() {
         if (currentPriority == On.Priority.MONITOR) {
             throw new RuntimeException("Cannot modify event if priority is MONITOR");
         }

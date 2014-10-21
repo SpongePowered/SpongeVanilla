@@ -184,7 +184,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                                 if (event.isCancelled()) {
                                     b.setType(oldBlockType);
-                                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
+                                    p.sendBlockUpdate(b);
                                 }
                             }
                         }

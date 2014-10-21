@@ -36,11 +36,11 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     public ItemStack getItemStack(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("IInventory", "getStackInSlot", slot));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getStackInSlot", slot));
     }
 
     public int getFirstEmptySlot() {
-        return (int) invoke("IInventory", "getFirstEmptyStack");
+        return (int) invoke("getFirstEmptyStack");
     }
 
     public Player getPlayer() {
@@ -48,7 +48,7 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     public ItemStack getSelectedHotbarItem() {
-        return (ItemStack) MinecraftUtils.wrap(invoke("InventoryPlayer", "getCurrentItem"));
+        return (ItemStack) MinecraftUtils.wrap(invoke("getCurrentItem"));
     }
 
     public int getSelectedHotbarIndex() {
@@ -66,7 +66,7 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }*/
 
     public void addItemStack(ItemStack itemStack) {
-        invoke("InventoryPlayer", "addItemStackToInventory", itemStack);
+        invoke("addItemStackToInventory", itemStack);
     }
 
     public ItemStack getHelmetItem() {
@@ -102,10 +102,17 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     }
 
     public void setItemStack(int slot, ItemStack itemStack) {
-        invoke("IInventory", "setInventorySlotContents", slot, ((GraniteItemStack) itemStack).parent);
+        invoke("setInventorySlotContents", slot, ((GraniteItemStack) itemStack).parent);
     }
 
     public int getSize() {
-        return (int) invoke("IInventory", "getSizeInventory");
+        return (int) invoke("getSizeInventory");
+    }
+
+    public ItemStack getItemStack() {
+        return (ItemStack) MinecraftUtils.wrap(fieldGet("itemStack"));
+    }
+    public void setItemStack(ItemStack newItemStack) {
+        fieldSet("itemStack", newItemStack == null ? null : ((GraniteItemStack) newItemStack).parent);
     }
 }
