@@ -2,6 +2,7 @@ package org.granitemc.granite.api.entity.player;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
+import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
