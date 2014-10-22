@@ -25,6 +25,7 @@ package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.event.EventQueue;
+import org.granitemc.granite.api.permission.PermissionsHook;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
@@ -80,4 +81,7 @@ public interface API {
     EventQueue getEventQueue();
 
     ServerConfig getServerConfig();
+
+    PermissionsHook getPermissionsHook();
+    void setPermissionsHook(PermissionsHook hook);
 }

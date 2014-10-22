@@ -33,6 +33,7 @@ import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.permission.PermissionsHook;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.event.GraniteEventQueue;
@@ -63,6 +64,7 @@ public class GraniteAPI implements API {
     private GraniteEventQueue eventQueue;
 
     private ServerConfig config;
+    private PermissionsHook permissionsHook;
 
     public static void init() {
         try {
@@ -183,6 +185,16 @@ public class GraniteAPI implements API {
     @Override
     public ServerConfig getServerConfig() {
         return config;
+    }
+
+    @Override
+    public PermissionsHook getPermissionsHook() {
+        return permissionsHook;
+    }
+
+    @Override
+    public void setPermissionsHook(PermissionsHook hook) {
+        this.permissionsHook = hook;
     }
 
     public void tick() {

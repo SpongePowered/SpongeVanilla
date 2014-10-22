@@ -1,5 +1,6 @@
 package org.granitemc.granite.entity.player;
 
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.chat.ChatComponent;
@@ -502,5 +503,9 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     @Override
     public void sendMessage(ChatComponent component) {
         invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
+    }
+
+    public boolean hasPermission(String node) {
+        return Granite.getPermissionsHook().hasPermission(this, node);
     }
 }

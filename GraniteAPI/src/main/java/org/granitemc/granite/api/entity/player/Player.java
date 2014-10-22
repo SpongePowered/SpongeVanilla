@@ -191,4 +191,6 @@ public interface Player extends CommandSender, EntityLivingBase {
     void sendMessage(String message);
 
     void sendMessage(ChatComponent component);
+
+    boolean hasPermission(String node);
 }
