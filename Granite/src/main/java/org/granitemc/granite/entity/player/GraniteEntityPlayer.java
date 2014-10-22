@@ -22,6 +22,8 @@ import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Player {
@@ -29,6 +31,8 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public GraniteEntityPlayer(Object parent) {
         super(parent);
     }
+
+    private static List<String> permissionNodes = new ArrayList<>();
 
     @Override
     public boolean isUsingItem() {
@@ -503,4 +507,36 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public void sendMessage(ChatComponent component) {
         invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
     }
+
+    @Override
+    public boolean hasPermission(String node) {
+        return permissionNodes.contains(node);
+    }
+
+    @Override
+    public void grantPermission(String node) {
+        if (!permissionNodes.contains(node)) {
+            permissionNodes.add(node);
+        }
+    }
+
+    @Override
+    public void revokePermission(String node) {
+        if (permissionNodes.contains(node)) {
+            permissionNodes.remove(node);
+        }
+    }
+
+    @Override
+    public void copyPermissions(Player player) {
+        permissionNodes.clear();
+        permissionNodes.addAll(player.getPermissionNodes());
+    }
+
+    @Override
+    public List<String> getPermissionNodes() {
+        return permissionNodes;
+    }
+
+
 }
