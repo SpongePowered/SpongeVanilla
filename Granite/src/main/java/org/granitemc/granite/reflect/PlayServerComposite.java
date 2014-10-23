@@ -240,7 +240,7 @@ public class PlayServerComposite extends ProxyComposite {
         addHook(new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException {
-                if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Mappings.getClass("C0EPacketClickWindow")) {
+                if (method.getParameterTypes().length == 1 && method.getParameterTypes()[0] == Mappings.getClass("C0EPacketClickWindow")) {
                     self = self;
                 }
                 return null;
