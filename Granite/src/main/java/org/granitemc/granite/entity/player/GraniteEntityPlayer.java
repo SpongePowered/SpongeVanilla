@@ -33,8 +33,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
         super(parent);
     }
 
-    private static List<String> permissionNodes = new ArrayList<>();
-
     @Override
     public boolean isUsingItem() {
         return (boolean) invoke("isUsingItem");
