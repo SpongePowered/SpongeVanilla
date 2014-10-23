@@ -23,6 +23,8 @@ import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Player {
@@ -30,6 +32,8 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public GraniteEntityPlayer(Object parent) {
         super(parent);
     }
+
+    private static List<String> permissionNodes = new ArrayList<>();
 
     @Override
     public boolean isUsingItem() {
