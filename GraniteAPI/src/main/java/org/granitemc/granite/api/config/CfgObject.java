@@ -9,22 +9,31 @@ public class CfgObject extends CfgCollection implements Map<String, CfgValue> {
     Map<String, CfgValue> value;
     CfgObject defaults;
 
+    Map<String, CfgValue> merged;
+
     public CfgObject() {
         value = new HashMap<>();
+        calculateMerged();
+    }
+
+    private void calculateMerged() {
+        merged = CfgValue.deepMerge(defaults, value);
     }
 
     public CfgObject(Map<String, CfgValue> value) {
         this.value = value;
+        calculateMerged();
     }
 
     @Override
     CfgValue getSegment(String name) {
-        return value.get(name);
+        return merged.get(name);
     }
 
     @Override
     void putSegment(String name, CfgValue value) {
         this.value.put(name, value);
+        calculateMerged();
     }
 
     @Override
@@ -43,70 +52,72 @@ public class CfgObject extends CfgCollection implements Map<String, CfgValue> {
 
     @Override
     public int size() {
-        return value.size();
+        return merged.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return value.isEmpty();
+        return merged.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return value.containsKey(key);
+        return merged.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return this.value.containsValue(value);
+        return this.merged.containsValue(value);
     }
 
     @Override
     public CfgValue get(Object key) {
-        CfgValue ret = super.get((String) key);
-        if (ret == null) {
-            if (defaults == null) defaults = new CfgObject();
-            ret = defaults.get(key);
-        }
+        CfgValue ret = super.getValue((String) key);
         return ret;
     }
 
-    public CfgValue get(String path) {
+    public CfgValue getValue(String path) {
         return get((Object) path);
     }
 
     public CfgValue put(String key, Object value) {
-        return put(key, CfgValue.fromObject(value));
+        CfgValue ret = put(key, CfgValue.fromObject(value));
+        calculateMerged();
+        return ret;
     }
 
     @Override
     public CfgValue remove(Object key) {
-        return value.remove(key);
+        CfgValue ret = value.remove(key);
+        calculateMerged();
+        return ret;
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends CfgValue> m) {
         value.putAll(m);
+        calculateMerged();
     }
 
     @Override
     public void clear() {
         value.clear();
+        calculateMerged();
     }
 
     @Override
     public Set<String> keySet() {
-        return value.keySet();
+        return merged.keySet();
     }
 
     @Override
     public Collection<CfgValue> values() {
-        return value.values();
+        return merged.values();
     }
 
     @Override
     public Set<Entry<String, CfgValue>> entrySet() {
-        return value.entrySet();
+        return merged.entrySet();
     }
 
     @Override
@@ -136,9 +147,11 @@ public class CfgObject extends CfgCollection implements Map<String, CfgValue> {
     public void addDefault(String path, CfgValue value) {
         if (defaults == null) defaults = new CfgObject();
         defaults.put(path, value);
+        calculateMerged();
     }
 
     public void addDefault(String path, Object value) {
         addDefault(path, CfgValue.fromObject(value));
+        calculateMerged();
     }
 }

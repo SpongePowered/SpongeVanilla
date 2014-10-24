@@ -19,6 +19,7 @@ public abstract class CfgValue {
     static Constructor<?> configOriginConstructor;
     static Constructor<?> configListConstructor;
     static Constructor<?> configObjectConstructor;
+
     static {
         try {
             Class<?> originInterfaceClass = Class.forName("com.typesafe.config.ConfigOrigin");
@@ -102,8 +103,12 @@ public abstract class CfgValue {
                 Map<String, ConfigValue> raw = new HashMap<>();
 
                 Map<String, CfgValue> merged = new HashMap<>();
-                merged.putAll(((CfgObject) val).defaults);
-                merged.putAll(((CfgObject) val).value);
+                merged.putAll(deepMerge(((CfgObject) val).defaults, ((CfgObject) val).value));
+                /*if (((CfgObject) val).defaults != null) {
+                    merged.putAll(((CfgObject) val).defaults);
+                }
+
+                merged.putAll(((CfgObject) val).value)*/
                 for (Map.Entry<String, CfgValue> entry : merged.entrySet()) {
                     raw.put(entry.getKey(), toHoconValue(entry.getValue()));
                 }
@@ -140,7 +145,7 @@ public abstract class CfgValue {
         return fromHoconValue(root);
     }
 
-    public static CfgValue read(InputStream stream){
+    public static CfgValue read(InputStream stream) {
         return read(new InputStreamReader(stream));
     }
 
@@ -171,4 +176,24 @@ public abstract class CfgValue {
     }
 
     public abstract CfgValueType getType();
+
+    protected static Map<String, CfgValue> deepMerge(Map<String, CfgValue> a, Map<String, CfgValue> b) {
+        Map<String, CfgValue> res = new HashMap<>();
+
+        if (a != null) {
+            res.putAll(a);
+        }
+
+        if (b != null) {
+            for (Map.Entry<String, CfgValue> e : b.entrySet()) {
+                if (res.get(e.getKey()) instanceof CfgObject && e.getValue() instanceof CfgObject) {
+                    res.put(e.getKey(), new CfgObject(deepMerge(((CfgObject) res.get(e.getKey())), ((CfgObject) e.getValue()))));
+                } else {
+                    res.put(e.getKey(), e.getValue());
+                }
+            }
+        }
+
+        return res;
+    }
 }

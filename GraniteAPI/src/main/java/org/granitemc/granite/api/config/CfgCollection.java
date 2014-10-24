@@ -8,7 +8,7 @@ public abstract class CfgCollection extends CfgValue {
 
     abstract void putSegment(String name, CfgValue value);
 
-    public CfgValue get(String path) {
+    public CfgValue getValue(String path) {
         CfgValue currentValue = this;
         for (String pathSection : path.split("\\.")) {
             /*if (currentValue instanceof List) {
@@ -24,24 +24,28 @@ public abstract class CfgCollection extends CfgValue {
         return currentValue;
     }
 
+    public Object get(String path) {
+        return getValue(path).unwrap();
+    }
+
     public String getString(String path) {
-        return (String) get(path).unwrap();
+        return (String) getValue(path).unwrap();
     }
 
     public int getInteger(String path) {
-        return (int) get(path).unwrap();
+        return (int) getValue(path).unwrap();
     }
 
     public double getDouble(String path) {
-        return (double) get(path).unwrap();
+        return (double) getValue(path).unwrap();
     }
 
-    public int getObject(String path) {
-        return (int) get(path).unwrap();
+    public CfgObject getObject(String path) {
+        return (CfgObject) getValue(path);
     }
 
     public CfgList getList(String path) {
-        return new CfgList((List<CfgValue>) get(path));
+        return new CfgList((List<CfgValue>) getValue(path));
     }
 
     public CfgValue put(String key, CfgValue value) {
@@ -57,10 +61,14 @@ public abstract class CfgCollection extends CfgValue {
                 current = (CfgCollection) current.getSegment(pathSegment);
             }
 
-            ((CfgCollection) get(collPath)).putSegment(rest, value);
+            ((CfgCollection) getValue(collPath)).putSegment(rest, value);
         } else {
             putSegment(key, value);
         }
         return value;
+    }
+
+    public boolean getBoolean(String path) {
+        return (boolean) getValue(path).unwrap();
     }
 }
