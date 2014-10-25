@@ -59,7 +59,7 @@ public class ItemInWorldComposite extends ProxyComposite {
         addHook("tryHarvestBlock", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                //if (!GraniteServerComposite.instance.isOnServerThread()) {
+                if (!GraniteServerComposite.instance.isOnServerThread()) {
                 Player p = (Player) MinecraftUtils.wrap(fieldGet("thisPlayerMP"));
 
                 World w = p.getWorld();
@@ -74,7 +74,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                     ((GraniteEntityPlayer) p).sendBlockUpdate(b);
                     return false;
                 }
-                //}
+                }
                 return true;
             }
         });
@@ -146,7 +146,9 @@ public class ItemInWorldComposite extends ProxyComposite {
                             Object itemType = ((GraniteItemType) itemStack.getType()).parent;
                             Object blockType = Mappings.invoke(itemType, "getBlock");
 
-                            BlockType bt = (BlockType) MinecraftUtils.wrap(m.invoke(blockType, args[1], args[3], args[4], args[5], args[6], args[7], 3, args[0]));
+                            int meta = (int) Mappings.invokeStatic("Item", "getMetadata", itemStack.getItemDamage());
+
+                            BlockType bt = (BlockType) MinecraftUtils.wrap(m.invoke(blockType, args[1], args[3], args[4], args[5], args[6], args[7], meta, args[0]));
 
                             Block b = w.getBlock(x, y, z);
 
@@ -156,14 +158,12 @@ public class ItemInWorldComposite extends ProxyComposite {
                                 EventBlockPlace event = new EventBlockPlace(b, p);
                                 Granite.getEventQueue().fireEvent(event);
 
-                                b.setType(oldBlockType);
                                 if (event.isCancelled()) {
-                                    p.sendBlockUpdate(b);
-                                    p.sendBlockUpdate(b, oldBlockType);
-                                    hook.setWasHandled(true);
-                                } else {
-                                    hook.setWasHandled(false);
+                                    b.setType(oldBlockType);
                                 }
+                                p.sendBlockUpdate(b);
+                                hook.setWasHandled(true);
+                                // Don't use minecraft's handler at all
                             }
                         } catch (Throwable throwable) {
                             throwable.printStackTrace();
