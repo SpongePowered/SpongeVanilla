@@ -104,7 +104,7 @@
             <id>ci</id>
 
             <properties>
-                <finalName>${project.name}-v${project.version}-#${build.number}</finalName>
+                <finalName>${project.name}-v${project.version}+b${build.number}</finalName>
             </properties>
         </profile>
     </profiles>
