@@ -42,9 +42,11 @@ import org.granitemc.granite.utils.MinecraftUtils;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Properties;
 
 public class GraniteStartupThread extends Thread {
 
@@ -56,9 +58,25 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void run() {
+        String version = null;
+
+        Properties mavenProp = new Properties();
+        InputStream in = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitemc/granite/pom.properties");
+        try {
+            mavenProp.load(in);
+
+            version = mavenProp.getProperty("version");
+        } catch (IOException exception) {
+            version = "UNKNOWN";
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ignored) { }
+        }
+
         GraniteAPI.init();
 
-        Granite.getLogger().info("Starting Granite version @VERSION@");
+        Granite.getLogger().info("Starting Granite version " + version);
 
         Config.initDirs();
 
