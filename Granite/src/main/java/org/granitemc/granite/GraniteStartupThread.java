@@ -62,17 +62,21 @@ public class GraniteStartupThread extends Thread {
 
         Properties mavenProp = new Properties();
         InputStream in = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitemc/granite/pom.properties");
-        try {
-            mavenProp.load(in);
-
-            version = mavenProp.getProperty("version");
-        } catch (IOException exception) {
-            version = "UNKNOWN";
-        } finally {
+        if (in != null) {
             try {
-                in.close();
-            } catch (IOException ignored) { }
+                mavenProp.load(in);
+
+                version = mavenProp.getProperty("version");
+            } catch (IOException ignored) {
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
+
+        if (version == null) version = "UNKNOWN";
 
         GraniteAPI.init();
 
