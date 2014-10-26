@@ -29,6 +29,7 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.entity.player.Player;
+import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -70,6 +71,10 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
         // Start this baby
         invoke("startServerThread");
+
+        for (PluginContainer c : Granite.getPlugins()) {
+            c.enable();
+        }
     }
 
     private void injectSCM() {
