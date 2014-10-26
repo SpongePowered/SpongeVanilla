@@ -31,12 +31,19 @@ import java.lang.reflect.Method;
 public class EventHandlerContainer {
     private On annotation;
     private Method method;
+    private Class<? extends Event> clazz;
 
     private Object instance;
 
     private PluginContainer plugin;
 
     public EventHandlerContainer(PluginContainer plugin, Object instance, Method method) {
+        if (method.getParameterCount() != 1 || !(Event.class.isAssignableFrom(method.getParameters()[0].getType()))) {
+            throw new IllegalArgumentException("Cannot register method " + method.getName() + " from plugin " + plugin.getId());
+        }
+        
+        this.clazz = method.getParameters()[0].getType().asSubclass(Event.class);
+        
         annotation = method.getAnnotation(On.class);
         this.method = method;
 
@@ -48,7 +55,7 @@ public class EventHandlerContainer {
      * Returns the class type of the event
      */
     public Class<? extends Event> getEventType() {
-        return annotation.event();
+        return clazz;
     }
 
     /**
