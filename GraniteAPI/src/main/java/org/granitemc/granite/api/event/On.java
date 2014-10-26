@@ -49,7 +49,5 @@ public @interface On {
         MONITOR
     }
 
-    public Class<? extends Event> event();
-
     public Priority priority() default Priority.NORMAL;
 }
