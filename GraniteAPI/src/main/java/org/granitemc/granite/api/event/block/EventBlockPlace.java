@@ -24,6 +24,7 @@
 package org.granitemc.granite.api.event.block;
 
 import org.granitemc.granite.api.block.Block;
+import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.Event;
 
@@ -31,9 +32,15 @@ public class EventBlockPlace extends Event {
     Block block;
     Player player;
 
-    public EventBlockPlace(Block block, Player player) {
+    BlockType newBlockType;
+    BlockType oldBlockType;
+
+    public EventBlockPlace(Block block, Player player, BlockType newBlockType, BlockType oldBlockType) {
         this.block = block;
         this.player = player;
+        this.newBlockType = newBlockType;
+        this.oldBlockType = oldBlockType;
+        setCancelled(true);
     }
 
     /**
@@ -48,5 +55,17 @@ public class EventBlockPlace extends Event {
      */
     public Player getPlayer() {
         return player;
+    }
+
+    public BlockType getNewBlockType() {
+        return newBlockType;
+    }
+
+    public BlockType getOldBlockType() {
+        return oldBlockType;
+    }
+
+    public void setNewBlockType(BlockType newBlockType) {
+        this.newBlockType = newBlockType;
     }
 }
