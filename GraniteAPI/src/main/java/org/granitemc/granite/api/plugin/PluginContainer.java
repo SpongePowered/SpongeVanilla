@@ -179,6 +179,27 @@ public class PluginContainer {
     }
 
     /**
+     * Registers a command handler to this plugin
+     *
+     * @param handler The handler to unregister, this can be any object, but should have at least one {@link org.granitemc.granite.api.command.Command} annotation
+     * @return true if at least one command handling method was found and unregistered, false if none found
+     */
+    public boolean unregisterCommandHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        boolean ret = false;
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Command.class)) {
+                if(commands.remove(m.getAnnotation(Command.class).name()) != null) {
+                    ret = true;
+                }
+            }
+        }
+        
+        return ret;
+    }
+    
+    /**
      * Registers an event handler to this plugin
      *
      * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.On} annotation
@@ -209,7 +230,7 @@ public class PluginContainer {
      * Unregisters an event handler of this plugin
      * 
      * @param handler The handler to unregister, this can be any object but should have at least one {@link org.granitemc.granite.api.event.On} annotation
-     * @return true if handler was found and unregistered, false if handler was not been registered
+     * @return true if at least one event handling method was found and unregistered, false if none found
      */
     public boolean unregisterEventHandler(Object handler) {
         Class<?> clazz = handler.getClass();
