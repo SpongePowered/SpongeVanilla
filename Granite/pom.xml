@@ -127,12 +127,6 @@
                             <mainClass>${main.class}</mainClass>
                         </manifest>
                     </archive>
-
-                    <!-- TEMPORARY -->
-                    <outputDirectory>
-                        C:\Users\Mike\Desktop\Minecraft\Granite Server
-                    </outputDirectory>
-                    <finalName>Granite</finalName>
                 </configuration>
             </plugin>
         </plugins>
