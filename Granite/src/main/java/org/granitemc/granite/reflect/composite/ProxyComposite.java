@@ -51,7 +51,6 @@ public class ProxyComposite extends Composite {
         f.setAccessible(true);
     }
 
-
     public String createSignature(MethodHandle methodHandle) {
         if (!methodHandle.isVarargsCollector()) {
             try {

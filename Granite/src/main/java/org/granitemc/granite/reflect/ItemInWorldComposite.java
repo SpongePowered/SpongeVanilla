@@ -136,33 +136,32 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     BlockType oldBlockType = w.getBlock(x, y, z).getType();
 
-                    // If the item used is an ItemBlock
                     if (itemStack != null && Mappings.getClass("ItemBlock").isInstance(((GraniteItemType) itemStack.getType()).parent)) {
-                        // Use the "new" method, which gets the BlockType supposed to be placed, places that, and if the event gets cancelled, return it to the old one
-                        // Otherwise, return it to the old one anyway, and let Minecraft itself handle the rest
                         MethodHandle m = Mappings.getMethod("Block", "onBlockPlaced");
                         try {
                             Object itemType = ((GraniteItemType) itemStack.getType()).parent;
                             Object blockType = Mappings.invoke(itemType, "getBlock");
 
-                            int meta = (int) Mappings.invokeStatic("Item", "getMetadata", itemStack.getItemDamage());
+                            int meta = (int) Mappings.invoke(itemType, "getMetadata", itemStack.getItemDamage());
 
                             BlockType bt = (BlockType) MinecraftUtils.wrap(m.invoke(blockType, args[1], args[3], args[4], args[5], args[6], args[7], meta, args[0]));
 
                             Block b = w.getBlock(x, y, z);
 
                             if (((GraniteBlockType) bt).parent != null && !bt.typeEquals(BlockTypes.air)) {
-                                b.setType(bt);
+                                proxyCallback.invoke(self, args);
+                                hook.setWasHandled(true);
 
-                                EventBlockPlace event = new EventBlockPlace(b, p);
+                                EventBlockPlace event = new EventBlockPlace(b, p, bt, oldBlockType);
                                 Granite.getEventQueue().fireEvent(event);
 
-                                if (event.isCancelled()) {
-                                    b.setType(oldBlockType);
+                                if (event.getNewBlockType() != bt) {
+                                    // TODO: schedule this for next tick
+                                    b.setType(event.getNewBlockType());
                                 }
+
+                                hook.setWasHandled(event.isCancelled());
                                 p.sendBlockUpdate(b);
-                                hook.setWasHandled(true);
-                                // Don't use minecraft's handler at all
                             }
                         } catch (Throwable throwable) {
                             throwable.printStackTrace();
@@ -178,7 +177,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                         if (retval) {
                             Block b = w.getBlock(x, y, z);
                             if (((GraniteBlockType) b.getType()).parent != null && !b.getType().typeEquals(BlockTypes.air)) {
-                                EventBlockPlace event = new EventBlockPlace(b, p);
+                                EventBlockPlace event = new EventBlockPlace(b, p, b.getType(), oldBlockType);
                                 Granite.getEventQueue().fireEvent(event);
 
                                 if (event.isCancelled()) {
