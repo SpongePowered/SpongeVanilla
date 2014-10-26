@@ -50,17 +50,25 @@ public class GraniteEventQueue implements EventQueue {
             handlers.put(event.getClass(), list);
         }
 
-        for (EventHandlerContainer handler : handlers.get(event.getClass())) {
+        for (EventHandlerContainer handler : handlers.get(event.getClass()).toArray(new EventHandlerContainer[0])) {
             handler.invoke(event);
         }
     }
 
-    public void addHandler(Class<? extends Event> type, EventHandlerContainer handler) {
-        if (!handlers.containsKey(type)) {
+    public void addHandler(EventHandlerContainer handler) {
+        if (!handlers.containsKey(handler.getEventType())) {
             List<EventHandlerContainer> list = new ArrayList<>();
-            handlers.put(type, list);
+            handlers.put(handler.getEventType(), list);
         }
 
-        handlers.get(type).add(handler);
+        handlers.get(handler.getEventType()).add(handler);
+    }
+    
+    public boolean removeHandler(EventHandlerContainer handler) {
+        if (handlers.containsKey(handler.getEventType())) {
+            return (handlers.get(handler.getEventType()).remove(handler));
+        }
+        
+        return false;
     }
 }
