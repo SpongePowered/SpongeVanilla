@@ -3,13 +3,13 @@ Granite
 
 Granite - A different interface for Minecraft 1.8+.
 
-Note: This is _not_ Sponge!
-
 The purpose of this project is to take a "hands off" approach to vanilla code.
 That is, we _describe_ the code to our composite layer, without actually including any of it.
 Access is gained by composite classes, reflection, proxy classes, interfaces, and classloaders.
 
-**NOTE: A lot of these APIs are completely untested, and may or may not work. If they don't, feel free to create an issue.**
+**NOTE: These APIs may or may not be completely broken. They shouldn't be, but there's always a chance. Take care.**
+
+Most development happens in the branches `patch`, `minor` and `major`, so don't think the project is inactive just because the last commit to `master` is a week old.
 
 Goals
 ------
