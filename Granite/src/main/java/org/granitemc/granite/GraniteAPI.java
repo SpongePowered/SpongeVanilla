@@ -144,12 +144,7 @@ public class GraniteAPI implements API {
 
                                 plugins.add(container);
 
-                                // Load EventHandlerContainers AFTER server load, otherwise the EventHandlerContainers do not get loaded!
-//                                for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
-//                                    for (EventHandlerContainer ehc : ehcList) {
-//                                        eventQueue.addHandler(ehc.getEventType(), ehc);
-//                                    }
-//                                }
+                                container.enable();
                             }
                         }
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
