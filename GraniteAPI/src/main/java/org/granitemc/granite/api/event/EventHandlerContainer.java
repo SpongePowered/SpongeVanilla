@@ -71,7 +71,14 @@ public class EventHandlerContainer {
     public PluginContainer getPlugin() {
         return plugin;
     }
-
+    
+    /**
+     * Returns the method registered
+     */
+    public Method getMethod() {
+        return method;
+    }
+    
     /**
      * Calls the event handler
      *
