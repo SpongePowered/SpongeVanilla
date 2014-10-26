@@ -40,6 +40,7 @@ public class EventBlockPlace extends Event {
         this.player = player;
         this.newBlockType = newBlockType;
         this.oldBlockType = oldBlockType;
+        setCancelled(true);
     }
 
     /**
