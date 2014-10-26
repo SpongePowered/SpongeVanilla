@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.Level;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class PluginContainer {
@@ -178,6 +179,27 @@ public class PluginContainer {
     }
 
     /**
+     * Registers a command handler to this plugin
+     *
+     * @param handler The handler to unregister, this can be any object, but should have at least one {@link org.granitemc.granite.api.command.Command} annotation
+     * @return true if at least one command handling method was found and unregistered, false if none found
+     */
+    public boolean unregisterCommandHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        boolean ret = false;
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Command.class)) {
+                if(commands.remove(m.getAnnotation(Command.class).name()) != null) {
+                    ret = true;
+                }
+            }
+        }
+        
+        return ret;
+    }
+    
+    /**
      * Registers an event handler to this plugin
      *
      * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.On} annotation
@@ -196,6 +218,7 @@ public class PluginContainer {
                     }
 
                     events.get(evt.getEventType()).add(evt);
+                    Granite.getEventQueue().addHandler(evt);
                 } else {
                     Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a " + evt.getEventType().getName());
                 }
@@ -203,6 +226,37 @@ public class PluginContainer {
         }
     }
 
+    /**
+     * Unregisters an event handler of this plugin
+     * 
+     * @param handler The handler to unregister, this can be any object but should have at least one {@link org.granitemc.granite.api.event.On} annotation
+     * @return true if at least one event handling method was found and unregistered, false if none found
+     */
+    public boolean unregisterEventHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        boolean ret = false;
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(On.class)) {
+                if (m.getParameterCount() == 1 && Event.class.isAssignableFrom(m.getParameters()[0].getType())) {
+                    List<EventHandlerContainer> list = events.get(m.getParameters()[0].getType().asSubclass(Event.class));
+                    if (list != null) {
+                        for (EventHandlerContainer container : list.toArray(new EventHandlerContainer[0])) {
+                            if (container.getMethod().equals(m)) {
+                                Granite.getEventQueue().removeHandler(container);
+                                list.remove(container);
+                                ret = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return ret;
+    }
+    
     /**
      * Returns a map of command names to commands
      */

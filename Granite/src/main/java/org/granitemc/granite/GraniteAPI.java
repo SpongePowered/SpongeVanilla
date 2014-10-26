@@ -146,13 +146,6 @@ public class GraniteAPI implements API {
                                 plugins.add(container);
 
                                 container.enable();
-
-                                // TODO: make this part better
-                                for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
-                                    for (EventHandlerContainer ehc : ehcList) {
-                                        eventQueue.addHandler(ehc.getEventType(), ehc);
-                                    }
-                                }
                             }
                         }
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
