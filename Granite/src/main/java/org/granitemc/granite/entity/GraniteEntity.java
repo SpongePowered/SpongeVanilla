@@ -379,14 +379,6 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) MinecraftUtils.wrap(invoke("hitByEntity", entity));
     }
 
-    public int getTeleportDirection() {
-        return (Integer) invoke("getTeleportDirection");
-    }
-
-    public boolean isPushedByWater() {
-        return (boolean) invoke("isPushedByWater");
-    }
-
     /*@Override
     public boolean isEntityInvulnerable(DamageSource damageSource) {
         return (boolean) MinecraftUtils.wrap(invoke("getExplosionResistance", damageSource));
@@ -448,22 +440,9 @@ public class GraniteEntity extends Composite implements Entity {
         return (float) invoke("getEyeHeight");
     }
 
-    public void setPosition(double xPos, double yPos, double zPos) {
-        invoke("setPosition", xPos, yPos, zPos);
-    }
-
-    public void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw) {
-        invoke("setPositionAndRotation", xPos, yPos, zPos, pitch, yaw);
-    }
-
     public boolean isOutsideBorder() {
         return (boolean) invoke("isOutsideBorder");
     }
-
-    /*@Override
-    public void addChatMessage(IChatComponent message) {
-        MinecraftUtils.wrap(invoke("addChatMessage", message));
-    }*/
 
     //@Override
     public boolean canCommandSenderUseCommand(int permissionLevel, String command) {

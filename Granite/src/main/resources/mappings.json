@@ -697,12 +697,10 @@
         "aM()Z": "getAlwaysRenderNameTag",
         "aR()F": "getEyeHeight",
         "aS()Z": "isOutsideBorder",
-        "a(Lho;)V": "addChatMessage",
         "d()Lbrw;": "getPositionVector",
         "e()Laqu;": "getEntityWorld",
         "f()Lwv;": "getCommandSenderEntity",
-        "t_()Z": "sendCommandFeedback",
-        "a(DDDFF)V": "setPositionAndRotation"
+        "t_()Z": "sendCommandFeedback"
       },
       "fields": {
         "s": "posX",
