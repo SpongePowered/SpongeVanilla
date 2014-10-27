@@ -53,30 +53,12 @@ Windows users will have to do step 4 manually by obtaining a vanilla minecraft_s
 You could also use one of our pre-built jars from [Jenkins](http://ci.flaten.it/view/Granite/).
 
 To-do list
-------
-- [X] Set-up
-- [X] Command proxy
-- [X] Plugin loader
-- [X] Command API
-- [X] Event system
-- [X] API for:
-  - [X] Worlds
-  - [X] Blocks
-  - [X] Items
-  - [X] Players
-  - [X] Entities
-- [ ] Essentials-style example plugin
-- [ ] Multiworld
-- [ ] More awesome stuff
-
-Secondary tasks
-------
-- [ ] Plugin dependencies
-- [ ] Configurable join/leave messages
+-----
+See TODO.md
 
 Want to Help?
 ------
-Join us on IRC: Esper.net **#granite**
+Join us on IRC: irc.esper.net **#granite**
 
 If you'd like to contribute, make a pull request- we read and consider them all very carefully.
 Should you decide to contribute to the project, please read our [contribution guidelines](https://github.com/GraniteTeam/Granite/blob/master/CONTRIBUTING.md).
