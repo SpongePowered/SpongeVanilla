@@ -60,10 +60,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
         return (boolean) invoke("isBlocking");
     }
 
-    public void updateItemUse(ItemStack itemStack, int eatingDuration) {
-        invoke("updateItemUse", ((GraniteItemStack) itemStack).parent, eatingDuration);
-    }
-
     @Override
     public boolean isMovementBlocked() {
         return (boolean) invoke("isMovementBlocked");
@@ -506,12 +502,12 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     @Override
     public void sendMessage(String message) {
-        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(new TextComponent(message)));
+        invoke("addChatComponentMessage", MinecraftUtils.toMinecraftChatComponent(new TextComponent(message)));
     }
 
     @Override
     public void sendMessage(ChatComponent component) {
-        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
+        invoke("addChatComponentMessage", MinecraftUtils.toMinecraftChatComponent(component));
     }
 
     public boolean hasPermission(String node) {
