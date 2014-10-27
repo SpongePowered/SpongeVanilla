@@ -27,6 +27,7 @@ import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.api.utils.Vector;
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.item.GraniteEntityItem;
@@ -77,9 +78,18 @@ public class MinecraftUtils {
         return null;
     }
 
-    public static Location fromMinecraftLocation(Object minecraftLocation) {
+    public static Object toMinecraftLocation(int x, int y, int z) {
         try {
-            return new Location(
+            return Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(x, y, z);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Location fromMinecraftLocation(World w, Object minecraftLocation) {
+        try {
+            return new Location(w,
                     (float) Mappings.getField("BlockPos", "x").get(minecraftLocation),
                     (float) Mappings.getField("BlockPos", "y").get(minecraftLocation),
                     (float) Mappings.getField("BlockPos", "z").get(minecraftLocation)

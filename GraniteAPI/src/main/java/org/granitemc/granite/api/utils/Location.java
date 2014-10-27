@@ -34,24 +34,6 @@ public class Location {
     private float pitch;
     private float yaw;
 
-    public Location(final double x, final double y, final double z) {
-        this.world = null;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.pitch = 0;
-        this.yaw = 0;
-    }
-
-    public Location(final double x, final double y, final double z, final float pitch, final float yaw) {
-        this.world = null;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.pitch = pitch;
-        this.yaw = yaw;
-    }
-
     public Location(final World world, final double x, final double y, final double z) {
         this.world = world;
         this.x = x;

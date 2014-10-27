@@ -702,7 +702,8 @@
         "e()Laqu;": "getEntityWorld",
         "f()Lwv;": "getCommandSenderEntity",
         "t_()Z": "sendCommandFeedback",
-        "a(DDDFF)V": "setPositionAndRotation"
+        "a(DDDFF)V": "setPositionAndRotation",
+        "b(DDDFF)V": "setLocationAndAngles"
       },
       "fields": {
         "s": "posX",
@@ -910,6 +911,12 @@
       "fields": {
         "d": "isCreativeMode"
       }
+    },
+    "S08PacketPlayerPosLook$EnumFlags": {
+      "name": "ij"
+    },
+    "S18PacketEntityTeleport": {
+      "name": "lo"
     }
   }
 }

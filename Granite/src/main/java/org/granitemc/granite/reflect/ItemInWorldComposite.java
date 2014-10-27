@@ -32,7 +32,6 @@ import org.granitemc.granite.api.event.block.EventBlockBreak;
 import org.granitemc.granite.api.event.block.EventBlockPlace;
 import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
@@ -111,7 +110,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                             ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
                             "isReplaceable",
                             ((GraniteWorld) w).parent,
-                            MinecraftUtils.toMinecraftLocation(new Location(x, y, z))
+                            MinecraftUtils.toMinecraftLocation(x, y, z)
                     )) {
                         switch (direction) {
                             case 0:
