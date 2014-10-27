@@ -59,12 +59,12 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("setSite", width, height);
     }
 
-    @Override
+    //@Override
     public int getMaxInPortalTime() {
         return (Integer) invoke("getMaxTimeInPortal");
     }
 
-    @Override
+    //@Override
     public void setOnFireFromLava() {
         invoke("setOnFireFromLava");
     }
@@ -194,7 +194,7 @@ public class GraniteEntity extends Composite implements Entity {
         invoke("addVelocity", x, y, z);
     }
 
-    @Override
+    //@Override
     public void setBeenAttacked() {
         invoke("setBeenAttacked");
     }
@@ -225,7 +225,7 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public EntityItem entityDropItem(ItemStack itemStack, float offsetY) {
+    public EntityItem dropItem(ItemStack itemStack, float offsetY) {
         return (EntityItem) MinecraftUtils.wrap(invoke("entityDropItem", itemStack, offsetY));
     }
 
@@ -239,7 +239,7 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("isEntityInsideOpaqueBlock");
     }
 
-    @Override
+    //@Override
     public boolean interactFirst(Player player) {
         return (boolean) invoke("interactFirst", ((GraniteEntityPlayer) player).parent);
     }
@@ -255,7 +255,7 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public Vector getLookVec() {
+    public Vector getLookDirection() {
         return MinecraftUtils.fromMinecraftVector(invoke("getLookVec"));
     }
 
@@ -369,12 +369,12 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("isEntityEqual", ((GraniteEntity) entity).parent);
     }
 
-    @Override
+    //@Override
     public boolean canAttackWithItem() {
         return (boolean) invoke("canAttackWithItem");
     }
 
-    @Override
+    //@Override
     public boolean hitByEntity(Entity entity) {
         return (boolean) MinecraftUtils.wrap(invoke("hitByEntity", entity));
     }
@@ -407,7 +407,7 @@ public class GraniteEntity extends Composite implements Entity {
         return (Integer) invoke("getMaxFallHeight");
     }
 
-    @Override
+    //@Override
     public boolean doesEntityNotTriggerPressurePlate() {
         return (boolean) invoke("doesEntityNotTriggerPressurePlate");
     }
@@ -465,12 +465,12 @@ public class GraniteEntity extends Composite implements Entity {
         MinecraftUtils.wrap(invoke("addChatMessage", message));
     }*/
 
-    @Override
+    //@Override
     public boolean canCommandSenderUseCommand(int permissionLevel, String command) {
         return (boolean) invoke("canCommandSenderUseCommand", permissionLevel, command);
     }
 
-    @Override
+    //@Override
     public Vector getPositionVector() {
         return MinecraftUtils.fromMinecraftVector(invoke("getPositionVector"));
     }
@@ -480,12 +480,12 @@ public class GraniteEntity extends Composite implements Entity {
         return (World) MinecraftUtils.wrap(invoke("getEntityWorld"));
     }
 
-    @Override
+    //@Override
     public Entity getCommandSenderEntity() {
         return (Entity) MinecraftUtils.wrap(invoke("getCommandSenderEntity"));
     }
 
-    @Override
+    //@Override
     public boolean sendCommandFeedback() {
         return (boolean) invoke("sendCommandFeedback");
     }
