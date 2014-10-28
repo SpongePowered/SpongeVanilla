@@ -43,7 +43,7 @@ public class Location {
         this.yaw = 0;
     }
 
-    public Location(final World world, final double x, final double y, final double z, final float pitch, final float yaw) {
+    public Location(final World world, final double x, final double y, final double z, final float yaw, final float pitch) {
         this.world = world;
         this.x = x;
         this.y = y;
