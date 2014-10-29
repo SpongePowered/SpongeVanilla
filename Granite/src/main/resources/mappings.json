@@ -340,7 +340,8 @@
         "a(Lmx;)V": "processPlayerBlockPlacement",
         "a(Lid;)V": "sendPacket",
         "a(Lml;)V": "processPlayerDigging",
-        "a(Lma;)V": "processClickWindow"
+        "a(Lma;)V": "processClickWindow",
+        "a(DDDFF)V": "setPlayerLocation"
       },
       "fields": {
         "b": "playerEntity"
