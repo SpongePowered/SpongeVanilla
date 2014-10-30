@@ -30,7 +30,6 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.ServerConfig;
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.permission.PermissionsHook;
@@ -145,12 +144,12 @@ public class GraniteAPI implements API {
 
                                 plugins.add(container);
 
-                                // TODO: make this part better
-                                for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
-                                    for (EventHandlerContainer ehc : ehcList) {
-                                        eventQueue.addHandler(ehc.getEventType(), ehc);
-                                    }
-                                }
+                                // Load EventHandlerContainers AFTER server load, otherwise the EventHandlerContainers do not get loaded!
+//                                for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
+//                                    for (EventHandlerContainer ehc : ehcList) {
+//                                        eventQueue.addHandler(ehc.getEventType(), ehc);
+//                                    }
+//                                }
                             }
                         }
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
