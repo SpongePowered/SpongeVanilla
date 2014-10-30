@@ -43,7 +43,7 @@ public class Location {
         this.yaw = 0;
     }
 
-    public Location(final World world, final double x, final double y, final double z, final float pitch, final float yaw) {
+    public Location(final World world, final double x, final double y, final double z, final float yaw, final float pitch) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -65,7 +65,7 @@ public class Location {
      * @param world The world
      */
     public Location setWorld(World world) {
-        return new Location(world, x, y, z, pitch, yaw);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Location {
      * @param x The X position
      */
     public Location setX(double x) {
-        return new Location(world, x, y, z, pitch, yaw);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Location {
      * @param y The Y position
      */
     public Location setY(double y) {
-        return new Location(world, x, y, z, pitch, yaw);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**
@@ -113,7 +113,7 @@ public class Location {
      * @param z The Z position
      */
     public Location setZ(double z) {
-        return new Location(world, x, y, z, pitch, yaw);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**
@@ -129,7 +129,7 @@ public class Location {
      * @param pitch The pitch
      */
     public Location setPitch(float pitch) {
-        return new Location(world, x, y, z, pitch, yaw);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**
@@ -145,7 +145,7 @@ public class Location {
      * @param yaw The yaw
      */
     public Location setYaw(float yaw) {
-        return new Location(world, x, y, z, pitch, yaw);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**

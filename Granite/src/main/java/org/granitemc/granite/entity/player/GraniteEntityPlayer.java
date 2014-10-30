@@ -18,6 +18,7 @@ import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
 import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.reflect.PlayServerComposite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
@@ -29,6 +30,14 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     public GraniteEntityPlayer(Object parent) {
         super(parent);
+    }
+
+    @Override
+    public void setLocation(Location location) {
+        // Yes, this is supposed to be overridden
+        PlayServerComposite ps = (PlayServerComposite) MinecraftUtils.wrap(fieldGet("playerNetServerHandler"));
+
+        ps.invoke("setPlayerLocation", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     @Override

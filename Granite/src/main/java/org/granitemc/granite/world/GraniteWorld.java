@@ -85,16 +85,16 @@ public class GraniteWorld extends Composite implements World {
         return (long) Mappings.invoke(getWorldInfo(), "getSeed");
     }
 
-    public long getSpawnX() {
-        return (long) Mappings.invoke(getWorldInfo(), "getSpawnX");
+    public int getSpawnX() {
+        return (int) Mappings.invoke(getWorldInfo(), "getSpawnX");
     }
 
-    public long getSpawnY() {
-        return (long) Mappings.invoke(getWorldInfo(), "getSpawnY");
+    public int getSpawnY() {
+        return (int) Mappings.invoke(getWorldInfo(), "getSpawnY");
     }
 
-    public long getSpawnZ() {
-        return (long) Mappings.invoke(getWorldInfo(), "getSpawnZ");
+    public int getSpawnZ() {
+        return (int) Mappings.invoke(getWorldInfo(), "getSpawnZ");
     }
 
     @Override
