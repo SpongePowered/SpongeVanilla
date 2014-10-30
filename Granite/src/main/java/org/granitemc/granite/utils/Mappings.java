@@ -63,7 +63,7 @@ public class Mappings {
     static ClassPool pool;
 
     public static void load() {
-        file = ConfigFactory.parseReader(new InputStreamReader(Mappings.class.getResourceAsStream("/mappings.json")));
+        file = ConfigFactory.parseReader(new InputStreamReader(Mappings.class.getResourceAsStream(String.valueOf(org.granitemc.granite.utils.Config.mappings))));
 
         classes = HashBiMap.create();
         ctClasses = HashBiMap.create();

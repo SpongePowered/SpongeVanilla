@@ -24,6 +24,11 @@
 package org.granitemc.granite.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 public class Config {
 
@@ -31,16 +36,33 @@ public class Config {
     public static final File configFolder = new File("configuration");
     public static final File libFolder = new File("lib");
     public static final File pluginsFolder = new File("plugins");
+    public static final File mappings = new File(configFolder + File.separator + "mappings.json");
 
     public static void initDirs() {
-        if (!configFolder.exists())
+        if (!configFolder.exists()) {
             configFolder.mkdirs();
 
-        if (!pluginsFolder.exists())
-            pluginsFolder.mkdirs();
+            try {
+                downloadMappings();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-        if (!libFolder.exists())
+        if (!pluginsFolder.exists()) {
+            pluginsFolder.mkdirs();
+        }
+
+        if (!libFolder.exists()) {
             libFolder.mkdirs();
+        }
+    }
+
+    public static void downloadMappings() throws IOException {
+        URL url = new URL("https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/mappings.json");
+        ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
+        FileOutputStream fileOutputStream = new FileOutputStream(mappings);
+        fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
     }
 
 }
