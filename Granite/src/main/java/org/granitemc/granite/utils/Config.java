@@ -36,12 +36,14 @@ public class Config {
     public static final File configFolder = new File("configuration");
     public static final File libFolder = new File("lib");
     public static final File pluginsFolder = new File("plugins");
-    public static final File mappings = new File(configFolder + File.separator + "mappings.json");
+    public static final File mappings = new File(configFolder + File.separator + "1.8.json");
 
     public static void initDirs() {
         if (!configFolder.exists()) {
             configFolder.mkdirs();
+        }
 
+        if (!mappings.exists()) {
             try {
                 downloadMappings();
             } catch (IOException e) {
@@ -59,7 +61,7 @@ public class Config {
     }
 
     public static void downloadMappings() throws IOException {
-        URL url = new URL("https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/mappings.json");
+        URL url = new URL("https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json");
         ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
         FileOutputStream fileOutputStream = new FileOutputStream(mappings);
         fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
