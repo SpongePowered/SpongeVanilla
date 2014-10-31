@@ -97,6 +97,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.3.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.kevinsawicki</groupId>
+            <artifactId>http-request</artifactId>
+            <version>5.6</version>
+        </dependency>
     </dependencies>
 
     <profiles>

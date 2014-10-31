@@ -23,6 +23,7 @@
 
 package org.granitemc.granite.utils;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.typesafe.config.Config;
@@ -31,6 +32,7 @@ import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigValue;
 import javassist.*;
 import org.apache.commons.lang3.ArrayUtils;
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.reflect.ReflectionUtils;
 
 import java.io.File;
@@ -67,11 +69,20 @@ public class Mappings {
 
     public static void load() {
         try{
+            File mappingsFile = new File(Granite.getServerConfig().getMappingsFile().getAbsolutePath());
 
-            File mappingFile = new File(String.valueOf(org.granitemc.granite.utils.Config.mappings));
+            if (!mappingsFile.exists()) {
+                HttpRequest req = HttpRequest.get("https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json");
+                if (req.code() == 404) {
+                    throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");
+                } else if (req.code() == 200) {
+                    req.receive(mappingsFile);
+                }
+            }
+
             file = ConfigFactory.parseReader(
                   new InputStreamReader(
-                          new FileInputStream(mappingFile)
+                          new FileInputStream(mappingsFile)
                   )
             );
 

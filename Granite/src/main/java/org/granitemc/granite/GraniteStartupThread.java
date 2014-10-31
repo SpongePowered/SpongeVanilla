@@ -35,7 +35,6 @@ import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.BytecodeModifier;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.utils.ClassLoader;
-import org.granitemc.granite.utils.Config;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
@@ -78,18 +77,30 @@ public class GraniteStartupThread extends Thread {
 
         if (version == null) version = "UNKNOWN";
 
+        System.out.println("Starting Granite version " + version);
+
+        System.out.println("Initializing API and logger");
+
         GraniteAPI.init();
 
-        Granite.getLogger().info("Starting Granite version " + version);
-
-        Config.initDirs();
+        Granite.getLogger().info("Loading Minecraft .jar");
 
         loadMinecraft();
+
+        Granite.getLogger().info("Loading libraries");
+
         loadLibraries();
+
+        Granite.getLogger().info("Loading plugins");
+
         loadPlugins();
+
+        Granite.getLogger().info("Applying bytecode modifications ");
 
         // Edit stuff before the classes are loaded
         BytecodeModifier.modify();
+
+        Granite.getLogger().info("Bootstrapping Minecraft");
 
         try {
             Class.forName("od").getMethod("c").invoke(null);
@@ -99,22 +110,28 @@ public class GraniteStartupThread extends Thread {
         //Mappings.invoke(null, "Bootstrap", "func_151354_b");
 
         // Load mappings AFTER editing is done, otherwise it'll break
+
+        Granite.getLogger().info("Loading mappings");
         Mappings.load();
+
+        Granite.getLogger().info("Loading blocks and items");
 
         loadBlocks();
         loadItems();
+
+        Granite.getLogger().info("Starting server");
 
         GraniteServerComposite.init();
     }
 
     private void loadLibraries() {
-        for (File lib : Config.libFolder.listFiles(new FilenameFilter() {
+        for (File lib : GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
             }
         })) {
-            Granite.getLogger().info("Loading jarfile lib/%s.", lib.getName());
+            Granite.getLogger().info("Loading jarfile lib/%s", lib.getName());
             try {
                 ClassLoader.addFile(lib);
             } catch (IOException e) {
@@ -124,27 +141,32 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void loadPlugins() {
-        for (File plugin : Config.pluginsFolder.listFiles(new FilenameFilter() {
+        File[] files = GraniteAPI.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
             }
-        })) {
-            Granite.getLogger().info("Loading jarfile plugins/%s.", plugin.getName());
-            Granite.loadPluginFromJar(plugin);
+        });
+
+        if (files != null) {
+            for (File plugin : files) {
+                Granite.getLogger().info("Loading jarfile plugins/%s", plugin.getName());
+                Granite.loadPluginFromJar(plugin);
+            }
         }
     }
 
     public void loadMinecraft() {
-        Granite.getLogger().info("Loading jar from %s into classpath.", Config.mcJar.getAbsolutePath());
+        File mcJar = GraniteAPI.instance.getServerConfig().getMinecraftJar();
+        Granite.getLogger().info("Loading jar from %s into classpath", mcJar.getAbsolutePath());
 
-        if (!Config.mcJar.exists()) {
+        if (!mcJar.exists()) {
             throw new RuntimeException("Could not locate minecraft_server.jar. Is your jar named minecraft_server.1.8.jar?");
         }
 
         try {
-            ClassLoader.addURL(Config.mcJar.toURI().toURL());
-            Granite.getLogger().info("Loaded server: " + Config.mcJar.getAbsolutePath());
+            ClassLoader.addURL(mcJar.toURI().toURL());
+            Granite.getLogger().info("Loaded server: " + mcJar.getAbsolutePath());
         } catch (IOException e) {
             Granite.getLogger().error("Failed to read minecraft_server.jar. Please make sure it exists in the same directory.");
             e.printStackTrace();
