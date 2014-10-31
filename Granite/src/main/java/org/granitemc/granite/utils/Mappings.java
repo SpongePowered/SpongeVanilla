@@ -33,6 +33,9 @@ import javassist.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitemc.granite.reflect.ReflectionUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -63,7 +66,20 @@ public class Mappings {
     static ClassPool pool;
 
     public static void load() {
-        file = ConfigFactory.parseReader(new InputStreamReader(Mappings.class.getResourceAsStream(String.valueOf(org.granitemc.granite.utils.Config.mappings))));
+        try{
+
+            File mappingFile = new File(String.valueOf(org.granitemc.granite.utils.Config.mappings));
+            file = ConfigFactory.parseReader(
+                  new InputStreamReader(
+                          new FileInputStream(mappingFile)
+                  )
+            );
+
+        }catch (FileNotFoundException e){
+
+            e.printStackTrace();
+
+        }
 
         classes = HashBiMap.create();
         ctClasses = HashBiMap.create();
