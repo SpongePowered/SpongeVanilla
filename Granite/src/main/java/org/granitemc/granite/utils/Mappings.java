@@ -67,10 +67,20 @@ public class Mappings {
 
     public static void load() {
         try{
-        file = ConfigFactory.parseReader(new InputStreamReader(new FileInputStream(new File(String.valueOf(org.granitemc.granite.utils.Config.mappings)))));
+
+            File mappingFile = new File(String.valueOf(org.granitemc.granite.utils.Config.mappings));
+            file = ConfigFactory.parseReader(
+                  new InputStreamReader(
+                          new FileInputStream(mappingFile)
+                  )
+            );
+
         }catch (FileNotFoundException e){
+
             e.printStackTrace();
+
         }
+
         classes = HashBiMap.create();
         ctClasses = HashBiMap.create();
 
