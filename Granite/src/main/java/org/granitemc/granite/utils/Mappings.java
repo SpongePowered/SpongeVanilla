@@ -72,6 +72,9 @@ public class Mappings {
             File mappingsFile = new File(Granite.getServerConfig().getMappingsFile().getAbsolutePath());
 
             if (!mappingsFile.exists()) {
+                Granite.getLogger().info("Could not find mappings.json");
+                Granite.getLogger().info("Downloading from https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json");
+
                 HttpRequest req = HttpRequest.get("https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json");
                 if (req.code() == 404) {
                     throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");
