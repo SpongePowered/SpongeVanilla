@@ -30,12 +30,28 @@ import java.io.File;
 import java.net.Proxy;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.UUID;
 
 public interface Server extends CommandSender {
     /**
      * Returns a list of online players
      */
     List<Player> getPlayers();
+
+    /**
+     * Returns the first player matching the given name. Null if no match is found.
+     */
+    Player getPlayer(String name);
+
+    /**
+     * Returns the player matching the exact name given. Null if no match is found.
+     */
+    Player getPlayerExact(String name);
+
+    /**
+     * Returns the player with matching UUID. Null if no match is found.
+     */
+    Player getPlayer(UUID uuid);
 
     /**
      * Returns whether structures can spawn

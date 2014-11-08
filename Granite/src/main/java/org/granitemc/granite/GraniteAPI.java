@@ -30,7 +30,6 @@ import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.ServerConfig;
 import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.permission.PermissionsHook;

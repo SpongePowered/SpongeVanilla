@@ -2,7 +2,6 @@ package org.granitemc.granite.api.entity.player;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.EntityLivingBase;
@@ -13,7 +12,6 @@ import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.world.World;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface Player extends CommandSender, EntityLivingBase {
@@ -187,10 +185,6 @@ public interface Player extends CommandSender, EntityLivingBase {
     void sendPacket(Object packet);
 
     void sendBlockUpdate(Block block);
-
-    void sendMessage(String message);
-
-    void sendMessage(ChatComponent component);
 
     boolean hasPermission(String node);
 }

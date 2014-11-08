@@ -27,6 +27,7 @@ import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.api.utils.Vector;
+import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.item.GraniteEntityItem;
@@ -36,6 +37,7 @@ import org.granitemc.granite.inventory.GranitePlayerInventory;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.GraniteServerComposite;
+import org.granitemc.granite.reflect.PlayServerComposite;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.InvocationTargetException;
@@ -44,26 +46,26 @@ public class MinecraftUtils {
     public static Object wrap(Object object) {
         if (Mappings.getClass("MinecraftServer").isInstance(object)) {
             return GraniteServerComposite.instance;
-        } else if (Mappings.getClass("EntityPlayer").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteEntityPlayer.class);
         } else if (Mappings.getClass("EntityPlayerMP").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteEntityPlayer.class);
+            return GraniteEntityPlayer.new_(object, GraniteEntityPlayer.class);
         } else if (Mappings.getClass("EntityItem").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteEntityItem.class);
+            return GraniteEntityItem.new_(object, GraniteEntityItem.class);
         } else if (Mappings.getClass("Entity").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteEntity.class);
+            return GraniteEntity.new_(object, GraniteEntity.class);
         } else if (Mappings.getClass("InventoryPlayer").isInstance(object)) {
-            return GraniteItemStack.new_(object, GranitePlayerInventory.class);
+            return GranitePlayerInventory.new_(object, GranitePlayerInventory.class);
         } else if (Mappings.getClass("IInventory").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteInventory.class);
+            return GraniteInventory.new_(object, GraniteInventory.class);
         } else if (Mappings.getClass("IBlockWithMetadata").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteBlockType.class);
+            return GraniteBlockType.new_(object, GraniteBlockType.class);
         } else if (Mappings.getClass("Item").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteItemType.class);
+            return GraniteItemType.new_(object, GraniteItemType.class);
         } else if (Mappings.getClass("World").isInstance(object)) {
-            return GraniteItemStack.new_(object, GraniteWorld.class);
+            return GraniteWorld.new_(object, GraniteWorld.class);
         } else if (Mappings.getClass("ItemStack").isInstance(object)) {
             return GraniteItemStack.new_(object, GraniteItemStack.class);
+        } else if (Mappings.getClass("NetHandlerPlayServer").isInstance(object)) {
+            return PlayServerComposite.new_(object, PlayServerComposite.class);
         }
         return null;
     }
@@ -77,9 +79,18 @@ public class MinecraftUtils {
         return null;
     }
 
-    public static Location fromMinecraftLocation(Object minecraftLocation) {
+    public static Object toMinecraftLocation(int x, int y, int z) {
         try {
-            return new Location(
+            return Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(x, y, z);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Location fromMinecraftLocation(World w, Object minecraftLocation) {
+        try {
+            return new Location(w,
                     (float) Mappings.getField("BlockPos", "x").get(minecraftLocation),
                     (float) Mappings.getField("BlockPos", "y").get(minecraftLocation),
                     (float) Mappings.getField("BlockPos", "z").get(minecraftLocation)
