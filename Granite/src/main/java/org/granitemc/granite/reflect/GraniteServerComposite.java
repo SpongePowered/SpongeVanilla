@@ -46,6 +46,7 @@ import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.UUID;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {
     public static GraniteServerComposite instance;
@@ -185,6 +186,39 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    @Override
+    public Player getPlayer(String name) {
+        for (Player player : getPlayers()) {
+            if (player.getName().toLowerCase().contains(name.toLowerCase())) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Player getPlayerExact(String name) {
+        for (Player player : getPlayers()) {
+            if (player.getName().equals(name)) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Player getPlayer(UUID uuid) {
+        for (Player player : getPlayers()) {
+            if (player.getUUID().equals(uuid)) {
+                return player;
+            }
+        }
+
         return null;
     }
 
