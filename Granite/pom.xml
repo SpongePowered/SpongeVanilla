@@ -26,7 +26,7 @@
 
     <groupId>org.granitemc</groupId>
     <name>Granite</name>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <artifactId>granite</artifactId>
 
     <properties>
