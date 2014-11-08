@@ -14,6 +14,9 @@ public class GraniteServerConfig implements ServerConfig {
 
         file.addDefault("plugin-directory", "plugins/");
         file.addDefault("plugin-data-directory", "plugins/");
+        file.addDefault("minecraft-jar", "minecraft_server.jar");
+        file.addDefault("libraries-directory", "lib/");
+        file.addDefault("mappings-file", "mappings.json");
 
         try {
             file.save();
@@ -30,5 +33,20 @@ public class GraniteServerConfig implements ServerConfig {
     @Override
     public File getPluginDirectory() {
         return new File(file.getString("plugin-directory"));
+    }
+
+    @Override
+    public File getMinecraftJar() {
+        return new File(file.getString("minecraft-jar"));
+    }
+
+    @Override
+    public File getLibrariesDirectory() {
+        return new File(file.getString("libraries-directory"));
+    }
+
+    @Override
+    public File getMappingsFile() {
+        return new File(file.getString("mappings-file"));
     }
 }

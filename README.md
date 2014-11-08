@@ -3,13 +3,13 @@ Granite
 
 Granite - A different interface for Minecraft 1.8+.
 
-Note: This is _not_ Sponge!
-
 The purpose of this project is to take a "hands off" approach to vanilla code.
 That is, we _describe_ the code to our composite layer, without actually including any of it.
 Access is gained by composite classes, reflection, proxy classes, interfaces, and classloaders.
 
-**NOTE: A lot of these APIs are completely untested, and may or may not work. If they don't, feel free to create an issue.**
+**NOTE: These APIs may or may not be completely broken. They shouldn't be, but there's always a chance. Take care.**
+
+Most development happens in the branches `patch`, `minor` and `major`, so don't think the project is inactive just because the last commit to `master` is a week old.
 
 Goals
 ------
@@ -53,30 +53,12 @@ Windows users will have to do step 4 manually by obtaining a vanilla minecraft_s
 You could also use one of our pre-built jars from [Jenkins](http://ci.flaten.it/view/Granite/).
 
 To-do list
-------
-- [X] Set-up
-- [X] Command proxy
-- [X] Plugin loader
-- [X] Command API
-- [X] Event system
-- [X] API for:
-  - [X] Worlds
-  - [X] Blocks
-  - [X] Items
-  - [X] Players
-  - [X] Entities
-- [ ] Essentials-style example plugin
-- [ ] Multiworld
-- [ ] More awesome stuff
-
-Secondary tasks
-------
-- [ ] Plugin dependencies
-- [ ] Configurable join/leave messages
+-----
+See TODO.md
 
 Want to Help?
 ------
-Join us on IRC: Esper.net **#granite**
+Join us on IRC: irc.esper.net **#granite**
 
 If you'd like to contribute, make a pull request- we read and consider them all very carefully.
 Should you decide to contribute to the project, please read our [contribution guidelines](https://github.com/GraniteTeam/Granite/blob/master/CONTRIBUTING.md).

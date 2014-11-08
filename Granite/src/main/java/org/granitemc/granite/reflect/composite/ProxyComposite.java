@@ -51,7 +51,6 @@ public class ProxyComposite extends Composite {
         f.setAccessible(true);
     }
 
-
     public String createSignature(MethodHandle methodHandle) {
         if (!methodHandle.isVarargsCollector()) {
             try {
@@ -141,9 +140,25 @@ public class ProxyComposite extends Composite {
                 }
             }
         }, createIdentical, constructorArgTypes, constructorArgs);
+
+        if (!instanceMap.containsKey(this.getClass())) {
+            instanceMap.put(this.getClass(), new HashMap<Object, Composite>());
+        }
+        instanceMap.get(this.getClass()).put(this.parent, this);
     }
 
     /*public ProxyComposite(Object parent, Object... args) {
         this(parent, ReflectionUtils.getTypes(args), args);
     }*/
+
+    public static <T extends Composite> T new_(Object parent, Class<T> compositeType) {
+        if (!instanceMap.containsKey(compositeType)) {
+            instanceMap.put(compositeType, new HashMap<Object, Composite>());
+        }
+        if (instanceMap.get(compositeType).containsKey(parent)) {
+            return (T) instanceMap.get(compositeType).get(parent);
+        } else {
+            throw new RuntimeException("Can't find proxy composite instance in map");
+        }
+    }
 }

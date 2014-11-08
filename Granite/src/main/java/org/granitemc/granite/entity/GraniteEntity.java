@@ -23,6 +23,7 @@
 
 package org.granitemc.granite.entity;
 
+import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.entity.item.EntityItem;
 import org.granitemc.granite.api.entity.player.Player;
@@ -33,9 +34,11 @@ import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.composite.Composite;
+import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class GraniteEntity extends Composite implements Entity {
@@ -379,14 +382,6 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) MinecraftUtils.wrap(invoke("hitByEntity", entity));
     }
 
-    public int getTeleportDirection() {
-        return (Integer) invoke("getTeleportDirection");
-    }
-
-    public boolean isPushedByWater() {
-        return (boolean) invoke("isPushedByWater");
-    }
-
     /*@Override
     public boolean isEntityInvulnerable(DamageSource damageSource) {
         return (boolean) MinecraftUtils.wrap(invoke("getExplosionResistance", damageSource));
@@ -448,14 +443,6 @@ public class GraniteEntity extends Composite implements Entity {
         return (float) invoke("getEyeHeight");
     }
 
-    public void setPosition(double xPos, double yPos, double zPos) {
-        invoke("setPosition", xPos, yPos, zPos);
-    }
-
-    public void setPositionAndRotation(double xPos, double yPos, double zPos, float pitch, float yaw) {
-        invoke("setPositionAndRotation", xPos, yPos, zPos, pitch, yaw);
-    }
-
     public boolean isOutsideBorder() {
         return (boolean) invoke("isOutsideBorder");
     }
@@ -504,6 +491,15 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setLocation(Location location) {
         invoke("setPositionAndRotation", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        for (Player p : Granite.getServer().getPlayers()) {
+            Object packet = null;
+            try {
+                packet = Mappings.getClass("S18PacketEntityTeleport").getConstructor(Mappings.getClass("Entity")).newInstance(parent);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            Mappings.invoke(((GraniteEntityPlayer) p).fieldGet("playerNetServerHandler"), "sendPacket", packet);
+        }
     }
 
     public Entity getEntityRidingThis() {

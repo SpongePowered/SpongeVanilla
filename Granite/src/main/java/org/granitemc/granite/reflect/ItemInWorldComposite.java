@@ -30,10 +30,7 @@ import org.granitemc.granite.api.block.BlockTypes;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.block.EventBlockBreak;
 import org.granitemc.granite.api.event.block.EventBlockPlace;
-import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.api.utils.Location;
-import org.granitemc.granite.api.utils.RayTraceResult;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.entity.player.GraniteEntityPlayer;
@@ -60,20 +57,20 @@ public class ItemInWorldComposite extends ProxyComposite {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 if (!GraniteServerComposite.instance.isOnServerThread()) {
-                Player p = (Player) MinecraftUtils.wrap(fieldGet("thisPlayerMP"));
+                    Player p = (Player) MinecraftUtils.wrap(fieldGet("thisPlayerMP"));
 
-                World w = p.getWorld();
+                    World w = p.getWorld();
 
-                Block b = ((GraniteWorld) w).getBlock(args[0]);
+                    Block b = ((GraniteWorld) w).getBlock(args[0]);
 
-                EventBlockBreak event = new EventBlockBreak(b, p);
-                Granite.getEventQueue().fireEvent(event);
+                    EventBlockBreak event = new EventBlockBreak(b, p);
+                    Granite.getEventQueue().fireEvent(event);
 
-                if (event.isCancelled()) {
-                    hook.setWasHandled(true);
-                    ((GraniteEntityPlayer) p).sendBlockUpdate(b);
-                    return false;
-                }
+                    if (event.isCancelled()) {
+                        hook.setWasHandled(true);
+                        ((GraniteEntityPlayer) p).sendBlockUpdate(b);
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -111,7 +108,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                             ((GraniteBlockType) oldBlock.getType()).getBlockObject(),
                             "isReplaceable",
                             ((GraniteWorld) w).parent,
-                            MinecraftUtils.toMinecraftLocation(new Location(x, y, z))
+                            MinecraftUtils.toMinecraftLocation(x, y, z)
                     )) {
                         switch (direction) {
                             case 0:
@@ -200,12 +197,12 @@ public class ItemInWorldComposite extends ProxyComposite {
             }
         });
 
-        addHook("tryUseItem", new HookListener() {
+        /*addHook("tryUseItem", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
                 Player p = (Player) MinecraftUtils.wrap(args[0]);
 
-                RayTraceResult rtr = p.rayTrace(3, false);
+                RayTraceResult rtr = p.rayTrace(4, false);
                 EventPlayerInteract epi;
                 if (rtr != null) {
                     epi = new EventPlayerInteract(p, EventPlayerInteract.InteractType.RIGHT_CLICK_BLOCK, rtr.getBlock());
@@ -220,6 +217,16 @@ public class ItemInWorldComposite extends ProxyComposite {
                 }
                 return null;
             }
-        });
+        });*/
+
+        /*addHook(new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException {
+                if (!Objects.equals(method.getName(), "b") && method.getParameterTypes().length != 0) {
+                    System.out.println(method);
+                }
+                return null;
+            }
+        });*/
     }
 }
