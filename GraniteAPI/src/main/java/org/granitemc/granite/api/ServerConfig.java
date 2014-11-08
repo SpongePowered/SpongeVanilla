@@ -6,4 +6,10 @@ public interface ServerConfig {
     File getPluginDataDirectory();
 
     File getPluginDirectory();
+
+    File getMinecraftJar();
+
+    File getLibrariesDirectory();
+
+    File getMappingsFile();
 }

@@ -110,7 +110,7 @@ public abstract class Composite {
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
-            instanceMap.get(compositeType).put(compositeType, composite);
+            instanceMap.get(compositeType).put(parent, composite);
             return composite;
         }
     }

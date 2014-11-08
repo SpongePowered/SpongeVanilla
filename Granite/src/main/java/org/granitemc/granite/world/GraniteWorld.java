@@ -61,14 +61,14 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public BlockType getBlockTypeAtPosition(int x, int y, int z) {
-        Object blockType = invoke("getBlock", MinecraftUtils.toMinecraftLocation(new Location(x, y, z)));
+        Object blockType = invoke("getBlock", MinecraftUtils.toMinecraftLocation(new Location(this, x, y, z)));
 
         return (BlockType) MinecraftUtils.wrap(blockType);
     }
 
     @Override
     public void setBlockTypeAtPosition(int x, int y, int z, BlockType type) {
-        invoke("setBlock", MinecraftUtils.toMinecraftLocation(new Location(x, y, z)), ((GraniteBlockType) type).parent);
+        invoke("setBlock", MinecraftUtils.toMinecraftLocation(new Location(this, x, y, z)), ((GraniteBlockType) type).parent);
     }
 
     // TODO: No direct method to get dimension in MC1.8
@@ -85,16 +85,16 @@ public class GraniteWorld extends Composite implements World {
         return (long) Mappings.invoke(getWorldInfo(), "getSeed");
     }
 
-    public long getSpawnX() {
-        return (long) Mappings.invoke(getWorldInfo(), "getSpawnX");
+    public int getSpawnX() {
+        return (int) Mappings.invoke(getWorldInfo(), "getSpawnX");
     }
 
-    public long getSpawnY() {
-        return (long) Mappings.invoke(getWorldInfo(), "getSpawnY");
+    public int getSpawnY() {
+        return (int) Mappings.invoke(getWorldInfo(), "getSpawnY");
     }
 
-    public long getSpawnZ() {
-        return (long) Mappings.invoke(getWorldInfo(), "getSpawnZ");
+    public int getSpawnZ() {
+        return (int) Mappings.invoke(getWorldInfo(), "getSpawnZ");
     }
 
     @Override

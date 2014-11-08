@@ -18,19 +18,26 @@ import org.granitemc.granite.entity.GraniteEntity;
 import org.granitemc.granite.entity.GraniteEntityLivingBase;
 import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.reflect.PlayServerComposite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Player {
 
     public GraniteEntityPlayer(Object parent) {
         super(parent);
+    }
+
+    @Override
+    public void setLocation(Location location) {
+        // Yes, this is supposed to be overridden
+        PlayServerComposite ps = (PlayServerComposite) MinecraftUtils.wrap(fieldGet("playerNetServerHandler"));
+
+        ps.invoke("setPlayerLocation", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     @Override
@@ -148,7 +155,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     @Override
     public Location getBedSpawnLocation(World world, Location location, boolean noBedSpawn) {
-        return MinecraftUtils.fromMinecraftLocation(invoke("getBedSpawnLocation", ((GraniteWorld) world).parent, MinecraftUtils.toMinecraftLocation(location), noBedSpawn));
+        return MinecraftUtils.fromMinecraftLocation(world, invoke("getBedSpawnLocation", ((GraniteWorld) world).parent, MinecraftUtils.toMinecraftLocation(location), noBedSpawn));
     }
 
     @Override
@@ -158,7 +165,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     @Override
     public Location getBedLocation() {
-        return MinecraftUtils.fromMinecraftLocation(invoke("getBedLocation"));
+        return MinecraftUtils.fromMinecraftLocation(getWorld(), invoke("getBedLocation"));
     }
 
     @Override
@@ -437,7 +444,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     @Override
     public Location getPosition() {
-        return MinecraftUtils.fromMinecraftLocation(invoke("getPosition"));
+        return MinecraftUtils.fromMinecraftLocation(getWorld(), invoke("getPosition"));
     }
 
     @Override
@@ -473,7 +480,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
                     Mappings.getClass("BlockPos")
             ).newInstance(
                     ((GraniteWorld) getWorld()).parent,
-                    MinecraftUtils.toMinecraftLocation(new Location(block.getX(), block.getY(), block.getZ()))
+                    MinecraftUtils.toMinecraftLocation(new Location(getWorld(), block.getX(), block.getY(), block.getZ()))
             ));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
@@ -488,7 +495,7 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
                     Mappings.getClass("BlockPos")
             ).newInstance(
                     ((GraniteWorld) getWorld()).parent,
-                    MinecraftUtils.toMinecraftLocation(new Location(block.getX(), block.getY(), block.getZ()))
+                    MinecraftUtils.toMinecraftLocation(new Location(getWorld(), block.getX(), block.getY(), block.getZ()))
             );
             fieldSet(packet, "field_148883_d", ((GraniteBlockType) type).parent);
             sendPacket(packet);
