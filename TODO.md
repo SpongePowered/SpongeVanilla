@@ -15,7 +15,16 @@ Basic
   - [X] Items
   - [X] Players
   - [X] Entities
-  - [ ] NBT tags
+  - [ ] Other Entities e.g Armour Stands
+  - [ ] Friendly Entities
+  - [ ] Hostile Entities
+  - [X] NBT Reflection
+    - [ ] Meta Tags
+    - [ ] Enchantments
+  - [ ] Inventories
+  - [ ] Map Rendering
+  - [ ] Potions
+  - [ ] Scoreboard
 - [ ] Scheduler
 - [ ] Command spoofing
 
@@ -25,14 +34,25 @@ Events
   - [X] Join
     - [ ] Skin changing
     - [ ] Custom message
+  - [ ] Kick
+    - [ ] Custom message
   - [X] Quit
     - [ ] Custom message
   - [/] Interact (half-done)
   - [ ] Chat
+  - [ ] Drop Item
+  - [ ] Move
+  - [ ] Pickup
 - Block
   - [X] Break
   - [X] Place
   - [X] Interact
+  - [ ] Damage
+  - [ ] XP Drop
+  - [ ] Melt/Burnt
+  - [ ] Leaves Decay
+  - [ ] Note Play
+  - [ ] Burn
   - [ ] Spread (fire/grass)
   - [ ] Flow (merge with spread?)
   - [ ] Sign Change
@@ -41,6 +61,10 @@ Events
   - [ ] Damage
   - [ ] Interact
   - [ ] Move
+- Weather
+  - [ ] Lightning Strike
+  - [ ] Thunder
+  - [ ] Weather Change
 
 GraniteUtils
 -----
