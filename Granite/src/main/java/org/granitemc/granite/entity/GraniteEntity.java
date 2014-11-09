@@ -447,6 +447,11 @@ public class GraniteEntity extends Composite implements Entity {
         return (boolean) invoke("isOutsideBorder");
     }
 
+    /*@Override
+    public void addChatMessage(IChatComponent message) {
+        MinecraftUtils.wrap(invoke("addChatMessage", message));
+    }*/
+
     //@Override
     public boolean canCommandSenderUseCommand(int permissionLevel, String command) {
         return (boolean) invoke("canCommandSenderUseCommand", permissionLevel, command);
