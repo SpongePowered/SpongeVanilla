@@ -32,7 +32,6 @@ import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.event.GraniteEventQueue;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -82,7 +81,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
             // Now load the EventHandlerContainers of the plugin (so after the plugin is enabled!)
             for (Class<? extends Event> clss : c.getEvents().keySet()) {
                 for (EventHandlerContainer ehc : c.getEvents().get(clss)) {
-                    ((GraniteEventQueue) GraniteAPI.instance.getEventQueue()).addHandler(clss, ehc);
+                    (GraniteAPI.instance.getEventQueue()).addHandler(ehc);
                 }
             }
 

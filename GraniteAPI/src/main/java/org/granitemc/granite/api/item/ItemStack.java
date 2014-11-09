@@ -24,6 +24,7 @@
 package org.granitemc.granite.api.item;
 
 import org.granitemc.granite.api.block.ItemType;
+import org.granitemc.granite.api.nbt.GraniteNBT;
 
 public interface ItemStack {
     /**
@@ -81,4 +82,9 @@ public interface ItemStack {
      * Clears any custom display name set on this ItemStack, and returns it to its original name
      */
     void clearCustomName();
+
+    GraniteNBT getNBT() throws IllegalAccessException;
+
+    void setNBT(GraniteNBT graniteNBT) throws IllegalAccessException, InstantiationException;
+
 }

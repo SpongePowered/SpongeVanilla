@@ -405,8 +405,8 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     }
 
     @Override
-    public void setItemInUse(ItemStack itemStack, int p_71008_2_) {
-        invoke("setItemInUse", ((GraniteItemStack) itemStack).parent, p_71008_2_);
+    public void setItemInUse(ItemStack itemStack, int slot) {
+        invoke("setItemInUse", ((GraniteItemStack) itemStack).parent, slot);
     }
 
     @Override
