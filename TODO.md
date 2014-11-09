@@ -29,6 +29,7 @@ Events
     - [ ] Custom message
   - [/] Interact (half-done)
   - [ ] Chat
+  - [ ] Sleep
 - Block
   - [X] Break
   - [X] Place
