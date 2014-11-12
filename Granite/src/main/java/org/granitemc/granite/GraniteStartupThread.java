@@ -125,17 +125,21 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void loadLibraries() {
-        for (File lib : GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
+        File[] files = GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
             }
-        })) {
-            Granite.getLogger().info("Loading jarfile lib/%s", lib.getName());
-            try {
-                ClassLoader.addFile(lib);
-            } catch (IOException e) {
-                e.printStackTrace();
+        });
+
+        if (files != null) {
+            for (File lib : files) {
+                Granite.getLogger().info("Loading jarfile lib/%s", lib.getName());
+                try {
+                    ClassLoader.addFile(lib);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
