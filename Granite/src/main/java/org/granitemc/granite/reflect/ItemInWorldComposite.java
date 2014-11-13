@@ -164,7 +164,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                         } catch (Throwable throwable) {
                             throwable.printStackTrace();
                         }
-                    } else {
+                    }/* else {
                         boolean retval = false;
                         try {
                             retval = (boolean) proxyCallback.invoke(self, args);
@@ -187,8 +187,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                         hook.setWasHandled(true);
                         return retval;
-                    }
-
+                    }*/
                 }
 
                 // TODO: fix possible dupe glitch relating to cancellation and skeleton heads
