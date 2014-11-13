@@ -28,6 +28,7 @@ import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.inventory.EventInventoryClick;
 import org.granitemc.granite.api.event.inventory.EventInventoryHotbarMove;
+import org.granitemc.granite.api.event.player.EventPlayerChat;
 import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.RayTraceResult;
@@ -59,7 +60,7 @@ public class PlayServerComposite extends ProxyComposite {
         addHook("processAnimation", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException {
-                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                if (GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
 
                     RayTraceResult rtr = p.rayTrace(4, false);
@@ -240,6 +241,23 @@ public class PlayServerComposite extends ProxyComposite {
 
                     if (epi.isCancelled()) {
                         hook.setWasHandled(true);
+                    }
+                }
+                return null;
+            }
+        });
+
+        addHook("processChatMessage", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException {
+                if (GraniteServerComposite.instance.isOnServerThread()) {
+                    EventPlayerChat epc = new EventPlayerChat(getGranitePlayer(), (String) fieldGet(args[0], "message"));
+                    Granite.getEventQueue().fireEvent(epc);
+
+                    if (epc.isCancelled()) {
+                        hook.setWasHandled(true);
+                    } else {
+                        fieldSet(args[0], "message", epc.getMessage());
                     }
                 }
                 return null;
