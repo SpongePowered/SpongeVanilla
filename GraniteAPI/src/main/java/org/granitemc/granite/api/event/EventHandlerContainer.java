@@ -38,7 +38,7 @@ public class EventHandlerContainer {
     private PluginContainer plugin;
 
     public EventHandlerContainer(PluginContainer plugin, Object instance, Method method) {
-        if (method.getParameterTypes().length != 1 || !(Event.class.isAssignableFrom(method.getParameters()[0].getType()))) {
+        if (method.getParameterTypes().length != 1 || !(Event.class.isAssignableFrom(method.getParameterTypes()[0]))) {
             throw new IllegalArgumentException("Cannot register method " + method.getName() + " from plugin " + plugin.getId());
         }
         
