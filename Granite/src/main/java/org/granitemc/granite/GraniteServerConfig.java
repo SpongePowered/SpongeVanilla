@@ -25,6 +25,10 @@ public class GraniteServerConfig implements ServerConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        getPluginDataDirectory().mkdirs();
+        getPluginDirectory().mkdirs();
+        getLibrariesDirectory().mkdirs();
     }
 
     @Override
