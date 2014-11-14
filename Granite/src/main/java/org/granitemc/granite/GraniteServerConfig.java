@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class GraniteServerConfig implements ServerConfig {
-    CfgFile file;
+    public CfgFile file;
 
     public GraniteServerConfig() {
         file = new CfgFile(new File("granite.conf"));
@@ -17,6 +17,8 @@ public class GraniteServerConfig implements ServerConfig {
         file.addDefault("minecraft-jar", "minecraft_server.jar");
         file.addDefault("libraries-directory", "lib/");
         file.addDefault("mappings-file", "mappings.json");
+        file.addDefault("latest-mappings-etag", "");
+        file.addDefault("automatic-mappings-updating", true);
 
         try {
             file.save();
@@ -49,4 +51,15 @@ public class GraniteServerConfig implements ServerConfig {
     public File getMappingsFile() {
         return new File(file.getString("mappings-file"));
     }
+
+    @Override
+    public String getLatestMappingsEtag() {
+        return file.getString("latest-mappings-etag");
+    }
+
+    @Override
+    public boolean getAutomaticMappingsUpdating() {
+        return file.getBoolean("automatic-mappings-updating");
+    }
+
 }

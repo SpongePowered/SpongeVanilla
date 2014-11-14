@@ -32,6 +32,7 @@ import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigValue;
 import javassist.*;
 import org.apache.commons.lang3.ArrayUtils;
+import org.granitemc.granite.GraniteServerConfig;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.reflect.ReflectionUtils;
 
@@ -45,6 +46,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Mappings {
     static Config file;
@@ -71,15 +73,22 @@ public class Mappings {
         try{
             File mappingsFile = new File(Granite.getServerConfig().getMappingsFile().getAbsolutePath());
 
-            if (!mappingsFile.exists()) {
-                Granite.getLogger().info("Could not find mappings.json");
-                Granite.getLogger().info("Downloading from https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json");
+            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json";
 
-                HttpRequest req = HttpRequest.get("https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json");
-                if (req.code() == 404) {
-                    throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");
-                } else if (req.code() == 200) {
-                    req.receive(mappingsFile);
+            if (Granite.getServerConfig().getAutomaticMappingsUpdating()) {
+                Granite.getLogger().info("Querying " + url + " for updates");
+                HttpRequest req = HttpRequest.get(url);
+                if (!mappingsFile.exists() || !Objects.equals(req.eTag(), Granite.getServerConfig().getLatestMappingsEtag())) {
+                    Granite.getLogger().info("Could not find mappings.json (or etag didn't match)");
+                    Granite.getLogger().info("Downloading from " + url);
+
+                    if (req.code() == 404) {
+                        throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");
+                    } else if (req.code() == 200) {
+                        req.receive(mappingsFile);
+                        ((GraniteServerConfig) Granite.getServerConfig()).file.put("latest-mappings-etag", req.eTag());
+                        ((GraniteServerConfig) Granite.getServerConfig()).file.save();
+                    }
                 }
             }
 
@@ -88,11 +97,8 @@ public class Mappings {
                           new FileInputStream(mappingsFile)
                   )
             );
-
-        }catch (FileNotFoundException e){
-
+        } catch (java.io.IOException e){
             e.printStackTrace();
-
         }
 
         classes = HashBiMap.create();

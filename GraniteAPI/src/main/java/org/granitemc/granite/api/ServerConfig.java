@@ -12,4 +12,8 @@ public interface ServerConfig {
     File getLibrariesDirectory();
 
     File getMappingsFile();
+
+    String getLatestMappingsEtag();
+
+    boolean getAutomaticMappingsUpdating();
 }
