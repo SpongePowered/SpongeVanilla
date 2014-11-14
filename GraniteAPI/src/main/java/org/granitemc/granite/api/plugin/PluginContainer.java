@@ -238,8 +238,8 @@ public class PluginContainer {
         boolean ret = false;
         for (Method m : clazz.getDeclaredMethods()) {
             if (m.isAnnotationPresent(On.class)) {
-                if (m.getParameterCount() == 1 && Event.class.isAssignableFrom(m.getParameters()[0].getType())) {
-                    List<EventHandlerContainer> list = events.get(m.getParameters()[0].getType().asSubclass(Event.class));
+                if (m.getParameterTypes().length == 1 && Event.class.isAssignableFrom(m.getParameterTypes()[0])) {
+                    List<EventHandlerContainer> list = events.get(m.getParameterTypes()[0].asSubclass(Event.class));
                     if (list != null) {
                         for (EventHandlerContainer container : list.toArray(new EventHandlerContainer[0])) {
                             if (container.getMethod().equals(m)) {

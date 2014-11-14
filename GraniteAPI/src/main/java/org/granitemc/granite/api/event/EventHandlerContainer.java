@@ -38,11 +38,11 @@ public class EventHandlerContainer {
     private PluginContainer plugin;
 
     public EventHandlerContainer(PluginContainer plugin, Object instance, Method method) {
-        if (method.getParameterCount() != 1 || !(Event.class.isAssignableFrom(method.getParameters()[0].getType()))) {
+        if (method.getParameterTypes().length != 1 || !(Event.class.isAssignableFrom(method.getParameters()[0].getType()))) {
             throw new IllegalArgumentException("Cannot register method " + method.getName() + " from plugin " + plugin.getId());
         }
         
-        this.clazz = method.getParameters()[0].getType().asSubclass(Event.class);
+        this.clazz = method.getParameterTypes()[0].asSubclass(Event.class);
         
         annotation = method.getAnnotation(On.class);
         this.method = method;
