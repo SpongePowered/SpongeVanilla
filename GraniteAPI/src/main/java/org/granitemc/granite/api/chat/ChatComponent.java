@@ -193,20 +193,28 @@ public abstract class ChatComponent {
     private static String getColorizedText(ChatComponent component) {
         String txt = component.getValue();
         Ansi ansi = Ansi.ansi();
+
+        if (component.getColor().isBright()) {
+            ansi.fgBright(component.getColor().getAnsiColor());
+        } else {
+            ansi.fg(component.getColor().getAnsiColor());
+        }
+
         if (component.bold) ansi = ansi.a(Ansi.Attribute.INTENSITY_BOLD);
         if (component.italic) ansi = ansi.a(Ansi.Attribute.ITALIC);
         if (component.underlined) ansi = ansi.a(Ansi.Attribute.UNDERLINE);
         if (component.strikethrough) ansi = ansi.a(Ansi.Attribute.STRIKETHROUGH_ON);
         if (component.obfuscated) ansi = ansi.a(Ansi.Attribute.BLINK_FAST);
 
+        ansi = ansi.a(txt);
         ansi = ansi.reset();
         return ansi.toString();
     }
 
     public String toPlainText(boolean useAnsiEscapeCodes) {
-        String txt = getColorizedText(this);
+        String txt = useAnsiEscapeCodes ? getColorizedText(this) : getValue();
         for (ChatComponent extra : children) {
-            txt += getColorizedText(extra);
+            txt += useAnsiEscapeCodes ? getColorizedText(extra) : extra.getValue();
         }
         return txt;
     }
