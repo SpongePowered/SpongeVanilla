@@ -190,31 +190,44 @@ public abstract class ChatComponent {
         return addChild(new TextComponent(text));
     }
 
-    private static String getColorizedText(ChatComponent component) {
+    private static String getColorizedText(ChatComponent component, FormattingOutputType type) {
         String txt = component.getValue();
-        Ansi ansi = Ansi.ansi();
+        if (type == FormattingOutputType.ANSI) {
+            Ansi ansi = Ansi.ansi();
 
-        if (component.getColor().isBright()) {
-            ansi.fgBright(component.getColor().getAnsiColor());
-        } else {
-            ansi.fg(component.getColor().getAnsiColor());
+            if (component.getColor().isBright()) {
+                ansi.fgBright(component.getColor().getAnsiColor());
+            } else {
+                ansi.fg(component.getColor().getAnsiColor());
+            }
+
+            if (component.getBold()) ansi = ansi.a(Ansi.Attribute.INTENSITY_BOLD);
+            if (component.getItalic()) ansi = ansi.a(Ansi.Attribute.ITALIC);
+            if (component.getUnderlined()) ansi = ansi.a(Ansi.Attribute.UNDERLINE);
+            if (component.getStrikethrough()) ansi = ansi.a(Ansi.Attribute.STRIKETHROUGH_ON);
+            if (component.getObfuscated()) ansi = ansi.a(Ansi.Attribute.BLINK_FAST);
+
+            ansi = ansi.a(txt);
+            ansi = ansi.reset();
+            return ansi.toString();
+        } else if (type == FormattingOutputType.MINECRAFT) {
+            String formatting = "";
+            formatting += "\u00A7" + component.getColor().getId();
+            if (component.getBold()) formatting += "\u00A7l";
+            if (component.getItalic()) formatting += "\u00A7o";
+            if (component.getUnderlined()) formatting += "\u00A7n";
+            if (component.getStrikethrough()) formatting += "\u00A7m";
+            if (component.getObfuscated()) formatting += "\u00A7k";
+
+            return formatting + txt + "\u00A7r";
         }
-
-        if (component.bold) ansi = ansi.a(Ansi.Attribute.INTENSITY_BOLD);
-        if (component.italic) ansi = ansi.a(Ansi.Attribute.ITALIC);
-        if (component.underlined) ansi = ansi.a(Ansi.Attribute.UNDERLINE);
-        if (component.strikethrough) ansi = ansi.a(Ansi.Attribute.STRIKETHROUGH_ON);
-        if (component.obfuscated) ansi = ansi.a(Ansi.Attribute.BLINK_FAST);
-
-        ansi = ansi.a(txt);
-        ansi = ansi.reset();
-        return ansi.toString();
+        return txt;
     }
 
-    public String toPlainText(boolean useAnsiEscapeCodes) {
-        String txt = useAnsiEscapeCodes ? getColorizedText(this) : getValue();
+    public String toPlainText(FormattingOutputType type) {
+        String txt = getColorizedText(this, type);
         for (ChatComponent extra : children) {
-            txt += useAnsiEscapeCodes ? getColorizedText(extra) : extra.getValue();
+            txt += getColorizedText(extra, type);
         }
         return txt;
     }
