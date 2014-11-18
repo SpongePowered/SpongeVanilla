@@ -9,7 +9,7 @@ Access is gained by composite classes, reflection, proxy classes, interfaces, an
 
 **NOTE: These APIs may or may not be completely broken. They shouldn't be, but there's always a chance. Take care.**
 
-Most development happens in the branches `patch`, `minor` and `major`, so don't think the project is inactive just because the last commit to `master` is a week old.
+Most development happens in the branch `indev`, so don't think the project is inactive just because the last commit to `master` is a week old.
 
 Goals
 ------
