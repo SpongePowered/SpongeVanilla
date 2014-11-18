@@ -1,5 +1,3 @@
-package org.granitemc.granite.reflect;
-
 /*
  * License (MIT)
  *
@@ -17,11 +15,13 @@ package org.granitemc.granite.reflect;
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+package org.granitemc.granite.reflect;
 
 import com.google.common.collect.Lists;
 import org.granitemc.granite.GraniteAPI;
@@ -168,7 +168,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     @Override
     public void sendMessage(ChatComponent component) {
-        Granite.getLogger().info(component.toPlainText(FormattingOutputType.MINECRAFT));
+        Granite.getLogger().info(component.toPlainText(FormattingOutputType.ANSI));
     }
 
     @Override
@@ -383,6 +383,21 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         invoke("setServerPort", port);
     }
 
+    public String getServerOwner() {
+        //Obf R
+        return (String) invoke("getServerOwner");
+    }
+
+    public void setServerOwner(String serverOwner) {
+        //Obf: j
+        invoke("setServerOwner", serverOwner);
+    }
+
+    public boolean isSinglePlayer() {
+        //Obf: N
+        return (boolean) invoke("isSinglePlayer");
+    }
+
     @Override
     public String getFolderName() {
         //Obf: T
@@ -414,6 +429,11 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     public boolean isSnooperEnabled() {
         //Obf: ac
         return (boolean) invoke("isSnooperEnabled");
+    }
+
+    public boolean isDedicatedServer() {
+        //Obf: ad
+        return (boolean) invoke("isDedicatedServer");
     }
 
     @Override
@@ -522,5 +542,4 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     public boolean isOnServerThread() {
         return fieldGet("serverThread") == Thread.currentThread();
     }
-
 }
