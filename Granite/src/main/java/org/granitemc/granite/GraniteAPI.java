@@ -144,7 +144,7 @@ public class GraniteAPI implements API {
 
                                 plugins.add(container);
 
-                                container.enable();
+                                //container.enable();
                             }
                         }
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
