@@ -383,21 +383,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         invoke("setServerPort", port);
     }
 
-    public String getServerOwner() {
-        //Obf R
-        return (String) invoke("getServerOwner");
-    }
-
-    public void setServerOwner(String serverOwner) {
-        //Obf: j
-        invoke("setServerOwner", serverOwner);
-    }
-
-    public boolean isSinglePlayer() {
-        //Obf: N
-        return (boolean) invoke("isSinglePlayer");
-    }
-
     @Override
     public String getFolderName() {
         //Obf: T
