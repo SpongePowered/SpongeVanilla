@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.item;
+
 /*
  * License (MIT)
  *
@@ -15,17 +17,14 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.block;
-
-import org.granitemc.granite.api.item.ItemStack;
-
 public interface ItemType {
+
     /**
      * Returns the maximum amount of items in a stack of this item
      */
@@ -39,7 +38,7 @@ public interface ItemType {
     /**
      * Gets the human name of this block (i.e. what you will see when you hover over this item in an inventory)
      */
-    String getName();
+    String getName() throws IllegalAccessException, InstantiationException;
 
     /**
      * Returns the numeric ID of this block type. This should preferably not be used, rather, use {@link ItemType#getTechnicalName()} instead.
@@ -52,9 +51,10 @@ public interface ItemType {
     String getTechnicalName();
 
     /**
-     * Creates an {@link org.granitemc.granite.api.item.ItemStack} of this item type
+     * Creates an {@link ItemStack} of this item type
      *
-     * @param amount The amount of items in this {@link org.granitemc.granite.api.item.ItemStack}
+     * @param amount The amount of items in this {@link ItemStack}
      */
-    ItemStack create(int amount);
+    ItemStack create(int amount) throws InstantiationException, IllegalAccessException;
+
 }

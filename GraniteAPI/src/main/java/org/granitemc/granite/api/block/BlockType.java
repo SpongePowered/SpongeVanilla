@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.block;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.api.block;
 
 import org.granitemc.granite.api.item.ItemStack;
 
@@ -102,7 +102,7 @@ public interface BlockType {
     /**
      * Returns the human name of this block type (i.e. what will show when you hover over the item version of this block type)
      */
-    String getName();
+    String getName() throws IllegalAccessException, InstantiationException;
 
     /**
      * Returns the numeric ID of this block type. This should preferably not be used, rather, use {@link BlockType#getTechnicalName()} instead.

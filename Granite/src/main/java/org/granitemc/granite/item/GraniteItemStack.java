@@ -1,3 +1,5 @@
+package org.granitemc.granite.item;
+
 /*
  * License (MIT)
  *
@@ -15,26 +17,25 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.item;
-
 import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.block.ItemTypes;
 import org.granitemc.granite.api.item.ItemStack;
-import org.granitemc.granite.api.nbt.GraniteNBT;
+import org.granitemc.granite.api.item.ItemType;
+import org.granitemc.granite.api.item.ItemTypes;
+import org.granitemc.granite.api.nbt.NBTCompound;
+import org.granitemc.granite.api.nbt.meta.BookMeta;
+import org.granitemc.granite.api.nbt.meta.ItemMeta;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class GraniteItemStack extends Composite implements ItemStack {
+
     public GraniteItemStack(Object itemStackInstance) {
         super(itemStackInstance);
     }
@@ -46,7 +47,10 @@ public class GraniteItemStack extends Composite implements ItemStack {
                         : new Class[]{Mappings.getClass("Item"), int.class}, itemTypeInstance, size);
     }
 
-    public GraniteItemStack(ItemType type) {
+    private ItemMeta itemMeta;
+    private BookMeta bookMeta;
+
+    public GraniteItemStack(ItemType type) throws InstantiationException, IllegalAccessException {
         this(type, type.getMaxStackSize());
     }
 
@@ -54,9 +58,8 @@ public class GraniteItemStack extends Composite implements ItemStack {
         this(type, 64);
     }
 
-    public GraniteItemStack(ItemType type, int size) {
+    public GraniteItemStack(ItemType type, int size) throws IllegalAccessException, InstantiationException {
         super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Item"), int.class}, ((GraniteItemType) type).parent, size);
-
     }
 
     public GraniteItemStack(BlockType type, int size) {
@@ -68,10 +71,6 @@ public class GraniteItemStack extends Composite implements ItemStack {
         return (ItemType) MinecraftUtils.wrap(invoke("getItem"));
     }
 
-    public void clearCustomName() {
-        invoke("clearCustomName");
-    }
-
     public int getItemDamage() {
         return (int) invoke("getItemDamage");
     }
@@ -80,130 +79,8 @@ public class GraniteItemStack extends Composite implements ItemStack {
         invoke("setItemDamage", damage);
     }
 
-    public String[] getItemLore() {
-        Object tagCompound = invoke("getTagCompound");
-
-        if (tagCompound != null) {
-            if ((boolean) Mappings.invoke(tagCompound, "hasKey", "display", 10)) {
-                Object displayCompound = Mappings.invoke(tagCompound, "getCompoundTag", "display");
-
-                if ((boolean) Mappings.invoke(displayCompound, "hasKey", "Lore", 9)) {
-                    Object loreTagList = Mappings.invoke(displayCompound, "getTagList", "Lore", 8);
-
-                    int length = (int) Mappings.invoke(loreTagList, "tagCount");
-
-                    String[] lore = new String[length];
-
-                    for (int i = 0; i < length; i++) {
-                        String loreLine = (String) Mappings.invoke(loreTagList, "getStringTagAt", i);
-                        lore[i] = loreLine;
-                    }
-
-                    return lore;
-                } else {
-                    return new String[]{};
-                }
-            } else {
-                return new String[]{};
-            }
-        } else {
-            return new String[]{};
-        }
-    }
-
-    public void setPages(String author, String title, String... lines) {
-
-        // Bleh... ugggggly.
-        int currId = this.getType().getNumericId();
-        int bookid1 = ItemTypes.writable_book.getNumericId();
-        int bookid2 = ItemTypes.written_book.getNumericId();
-
-        // If the ItemType isn't a Book, quietly ignore? - or hard exception here?
-        // Not being able to compare strong types makes me feel squishy inside
-        if (currId != bookid1 & currId != bookid2)
-            return;
-
-        try {
-            Object pagesList = Mappings.getClass("NBTTagList").newInstance();
-
-            for (String line : lines) {
-                Object stringTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(line);
-                Mappings.invoke(pagesList, "appendTag", stringTag);
-            }
-
-            Object tagCompound = invoke("getTagCompound");
-            if (tagCompound == null) {
-                tagCompound = Mappings.getClass("NBTTagCompound").newInstance();
-                invoke("setTagCompound", tagCompound);
-            }
-
-            Object titleTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(title);
-            Object authorTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(author);
-
-            if (!(boolean) Mappings.invoke(tagCompound, "hasKey", "pages", 10)) {
-                Mappings.invoke(tagCompound, "setTag", "title", titleTag);
-                Mappings.invoke(tagCompound, "setTag", "author", authorTag);
-                Mappings.invoke(tagCompound, "setTag", "pages", pagesList);
-            }
-
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setItemLore(String... lines) {
-        try {
-            Object loreList = Mappings.getClass("NBTTagList").newInstance();
-
-            for (String line : lines) {
-                Object stringTag = Mappings.getClass("NBTTagString").getConstructor(String.class).newInstance(line);
-                Mappings.invoke(loreList, "appendTag", stringTag);
-            }
-
-            Object tagCompound = invoke("getTagCompound");
-
-            if (tagCompound == null) {
-                tagCompound = Mappings.getClass("NBTTagCompound").newInstance();
-                invoke("setTagCompound", tagCompound);
-            }
-
-            Object displayCompound;
-
-            if (!(boolean) Mappings.invoke(tagCompound, "hasKey", "display", 10)) {
-                displayCompound = Mappings.getClass("NBTTagCompound").newInstance();
-                Mappings.invoke(tagCompound, "setTag", "display", displayCompound);
-            }
-
-            displayCompound = Mappings.invoke(tagCompound, "getCompoundTag", "display");
-            Mappings.invoke(displayCompound, "setTag", "Lore", loreList);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String[] getPages() {
-        Object tagCompound = invoke("getTagCompound");
-        if (tagCompound == null) {
-            return null;
-        }
-        String[] pages = (String[]) Mappings.invoke(tagCompound, "getTag", "pages");
-        return pages;
-    }
-
     public int getMaxDamage() {
         return getType().getMaxDamage();
-    }
-
-    public String getDisplayName() {
-        return (String) invoke("getDisplayName");
-    }
-
-    public void setDisplayName(String name) {
-        parent = invoke("setStackDisplayName", name);
-    }
-
-    public boolean hasDisplayName() {
-        return (boolean) invoke("hasDisplayName");
     }
 
     public int getStackSize() {
@@ -214,11 +91,32 @@ public class GraniteItemStack extends Composite implements ItemStack {
         fieldSet("stackSize", amount);
     }
 
-    public GraniteNBT getNBT() throws IllegalAccessException {
-        return MinecraftUtils.fromMinecraftNBTCompound(invoke("getTagCompound"));
+    public NBTCompound getNBTCompound() throws IllegalAccessException, InstantiationException {
+        try {
+            return MinecraftUtils.fromMinecraftNBTCompound(invoke("getTagCompound"));
+        } catch (Exception ignored) {
+            NBTCompound nbtCompound = new NBTCompound();
+            this.setNBTCompound(nbtCompound);
+            return nbtCompound;
+        }
     }
 
-    public void setNBT(GraniteNBT graniteNBT) throws InstantiationException, IllegalAccessException {
-        invoke("setTagCompound", MinecraftUtils.toMinecraftNBTCompound(graniteNBT));
+    public void setNBTCompound(NBTCompound NBTCompound) throws InstantiationException, IllegalAccessException {
+        invoke("setTagCompound", MinecraftUtils.toMinecraftNBTCompound(NBTCompound));
     }
+
+    public ItemMeta getMetadata() {
+        if (this.getType().equals(ItemTypes.written_book) || this.getType().equals(ItemTypes.writable_book)) {
+            if (bookMeta == null) {
+                bookMeta = new BookMeta(this);
+            }
+            return bookMeta;
+        } else {
+            if (itemMeta == null) {
+                itemMeta = new ItemMeta(this);
+            }
+            return itemMeta;
+        }
+    }
+
 }

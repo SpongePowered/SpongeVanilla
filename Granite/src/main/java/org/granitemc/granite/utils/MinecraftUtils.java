@@ -1,3 +1,5 @@
+package org.granitemc.granite.utils;
+
 /*
  * License (MIT)
  *
@@ -15,17 +17,15 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.utils;
-
 import com.google.common.collect.Maps;
 import org.granitemc.granite.api.chat.ChatComponent;
-import org.granitemc.granite.api.nbt.GraniteNBT;
+import org.granitemc.granite.api.nbt.NBTCompound;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.api.utils.Vector;
@@ -42,7 +42,9 @@ import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.reflect.PlayServerComposite;
 import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,8 +76,9 @@ public class MinecraftUtils {
         return null;
     }
 
-    public static Object toMinecraftNBTCompound(GraniteNBT graniteNBT) throws IllegalAccessException, InstantiationException {
-        Map<String, Object> graniteNBTTags = graniteNBT.getNbtMap();
+    public static Object toMinecraftNBTCompound(NBTCompound nbtCompound) throws IllegalAccessException, InstantiationException {
+        if (nbtCompound.getNBTMap().isEmpty()) return Mappings.getClass("NBTTagCompound").newInstance();
+        Map<String, Object> graniteNBTTags = nbtCompound.getNBTMap();
         Object minecraftNBTCompound = Mappings.getClass("NBTTagCompound").newInstance();
         for (String key : graniteNBTTags.keySet()) {
             if (graniteNBTTags.get(key) instanceof Byte) {
@@ -92,10 +95,20 @@ public class MinecraftUtils {
                 Mappings.invoke(minecraftNBTCompound, "setIntArray", key, graniteNBTTags.get(key));
             } else if (graniteNBTTags.get(key) instanceof List) {
                 Object nbtTagListInstance = Mappings.getClass("NBTTagList").newInstance();
-                Mappings.getField(nbtTagListInstance.getClass(), "tagList").set(nbtTagListInstance, graniteNBTTags.get(key));
+                List list = (List) graniteNBTTags.get(key);
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i) instanceof NBTCompound) {
+                        Mappings.invoke(nbtTagListInstance, "appendTag", toMinecraftNBTCompound((NBTCompound) list.get(i)));
+                    } else if (list.get(i) instanceof String) {
+                        Object nbtTagStringInstance = Mappings.getClass("NBTTagString").newInstance();
+                        Field fieldTag = Mappings.getField(nbtTagStringInstance.getClass(), "data");
+                        fieldTag.set(nbtTagStringInstance, list.get(i));
+                        Mappings.invoke(nbtTagListInstance, "appendTag", nbtTagStringInstance);
+                    }
+                }
                 Mappings.invoke(minecraftNBTCompound, "setTag", key, nbtTagListInstance);
-            } else if (graniteNBTTags.get(key) instanceof GraniteNBT) {
-                Mappings.invoke(minecraftNBTCompound, "setTag", key, toMinecraftNBTCompound((GraniteNBT) graniteNBTTags.get(key)));
+            } else if (graniteNBTTags.get(key) instanceof NBTCompound) {
+                Mappings.invoke(minecraftNBTCompound, "setTag", key, toMinecraftNBTCompound((NBTCompound) graniteNBTTags.get(key)));
             } else if (graniteNBTTags.get(key) instanceof Long) {
                 Mappings.invoke(minecraftNBTCompound, "setLong", key, graniteNBTTags.get(key));
             } else if (graniteNBTTags.get(key) instanceof Short) {
@@ -107,7 +120,7 @@ public class MinecraftUtils {
         return minecraftNBTCompound;
     }
 
-    public static GraniteNBT fromMinecraftNBTCompound(Object minecraftNBTCompound) throws IllegalAccessException {
+    public static NBTCompound fromMinecraftNBTCompound(Object minecraftNBTCompound) throws IllegalAccessException {
         Map<String, Object> minecraftNBTTags = (Map<String, Object>) Mappings.getField(minecraftNBTCompound.getClass(), "tagMap").get(minecraftNBTCompound);
         Map<String, Object> graniteNBTTags = Maps.newHashMap();
         for (String key : minecraftNBTTags.keySet()) {
@@ -126,7 +139,16 @@ public class MinecraftUtils {
             } else if (Mappings.getClass("NBTTagIntArray").isInstance(minecraftNBTTags.get(key))) {
                 graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagIntArray"), "data").get(minecraftNBTTags.get(key)));
             } else if (Mappings.getClass("NBTTagList").isInstance(minecraftNBTTags.get(key))) {
-                graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagList"), "tagList").get(minecraftNBTTags.get(key)));
+                List list = (List) Mappings.getField(Mappings.getClass("NBTTagList"), "tagList").get(minecraftNBTTags.get(key));
+                List graniteList = new ArrayList();
+                for (int i = 0; i < list.size(); i++) {
+                    if (Mappings.getClass("NBTTagCompound").isInstance(list.get(i))) {
+                        graniteList.add(fromMinecraftNBTCompound(list.get(i)));
+                    } else if (Mappings.getClass("NBTTagString").isInstance(list.get(i))) {
+                        graniteList.add(Mappings.getField(Mappings.getClass("NBTTagString"), "data").get(list.get(i)));
+                    }
+                }
+                graniteNBTTags.put(key, graniteList);
             } else if (Mappings.getClass("NBTTagLong").isInstance(minecraftNBTTags.get(key))) {
                 graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagLong"), "data").get(minecraftNBTTags.get(key)));
             } else if (Mappings.getClass("NBTTagShort").isInstance(minecraftNBTTags.get(key))) {
@@ -135,7 +157,7 @@ public class MinecraftUtils {
                 graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagString"), "data").get(minecraftNBTTags.get(key)));
             }
         }
-        return new GraniteNBT(graniteNBTTags);
+        return new NBTCompound(graniteNBTTags);
     }
 
     public static Object toMinecraftLocation(Location graniteLocation) {

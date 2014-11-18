@@ -1,3 +1,5 @@
+package org.granitemc.granite.inventory;
+
 /*
  * License (MIT)
  *
@@ -15,32 +17,22 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.inventory;
-
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.inventory.PlayerInventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.item.GraniteItemStack;
-import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.MinecraftUtils;
 
-public class GranitePlayerInventory extends Composite implements PlayerInventory {
+public class GranitePlayerInventory extends GraniteInventory implements PlayerInventory {
+
     public GranitePlayerInventory(Object parent) {
         super(parent);
-    }
-
-    public ItemStack getItemStack(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("getStackInSlot", slot));
-    }
-
-    public int getFirstEmptySlot() {
-        return (int) invoke("getFirstEmptyStack");
     }
 
     public Player getPlayer() {
@@ -64,10 +56,6 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
     /*public void moveHotbarCursor(int index) {
 
     }*/
-
-    public void addItemStack(ItemStack itemStack) {
-        invoke("addItemStackToInventory", itemStack);
-    }
 
     public ItemStack getHelmetItem() {
         return getItemStack(39);
@@ -101,18 +89,12 @@ public class GranitePlayerInventory extends Composite implements PlayerInventory
         setItemStack(36, itemStack);
     }
 
-    public void setItemStack(int slot, ItemStack itemStack) {
-        invoke("setInventorySlotContents", slot, ((GraniteItemStack) itemStack).parent);
-    }
-
-    public int getSize() {
-        return (int) invoke("getSizeInventory");
-    }
-
     public ItemStack getItemStack() {
         return (ItemStack) MinecraftUtils.wrap(fieldGet("itemStack"));
     }
+
     public void setItemStack(ItemStack newItemStack) {
         fieldSet("itemStack", newItemStack == null ? null : ((GraniteItemStack) newItemStack).parent);
     }
+
 }

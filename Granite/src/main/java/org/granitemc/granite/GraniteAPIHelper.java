@@ -24,17 +24,17 @@ package org.granitemc.granite;
  */
 
 import org.granitemc.granite.api.APIHelper;
-import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.ItemType;
 import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteAPIHelper implements APIHelper {
     @Override
-    public ItemStack createItemStack(ItemType type, int amount) {
+    public ItemStack createItemStack(ItemType type, int amount) throws InstantiationException, IllegalAccessException {
         return new GraniteItemStack(type, amount);
     }
 
