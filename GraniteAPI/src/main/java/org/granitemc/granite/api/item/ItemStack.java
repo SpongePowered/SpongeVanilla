@@ -24,7 +24,7 @@ package org.granitemc.granite.api.item;
  */
 
 import org.granitemc.granite.api.nbt.NBTCompound;
-import org.granitemc.granite.api.nbt.meta.ItemMeta;
+import org.granitemc.granite.api.item.meta.ItemMeta;
 
 public interface ItemStack {
 

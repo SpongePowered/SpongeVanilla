@@ -1,4 +1,4 @@
-package org.granitemc.granite.api.utils;
+package org.granitemc.granite.api.item;
 
 /*
  * License (MIT)

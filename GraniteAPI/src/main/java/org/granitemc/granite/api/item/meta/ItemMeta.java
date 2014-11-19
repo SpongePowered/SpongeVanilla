@@ -1,4 +1,4 @@
-package org.granitemc.granite.api.nbt.meta;
+package org.granitemc.granite.api.item.meta;
 
 /*
  * License (MIT)
@@ -28,7 +28,7 @@ import org.granitemc.granite.api.chat.FormattingOutputType;
 import org.granitemc.granite.api.chat.TextComponent;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.nbt.NBTCompound;
-import org.granitemc.granite.api.utils.Enchantment;
+import org.granitemc.granite.api.item.Enchantment;
 
 import java.util.ArrayList;
 import java.util.List;

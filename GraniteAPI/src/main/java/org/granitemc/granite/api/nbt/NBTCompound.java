@@ -40,8 +40,8 @@ public class NBTCompound {
         nbtMap = map;
     }
 
-    public byte getByte(String key) {
-        if (!hasKey(key)) return Byte.parseByte(null);
+    public Byte getByte(String key) {
+        if (!hasKey(key)) return null;
         return (byte) nbtMap.get(key);
     }
 
@@ -50,8 +50,8 @@ public class NBTCompound {
         return (byte[]) nbtMap.get(key);
     }
 
-    public double getDouble(String key) {
-        if (!hasKey(key)) return Double.parseDouble(null);
+    public Double getDouble(String key) {
+        if (!hasKey(key)) return null;
         return (double) nbtMap.get(key);
     }
 
@@ -60,13 +60,13 @@ public class NBTCompound {
         return (String) nbtMap.get(key);
     }
 
-    public float getFloat(String key) {
-        if (!hasKey(key)) return Float.parseFloat(null);
+    public Float getFloat(String key) {
+        if (!hasKey(key)) return null;
         return (float) nbtMap.get(key);
     }
 
-    public int getInt(String key) {
-        if (!hasKey(key)) return Integer.parseInt(null);
+    public Integer getInt(String key) {
+        if (!hasKey(key)) return null;
         return (int) nbtMap.get(key);
     }
 
@@ -80,13 +80,13 @@ public class NBTCompound {
         return (List) nbtMap.get(key);
     }
 
-    public long getLong(String key) {
-        if (!hasKey(key)) return Long.parseLong(null);
+    public Long getLong(String key) {
+        if (!hasKey(key)) return null;
         return (long) nbtMap.get(key);
     }
 
-    public short getShort(String key) {
-        if (!hasKey(key)) return Short.parseShort(null);
+    public Short getShort(String key) {
+        if (!hasKey(key)) return null;
         return (short) nbtMap.get(key);
     }
 
@@ -155,7 +155,7 @@ public class NBTCompound {
         nbtMap.put(key, data);
     }
 
-    public void setNBTCompound(String key, org.granitemc.granite.api.nbt.NBTCompound data) {
+    public void setNBTCompound(String key, NBTCompound data) {
         if (hasKey(key)) return;
         nbtMap.put(key, data);
     }

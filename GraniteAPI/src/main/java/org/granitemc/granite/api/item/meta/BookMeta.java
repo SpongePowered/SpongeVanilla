@@ -1,4 +1,4 @@
-package org.granitemc.granite.api.nbt.meta;
+package org.granitemc.granite.api.item.meta;
 
 /*
  * License (MIT)
