@@ -41,9 +41,9 @@ public class EventHandlerContainer {
         if (method.getParameterTypes().length != 1 || !(Event.class.isAssignableFrom(method.getParameterTypes()[0]))) {
             throw new IllegalArgumentException("Cannot register method " + method.getName() + " from plugin " + plugin.getId());
         }
-        
+
         this.clazz = method.getParameterTypes()[0].asSubclass(Event.class);
-        
+
         annotation = method.getAnnotation(On.class);
         this.method = method;
 
@@ -71,14 +71,14 @@ public class EventHandlerContainer {
     public PluginContainer getPlugin() {
         return plugin;
     }
-    
+
     /**
      * Returns the method registered
      */
     public Method getMethod() {
         return method;
     }
-    
+
     /**
      * Calls the event handler
      *

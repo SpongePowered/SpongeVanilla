@@ -245,7 +245,7 @@ public abstract class ChatComponent {
         if (insertion != null && insertion.length() > 0) obj.put("insertion", insertion);
 
         List<Object> extras = new ArrayList<>();
-        for (ChatComponent extra : children)  {
+        for (ChatComponent extra : children) {
             extras.add(extra.toConfigObject());
         }
 

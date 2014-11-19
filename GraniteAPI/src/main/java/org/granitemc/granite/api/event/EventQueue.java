@@ -30,7 +30,8 @@ public interface EventQueue {
      * @param event The event to fire
      */
     void fireEvent(Event event);
-    
+
     void addHandler(EventHandlerContainer handler);
+
     boolean removeHandler(EventHandlerContainer handler);
 }

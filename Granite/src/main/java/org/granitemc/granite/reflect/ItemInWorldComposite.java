@@ -33,7 +33,6 @@ import org.granitemc.granite.api.event.block.EventBlockPlace;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;

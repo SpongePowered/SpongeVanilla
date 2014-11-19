@@ -64,12 +64,12 @@ public class GraniteEventQueue implements EventQueue {
 
         handlers.get(handler.getEventType()).add(handler);
     }
-    
+
     public boolean removeHandler(EventHandlerContainer handler) {
         if (handlers.containsKey(handler.getEventType())) {
             return (handlers.get(handler.getEventType()).remove(handler));
         }
-        
+
         return false;
     }
 }

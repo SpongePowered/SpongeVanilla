@@ -27,6 +27,7 @@ import org.json.simple.JSONObject;
 
 public abstract class HoverEvent {
     protected abstract String getAction();
+
     public abstract Object getValue();
 
     JSONObject toConfigObject() {
@@ -35,4 +36,5 @@ public abstract class HoverEvent {
         obj.put("value", getValue());
 
         return obj;
-    }}
+    }
+}

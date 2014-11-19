@@ -58,9 +58,9 @@ public interface Block {
      * @param type The type to set
      */
     void setType(BlockType type);
-    
+
     /**
      * Returns the {@link org.granitemc.granite.api.utils.Location} of this block
      */
-	Location getLocation();
+    Location getLocation();
 }

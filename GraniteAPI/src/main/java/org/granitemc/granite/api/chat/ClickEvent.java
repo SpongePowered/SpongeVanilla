@@ -27,6 +27,7 @@ import org.json.simple.JSONObject;
 
 public abstract class ClickEvent {
     protected abstract String getAction();
+
     public abstract Object getValue();
 
     JSONObject toConfigObject() {

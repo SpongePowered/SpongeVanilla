@@ -33,6 +33,7 @@ public class GraniteBlock implements Block {
     private int x;
     private int y;
     private int z;
+
     public GraniteBlock(int x, int y, int z, World world) {
         this.x = x;
         this.y = y;
@@ -71,7 +72,7 @@ public class GraniteBlock implements Block {
         world.setBlockTypeAtPosition(x, y, z, type);
     }
 
-	public Location getLocation() {
-		return new Location(world, x, y, z);
-	}
+    public Location getLocation() {
+        return new Location(world, x, y, z);
+    }
 }

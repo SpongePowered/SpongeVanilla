@@ -42,6 +42,7 @@ public class ProxyComposite extends Composite {
     private List<Hook> globalHooks;
 
     static Field f = null;
+
     static {
         try {
             f = Class.forName("java.lang.invoke.DirectMethodHandle").getDeclaredField("member");

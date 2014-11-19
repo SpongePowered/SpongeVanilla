@@ -34,6 +34,7 @@ public interface APIHelper {
     String getItemNBTCompoundString(ItemStack stack);
 
     String getEntityNBTCompoundString(Entity stack);
+
     String getEntityNBTCompoundString(String type, String name, String id);
 
     String getTranslation(String key, Object... args);

@@ -69,7 +69,7 @@ public class Mappings {
     static ClassPool pool;
 
     public static void load() {
-        try{
+        try {
             File mappingsFile = new File(Granite.getServerConfig().getMappingsFile().getAbsolutePath());
 
             String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json";
@@ -92,11 +92,11 @@ public class Mappings {
             }
 
             file = ConfigFactory.parseReader(
-                  new InputStreamReader(
-                          new FileInputStream(mappingsFile)
-                  )
+                    new InputStreamReader(
+                            new FileInputStream(mappingsFile)
+                    )
             );
-        } catch (java.io.IOException e){
+        } catch (java.io.IOException e) {
             e.printStackTrace();
         }
 

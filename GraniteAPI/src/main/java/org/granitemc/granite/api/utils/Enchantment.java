@@ -32,6 +32,7 @@ public enum Enchantment {
     LUCK_OF_THE_SEA(61), LURE(62);
 
     int id;
+
     Enchantment(int id) {
         this.id = id;
     }

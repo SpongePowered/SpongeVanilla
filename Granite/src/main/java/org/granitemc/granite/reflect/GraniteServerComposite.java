@@ -30,8 +30,6 @@ import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.chat.ChatComponent;
 import org.granitemc.granite.api.chat.FormattingOutputType;
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;

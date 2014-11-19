@@ -29,7 +29,6 @@ import org.granitemc.granite.api.permission.PermissionsHook;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 public interface API {
