@@ -78,14 +78,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
         for (PluginContainer c : Granite.getPlugins()) {
             c.enable();
-
-            // Now load the EventHandlerContainers of the plugin (so after the plugin is enabled!)
-            for (Class<? extends Event> clss : c.getEvents().keySet()) {
-                for (EventHandlerContainer ehc : c.getEvents().get(clss)) {
-                    (GraniteAPI.instance.getEventQueue()).addHandler(ehc);
-                }
-            }
-
         }
     }
 

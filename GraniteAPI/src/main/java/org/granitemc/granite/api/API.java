@@ -30,6 +30,7 @@ import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 public interface API {
     /**
@@ -63,7 +64,7 @@ public interface API {
     /**
      * Returns all the currently loaded plugins
      */
-    List<PluginContainer> getPlugins();
+    Set<PluginContainer> getPlugins();
 
     /**
      * Returns the log4j logger
@@ -83,5 +84,8 @@ public interface API {
     ServerConfig getServerConfig();
 
     PermissionsHook getPermissionsHook();
+
     void setPermissionsHook(PermissionsHook hook);
+
+    void loadPluginFromClass(Class<?> clazz);
 }

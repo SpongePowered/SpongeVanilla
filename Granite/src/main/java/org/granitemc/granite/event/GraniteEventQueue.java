@@ -50,7 +50,8 @@ public class GraniteEventQueue implements EventQueue {
             handlers.put(event.getClass(), list);
         }
 
-        for (EventHandlerContainer handler : handlers.get(event.getClass()).toArray(new EventHandlerContainer[0])) {
+        //System.out.println(event);
+        for (EventHandlerContainer handler : handlers.get(event.getClass())) {
             handler.invoke(event);
         }
     }

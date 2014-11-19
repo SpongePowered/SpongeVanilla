@@ -30,6 +30,7 @@ import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("ReflectionForUnavailableAnnotation")
 public class Granite {
@@ -47,7 +48,7 @@ public class Granite {
     /**
      * @see API#getPlugins()
      */
-    public static List<PluginContainer> getPlugins() {
+    public static Set<PluginContainer> getPlugins() {
         return impl.getPlugins();
     }
 
@@ -107,5 +108,9 @@ public class Granite {
 
     public static void setPermissionsHook(PermissionsHook hook) {
         impl.setPermissionsHook(hook);
+    }
+
+    public static void loadPluginFromClass(Class<?> clazz) {
+        impl.loadPluginFromClass(clazz);
     }
 }

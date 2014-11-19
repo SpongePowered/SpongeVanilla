@@ -71,7 +71,7 @@ public class PluginContainer {
                 if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
                     onEnableHandlers.add(m);
                 } else {
-                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a PluginContainer");
                 }
             }
 
@@ -79,7 +79,7 @@ public class PluginContainer {
                 if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
                     onDisableHandlers.add(m);
                 } else {
-                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a PluginContainer");
                 }
             }
         }

@@ -182,11 +182,6 @@ public class PlayServerComposite extends ProxyComposite {
 
                         Granite.getEventQueue().fireEvent(evt);
 
-                        System.out.println(evt.getButton() + " " + evt.getAction() + " " + (evt.getRelatedStack() == null ? "null" : ((GraniteItemStack) evt.getRelatedStack()).parent) +
-                                " (Hand: " + (evt.getItemStackInHand() == null ? "null" : ((GraniteItemStack) evt.getItemStackInHand()).parent) + ", " +
-                                "Slot: " + (evt.getItemStackInSlot() == null ? "null" : ((GraniteItemStack) evt.getItemStackInSlot()).parent) + ", " +
-                                "Slot ID: " + evt.getSlot() + ")");
-
                         if (!evt.isCancelled()) {
                             proxyCallback.invoke(self, args);
 

@@ -45,10 +45,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -57,14 +54,14 @@ public class GraniteAPI implements API {
     public static GraniteAPI instance;
     public static GraniteAPIHelper helper;
 
-    private List<PluginContainer> plugins;
+    private Set<PluginContainer> plugins;
     private Logger logger;
 
     private GraniteEventQueue eventQueue;
 
     private ServerConfig config;
     private PermissionsHook permissionsHook;
-
+    
     public static void init() {
         try {
             Field impl = Granite.class.getDeclaredField("impl");
@@ -84,7 +81,7 @@ public class GraniteAPI implements API {
     }
 
     private GraniteAPI() {
-        plugins = new ArrayList<>();
+        plugins = new HashSet<>();
         logger = LogManager.getFormatterLogger("Granite");
 
         eventQueue = new GraniteEventQueue();
@@ -101,7 +98,7 @@ public class GraniteAPI implements API {
         return null;
     }
 
-    public List<PluginContainer> getPlugins() {
+    public Set<PluginContainer> getPlugins() {
         return plugins;
     }
 
@@ -115,6 +112,17 @@ public class GraniteAPI implements API {
                 if (p.getMainClass().equals(pluginClass)) {
                     return p;
                 }
+            }
+        }
+        return null;
+    }
+
+    public PluginContainer createPluginContainer(Class<?> clazz) {
+        for (Annotation a : clazz.getAnnotations()) {
+            if (a.annotationType().equals(Plugin.class)) {
+                PluginContainer container = new PluginContainer(clazz);
+                return container;
+                //container.enable();
             }
         }
         return null;
@@ -136,17 +144,7 @@ public class GraniteAPI implements API {
                     try {
                         Class<?> clazz = classLoader.loadClass(className);
 
-                        for (Annotation a : clazz.getAnnotations()) {
-                            if (a.annotationType().equals(Plugin.class)) {
-                                PluginContainer container = new PluginContainer(clazz);
-
-                                getLogger().info("Loaded %s (v%s)!", container.getName(), container.getVersion());
-
-                                plugins.add(container);
-
-                                //container.enable();
-                            }
-                        }
+                        loadPluginFromClass(clazz);
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -154,6 +152,15 @@ public class GraniteAPI implements API {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadPluginFromClass(Class<?> clazz) {
+        PluginContainer pc = createPluginContainer(clazz);
+
+        if (pc != null) {
+            plugins.add(pc);
+            getLogger().info("Loaded %s (v%s)!", pc.getName(), pc.getVersion());
         }
     }
 

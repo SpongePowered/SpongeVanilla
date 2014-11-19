@@ -55,7 +55,7 @@ public class ItemInWorldComposite extends ProxyComposite {
         addHook("tryHarvestBlock", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                if (GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("thisPlayerMP"));
 
                     World w = p.getWorld();
@@ -67,7 +67,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     if (event.isCancelled()) {
                         hook.setWasHandled(true);
-                        ((GraniteEntityPlayer) p).sendBlockUpdate(b);
+                        p.sendBlockUpdate(b);
                         return false;
                     }
                 }
