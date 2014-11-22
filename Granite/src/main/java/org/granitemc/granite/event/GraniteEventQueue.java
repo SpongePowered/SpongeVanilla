@@ -51,8 +51,12 @@ public class GraniteEventQueue implements EventQueue {
         }
 
         //System.out.println(event);
+        int lastInvoke = 0; // Fix for multiple eventhandler invokes
         for (EventHandlerContainer handler : handlers.get(event.getClass())) {
-            handler.invoke(event);
+            if (lastInvoke != handler.getInstance().hashCode()) {
+                lastInvoke = handler.getInstance().hashCode();
+                handler.invoke(event);
+            }
         }
     }
 
