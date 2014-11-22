@@ -45,6 +45,10 @@ public class TextComponent extends ChatComponent {
         return obj;
     }
 
+    static TextComponent fromConfigObjectLocal(JSONObject obj) {
+        return new TextComponent((String) obj.get("text"));
+    }
+
     public void setText(String text) {
         this.text = text;
     }

@@ -130,6 +130,21 @@ public class GraniteBlockType extends Composite implements BlockType {
         return getItemStack(amount);
     }
 
+    @Override
+    public BlockType getDefaultState() {
+        return (BlockType) MinecraftUtils.wrap(Mappings.invoke(getBlockObject(), "getDefaultState"));
+    }
+
+    @Override
+    public BlockType getStateFromMeta(int meta) {
+        return (BlockType) MinecraftUtils.wrap(Mappings.invoke(getBlockObject(), "getStateFromMeta", meta));
+    }
+
+    @Override
+    public int getMetaFromState() {
+        return (int) Mappings.invoke(getBlockObject(), "getMetaFromState", parent);
+    }
+
     public ItemStack getItemStack(int amount) {
         // Super messy, it works, don't touch (pls)
 
@@ -166,8 +181,8 @@ public class GraniteBlockType extends Composite implements BlockType {
         }
     }
 
-    public String getName() throws IllegalAccessException, InstantiationException {
-        return getItemStack(1).getMetadata().getDisplayName();
+    public String getName() {
+        return getItemStack(1).getName();
     }
 
     public String getUnlocalizedName() {

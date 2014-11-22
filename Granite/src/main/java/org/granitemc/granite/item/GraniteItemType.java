@@ -43,7 +43,7 @@ public class GraniteItemType extends Composite implements ItemType {
     }
 
     public String getName() throws IllegalAccessException, InstantiationException {
-        return new GraniteItemStack(this, 1).getMetadata().getDisplayName();
+        return new GraniteItemStack(this, 1).getName();
     }
 
     public int getNumericId() {
@@ -54,7 +54,7 @@ public class GraniteItemType extends Composite implements ItemType {
         return ItemTypes.getNameFromItem(this);
     }
 
-    public ItemStack create(int amount) throws InstantiationException, IllegalAccessException {
+    public ItemStack create(int amount) {
         return new GraniteItemStack(this, amount);
     }
 }

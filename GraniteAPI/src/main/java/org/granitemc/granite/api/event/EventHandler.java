@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 /**
  * An annotation for event handlers.
  */
-public @interface On {
+public @interface EventHandler {
     /**
      * An enum for specifying the priority of an event handler.
      * <p/>

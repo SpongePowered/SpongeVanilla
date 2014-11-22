@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandComposite extends ProxyComposite {
-
     public CommandComposite() {
         super(Mappings.getClass("ServerCommandManager"), new Class[]{});
 

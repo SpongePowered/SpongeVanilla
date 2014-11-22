@@ -24,6 +24,7 @@ package org.granitemc.granite.api.chat;
  */
 
 import org.granitemc.granite.api.Granite;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -79,5 +80,16 @@ public class TranslateComponent extends ChatComponent {
 
         obj.put("with", withs);
         return obj;
+    }
+
+    static TranslateComponent fromConfigObjectLocal(JSONObject obj) {
+        List<ChatComponent> withs = new ArrayList<>();
+
+        if (obj.containsKey("with")) {
+            for (Object val : (JSONArray) obj.get("with")) {
+                withs.add(ChatComponent.fromConfigObject((JSONObject) val));
+            }
+        }
+        return new TranslateComponent((String) obj.get("translate"), withs.toArray(new ChatComponent[]{}));
     }
 }

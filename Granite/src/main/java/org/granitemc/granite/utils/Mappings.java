@@ -335,9 +335,8 @@ public class Mappings {
         try {
             return getMethod(getCtClass(clazz), methodName).invokeWithArguments(args);
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            throw new RuntimeException(throwable);
         }
-        return null;
     }
 
     public static Object invokeStatic(String className, String methodName, Object... args) {

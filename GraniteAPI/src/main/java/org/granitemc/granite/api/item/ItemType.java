@@ -55,6 +55,6 @@ public interface ItemType {
      *
      * @param amount The amount of items in this {@link ItemStack}
      */
-    ItemStack create(int amount) throws InstantiationException, IllegalAccessException;
+    ItemStack create(int amount);
 
 }

@@ -24,7 +24,10 @@ package org.granitemc.granite.api.chat;
  */
 
 import org.fusesource.jansi.Ansi;
+import org.granitemc.granite.api.Granite;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -230,6 +233,75 @@ public abstract class ChatComponent {
             txt += getColorizedText(extra, type);
         }
         return txt;
+    }
+
+    public static ChatComponent fromJson(String json, boolean lenient) {
+        // Minecraft-JSON -> NBT -> Map -> JSON string -> JSON - whew
+        JSONObject val;
+        if (lenient) {
+            val = (JSONObject) JSONValue.parse(JSONValue.toJSONString(Granite.getAPIHelper().getNBTFromString(json).getNBTMap()));
+        } else {
+            val = (JSONObject) JSONValue.parse(json);
+        }
+
+        if (val == null) {
+            return new TextComponent(json);
+        } else {
+            return fromConfigObject(val);
+        }
+    }
+
+    public static ChatComponent fromConfigObject(JSONObject obj) {
+        ChatComponent val = null;
+
+        if (obj.containsKey("text")) {
+            val = TextComponent.fromConfigObjectLocal(obj);
+        } else if (obj.containsKey("translate")) {
+            val = TranslateComponent.fromConfigObjectLocal(obj);
+        }
+
+        if (val != null) {
+            for (ChatColor color : ChatColor.values()) {
+                if (color.getName().equals(obj.get("color"))) {
+                    val.setColor(color);
+                    break;
+                }
+            }
+
+            boolean bold, underlined, italic, strikethrough, obfuscated;
+
+            /*bold = obj.containsKey("bold") && (obj.get("bold") instanceof Long ? ((Long) obj.get("bold")) > 0 : (Boolean) obj.get("bold"));
+            underlined = obj.containsKey("underlined") && (obj.get("underlined") instanceof Long ? ((Long) obj.get("underlined")) > 0 : (Boolean) obj.get("underlined"));
+            italic = obj.containsKey("italic") && (obj.get("italic") instanceof Long ? ((Long) obj.get("italic")) > 0 : (Boolean) obj.get("italic"));
+            strikethrough = obj.containsKey("strikethrough") && (obj.get("strikethrough") instanceof Long ? ((Long) obj.get("strikethrough")) > 0 : (Boolean) obj.get("strikethrough"));
+            obfuscated = obj.containsKey("obfuscated") && (obj.get("obfuscated") instanceof Long ? ((Long) obj.get("obfuscated")) > 0 : (Boolean) obj.get("obfuscated"));*/
+
+            bold = Boolean.valueOf(String.valueOf(obj.get("bold")));
+            underlined = Boolean.valueOf(String.valueOf(obj.get("underlined")));
+            italic = Boolean.valueOf(String.valueOf(obj.get("italic")));
+            strikethrough = Boolean.valueOf(String.valueOf(obj.get("strikethrough")));
+            obfuscated = Boolean.valueOf(String.valueOf(obj.get("obfuscated")));
+
+            val.setBold(bold);
+            val.setUnderlined(underlined);
+            val.setItalic(italic);
+            val.setStrikethrough(strikethrough);
+            val.setObfuscated(obfuscated);
+
+            val.setInsertion((String) obj.get("insertion"));
+
+            if (obj.containsKey("clickEvent")) val.setClickEvent(ClickEvent.fromConfigObject((JSONObject) obj.get("clickEvent")));
+            if (obj.containsKey("hoverEvent")) val.setHoverEvent(HoverEvent.fromConfigObject((JSONObject) obj.get("hoverEvent")));
+
+            if (obj.containsKey("extra")) {
+                for (Object extraObj : (JSONArray) obj.get("extra")) {
+                    val.getChildren().add(ChatComponent.fromConfigObject((JSONObject) extraObj));
+                }
+            }
+
+            return val;
+        }
+        return null;
     }
 
     abstract String getValue();

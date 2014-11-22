@@ -25,7 +25,7 @@ package org.granitemc.granite.api.event;
 
 public class Event {
     private boolean cancelled;
-    protected On.Priority currentPriority;
+    protected EventHandler.Priority currentPriority;
     protected boolean processed;
 
     /**
@@ -49,7 +49,7 @@ public class Event {
      * Throws an exception if the current priority is MONITOR
      */
     protected void assertCanModify() {
-        if (currentPriority == On.Priority.MONITOR) {
+        if (currentPriority == EventHandler.Priority.MONITOR) {
             throw new RuntimeException("Cannot modify event if priority is MONITOR");
         }
     }

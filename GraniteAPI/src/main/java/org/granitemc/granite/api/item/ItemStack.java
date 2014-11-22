@@ -23,8 +23,8 @@ package org.granitemc.granite.api.item;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import org.granitemc.granite.api.nbt.NBTCompound;
 import org.granitemc.granite.api.item.meta.ItemMeta;
+import org.granitemc.granite.api.nbt.NBTCompound;
 
 public interface ItemStack {
 
@@ -66,19 +66,17 @@ public interface ItemStack {
      * Gets the NBTCompound for the ItemStack
      *
      * @return
-     * @throws IllegalAccessException
      */
-    NBTCompound getNBTCompound() throws IllegalAccessException, InstantiationException;
+    NBTCompound getNBTCompound();
 
     /**
      * Sets the NBTCompound for the ItemStack
      *
      * @param NBTCompound
-     * @throws InstantiationException
-     * @throws IllegalAccessException
      */
-    void setNBTCompound(NBTCompound NBTCompound) throws InstantiationException, IllegalAccessException;
+    void setNBTCompound(NBTCompound NBTCompound);
 
     ItemMeta getMetadata();
 
+    String getName();
 }

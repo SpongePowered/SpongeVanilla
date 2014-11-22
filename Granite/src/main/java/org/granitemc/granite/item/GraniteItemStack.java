@@ -26,18 +26,18 @@ package org.granitemc.granite.item;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.item.ItemType;
-import org.granitemc.granite.api.item.ItemTypes;
-import org.granitemc.granite.api.nbt.NBTCompound;
-import org.granitemc.granite.api.item.meta.BookMeta;
 import org.granitemc.granite.api.item.meta.ItemMeta;
+import org.granitemc.granite.api.nbt.NBTCompound;
 import org.granitemc.granite.reflect.composite.Composite;
 import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteItemStack extends Composite implements ItemStack {
+    private ItemMeta itemMeta;
 
     public GraniteItemStack(Object itemStackInstance) {
         super(itemStackInstance);
+        itemMeta = new ItemMeta(this);
     }
 
     public GraniteItemStack(Object itemTypeInstance, int size) {
@@ -45,12 +45,10 @@ public class GraniteItemStack extends Composite implements ItemStack {
                 Mappings.getClass("Block").isInstance(itemTypeInstance)
                         ? new Class[]{Mappings.getClass("Block")}
                         : new Class[]{Mappings.getClass("Item"), int.class}, itemTypeInstance, size);
+        itemMeta = new ItemMeta(this);
     }
 
-    private ItemMeta itemMeta;
-    private BookMeta bookMeta;
-
-    public GraniteItemStack(ItemType type) throws InstantiationException, IllegalAccessException {
+    public GraniteItemStack(ItemType type) {
         this(type, type.getMaxStackSize());
     }
 
@@ -58,17 +56,25 @@ public class GraniteItemStack extends Composite implements ItemStack {
         this(type, 64);
     }
 
-    public GraniteItemStack(ItemType type, int size) throws IllegalAccessException, InstantiationException {
+    public GraniteItemStack(ItemType type, int size) {
         super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Item"), int.class}, ((GraniteItemType) type).parent, size);
+        itemMeta = new ItemMeta(this);
     }
 
     public GraniteItemStack(BlockType type, int size) {
         this(((GraniteItemStack) (type).create(size)).parent);
+        this.setItemDamage(type.getMetaFromState());
         //super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Block"), int.class}, ((GraniteBlockType) type).getBlockObject(), size);
     }
 
     public ItemType getType() {
-        return (ItemType) MinecraftUtils.wrap(invoke("getItem"));
+        ItemType item = (ItemType) MinecraftUtils.wrap(invoke("getItem"));
+
+        if (item instanceof GraniteBlockItemType) {
+            ((GraniteBlockItemType) item).setMeta(getItemDamage());
+        }
+
+        return item;
     }
 
     public int getItemDamage() {
@@ -91,7 +97,7 @@ public class GraniteItemStack extends Composite implements ItemStack {
         fieldSet("stackSize", amount);
     }
 
-    public NBTCompound getNBTCompound() throws IllegalAccessException, InstantiationException {
+    public NBTCompound getNBTCompound() {
         try {
             return MinecraftUtils.fromMinecraftNBTCompound(invoke("getTagCompound"));
         } catch (Exception ignored) {
@@ -101,12 +107,12 @@ public class GraniteItemStack extends Composite implements ItemStack {
         }
     }
 
-    public void setNBTCompound(NBTCompound NBTCompound) throws InstantiationException, IllegalAccessException {
+    public void setNBTCompound(NBTCompound NBTCompound) {
         invoke("setTagCompound", MinecraftUtils.toMinecraftNBTCompound(NBTCompound));
     }
 
     public ItemMeta getMetadata() {
-        if (this.getType().equals(ItemTypes.written_book) || this.getType().equals(ItemTypes.writable_book)) {
+        /*if (this.getType().equals(ItemTypes.written_book) || this.getType().equals(ItemTypes.writable_book)) {
             if (bookMeta == null) {
                 bookMeta = new BookMeta(this);
             }
@@ -116,7 +122,13 @@ public class GraniteItemStack extends Composite implements ItemStack {
                 itemMeta = new ItemMeta(this);
             }
             return itemMeta;
-        }
+        }*/
+        itemMeta.load();
+        return itemMeta;
     }
 
+    @Override
+    public String getName() {
+        return (String) invoke("getDisplayName");
+    }
 }

@@ -28,8 +28,8 @@ import org.granitemc.granite.api.command.Command;
 import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.config.CfgFile;
 import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.api.event.EventHandler;
 import org.granitemc.granite.api.event.EventHandlerContainer;
-import org.granitemc.granite.api.event.On;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -201,13 +201,13 @@ public class PluginContainer {
     /**
      * Registers an event handler to this plugin
      *
-     * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.On} annotation
+     * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.EventHandler} annotation
      */
     public void registerEventHandler(Object handler) {
         Class<?> clazz = handler.getClass();
 
         for (Method m : clazz.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(On.class)) {
+            if (m.isAnnotationPresent(EventHandler.class)) {
                 EventHandlerContainer evt = new EventHandlerContainer(this, handler, m);
 
                 if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == evt.getEventType()) {
@@ -228,7 +228,7 @@ public class PluginContainer {
     /**
      * Unregisters an event handler of this plugin
      *
-     * @param handler The handler to unregister, this can be any object but should have at least one {@link org.granitemc.granite.api.event.On} annotation
+     * @param handler The handler to unregister, this can be any object but should have at least one {@link org.granitemc.granite.api.event.EventHandler} annotation
      * @return true if at least one event handling method was found and unregistered, false if none found
      */
     public boolean unregisterEventHandler(Object handler) {
@@ -236,7 +236,7 @@ public class PluginContainer {
 
         boolean ret = false;
         for (Method m : clazz.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(On.class)) {
+            if (m.isAnnotationPresent(EventHandler.class)) {
                 if (m.getParameterTypes().length == 1 && Event.class.isAssignableFrom(m.getParameterTypes()[0])) {
                     List<EventHandlerContainer> list = events.get(m.getParameterTypes()[0].asSubclass(Event.class));
                     if (list != null) {

@@ -23,7 +23,15 @@ package org.granitemc.granite.api.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import org.granitemc.granite.api.chat.click.ClickEventChangePage;
+import org.granitemc.granite.api.chat.click.ClickEventOpenURL;
+import org.granitemc.granite.api.chat.click.ClickEventRunCommand;
+import org.granitemc.granite.api.chat.click.ClickEventSuggestCommand;
 import org.json.simple.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
 
 public abstract class ClickEvent {
     protected abstract String getAction();
@@ -36,5 +44,24 @@ public abstract class ClickEvent {
         obj.put("value", getValue());
 
         return obj;
+    }
+
+    static ClickEvent fromConfigObject(JSONObject obj) {
+        String action = (String) obj.get("action");
+
+        if (Objects.equals(action, "change_page")) {
+            return new ClickEventChangePage(Integer.valueOf(obj.get("value") + ""));
+        } else if (Objects.equals(action, "open_url")) {
+            try {
+                return new ClickEventOpenURL(new URL((String) obj.get("value")));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else if (Objects.equals(action, "run_command")) {
+            return new ClickEventRunCommand((String) obj.get("value"));
+        } else if (Objects.equals(action, "suggest_command")) {
+            return new ClickEventSuggestCommand((String) obj.get("value"));
+        }
+        return null;
     }
 }

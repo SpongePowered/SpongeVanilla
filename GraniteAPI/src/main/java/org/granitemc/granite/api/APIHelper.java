@@ -27,6 +27,7 @@ import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.item.ItemType;
+import org.granitemc.granite.api.nbt.NBTCompound;
 
 public interface APIHelper {
     ItemStack createItemStack(ItemType type, int amount) throws InstantiationException, IllegalAccessException;
@@ -40,4 +41,6 @@ public interface APIHelper {
     String getTranslation(String key, Object... args);
 
     Inventory createInventory(String name, int size);
+
+    NBTCompound getNBTFromString(String string);
 }

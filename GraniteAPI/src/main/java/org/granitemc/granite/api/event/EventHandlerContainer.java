@@ -29,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class EventHandlerContainer {
-    private On annotation;
+    private EventHandler annotation;
     private Method method;
     private Class<? extends Event> clazz;
 
@@ -44,7 +44,7 @@ public class EventHandlerContainer {
 
         this.clazz = method.getParameterTypes()[0].asSubclass(Event.class);
 
-        annotation = method.getAnnotation(On.class);
+        annotation = method.getAnnotation(EventHandler.class);
         this.method = method;
 
         this.plugin = plugin;

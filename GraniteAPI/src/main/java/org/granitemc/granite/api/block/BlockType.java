@@ -60,7 +60,7 @@ public interface BlockType {
     boolean isOpaque();
 
     /**
-     * Returns whether this block is transparent
+     * Returns whether this block is transparent (non-opaque)
      */
     boolean isTransparent();
 
@@ -102,7 +102,7 @@ public interface BlockType {
     /**
      * Returns the human name of this block type (i.e. what will show when you hover over the item version of this block type)
      */
-    String getName() throws IllegalAccessException, InstantiationException;
+    String getName();
 
     /**
      * Returns the numeric ID of this block type. This should preferably not be used, rather, use {@link BlockType#getTechnicalName()} instead.
@@ -120,4 +120,22 @@ public interface BlockType {
      * @param amount The amount of items in this {@link org.granitemc.granite.api.item.ItemStack}
      */
     ItemStack create(int amount);
+
+    /**
+     * Returns the default state of this BlockType, ignoring all metadata
+     */
+    BlockType getDefaultState();
+
+    /**
+     * Converts a meta int / item damage value into a BlockType
+     * @param meta The metadata in int form
+     * @return The BlockType containing the needed state
+     */
+    BlockType getStateFromMeta(int meta);
+
+    /**
+     * Converts this BlockType, including metadata, to a meta int (for use as an ItemStack data value)
+     * @return The integer value of this BlockType's metadata
+     */
+    int getMetaFromState();
 }

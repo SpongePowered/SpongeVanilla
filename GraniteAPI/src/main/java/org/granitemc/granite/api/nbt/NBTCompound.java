@@ -24,7 +24,9 @@ package org.granitemc.granite.api.nbt;
  */
 
 import com.google.common.collect.Maps;
+import org.granitemc.granite.api.Granite;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,62 +103,50 @@ public class NBTCompound {
     }
 
     public void setByte(String key, Byte data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setByteArray(String key, Byte[] data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setDouble(String key, Double data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setEnd(String key) {
-        if (hasKey(key)) return;
         nbtMap.put(key, "END");
     }
 
     public void setFloat(String key, Float data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setInt(String key, Integer data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setIntArray(String key, Integer[] data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setList(String key, List data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setLong(String key, Long data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setShort(String key, Short data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setString(String key, String data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
     public void setNBTCompound(String key, NBTCompound data) {
-        if (hasKey(key)) return;
         nbtMap.put(key, data);
     }
 
@@ -171,10 +161,38 @@ public class NBTCompound {
     }
 
     public Map<String, Object> getNBTMap() {
-        return nbtMap;
+        Map<String, Object> newMap = new HashMap<>(nbtMap);
+        for (Map.Entry<String, Object> entry : newMap.entrySet()) {
+            if (entry.getValue() instanceof NBTCompound) {
+                newMap.put(entry.getKey(), ((NBTCompound) entry.getValue()).getNBTMap());
+            }
+        }
+        return newMap;
     }
 
     public void setNBTMap(Map<String, Object> nbtMap) {
         this.nbtMap = nbtMap;
+    }
+
+    @Override
+    public String toString() {
+        String str = "{";
+
+        for (Map.Entry<String, Object> entry : nbtMap.entrySet()) {
+            Object val = entry.getValue();
+            if (val instanceof Map) {
+                val = new NBTCompound((Map<String, Object>) val);
+            } else if (val instanceof String) {
+                val = "\"" + ((String) val).replaceAll("\"", "\\\"") + "\"";
+            }
+
+            str += entry.getKey() + ":" + val.toString() + ",";
+        }
+
+        return str.substring(0, str.length() - 1) + "}";
+    }
+
+    public static NBTCompound fromString(String str) {
+        return Granite.getAPIHelper().getNBTFromString(str);
     }
 }
