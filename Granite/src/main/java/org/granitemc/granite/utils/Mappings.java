@@ -26,10 +26,7 @@ package org.granitemc.granite.utils;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigObject;
-import com.typesafe.config.ConfigValue;
+import com.typesafe.config.*;
 import javassist.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitemc.granite.GraniteServerConfig;
@@ -94,7 +91,8 @@ public class Mappings {
             file = ConfigFactory.parseReader(
                     new InputStreamReader(
                             new FileInputStream(mappingsFile)
-                    )
+                    ),
+                    ConfigParseOptions.defaults().setSyntax(ConfigSyntax.JSON)
             );
         } catch (java.io.IOException e) {
             e.printStackTrace();
