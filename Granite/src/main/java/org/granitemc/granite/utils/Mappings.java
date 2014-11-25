@@ -69,7 +69,7 @@ public class Mappings {
         try {
             File mappingsFile = new File(Granite.getServerConfig().getMappingsFile().getAbsolutePath());
 
-            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.json";
+            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.1.json";
 
             if (Granite.getServerConfig().getAutomaticMappingsUpdating()) {
                 Granite.getLogger().info("Querying " + url + " for updates");

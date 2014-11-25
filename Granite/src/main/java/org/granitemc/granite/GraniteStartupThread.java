@@ -103,7 +103,8 @@ public class GraniteStartupThread extends Thread {
         Granite.getLogger().info("Bootstrapping Minecraft");
 
         try {
-            Class.forName("od").getMethod("c").invoke(null);
+            // Hardcoding bootstrapping here again, this also has to load before the mappings are loaded
+            Class.forName("oe").getMethod("c").invoke(null);
         } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
