@@ -2,10 +2,7 @@ package org.granitemc.granite.api.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 public class ObservableList<E> extends ArrayList<E> {
     private Listener listener;
@@ -100,24 +97,5 @@ public class ObservableList<E> extends ArrayList<E> {
         boolean b = super.retainAll(c);
         notifyUpdate();
         return b;
-    }
-
-    @Override
-    public boolean removeIf(Predicate<? super E> filter) {
-        boolean b = super.removeIf(filter);
-        notifyUpdate();
-        return b;
-    }
-
-    @Override
-    public void replaceAll(UnaryOperator<E> operator) {
-        super.replaceAll(operator);
-        notifyUpdate();
-    }
-
-    @Override
-    public void sort(Comparator<? super E> c) {
-        super.sort(c);
-        notifyUpdate();
     }
 }
