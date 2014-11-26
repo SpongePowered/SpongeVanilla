@@ -125,9 +125,9 @@ public interface Player extends CommandSender, EntityLivingBase {
 
     /*IChatComponent getDisplayName();*/
 
-    UUID getUUID();
+    //UUID getUUID();
 
-    UUID getOfflineUUID(String name);
+    //UUID getOfflineUUID(String name);
 
     /*boolean canOpen(LockCode p_175146_1_);*/
 

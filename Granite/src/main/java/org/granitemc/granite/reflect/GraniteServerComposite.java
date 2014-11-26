@@ -204,7 +204,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     @Override
     public Player getPlayer(UUID uuid) {
         for (Player player : getPlayers()) {
-            if (player.getUUID().equals(uuid)) {
+            if (player.getUniqueID().equals(uuid)) {
                 return player;
             }
         }

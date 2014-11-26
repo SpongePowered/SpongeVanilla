@@ -294,15 +294,15 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public IChatComponent getDisplayName() {
     }*/
 
-    @Override
+    /*@Override
     public UUID getUUID() {
         return (UUID) invoke("getUUID", getGameProfile());
-    }
+    }*/
 
-    @Override
+    /*@Override
     public UUID getOfflineUUID(String playerName) {
         return (UUID) invoke("getOfflineUUID", playerName);
-    }
+    }*/
 
     // TODO: do this some time later, not urgent
     /*@Override
@@ -526,5 +526,4 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public boolean hasPermission(String node) {
         return Granite.getPermissionsHook().hasPermission(this, node);
     }
-
 }

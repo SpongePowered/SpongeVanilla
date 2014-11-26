@@ -305,7 +305,6 @@ public class GraniteEntityLivingBase extends GraniteEntity implements EntityLivi
     @Override
     public void dismountEntity(Entity entity) {
         invoke("dismountEntity", ((GraniteEntity) entity).parent);
-        invoke("dismountEntity", entity);
     }
 
     @Override
