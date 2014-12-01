@@ -1,3 +1,5 @@
+package org.granitemc.granite.block;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
@@ -130,6 +130,21 @@ public class GraniteBlockType extends Composite implements BlockType {
         return getItemStack(amount);
     }
 
+    @Override
+    public BlockType getDefaultState() {
+        return (BlockType) MinecraftUtils.wrap(Mappings.invoke(getBlockObject(), "getDefaultState"));
+    }
+
+    @Override
+    public BlockType getStateFromMeta(int meta) {
+        return (BlockType) MinecraftUtils.wrap(Mappings.invoke(getBlockObject(), "getStateFromMeta", meta));
+    }
+
+    @Override
+    public int getMetaFromState() {
+        return (int) Mappings.invoke(getBlockObject(), "getMetaFromState", parent);
+    }
+
     public ItemStack getItemStack(int amount) {
         // Super messy, it works, don't touch (pls)
 
@@ -167,7 +182,7 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     public String getName() {
-        return getItemStack(1).getDisplayName();
+        return getItemStack(1).getName();
     }
 
     public String getUnlocalizedName() {

@@ -1,3 +1,5 @@
+package org.granitemc.granite.reflect;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.reflect;
 
 import javassist.*;
 import javassist.expr.ExprEditor;
@@ -34,24 +34,24 @@ import java.util.Set;
 public class BytecodeModifier {
     // This contains our own mini-mappings
     // Since all this MUST happen before mappings read
-    public static final String DedicatedServer = "po";
+    public static final String DedicatedServer = "pp";
     public static final String DedicatedServer_StartServer = "i";
 
-    public static final String DedicatedPlayerList = "pn";
+    public static final String DedicatedPlayerList = "po";
 
-    public static final String ServerConfigurationManager = "sn";
+    public static final String ServerConfigurationManager = "sp";
     public static final String ServerConfigurationManager_InitializeConnectionToPlayer = "a";
     public static final String ServerConfigurationManager_CreatePlayer = "f";
 
     public static final String NetworkManager = "gr";
 
-    public static final String EntityPlayerMP = "qw";
+    public static final String EntityPlayerMP = "qx";
 
-    public static final String NetHandlerPlayServer = "rj";
+    public static final String NetHandlerPlayServer = "rl";
 
     public static final String GameProfile = "com.mojang.authlib.GameProfile";
 
-    public static final String ItemInWorldManager = "qx";
+    public static final String ItemInWorldManager = "qy";
 
     public static Set<CtClass> toSave;
 

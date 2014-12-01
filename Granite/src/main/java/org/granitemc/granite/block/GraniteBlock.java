@@ -1,3 +1,5 @@
+package org.granitemc.granite.block;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.block;
 
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
@@ -33,6 +33,7 @@ public class GraniteBlock implements Block {
     private int x;
     private int y;
     private int z;
+
     public GraniteBlock(int x, int y, int z, World world) {
         this.x = x;
         this.y = y;
@@ -71,7 +72,7 @@ public class GraniteBlock implements Block {
         world.setBlockTypeAtPosition(x, y, z, type);
     }
 
-	public Location getLocation() {
-		return new Location(world, x, y, z);
-	}
+    public Location getLocation() {
+        return new Location(world, x, y, z);
+    }
 }

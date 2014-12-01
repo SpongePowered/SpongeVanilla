@@ -1,3 +1,5 @@
+package org.granitemc.granite.event;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.event;
 
 import org.granitemc.granite.api.event.Event;
 import org.granitemc.granite.api.event.EventHandlerContainer;
@@ -50,17 +50,30 @@ public class GraniteEventQueue implements EventQueue {
             handlers.put(event.getClass(), list);
         }
 
+        //System.out.println(event);
+        int lastInvoke = 0; // Fix for multiple eventhandler invokes
         for (EventHandlerContainer handler : handlers.get(event.getClass())) {
-            handler.invoke(event);
+            if (lastInvoke != handler.getInstance().hashCode()) {
+                lastInvoke = handler.getInstance().hashCode();
+                handler.invoke(event);
+            }
         }
     }
 
-    public void addHandler(Class<? extends Event> type, EventHandlerContainer handler) {
-        if (!handlers.containsKey(type)) {
+    public void addHandler(EventHandlerContainer handler) {
+        if (!handlers.containsKey(handler.getEventType())) {
             List<EventHandlerContainer> list = new ArrayList<>();
-            handlers.put(type, list);
+            handlers.put(handler.getEventType(), list);
         }
 
-        handlers.get(type).add(handler);
+        handlers.get(handler.getEventType()).add(handler);
+    }
+
+    public boolean removeHandler(EventHandlerContainer handler) {
+        if (handlers.containsKey(handler.getEventType())) {
+            return (handlers.get(handler.getEventType()).remove(handler));
+        }
+
+        return false;
     }
 }

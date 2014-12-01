@@ -1,5 +1,28 @@
 package org.granitemc.granite.entity.player;
 
+/*
+ * License (MIT)
+ *
+ * Copyright (c) 2014. Granite Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.block.BlockType;
@@ -58,10 +81,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     @Override
     public boolean isBlocking() {
         return (boolean) invoke("isBlocking");
-    }
-
-    public void updateItemUse(ItemStack itemStack, int eatingDuration) {
-        invoke("updateItemUse", ((GraniteItemStack) itemStack).parent, eatingDuration);
     }
 
     @Override
@@ -194,11 +213,6 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     }
 
     @Override
-    public ItemStack getCurrentArmor(int slot) {
-        return (ItemStack) MinecraftUtils.wrap(invoke("getCurrentArmor", slot));
-    }
-
-    @Override
     public void addExperience(int amount) {
         invoke("addExperience", amount);
     }
@@ -280,25 +294,20 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     public IChatComponent getDisplayName() {
     }*/
 
-    @Override
+    /*@Override
     public UUID getUUID() {
         return (UUID) invoke("getUUID", getGameProfile());
-    }
+    }*/
 
-    @Override
+    /*@Override
     public UUID getOfflineUUID(String playerName) {
         return (UUID) invoke("getOfflineUUID", playerName);
-    }
+    }*/
 
     // TODO: do this some time later, not urgent
     /*@Override
     public boolean canOpen(LockCode p_175146_1_) {
     }*/
-
-    @Override
-    public boolean replaceItemInInventory(int slot, ItemStack itemStack) {
-        return (boolean) invoke("replaceItemInInventory", slot, ((GraniteItemStack) itemStack).parent);
-    }
 
     @Override
     public void addExperienceLevel(int amount) {
@@ -409,8 +418,8 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
     }
 
     @Override
-    public void setItemInUse(ItemStack itemStack, int p_71008_2_) {
-        invoke("setItemInUse", ((GraniteItemStack) itemStack).parent, p_71008_2_);
+    public void setItemInUse(ItemStack itemStack, int slot) {
+        invoke("setItemInUse", ((GraniteItemStack) itemStack).parent, slot);
     }
 
     @Override
@@ -506,12 +515,12 @@ public class GraniteEntityPlayer extends GraniteEntityLivingBase implements Play
 
     @Override
     public void sendMessage(String message) {
-        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(new TextComponent(message)));
+        invoke("addChatComponentMessage", MinecraftUtils.toMinecraftChatComponent(new TextComponent(message)));
     }
 
     @Override
     public void sendMessage(ChatComponent component) {
-        invoke("addChatComponentMessage",  MinecraftUtils.toMinecraftChatComponent(component));
+        invoke("addChatComponentMessage", MinecraftUtils.toMinecraftChatComponent(component));
     }
 
     public boolean hasPermission(String node) {

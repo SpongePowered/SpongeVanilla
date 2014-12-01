@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.entity;
+
 /*
  * License (MIT)
  *
@@ -15,16 +17,13 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.entity;
-
 import org.granitemc.granite.api.entity.item.EntityItem;
-import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.Vector;
@@ -40,9 +39,9 @@ public interface Entity {
 
     void setSize(float width, float height);
 
-    int getMaxInPortalTime();
+    //int getMaxInPortalTime();
 
-    void setOnFireFromLava();
+    //void setOnFireFromLava();
 
     void setFire(int seconds);
 
@@ -88,7 +87,7 @@ public interface Entity {
 
     void addVelocity(double x, double y, double z);
 
-    void setBeenAttacked();
+    //void setBeenAttacked();
 
     /*boolean attackEntityFrom(DamageSource source, float amount);*/
 
@@ -100,19 +99,19 @@ public interface Entity {
 
     String getEntityString();
 
-    EntityItem entityDropItem(ItemStack itemStack, float offsetY);
+    EntityItem dropItem(ItemStack itemStack, float offsetY);
 
     boolean isEntityAlive();
 
     boolean isEntityInsideOpaqueBlock();
 
-    boolean interactFirst(Player player);
+    // boolean interactFirst(Player player);
 
     double getMountedYOffset();
 
     void mountEntity(Entity entity);
 
-    Vector getLookVec();
+    Vector getLookDirection();
 
     void setInPortal();
 
@@ -156,19 +155,20 @@ public interface Entity {
 
     boolean isEntityEqual(Entity entity);
 
-    boolean canAttackWithItem();
+    //boolean canAttackWithItem();
 
-    boolean hitByEntity(Entity entity);
+    //boolean hitByEntity(Entity entity);
 
     /*boolean isEntityInvulnerable(DamageSource p_180431_1_);*/
 
+    // TODO: use worlds
     void travelToDimension(int dimensionId);
 
     /*float getExplosionResistance(Explosion p_180428_1_, World worldIn, Location location, IBlockState p_180428_4_);*/
 
     int getMaxFallHeight();
 
-    boolean doesEntityNotTriggerPressurePlate();
+    //boolean doesEntityNotTriggerPressurePlate();
 
     UUID getUniqueID();
 
@@ -190,15 +190,15 @@ public interface Entity {
 
     /*void addChatMessage(IChatComponent message);*/
 
-    boolean canCommandSenderUseCommand(int permissionLevel, String command);
+    //boolean canCommandSenderUseCommand(int permissionLevel, String command);
 
-    Vector getPositionVector();
+    //Vector getPositionVector();
 
     World getWorld();
 
-    Entity getCommandSenderEntity();
+    //Entity getCommandSenderEntity();
 
-    boolean sendCommandFeedback();
+    //boolean sendCommandFeedback();
 
     Location getLocation();
 

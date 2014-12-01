@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.item;
+
 /*
  * License (MIT)
  *
@@ -15,17 +17,17 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.item;
-
-import org.granitemc.granite.api.block.ItemType;
+import org.granitemc.granite.api.item.meta.ItemMeta;
+import org.granitemc.granite.api.nbt.NBTCompound;
 
 public interface ItemStack {
+
     /**
      * Returns the damage of this ItemStack
      */
@@ -39,38 +41,9 @@ public interface ItemStack {
     void setItemDamage(int damage);
 
     /**
-     * Returns the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
-     */
-    String[] getItemLore();
-
-    /**
-     * Sets the lore of this ItemStack - the lore is the extended text in the item hover description, below the display name
-     *
-     * @param lines A vararg array of strings, one per line
-     */
-    void setItemLore(String... lines);
-
-    /**
      * Returns the maximum amount of damage this ItemStack can have
      */
     int getMaxDamage();
-
-    /**
-     * Returns the display name of this ItemStack
-     */
-    String getDisplayName();
-
-    /**
-     * Sets the display name of this ItemStack
-     *
-     * @param name The display name to set
-     */
-    void setDisplayName(String name);
-
-    /**
-     * Returns whether this ItemStack has a display name
-     */
-    boolean hasDisplayName();
 
     /**
      * Returns the type of this ItemStack
@@ -78,7 +51,32 @@ public interface ItemStack {
     ItemType getType();
 
     /**
-     * Clears any custom display name set on this ItemStack, and returns it to its original name
+     * Gets the current size of the ItemStack
      */
-    void clearCustomName();
+    int getStackSize();
+
+    /**
+     * Sets the size of the ItemStack
+     *
+     * @param amount
+     */
+    void setStackSize(int amount);
+
+    /**
+     * Gets the NBTCompound for the ItemStack
+     *
+     * @return
+     */
+    NBTCompound getNBTCompound();
+
+    /**
+     * Sets the NBTCompound for the ItemStack
+     *
+     * @param NBTCompound
+     */
+    void setNBTCompound(NBTCompound NBTCompound);
+
+    ItemMeta getMetadata();
+
+    String getName();
 }

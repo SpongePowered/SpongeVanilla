@@ -24,17 +24,19 @@ package org.granitemc.granite;
  */
 
 import org.granitemc.granite.api.APIHelper;
-import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.ItemType;
+import org.granitemc.granite.api.nbt.NBTCompound;
 import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.item.GraniteItemStack;
+import org.granitemc.granite.utils.Mappings;
 import org.granitemc.granite.utils.MinecraftUtils;
 
 public class GraniteAPIHelper implements APIHelper {
     @Override
-    public ItemStack createItemStack(ItemType type, int amount) {
+    public ItemStack createItemStack(ItemType type, int amount) throws InstantiationException, IllegalAccessException {
         return new GraniteItemStack(type, amount);
     }
 
@@ -64,5 +66,10 @@ public class GraniteAPIHelper implements APIHelper {
     public Inventory createInventory(String name, int size) {
         if (size < 9) size = 9;
         return new GraniteInventory(name, size);
+    }
+
+    @Override
+    public NBTCompound getNBTFromString(String string) {
+        return MinecraftUtils.fromMinecraftNBTCompound(Mappings.invokeStatic("JsonToNBT", "func_180713_a", string));
     }
 }

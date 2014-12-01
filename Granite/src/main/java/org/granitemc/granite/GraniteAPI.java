@@ -1,3 +1,5 @@
+package org.granitemc.granite;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,9 +29,9 @@ import org.granitemc.granite.api.API;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.ServerConfig;
-import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.event.EventQueue;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.ItemType;
 import org.granitemc.granite.api.permission.PermissionsHook;
 import org.granitemc.granite.api.plugin.Plugin;
 import org.granitemc.granite.api.plugin.PluginContainer;
@@ -45,10 +45,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -57,7 +57,7 @@ public class GraniteAPI implements API {
     public static GraniteAPI instance;
     public static GraniteAPIHelper helper;
 
-    private List<PluginContainer> plugins;
+    private Set<PluginContainer> plugins;
     private Logger logger;
 
     private GraniteEventQueue eventQueue;
@@ -84,7 +84,7 @@ public class GraniteAPI implements API {
     }
 
     private GraniteAPI() {
-        plugins = new ArrayList<>();
+        plugins = new HashSet<>();
         logger = LogManager.getFormatterLogger("Granite");
 
         eventQueue = new GraniteEventQueue();
@@ -101,7 +101,7 @@ public class GraniteAPI implements API {
         return null;
     }
 
-    public List<PluginContainer> getPlugins() {
+    public Set<PluginContainer> getPlugins() {
         return plugins;
     }
 
@@ -115,6 +115,17 @@ public class GraniteAPI implements API {
                 if (p.getMainClass().equals(pluginClass)) {
                     return p;
                 }
+            }
+        }
+        return null;
+    }
+
+    public PluginContainer createPluginContainer(Class<?> clazz) {
+        for (Annotation a : clazz.getAnnotations()) {
+            if (a.annotationType().equals(Plugin.class)) {
+                PluginContainer container = new PluginContainer(clazz);
+                return container;
+                //container.enable();
             }
         }
         return null;
@@ -136,22 +147,7 @@ public class GraniteAPI implements API {
                     try {
                         Class<?> clazz = classLoader.loadClass(className);
 
-                        for (Annotation a : clazz.getAnnotations()) {
-                            if (a.annotationType().equals(Plugin.class)) {
-                                PluginContainer container = new PluginContainer(clazz);
-
-                                getLogger().info("Loaded %s (v%s)!", container.getName(), container.getVersion());
-
-                                plugins.add(container);
-
-                                // Load EventHandlerContainers AFTER server load, otherwise the EventHandlerContainers do not get loaded!
-//                                for (List<EventHandlerContainer> ehcList : container.getEvents().values()) {
-//                                    for (EventHandlerContainer ehc : ehcList) {
-//                                        eventQueue.addHandler(ehc.getEventType(), ehc);
-//                                    }
-//                                }
-                            }
-                        }
+                        loadPluginFromClass(clazz);
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -162,11 +158,20 @@ public class GraniteAPI implements API {
         }
     }
 
+    public void loadPluginFromClass(Class<?> clazz) {
+        PluginContainer pc = createPluginContainer(clazz);
+
+        if (pc != null) {
+            plugins.add(pc);
+            getLogger().info("Loaded %s (v%s)!", pc.getName(), pc.getVersion());
+        }
+    }
+
     public Logger getLogger() {
         return logger;
     }
 
-    public ItemStack createItemStack(ItemType type, int amount) {
+    public ItemStack createItemStack(ItemType type, int amount) throws InstantiationException, IllegalAccessException {
         return new GraniteItemStack(type, amount);
     }
 

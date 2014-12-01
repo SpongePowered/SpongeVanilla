@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.inventory;
+
 /*
  * License (MIT)
  *
@@ -15,18 +17,17 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.api.inventory;
-
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.item.ItemStack;
 
 public interface PlayerInventory extends Inventory {
+
     /**
      * Returns the player that owns this inventory
      */
@@ -54,13 +55,6 @@ public interface PlayerInventory extends Inventory {
      * @param index The index to move to
      */
     //void moveHotbarCursor(int index);
-
-    /**
-     * Adds an ItemStack to this inventory
-     *
-     * @param itemStack The ItemStack to add
-     */
-    void addItemStack(ItemStack itemStack);
 
     /**
      * Returns this player's helmet item
@@ -109,4 +103,5 @@ public interface PlayerInventory extends Inventory {
      * @param itemStack The ItemStack to set
      */
     void setBootsItem(ItemStack itemStack);
+
 }

@@ -1,3 +1,5 @@
+package org.granitemc.granite.api;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.api;
 
 import org.apache.logging.log4j.Logger;
 import org.granitemc.granite.api.event.EventQueue;
@@ -29,7 +29,7 @@ import org.granitemc.granite.api.permission.PermissionsHook;
 import org.granitemc.granite.api.plugin.PluginContainer;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 public interface API {
     /**
@@ -63,7 +63,7 @@ public interface API {
     /**
      * Returns all the currently loaded plugins
      */
-    List<PluginContainer> getPlugins();
+    Set<PluginContainer> getPlugins();
 
     /**
      * Returns the log4j logger
@@ -83,5 +83,8 @@ public interface API {
     ServerConfig getServerConfig();
 
     PermissionsHook getPermissionsHook();
+
     void setPermissionsHook(PermissionsHook hook);
+
+    void loadPluginFromClass(Class<?> clazz);
 }

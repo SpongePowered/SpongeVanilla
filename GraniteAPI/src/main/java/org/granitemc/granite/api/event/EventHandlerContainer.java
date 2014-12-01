@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.event;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.api.event;
 
 import org.granitemc.granite.api.plugin.PluginContainer;
 
@@ -29,15 +29,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class EventHandlerContainer {
-    private On annotation;
+    private EventHandler annotation;
     private Method method;
+    private Class<? extends Event> clazz;
 
     private Object instance;
 
     private PluginContainer plugin;
 
     public EventHandlerContainer(PluginContainer plugin, Object instance, Method method) {
-        annotation = method.getAnnotation(On.class);
+        if (method.getParameterTypes().length != 1 || !(Event.class.isAssignableFrom(method.getParameterTypes()[0]))) {
+            throw new IllegalArgumentException("Cannot register method " + method.getName() + " from plugin " + plugin.getId());
+        }
+
+        this.clazz = method.getParameterTypes()[0].asSubclass(Event.class);
+
+        annotation = method.getAnnotation(EventHandler.class);
         this.method = method;
 
         this.plugin = plugin;
@@ -48,7 +55,7 @@ public class EventHandlerContainer {
      * Returns the class type of the event
      */
     public Class<? extends Event> getEventType() {
-        return annotation.event();
+        return clazz;
     }
 
     /**
@@ -63,6 +70,13 @@ public class EventHandlerContainer {
      */
     public PluginContainer getPlugin() {
         return plugin;
+    }
+
+    /**
+     * Returns the method registered
+     */
+    public Method getMethod() {
+        return method;
     }
 
     /**

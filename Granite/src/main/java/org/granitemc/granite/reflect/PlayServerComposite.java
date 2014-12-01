@@ -1,3 +1,5 @@
+package org.granitemc.granite.reflect;
+
 /*
  * License (MIT)
  *
@@ -15,19 +17,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.reflect;
 
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.Block;
 import org.granitemc.granite.api.entity.player.Player;
 import org.granitemc.granite.api.event.inventory.EventInventoryClick;
 import org.granitemc.granite.api.event.inventory.EventInventoryHotbarMove;
+import org.granitemc.granite.api.event.player.EventPlayerChat;
 import org.granitemc.granite.api.event.player.EventPlayerInteract;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.utils.RayTraceResult;
@@ -59,7 +60,7 @@ public class PlayServerComposite extends ProxyComposite {
         addHook("processAnimation", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException {
-                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                if (GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("playerEntity"));
 
                     RayTraceResult rtr = p.rayTrace(4, false);
@@ -181,11 +182,6 @@ public class PlayServerComposite extends ProxyComposite {
 
                         Granite.getEventQueue().fireEvent(evt);
 
-                        System.out.println(evt.getButton() + " " + evt.getAction() + " " + (evt.getRelatedStack() == null ? "null" : ((GraniteItemStack) evt.getRelatedStack()).parent) +
-                                " (Hand: " + (evt.getItemStackInHand() == null ? "null" : ((GraniteItemStack) evt.getItemStackInHand()).parent) + ", " +
-                                "Slot: " + (evt.getItemStackInSlot() == null ? "null" : ((GraniteItemStack) evt.getItemStackInSlot()).parent) + ", " +
-                                "Slot ID: " + evt.getSlot() + ")");
-
                         if (!evt.isCancelled()) {
                             proxyCallback.invoke(self, args);
 
@@ -240,6 +236,23 @@ public class PlayServerComposite extends ProxyComposite {
 
                     if (epi.isCancelled()) {
                         hook.setWasHandled(true);
+                    }
+                }
+                return null;
+            }
+        });
+
+        addHook("processChatMessage", new HookListener() {
+            @Override
+            public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) throws InvocationTargetException, IllegalAccessException {
+                if (GraniteServerComposite.instance.isOnServerThread()) {
+                    EventPlayerChat epc = new EventPlayerChat(getGranitePlayer(), (String) fieldGet(args[0], "message"));
+                    Granite.getEventQueue().fireEvent(epc);
+
+                    if (epc.isCancelled()) {
+                        hook.setWasHandled(true);
+                    } else {
+                        fieldSet(args[0], "message", epc.getMessage());
                     }
                 }
                 return null;

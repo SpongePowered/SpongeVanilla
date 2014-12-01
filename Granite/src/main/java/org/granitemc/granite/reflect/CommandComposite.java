@@ -1,3 +1,5 @@
+package org.granitemc.granite.reflect;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.reflect;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitemc.granite.api.Granite;
@@ -29,6 +29,8 @@ import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.player.Player;
+import org.granitemc.granite.api.event.player.EventPlayerJoin;
+import org.granitemc.granite.api.event.player.EventPlayerKick;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -41,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandComposite extends ProxyComposite {
-
     public CommandComposite() {
         super(Mappings.getClass("ServerCommandManager"), new Class[]{});
 
@@ -80,6 +81,16 @@ public class CommandComposite extends ProxyComposite {
                         }
                     }
                 }
+                
+                if (commandArgs[0].equals("kick")) {
+                    for (Player p : Granite.getServer().getPlayers()) {
+		                if (p.getName().equals(commandArgs[1])) {
+			                Player player = Granite.getServer().getPlayer(commandArgs[1]);
+			                EventPlayerKick event = new EventPlayerKick(player, sender);
+			                Granite.getEventQueue().fireEvent(event);
+			            }
+		            }
+	            }
 
                 return 0;
             }

@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.item;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.api.block;
 
 import com.google.common.collect.BiMap;
 
@@ -202,7 +202,7 @@ public class ItemTypes {
     public static ItemType record_wait;
 
     /**
-     * Gets an {@link org.granitemc.granite.api.block.ItemType} by its technical name
+     * Gets an {@link ItemType} by its technical name
      *
      * @param name The technical name
      */
@@ -215,7 +215,7 @@ public class ItemTypes {
     }
 
     /**
-     * Gets an {@link org.granitemc.granite.api.block.ItemType} by its numeric ID
+     * Gets an {@link ItemType} by its numeric ID
      *
      * @param id The numeric ID
      */
@@ -224,9 +224,9 @@ public class ItemTypes {
     }
 
     /**
-     * Gets the numeric ID from an {@link org.granitemc.granite.api.block.ItemType}
+     * Gets the numeric ID from an {@link ItemType}
      *
-     * @param type The {@link org.granitemc.granite.api.block.ItemType}
+     * @param type The {@link ItemType}
      */
     public static int getIdFromItem(ItemType type) {
         return idMap.inverse().get(type);

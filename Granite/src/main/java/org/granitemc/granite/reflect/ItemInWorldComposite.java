@@ -1,3 +1,5 @@
+package org.granitemc.granite.reflect;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.reflect;
 
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.Block;
@@ -33,7 +33,6 @@ import org.granitemc.granite.api.event.block.EventBlockPlace;
 import org.granitemc.granite.api.item.ItemStack;
 import org.granitemc.granite.api.world.World;
 import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -43,7 +42,6 @@ import org.granitemc.granite.utils.MinecraftUtils;
 import org.granitemc.granite.world.GraniteWorld;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ItemInWorldComposite extends ProxyComposite {
@@ -56,7 +54,7 @@ public class ItemInWorldComposite extends ProxyComposite {
         addHook("tryHarvestBlock", new HookListener() {
             @Override
             public Object activate(Object self, Method method, Method proxyCallback, Hook hook, Object[] args) {
-                if (!GraniteServerComposite.instance.isOnServerThread()) {
+                if (GraniteServerComposite.instance.isOnServerThread()) {
                     Player p = (Player) MinecraftUtils.wrap(fieldGet("thisPlayerMP"));
 
                     World w = p.getWorld();
@@ -68,7 +66,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                     if (event.isCancelled()) {
                         hook.setWasHandled(true);
-                        ((GraniteEntityPlayer) p).sendBlockUpdate(b);
+                        p.sendBlockUpdate(b);
                         return false;
                     }
                 }
@@ -164,7 +162,7 @@ public class ItemInWorldComposite extends ProxyComposite {
                         } catch (Throwable throwable) {
                             throwable.printStackTrace();
                         }
-                    } else {
+                    }/* else {
                         boolean retval = false;
                         try {
                             retval = (boolean) proxyCallback.invoke(self, args);
@@ -187,8 +185,7 @@ public class ItemInWorldComposite extends ProxyComposite {
 
                         hook.setWasHandled(true);
                         return retval;
-                    }
-
+                    }*/
                 }
 
                 // TODO: fix possible dupe glitch relating to cancellation and skeleton heads

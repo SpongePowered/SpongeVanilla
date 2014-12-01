@@ -1,3 +1,5 @@
+package org.granitemc.granite;
+
 /*
  * License (MIT)
  *
@@ -15,21 +17,19 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.block.BlockType;
 import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.block.ItemType;
-import org.granitemc.granite.api.block.ItemTypes;
+import org.granitemc.granite.api.item.ItemType;
+import org.granitemc.granite.api.item.ItemTypes;
 import org.granitemc.granite.block.GraniteBlockType;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.BytecodeModifier;
@@ -103,7 +103,8 @@ public class GraniteStartupThread extends Thread {
         Granite.getLogger().info("Bootstrapping Minecraft");
 
         try {
-            Class.forName("od").getMethod("c").invoke(null);
+            // Hardcoding bootstrapping here again, this also has to load before the mappings are loaded
+            Class.forName("oe").getMethod("c").invoke(null);
         } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -125,17 +126,21 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void loadLibraries() {
-        for (File lib : GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
+        File[] files = GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
             }
-        })) {
-            Granite.getLogger().info("Loading jarfile lib/%s", lib.getName());
-            try {
-                ClassLoader.addFile(lib);
-            } catch (IOException e) {
-                e.printStackTrace();
+        });
+
+        if (files != null) {
+            for (File lib : files) {
+                Granite.getLogger().info("Loading jarfile lib/%s", lib.getName());
+                try {
+                    ClassLoader.addFile(lib);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

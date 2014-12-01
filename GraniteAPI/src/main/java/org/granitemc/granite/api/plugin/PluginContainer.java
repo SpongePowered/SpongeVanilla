@@ -1,3 +1,5 @@
+package org.granitemc.granite.api.plugin;
+
 /*
  * License (MIT)
  *
@@ -15,21 +17,19 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.api.plugin;
 
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.command.Command;
 import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.config.CfgFile;
 import org.granitemc.granite.api.event.Event;
+import org.granitemc.granite.api.event.EventHandler;
 import org.granitemc.granite.api.event.EventHandlerContainer;
-import org.granitemc.granite.api.event.On;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -71,7 +71,7 @@ public class PluginContainer {
                 if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
                     onEnableHandlers.add(m);
                 } else {
-                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a PluginContainer");
                 }
             }
 
@@ -79,7 +79,7 @@ public class PluginContainer {
                 if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == PluginContainer.class) {
                     onDisableHandlers.add(m);
                 } else {
-                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + "must take a single argument - a PluginContainer");
+                    Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a PluginContainer");
                 }
             }
         }
@@ -178,15 +178,36 @@ public class PluginContainer {
     }
 
     /**
+     * Registers a command handler to this plugin
+     *
+     * @param handler The handler to unregister, this can be any object, but should have at least one {@link org.granitemc.granite.api.command.Command} annotation
+     * @return true if at least one command handling method was found and unregistered, false if none found
+     */
+    public boolean unregisterCommandHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        boolean ret = false;
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Command.class)) {
+                if (commands.remove(m.getAnnotation(Command.class).name()) != null) {
+                    ret = true;
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    /**
      * Registers an event handler to this plugin
      *
-     * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.On} annotation
+     * @param handler The handler to register, this can be any object, but should have at least one {@link org.granitemc.granite.api.event.EventHandler} annotation
      */
     public void registerEventHandler(Object handler) {
         Class<?> clazz = handler.getClass();
 
         for (Method m : clazz.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(On.class)) {
+            if (m.isAnnotationPresent(EventHandler.class)) {
                 EventHandlerContainer evt = new EventHandlerContainer(this, handler, m);
 
                 if (m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == evt.getEventType()) {
@@ -196,11 +217,43 @@ public class PluginContainer {
                     }
 
                     events.get(evt.getEventType()).add(evt);
+                    Granite.getEventQueue().addHandler(evt);
                 } else {
                     Granite.getLogger().warn("Method " + m.getName() + " in " + clazz.getName() + " must take a single argument - a " + evt.getEventType().getName());
                 }
             }
         }
+    }
+
+    /**
+     * Unregisters an event handler of this plugin
+     *
+     * @param handler The handler to unregister, this can be any object but should have at least one {@link org.granitemc.granite.api.event.EventHandler} annotation
+     * @return true if at least one event handling method was found and unregistered, false if none found
+     */
+    public boolean unregisterEventHandler(Object handler) {
+        Class<?> clazz = handler.getClass();
+
+        boolean ret = false;
+        for (Method m : clazz.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(EventHandler.class)) {
+                if (m.getParameterTypes().length == 1 && Event.class.isAssignableFrom(m.getParameterTypes()[0])) {
+                    List<EventHandlerContainer> list = events.get(m.getParameterTypes()[0].asSubclass(Event.class));
+                    if (list != null) {
+                        for (EventHandlerContainer container : list.toArray(new EventHandlerContainer[0])) {
+                            if (container.getMethod().equals(m)) {
+                                Granite.getEventQueue().removeHandler(container);
+                                list.remove(container);
+                                ret = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return ret;
     }
 
     /**

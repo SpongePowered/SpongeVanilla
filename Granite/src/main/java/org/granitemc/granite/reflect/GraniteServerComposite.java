@@ -28,11 +28,9 @@ import org.granitemc.granite.GraniteAPI;
 import org.granitemc.granite.api.Granite;
 import org.granitemc.granite.api.Server;
 import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.chat.FormattingOutputType;
 import org.granitemc.granite.api.entity.player.Player;
-import org.granitemc.granite.api.event.Event;
-import org.granitemc.granite.api.event.EventHandlerContainer;
 import org.granitemc.granite.api.plugin.PluginContainer;
-import org.granitemc.granite.event.GraniteEventQueue;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
 import org.granitemc.granite.reflect.composite.ProxyComposite;
@@ -46,6 +44,7 @@ import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.UUID;
 
 public class GraniteServerComposite extends ProxyComposite implements Server {
     public static GraniteServerComposite instance;
@@ -77,14 +76,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
         for (PluginContainer c : Granite.getPlugins()) {
             c.enable();
-
-            // Now load the EventHandlerContainers of the plugin (so after the plugin is enabled!)
-            for (Class<? extends Event> clss : c.getEvents().keySet()) {
-                for (EventHandlerContainer ehc : c.getEvents().get(clss)) {
-                    ((GraniteEventQueue) GraniteAPI.instance.getEventQueue()).addHandler(clss, ehc);
-                }
-            }
-
         }
     }
 
@@ -167,7 +158,7 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
 
     @Override
     public void sendMessage(ChatComponent component) {
-        Granite.getLogger().info(component.toPlainText(true));
+        Granite.getLogger().info(component.toPlainText(FormattingOutputType.ANSI));
     }
 
     @Override
@@ -185,6 +176,39 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    @Override
+    public Player getPlayer(String name) {
+        for (Player player : getPlayers()) {
+            if (player.getName().toLowerCase().contains(name.toLowerCase())) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Player getPlayerExact(String name) {
+        for (Player player : getPlayers()) {
+            if (player.getName().equals(name)) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Player getPlayer(UUID uuid) {
+        for (Player player : getPlayers()) {
+            if (player.getUniqueID().equals(uuid)) {
+                return player;
+            }
+        }
+
         return null;
     }
 
@@ -347,21 +371,6 @@ public class GraniteServerComposite extends ProxyComposite implements Server {
     public void setServerPort(int port) {
         //Obf: b
         invoke("setServerPort", port);
-    }
-
-    public String getServerOwner() {
-        //Obf R
-        return (String) invoke("getServerOwner");
-    }
-
-    public void setServerOwner(String serverOwner) {
-        //Obf: j
-        invoke("setServerOwner", serverOwner);
-    }
-
-    public boolean isSinglePlayer() {
-        //Obf: N
-        return (boolean) invoke("isSinglePlayer");
     }
 
     @Override

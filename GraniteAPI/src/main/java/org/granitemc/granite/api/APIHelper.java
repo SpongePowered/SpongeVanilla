@@ -23,20 +23,24 @@ package org.granitemc.granite.api;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import org.granitemc.granite.api.block.ItemType;
 import org.granitemc.granite.api.entity.Entity;
 import org.granitemc.granite.api.inventory.Inventory;
 import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.ItemType;
+import org.granitemc.granite.api.nbt.NBTCompound;
 
 public interface APIHelper {
-    ItemStack createItemStack(ItemType type, int amount);
+    ItemStack createItemStack(ItemType type, int amount) throws InstantiationException, IllegalAccessException;
 
     String getItemNBTCompoundString(ItemStack stack);
 
     String getEntityNBTCompoundString(Entity stack);
+
     String getEntityNBTCompoundString(String type, String name, String id);
 
     String getTranslation(String key, Object... args);
 
     Inventory createInventory(String name, int size);
+
+    NBTCompound getNBTFromString(String string);
 }

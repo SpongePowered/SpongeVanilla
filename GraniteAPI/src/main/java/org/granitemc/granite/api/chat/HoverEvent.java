@@ -23,10 +23,22 @@ package org.granitemc.granite.api.chat;
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import org.granitemc.granite.api.Granite;
+import org.granitemc.granite.api.chat.hover.HoverEventShowAchievement;
+import org.granitemc.granite.api.chat.hover.HoverEventShowEntity;
+import org.granitemc.granite.api.chat.hover.HoverEventShowItem;
+import org.granitemc.granite.api.chat.hover.HoverEventShowText;
+import org.granitemc.granite.api.item.ItemStack;
+import org.granitemc.granite.api.item.ItemType;
+import org.granitemc.granite.api.item.ItemTypes;
+import org.granitemc.granite.api.nbt.NBTCompound;
 import org.json.simple.JSONObject;
+
+import java.util.Objects;
 
 public abstract class HoverEvent {
     protected abstract String getAction();
+
     public abstract Object getValue();
 
     JSONObject toConfigObject() {
@@ -35,4 +47,38 @@ public abstract class HoverEvent {
         obj.put("value", getValue());
 
         return obj;
-    }}
+    }
+
+    static HoverEvent fromConfigObject(JSONObject obj) {
+        String action = (String) obj.get("action");
+
+        if (Objects.equals(action, "show_achievement")) {
+            return new HoverEventShowAchievement((String) obj.get("value"));
+        } else if (Objects.equals(action, "show_entity")) {
+            String value = (String) obj.get("value");
+
+            NBTCompound nbt = Granite.getAPIHelper().getNBTFromString(value);
+
+            String type = nbt.getString("type");
+            String name = nbt.getString("name");
+            int id = nbt.getInt("id");
+
+            return new HoverEventShowEntity(type, name, id);
+        } else if (Objects.equals(action, "show_item")) {
+            String value = (String) obj.get("value");
+
+            NBTCompound nbt = Granite.getAPIHelper().getNBTFromString(value);
+
+            ItemType type = ItemTypes.getByName(nbt.getString("id").split(":")[1]);
+
+            ItemStack stack = type.create(1);
+            stack.setItemDamage(nbt.getInt("Damage"));
+            stack.setNBTCompound(nbt.getNBTCompound("tag"));
+
+            return new HoverEventShowItem(stack);
+        } else if (Objects.equals(action, "show_text")) {
+            return new HoverEventShowText(ChatComponent.fromConfigObject((JSONObject) obj.get("value")));
+        }
+        return null;
+    }
+}

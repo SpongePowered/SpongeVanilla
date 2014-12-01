@@ -1,3 +1,5 @@
+package org.granitemc.granite.utils;
+
 /*
  * License (MIT)
  *
@@ -15,15 +17,15 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitemc.granite.utils;
-
+import com.google.common.collect.Maps;
 import org.granitemc.granite.api.chat.ChatComponent;
+import org.granitemc.granite.api.nbt.NBTCompound;
 import org.granitemc.granite.api.utils.Location;
 import org.granitemc.granite.api.utils.Rotations;
 import org.granitemc.granite.api.utils.Vector;
@@ -34,13 +36,18 @@ import org.granitemc.granite.entity.item.GraniteEntityItem;
 import org.granitemc.granite.entity.player.GraniteEntityPlayer;
 import org.granitemc.granite.inventory.GraniteInventory;
 import org.granitemc.granite.inventory.GranitePlayerInventory;
+import org.granitemc.granite.item.GraniteBlockItemType;
 import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.item.GraniteItemType;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 import org.granitemc.granite.reflect.PlayServerComposite;
 import org.granitemc.granite.world.GraniteWorld;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MinecraftUtils {
     public static Object wrap(Object object) {
@@ -58,6 +65,8 @@ public class MinecraftUtils {
             return GraniteInventory.new_(object, GraniteInventory.class);
         } else if (Mappings.getClass("IBlockWithMetadata").isInstance(object)) {
             return GraniteBlockType.new_(object, GraniteBlockType.class);
+        } else if (Mappings.getClass("ItemBlock").isInstance(object)) {
+            return GraniteBlockItemType.new_(object, GraniteBlockItemType.class);
         } else if (Mappings.getClass("Item").isInstance(object)) {
             return GraniteItemType.new_(object, GraniteItemType.class);
         } else if (Mappings.getClass("World").isInstance(object)) {
@@ -66,6 +75,100 @@ public class MinecraftUtils {
             return GraniteItemStack.new_(object, GraniteItemStack.class);
         } else if (Mappings.getClass("NetHandlerPlayServer").isInstance(object)) {
             return PlayServerComposite.new_(object, PlayServerComposite.class);
+        }
+        return null;
+    }
+
+    public static Object toMinecraftNBTCompound(NBTCompound nbtCompound) {
+        try {
+            if (nbtCompound.getNBTMap().isEmpty()) return Mappings.getClass("NBTTagCompound").newInstance();
+            Map<String, Object> graniteNBTTags = nbtCompound.getNBTMap();
+            Object minecraftNBTCompound = Mappings.getClass("NBTTagCompound").newInstance();
+            for (String key : graniteNBTTags.keySet()) {
+                if (graniteNBTTags.get(key) instanceof Byte) {
+                    Mappings.invoke(minecraftNBTCompound, "setByte", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof Byte[]) {
+                    Mappings.invoke(minecraftNBTCompound, "setByteArray", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof Double) {
+                    Mappings.invoke(minecraftNBTCompound, "setDouble", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof Float) {
+                    Mappings.invoke(minecraftNBTCompound, "setFloat", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof Integer) {
+                    Mappings.invoke(minecraftNBTCompound, "setInteger", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof Integer[]) {
+                    Mappings.invoke(minecraftNBTCompound, "setIntArray", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof List) {
+                    Object nbtTagListInstance = Mappings.getClass("NBTTagList").newInstance();
+                    List list = (List) graniteNBTTags.get(key);
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i) instanceof NBTCompound) {
+                            Mappings.invoke(nbtTagListInstance, "appendTag", toMinecraftNBTCompound((NBTCompound) list.get(i)));
+                        } else if (list.get(i) instanceof String) {
+                            Object nbtTagStringInstance = Mappings.getClass("NBTTagString").newInstance();
+                            Field fieldTag = Mappings.getField(nbtTagStringInstance.getClass(), "data");
+                            fieldTag.set(nbtTagStringInstance, list.get(i));
+                            Mappings.invoke(nbtTagListInstance, "appendTag", nbtTagStringInstance);
+                        }
+                    }
+                    Mappings.invoke(minecraftNBTCompound, "setTag", key, nbtTagListInstance);
+                } else if (graniteNBTTags.get(key) instanceof NBTCompound) {
+                    Mappings.invoke(minecraftNBTCompound, "setTag", key, toMinecraftNBTCompound((NBTCompound) graniteNBTTags.get(key)));
+                } else if (graniteNBTTags.get(key) instanceof Long) {
+                    Mappings.invoke(minecraftNBTCompound, "setLong", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof Short) {
+                    Mappings.invoke(minecraftNBTCompound, "setShort", key, graniteNBTTags.get(key));
+                } else if (graniteNBTTags.get(key) instanceof String) {
+                    Mappings.invoke(minecraftNBTCompound, "setString", key, graniteNBTTags.get(key));
+                }
+            }
+            return minecraftNBTCompound;
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static NBTCompound fromMinecraftNBTCompound(Object minecraftNBTCompound) {
+        try {
+            Map<String, Object> minecraftNBTTags = (Map<String, Object>) Mappings.getField(minecraftNBTCompound.getClass(), "tagMap").get(minecraftNBTCompound);
+            Map<String, Object> graniteNBTTags = Maps.newHashMap();
+            for (String key : minecraftNBTTags.keySet()) {
+                if (Mappings.getClass("NBTTagByte").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField("NBTTagByte", "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagByteArray").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagByteArray"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagDouble").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagDouble"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagCompound").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, fromMinecraftNBTCompound(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagFloat").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagFloat"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagInt").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagInt"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagIntArray").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagIntArray"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagList").isInstance(minecraftNBTTags.get(key))) {
+                    List list = (List) Mappings.getField(Mappings.getClass("NBTTagList"), "tagList").get(minecraftNBTTags.get(key));
+                    List graniteList = new ArrayList();
+                    for (int i = 0; i < list.size(); i++) {
+                        if (Mappings.getClass("NBTTagCompound").isInstance(list.get(i))) {
+                            graniteList.add(fromMinecraftNBTCompound(list.get(i)));
+                        } else if (Mappings.getClass("NBTTagString").isInstance(list.get(i))) {
+                            graniteList.add(Mappings.getField(Mappings.getClass("NBTTagString"), "data").get(list.get(i)));
+                        }
+                    }
+                    graniteNBTTags.put(key, graniteList);
+                } else if (Mappings.getClass("NBTTagLong").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagLong"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagShort").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagShort"), "data").get(minecraftNBTTags.get(key)));
+                } else if (Mappings.getClass("NBTTagString").isInstance(minecraftNBTTags.get(key))) {
+                    graniteNBTTags.put(key, Mappings.getField(Mappings.getClass("NBTTagString"), "data").get(minecraftNBTTags.get(key)));
+                }
+            }
+            return new NBTCompound(graniteNBTTags);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -136,6 +239,7 @@ public class MinecraftUtils {
         }
         return null;
     }
+
     public static Object toMinecraftVector(Vector graniteVector) {
         try {
             return Mappings.getClass("Vec3").getConstructor(double.class, double.class, double.class)

@@ -1,3 +1,5 @@
+package org.granitemc.granite.api;
+
 /*
  * License (MIT)
  *
@@ -15,13 +17,11 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package org.granitemc.granite.api;
 
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.player.Player;
@@ -30,12 +30,28 @@ import java.io.File;
 import java.net.Proxy;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.UUID;
 
 public interface Server extends CommandSender {
     /**
      * Returns a list of online players
      */
     List<Player> getPlayers();
+
+    /**
+     * Returns the first player matching the given name. Null if no match is found.
+     */
+    Player getPlayer(String name);
+
+    /**
+     * Returns the player matching the exact name given. Null if no match is found.
+     */
+    Player getPlayerExact(String name);
+
+    /**
+     * Returns the player with matching UUID. Null if no match is found.
+     */
+    Player getPlayer(UUID uuid);
 
     /**
      * Returns whether structures can spawn
