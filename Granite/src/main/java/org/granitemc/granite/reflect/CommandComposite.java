@@ -29,6 +29,8 @@ import org.granitemc.granite.api.command.CommandContainer;
 import org.granitemc.granite.api.command.CommandInfo;
 import org.granitemc.granite.api.command.CommandSender;
 import org.granitemc.granite.api.entity.player.Player;
+import org.granitemc.granite.api.event.player.EventPlayerJoin;
+import org.granitemc.granite.api.event.player.EventPlayerKick;
 import org.granitemc.granite.api.plugin.PluginContainer;
 import org.granitemc.granite.reflect.composite.Hook;
 import org.granitemc.granite.reflect.composite.HookListener;
@@ -79,6 +81,16 @@ public class CommandComposite extends ProxyComposite {
                         }
                     }
                 }
+                
+                if (commandArgs[0].equals("kick")) {
+                    for (Player p : Granite.getServer().getPlayers()) {
+		                if (p.getName().equals(commandArgs[1])) {
+			                Player player = Granite.getServer().getPlayer(commandArgs[1]);
+			                EventPlayerKick event = new EventPlayerKick(player, sender);
+			                Granite.getEventQueue().fireEvent(event);
+			            }
+		            }
+	            }
 
                 return 0;
             }
