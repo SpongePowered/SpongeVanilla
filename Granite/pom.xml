@@ -49,11 +49,18 @@
         <url>https://github.com/GraniteTeam/Granite</url>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>sponge-repo</id>
+            <url>http://repo.spongepowered.org/Sponge/maven</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
-            <groupId>org.granitemc</groupId>
-            <artifactId>graniteapi</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
