@@ -147,6 +147,13 @@ public class PluginContainer {
     }
 
     /**
+     * Returns the dependencies of this plugin
+     */
+    public String[] getDependencies() {
+        return annotation.dependencies();
+    }
+
+    /**
      * Returns the instance of the plugin class that was created on read
      */
     public Object getInstance() {
