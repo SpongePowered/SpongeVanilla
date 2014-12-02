@@ -1,51 +1,11 @@
-package org.granitemc.granite.utils;
+package org.granitepowered.granite.mappings;
 
-/*
- * License (MIT)
- *
- * Copyright (c) 2014. Granite Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the
- * following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/**
+ * Created by Ash on 02/12/2014.
  */
-
-import com.github.kevinsawicki.http.HttpRequest;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.typesafe.config.*;
-import javassist.*;
-import org.apache.commons.lang3.ArrayUtils;
-import org.granitemc.granite.GraniteServerConfig;
-import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.reflect.ReflectionUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 public class Mappings {
-    static Config file;
+
+    /*static Config file;
 
     // Human -> Obfuscated Class
     static BiMap<String, Class<?>> classes;
@@ -131,7 +91,7 @@ public class Mappings {
 
                             SignatureParser.MethodSignature obfSig = SignatureParser.parseJvm(methodSignature);
 
-                            /*MethodHandle mh = null;
+                            *//*MethodHandle mh = null;
                             try {
                                 mh = MethodHandles.lookup().findVirtual(clazz.getValue(), methodSignature.split("\\(")[0], MethodType.methodType(obfSig.getReturnType(), obfSig.getParamTypes()));
                             } catch (NoSuchMethodException | IllegalAccessException e) {
@@ -148,7 +108,7 @@ public class Mappings {
 
                             if (mh == null) {
                                 mh = mh;
-                            }*/
+                            }*//*
 
 
                             CtMethod method = ctClass.getMethod(methodSignature.split("\\(")[0], "(" + methodSignature.split("\\(")[1]);
@@ -303,7 +263,7 @@ public class Mappings {
         return getMethod(getCtClass(clazz), methodName);
     }
 
-    /*public static String getMethodName(Class<?> clazz, MethodHandle methodHandle) {
+    *//*public static String getMethodName(Class<?> clazz, MethodHandle methodHandle) {
         return methods.get(getCtClass(clazz)).inverse().get(methodHandle);
     }
 
@@ -314,7 +274,7 @@ public class Mappings {
             e.printStackTrace();
         }
         return null;
-    }*/
+    }*//*
 
     public static Object invoke(Object object, String methodName, Object... args) {
         return invoke(object, getMethod(getCtClass(object.getClass()), methodName), args);
@@ -340,4 +300,5 @@ public class Mappings {
     public static Object invokeStatic(String className, String methodName, Object... args) {
         return invokeStatic(getClass(className), methodName, args);
     }
+*/
 }

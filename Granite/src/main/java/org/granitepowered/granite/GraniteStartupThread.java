@@ -1,59 +1,20 @@
-package org.granitemc.granite;
+package org.granitepowered.granite;
 
-/*
- * License (MIT)
- *
- * Copyright (c) 2014. Granite Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the
- * following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import org.granitemc.granite.api.Granite;
-import org.granitemc.granite.api.block.BlockType;
-import org.granitemc.granite.api.block.BlockTypes;
-import org.granitemc.granite.api.item.ItemType;
-import org.granitemc.granite.api.item.ItemTypes;
-import org.granitemc.granite.block.GraniteBlockType;
-import org.granitemc.granite.item.GraniteItemType;
-import org.granitemc.granite.reflect.BytecodeModifier;
-import org.granitemc.granite.reflect.GraniteServerComposite;
-import org.granitemc.granite.utils.ClassLoader;
-import org.granitemc.granite.utils.Mappings;
-import org.granitemc.granite.utils.MinecraftUtils;
-
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Properties;
 
+/**
+ * Created by Ash on 02/12/2014.
+ */
 public class GraniteStartupThread extends Thread {
 
-    private String[] args;
+    String[] args;
 
-    public GraniteStartupThread(String[] args) {
-        setName("Granite Startup");
+    public GraniteStartupThread(String args[]) {
         this.args = args;
+        this.setName("Granite Startup");
     }
 
     public void run() {
@@ -81,26 +42,26 @@ public class GraniteStartupThread extends Thread {
 
         System.out.println("Initializing API and logger");
 
-        GraniteAPI.init();
+        // GraniteAPI.init();
 
-        Granite.getLogger().info("Loading Minecraft .jar");
+        //Granite.getLogger().info("Loading Minecraft .jar");
 
         loadMinecraft();
 
-        Granite.getLogger().info("Loading libraries");
+        //Granite.getLogger().info("Loading libraries");
 
         loadLibraries();
 
-        Granite.getLogger().info("Loading plugins");
+        //Granite.getLogger().info("Loading plugins");
 
         loadPlugins();
 
-        Granite.getLogger().info("Applying bytecode modifications ");
+        //Granite.getLogger().info("Applying bytecode modifications ");
 
         // Edit stuff before the classes are loaded
-        BytecodeModifier.modify();
+        //BytecodeModifier.modify();
 
-        Granite.getLogger().info("Bootstrapping Minecraft");
+        //Granite.getLogger().info("Bootstrapping Minecraft");
 
         try {
             // Hardcoding bootstrapping here again, this also has to load before the mappings are loaded
@@ -112,21 +73,21 @@ public class GraniteStartupThread extends Thread {
 
         // Load mappings AFTER editing is done, otherwise it'll break
 
-        Granite.getLogger().info("Loading mappings");
-        Mappings.load();
+        //Granite.getLogger().info("Loading mappings");
+        //Mappings.load();
 
-        Granite.getLogger().info("Loading blocks and items");
+        //Granite.getLogger().info("Loading blocks and items");
 
         loadBlocks();
         loadItems();
 
-        Granite.getLogger().info("Starting server");
+        //Granite.getLogger().info("Starting server");
 
-        GraniteServerComposite.init();
+        //GraniteServerComposite.init();
     }
 
     private void loadLibraries() {
-        File[] files = GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
+        /*File[] files = GraniteAPI.instance.getServerConfig().getLibrariesDirectory().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
@@ -142,11 +103,11 @@ public class GraniteStartupThread extends Thread {
                     e.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
     private void loadPlugins() {
-        File[] files = GraniteAPI.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
+        /*File[] files = GraniteAPI.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File arg0, String arg1) {
                 return arg1.endsWith(".jar");
@@ -158,11 +119,11 @@ public class GraniteStartupThread extends Thread {
                 Granite.getLogger().info("Loading jarfile plugins/%s", plugin.getName());
                 Granite.loadPluginFromJar(plugin);
             }
-        }
+        }*/
     }
 
     public void loadMinecraft() {
-        File mcJar = GraniteAPI.instance.getServerConfig().getMinecraftJar();
+        /*File mcJar = GraniteAPI.instance.getServerConfig().getMinecraftJar();
         Granite.getLogger().info("Loading jar from %s into classpath", mcJar.getAbsolutePath());
 
         if (!mcJar.exists()) {
@@ -176,11 +137,11 @@ public class GraniteStartupThread extends Thread {
             Granite.getLogger().error("Failed to read minecraft_server.jar. Please make sure it exists in the same directory.");
             e.printStackTrace();
             System.exit(1);
-        }
+        }*/
     }
 
     public void loadBlocks() {
-        Class<?> blockClass = Mappings.getClass("Block");
+        /*Class<?> blockClass = Mappings.getClass("Block");
 
         try {
             Field nameField = Mappings.getField(blockClass, "blockWithMetadata");
@@ -212,11 +173,11 @@ public class GraniteStartupThread extends Thread {
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void loadItems() {
-        Class<?> itemClass = Mappings.getClass("Item");
+        /*Class<?> itemClass = Mappings.getClass("Item");
 
         try {
             Field nameMapField = ItemTypes.class.getDeclaredField("nameMap");
@@ -247,6 +208,8 @@ public class GraniteStartupThread extends Thread {
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
-        }
+        }*/
     }
+
+
 }
