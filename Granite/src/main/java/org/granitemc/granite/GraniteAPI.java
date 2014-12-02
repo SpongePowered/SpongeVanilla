@@ -40,11 +40,13 @@ import org.granitemc.granite.item.GraniteItemStack;
 import org.granitemc.granite.reflect.GraniteServerComposite;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Objects;
@@ -119,19 +121,8 @@ public class GraniteAPI implements API {
         }
         return null;
     }
-
-    public PluginContainer createPluginContainer(Class<?> clazz) {
-        for (Annotation a : clazz.getAnnotations()) {
-            if (a.annotationType().equals(Plugin.class)) {
-                PluginContainer container = new PluginContainer(clazz);
-                return container;
-                //container.enable();
-            }
-        }
-        return null;
-    }
-
-    public void loadPluginFromJar(File file) {
+    
+    public Class<?> getPluginClassByFile(File file) {
         try {
             URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
             JarFile jf = new JarFile(file);
@@ -147,7 +138,11 @@ public class GraniteAPI implements API {
                     try {
                         Class<?> clazz = classLoader.loadClass(className);
 
-                        loadPluginFromClass(clazz);
+                        PluginContainer pc = createPluginContainer(clazz);
+
+                        if (pc != null) {
+                            return clazz;
+                        }
                     } catch (NoClassDefFoundError | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -156,14 +151,60 @@ public class GraniteAPI implements API {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+    
+    public PluginContainer createPluginContainer(Class<?> clazz) {
+        for (Annotation a : clazz.getAnnotations()) {
+            if (a.annotationType().equals(Plugin.class)) {
+                PluginContainer container = new PluginContainer(clazz);
+                return container;
+                //container.enable();
+            }
+        }
+        return null;
+    }
+
+    public void loadPluginFromJar(File file) {
+        loadPluginFromClass(getPluginClassByFile(file));
+    }
+
+    public boolean dependenciesExist(String[] dependencies) {
+        File[] files = GraniteAPI.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File arg0, String arg1) {
+                return arg1.endsWith(".jar");
+            }
+        });
+        
+        ArrayList<String> existing = new ArrayList<String>();
+
+        if (files != null) {
+            for (File plugin : files) {
+                PluginContainer pc = createPluginContainer(getPluginClassByFile(plugin));
+                existing.add(pc.getId());
+            }
+        }
+        
+        for(String s : dependencies) {
+            if(!existing.contains(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void loadPluginFromClass(Class<?> clazz) {
         PluginContainer pc = createPluginContainer(clazz);
 
         if (pc != null) {
-            plugins.add(pc);
-            getLogger().info("Loaded %s (v%s)!", pc.getName(), pc.getVersion());
+            if(dependenciesExist(pc.getDependencies())) {
+                plugins.add(pc);
+                getLogger().info("Loaded %s (v%s)!", pc.getName(), pc.getVersion());
+            } else {
+                getLogger().warn("Could not load %s (v%s): missing plugin dependencies!", pc.getName(), pc.getVersion());
+            }
+            
         }
     }
 

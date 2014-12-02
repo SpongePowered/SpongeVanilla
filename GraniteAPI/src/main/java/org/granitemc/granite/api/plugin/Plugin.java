@@ -46,4 +46,9 @@ public @interface Plugin {
      * The version of this plugin, this should preferably be semantic versioning (Google it)
      */
     public String version();
+    
+    /**
+     * The dependencies of this plugin, as an array of plugin ids
+     */
+    public String[] dependencies();
 }
