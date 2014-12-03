@@ -21,43 +21,49 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.plugin;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
-public class Granite {
-    public static Granite instance;
+public class GranitePluginContainer implements PluginContainer {
 
+    String id;
+    String name;
     String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager granitePluginManager;
-    Logger logger;
+    String dependencies;
+    Object instance;
 
-    public Granite() {
-        version = "UNKNOWN";
+    public GranitePluginContainer(Class clazz) {
+        Plugin plugin = (Plugin) clazz.getAnnotation(Plugin.class);
+        id = plugin.id();
+        name = plugin.name();
+        version = plugin.version();
+        dependencies = plugin.dependencies();
+        instance = this;
     }
 
-    public static Granite getInstance() {
-        return instance;
+    public String getDependencies() {
+        return dependencies;
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public String getVersion() {
         return version;
     }
 
-    public PluginManager getPluginManager() {
-        return granitePluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public Object getInstance() {
+        return instance;
     }
 }

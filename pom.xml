@@ -54,6 +54,7 @@
             <id>sponge-repo</id>
             <url>http://repo.spongepowered.org/Sponge/maven</url>
         </repository>
+
         <repository>
             <id>sonatype-nexus</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
@@ -65,6 +66,12 @@
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
             <version>1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.7</version>
         </dependency>
 
         <dependency>

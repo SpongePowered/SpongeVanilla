@@ -71,11 +71,11 @@ public class Mappings {
             String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.1.json";
 
             if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
-                System.out.println("Querying " + url + " for updates");
+                Granite.instance.getLogger().info("Querying " + url + " for updates");
                 HttpRequest req = HttpRequest.get(url);
                 if (!mappingsFile.exists() || !Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
-                    System.out.println("Could not find mappings.json (or etag didn't match)");
-                    System.out.println("Downloading from " + url);
+                    Granite.instance.getLogger().warn("Could not find mappings.json (or etag didn't match)");
+                    Granite.instance.getLogger().warn("Downloading from " + url);
 
                     if (req.code() == 404) {
                         throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");

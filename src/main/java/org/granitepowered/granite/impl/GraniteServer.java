@@ -24,6 +24,7 @@
 package org.granitepowered.granite.impl;
 
 import com.google.common.base.Optional;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.ProxyComposite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.Game;
@@ -65,7 +66,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public PluginManager getPluginManager() {
-        return null;
+        return Granite.instance.getPluginManager();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public String getAPIVersion() {
-        return "Sponge 1.0";
+        return "Sponge 1.1-SNAPSHOT";
     }
 
     @Override

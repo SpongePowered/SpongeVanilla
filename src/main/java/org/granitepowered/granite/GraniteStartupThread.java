@@ -26,6 +26,8 @@ package org.granitepowered.granite;
 import com.github.kevinsawicki.http.HttpRequest;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.plugin.GranitePluginManager;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,8 +71,9 @@ public class GraniteStartupThread extends Thread {
 
         Granite.instance = new Granite();
         Granite.instance.version = version;
-
         Granite.instance.serverConfig = new ServerConfig();
+        Granite.instance.logger = LoggerFactory.getLogger("Granite");
+        Granite.instance.granitePluginManager = new GranitePluginManager();
 
         loadMinecraft();
 
@@ -78,14 +81,16 @@ public class GraniteStartupThread extends Thread {
 
         bootstrap();
 
+        GranitePluginManager.loadPlugins();
+
         GraniteServer server = new GraniteServer();
         Granite.instance.server = server;
 
-        System.out.println("Starting Granite version " + version);
+        Granite.instance.getLogger().info("Starting Granite version " + version);
     }
 
     private void bootstrap() {
-        System.out.println("Bootstrapping Minecraft");
+        Granite.instance.getLogger().info("Bootstrapping Minecraft");
 
         Mappings.invokeStatic("Bootstrap", "func_151354_b");
     }
@@ -94,12 +99,12 @@ public class GraniteStartupThread extends Thread {
         File minecraftJar = Granite.instance.getServerConfig().getMinecraftJar();
 
         if (!minecraftJar.exists()) {
-            System.out.println("Could not find Minecraft .jar, downloading");
+            Granite.instance.getLogger().warn("Could not find Minecraft .jar, downloading");
             HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/1.8.1/minecraft_server.1.8.1.jar");
             req.receive(minecraftJar);
         }
 
-        System.out.println("Loading " + minecraftJar.getName());
+        Granite.instance.getLogger().info("Loading " + minecraftJar.getName());
 
         try {
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
