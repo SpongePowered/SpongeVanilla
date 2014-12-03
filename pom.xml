@@ -54,6 +54,10 @@
             <id>sponge-repo</id>
             <url>http://repo.spongepowered.org/Sponge/maven</url>
         </repository>
+        <repository>
+            <id>sonatype-nexus</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+        </repository>
     </repositories>
 
     <dependencies>
