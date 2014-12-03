@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.mappings;
 
+import javassist.CannotCompileException;
+import javassist.CtClass;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
 import org.apache.commons.lang3.StringUtils;
@@ -43,13 +45,13 @@ public class SignatureParser {
         String name = preSig;
         String[] params = signature.split("\\(")[1].split("\\)")[0].trim().replaceAll(";", ",").split(",");
 
-        Class<?>[] paramTypes = new Class<?>[params.length];
+        CtClass[] paramTypes = new CtClass[params.length];
 
         for (int i = 0; i < params.length; i++) {
-            paramTypes[i] = ReflectionUtils.getClassByName(params[i].trim());
+            paramTypes[i] = ReflectionUtils.getCtClassByName(params[i].trim());
         }
 
-        return new MethodSignature(name, ReflectionUtils.getClassByName(returnType), paramTypes);
+        return new MethodSignature(name, ReflectionUtils.getCtClassByName(returnType), paramTypes);
     }
 
     public static MethodSignature parseJvm(String signature) {
@@ -60,16 +62,12 @@ public class SignatureParser {
             badBytecode.printStackTrace();
         }
 
-        Class<?>[] paramClassTypes = new Class<?>[sig.getParameterTypes().length];
+        CtClass[] paramClassTypes = new CtClass[sig.getParameterTypes().length];
         for (int i = 0; i < paramClassTypes.length; i++) {
-            paramClassTypes[i] = ReflectionUtils.getClassByName(sig.getParameterTypes()[i].toString());
-
-            if (paramClassTypes[i] == null) {
-                String aa = "a";
-            }
+            paramClassTypes[i] = ReflectionUtils.getCtClassByName(sig.getParameterTypes()[i].toString());
         }
 
-        return new MethodSignature(signature.split("\\(")[0], ReflectionUtils.getClassByName(sig.getReturnType().toString()), paramClassTypes);
+        return new MethodSignature(signature.split("\\(")[0], ReflectionUtils.getCtClassByName(sig.getReturnType().toString()), paramClassTypes);
     }
 
     public static MethodSignature getFromMethod(Method method) {
@@ -84,10 +82,10 @@ public class SignatureParser {
 
     public static class MethodSignature {
         private String name;
-        private Class<?> returnType;
-        private Class<?>[] paramTypes;
+        private CtClass returnType;
+        private CtClass[] paramTypes;
 
-        public MethodSignature(String name, Class<?> returnType, Class<?>[] paramTypes) {
+        public MethodSignature(String name, CtClass returnType, CtClass[] paramTypes) {
             this.name = name;
             this.returnType = returnType;
             this.paramTypes = paramTypes;
@@ -98,11 +96,24 @@ public class SignatureParser {
         }
 
         public Class<?>[] getParamTypes() {
-            return paramTypes;
+            Class<?>[] arr = new Class[paramTypes.length];
+            for (int i = 0; i < paramTypes.length; i++) {
+                try {
+                    arr[i] = paramTypes[i].toClass();
+                } catch (CannotCompileException e) {
+                    e.printStackTrace();
+                }
+            }
+            return arr;
         }
 
         public Class<?> getReturnType() {
-            return returnType;
+            try {
+                return returnType.toClass();
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override

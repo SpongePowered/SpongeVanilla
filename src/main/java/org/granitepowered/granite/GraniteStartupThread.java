@@ -23,9 +23,18 @@
 
 package org.granitepowered.granite;
 
+import com.github.kevinsawicki.http.HttpRequest;
+import org.granitepowered.granite.impl.GraniteServer;
+import org.granitepowered.granite.mappings.Mappings;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Properties;
 
 public class GraniteStartupThread extends Thread {
@@ -58,6 +67,46 @@ public class GraniteStartupThread extends Thread {
 
         if (version == null) version = "UNKNOWN";
 
+        Granite.instance = new Granite();
+        Granite.instance.version = version;
+
+        Granite.instance.serverConfig = new ServerConfig();
+
+        loadMinecraft();
+
+        Mappings.load();
+
+        bootstrap();
+
+        GraniteServer server = new GraniteServer();
+        Granite.instance.server = server;
+
         System.out.println("Starting Granite version " + version);
+    }
+
+    private void bootstrap() {
+        System.out.println("Bootstrapping Minecraft");
+
+        Mappings.invokeStatic("Bootstrap", "func_151354_b");
+    }
+
+    private void loadMinecraft() {
+        File minecraftJar = Granite.instance.getServerConfig().getMinecraftJar();
+
+        if (!minecraftJar.exists()) {
+            System.out.println("Could not find Minecraft .jar, downloading");
+            HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/1.8.1/minecraft_server.1.8.1.jar");
+            req.receive(minecraftJar);
+        }
+
+        System.out.println("Loading " + minecraftJar.getName());
+
+        try {
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            method.setAccessible(true);
+            method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getServerConfig().getMinecraftJar().toURI().toURL());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 }

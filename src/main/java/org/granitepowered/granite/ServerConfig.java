@@ -23,65 +23,76 @@
 
 package org.granitepowered.granite;
 
-public class GraniteServerConfiguration {
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigRenderOptions;
+import com.typesafe.config.ConfigValueFactory;
+import org.apache.commons.io.FileUtils;
 
-    /*public CfgFile file;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-    public GraniteServerConfiguration() {
-        file = new CfgFile(new File("granite.conf"));
+public class ServerConfig {
+    public Config config;
+    public File configLocation;
 
-        file.addDefault("plugin-directory", "plugins/");
-        file.addDefault("plugin-data-directory", "plugins/");
-        file.addDefault("minecraft-jar", "minecraft_server.jar");
-        file.addDefault("libraries-directory", "lib/");
-        file.addDefault("mappings-file", "mappings.json");
-        file.addDefault("latest-mappings-etag", "");
-        file.addDefault("automatic-mappings-updating", true);
+    public ServerConfig() {
+        configLocation = new File("granite.conf");
+        config = ConfigFactory.parseFile(configLocation);
 
         try {
-            file.save();
-        } catch (IOException e) {
+            config = config.withFallback(ConfigFactory.parseFile(new File(getClass().getResource("/granite.conf").toURI())));
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
+        save();
 
         getPluginDataDirectory().mkdirs();
         getPluginDirectory().mkdirs();
         getLibrariesDirectory().mkdirs();
     }
 
-    @Override
+    public void save() {
+        String saved = config.root().render(ConfigRenderOptions.defaults().setOriginComments(false));
+
+        try {
+            FileUtils.write(configLocation, saved);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public File getPluginDataDirectory() {
-        return new File(file.getString("plugin-data-directory"));
+        return new File(config.getString("plugin-data-directory"));
     }
 
-    @Override
     public File getPluginDirectory() {
-        return new File(file.getString("plugin-directory"));
+        return new File(config.getString("plugin-directory"));
     }
 
-    @Override
     public File getMinecraftJar() {
-        return new File(file.getString("minecraft-jar"));
+        return new File(config.getString("minecraft-jar"));
     }
 
-    @Override
     public File getLibrariesDirectory() {
-        return new File(file.getString("libraries-directory"));
+        return new File(config.getString("libraries-directory"));
     }
 
-    @Override
     public File getMappingsFile() {
-        return new File(file.getString("mappings-file"));
+        return new File(config.getString("mappings-file"));
     }
 
-    @Override
     public String getLatestMappingsEtag() {
-        return file.getString("latest-mappings-etag");
+        return config.getString("latest-mappings-etag");
     }
 
-    @Override
     public boolean getAutomaticMappingsUpdating() {
-        return file.getBoolean("automatic-mappings-updating");
-    }*/
+        return config.getBoolean("automatic-mappings-updating");
+    }
 
+    public void set(String key, Object value) {
+        config = config.withValue(key, ConfigValueFactory.fromAnyRef(value));
+    }
 }

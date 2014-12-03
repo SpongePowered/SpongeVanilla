@@ -23,12 +23,13 @@
 
 package org.granitepowered.granite.mappings;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.typesafe.config.*;
 import javassist.*;
 import org.apache.commons.lang3.ArrayUtils;
-import org.granitepowered.granite.mappings.SignatureParser;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.utils.ReflectionUtils;
 
 import java.io.File;
@@ -40,6 +41,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Mappings {
     static Config file;
@@ -64,28 +66,26 @@ public class Mappings {
 
     public static void load() {
         try {
-            /*File mappingsFile = new File(Granite.getServerConfig().getMappingsFile().getAbsolutePath());
+            File mappingsFile = new File(Granite.instance.getServerConfig().getMappingsFile().getAbsolutePath());
 
-            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/master/1.8.1.json";
+            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.1.json";
 
-            if (Granite.getServerConfig().getAutomaticMappingsUpdating()) {
-                Granite.getLogger().info("Querying " + url + " for updates");
+            if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
+                System.out.println("Querying " + url + " for updates");
                 HttpRequest req = HttpRequest.get(url);
-                if (!mappingsFile.exists() || !Objects.equals(req.eTag(), Granite.getServerConfig().getLatestMappingsEtag())) {
-                    Granite.getLogger().info("Could not find mappings.json (or etag didn't match)");
-                    Granite.getLogger().info("Downloading from " + url);
+                if (!mappingsFile.exists() || !Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
+                    System.out.println("Could not find mappings.json (or etag didn't match)");
+                    System.out.println("Downloading from " + url);
 
                     if (req.code() == 404) {
                         throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");
                     } else if (req.code() == 200) {
                         req.receive(mappingsFile);
-                        ((GraniteServerConfig) Granite.getServerConfig()).file.put("latest-mappings-etag", req.eTag());
-                        ((GraniteServerConfig) Granite.getServerConfig()).file.save();
+                        Granite.instance.getServerConfig().set("latest-mappings-etag", req.eTag());
+                        Granite.instance.getServerConfig().save();
                     }
                 }
-            }*/
-
-            File mappingsFile = new File("mappings.json");
+            }
 
             file = ConfigFactory.parseReader(
                     new InputStreamReader(

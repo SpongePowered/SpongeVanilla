@@ -25,6 +25,9 @@ package org.granitepowered.granite.utils;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import org.granitepowered.granite.mappings.Mappings;
@@ -44,6 +47,18 @@ public class ReflectionUtils {
             .put(boolean.class, Boolean.class)
             .put(char.class, Character.class)
             .put(void.class, Void.class)
+            .build();
+
+    private static BiMap<Class<?>, CtClass> ctPrimitives = new ImmutableBiMap.Builder<Class<?>, CtClass>()
+            .put(byte.class, CtClass.byteType)
+            .put(short.class, CtClass.shortType)
+            .put(int.class, CtClass.intType)
+            .put(long.class, CtClass.longType)
+            .put(float.class, CtClass.floatType)
+            .put(double.class, CtClass.doubleType)
+            .put(boolean.class, CtClass.booleanType)
+            .put(char.class, CtClass.charType)
+            .put(void.class, CtClass.voidType)
             .build();
 
     /**
@@ -73,9 +88,9 @@ public class ReflectionUtils {
         } else {
             // If actual is primitive and expected isn't, or vice versa (xor)
             if (actual.isPrimitive() ^ expected.isPrimitive()) {
-                if (primitives.containsKey(actual) && primitives.get(actual).equals(expected)) {
+                if (ctPrimitives.containsKey(actual) && ctPrimitives.get(actual).equals(expected)) {
                     return true;
-                } else if (primitives.inverse().containsKey(actual) && primitives.inverse().get(actual).equals(expected)) {
+                } else if (ctPrimitives.inverse().containsKey(actual) && ctPrimitives.inverse().get(actual).equals(expected)) {
                     return true;
                 }
             }
@@ -96,7 +111,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * Invoke a method, casting every type to the appropriate type, primitives included
+     * Invoke a method, casting every type to the appropriate type, ctPrimitives included
      *
      * @param instance The instance to invoke on
      * @param m        The method to invoke
@@ -165,7 +180,7 @@ public class ReflectionUtils {
 
         Class<?> clazz = null;
 
-        for (Class<?> primitive : primitives.keySet()) {
+        for (Class<?> primitive : ctPrimitives.keySet()) {
             if (Objects.equals(primitive.getName(), name)) {
                 clazz = primitive;
             }
@@ -187,6 +202,41 @@ public class ReflectionUtils {
 
         if (array) {
             clazz = Array.newInstance(clazz, 0).getClass();
+        }
+        return clazz;
+    }
+
+    public static CtClass getCtClassByName(String name) {
+        boolean array = name.endsWith("[]");
+        name = name.replaceAll("\\[\\]", "");
+
+        CtClass clazz = null;
+
+        for (CtClass primitive : ctPrimitives.values()) {
+            if (Objects.equals(primitive.getName(), name)) {
+                clazz = primitive;
+            }
+        }
+
+        if (name.split("\\.").length == 1 && !name.toLowerCase().equals(name)) {
+            clazz = Mappings.getCtClass(name);
+        }
+
+        try {
+            clazz = ClassPool.getDefault().get(name);
+        } catch (NotFoundException ignored) {
+        }
+
+        try {
+            clazz = ClassPool.getDefault().get("java.lang." + name);
+        } catch (NotFoundException ignored) {
+        }
+
+        if (array) {
+            try {
+                clazz = ClassPool.getDefault().get(name + "[]");
+            } catch (NotFoundException ignored) {
+            }
         }
         return clazz;
     }
