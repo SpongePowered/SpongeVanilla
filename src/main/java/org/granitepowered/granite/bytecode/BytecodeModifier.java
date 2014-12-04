@@ -21,43 +21,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.bytecode;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.plugin.PluginManager;
+import javassist.CannotCompileException;
 
-public class Granite {
-    public static Granite instance;
+import java.util.ArrayList;
+import java.util.List;
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    Logger logger;
+public class BytecodeModifier {
+    List<BytecodeModification> modifications;
 
-    public Granite() {
-        version = "UNKNOWN";
+    public BytecodeModifier() {
+        modifications = new ArrayList<>();
     }
 
-    public static Granite getInstance() {
-        return instance;
+    public void modify() {
+        for (BytecodeModification mod : modifications) {
+            mod.modify();
+
+            try {
+                mod.clazz.toClass();
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+            
+            mod.postModify();
+        }
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    public List<BytecodeModification> getModifications() {
+        return modifications;
     }
 }

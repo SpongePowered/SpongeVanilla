@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.plugin;
+package org.granitepowered.granite.impl.plugin;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.Granite;
@@ -105,7 +105,7 @@ public class GranitePluginManager implements PluginManager {
     @Override
     public Optional<PluginContainer> fromInstance(Object instance) {
         for (PluginContainer pluginContainer : plugins) {
-            if (pluginContainer.getInstance().equals(instance)) return (Optional<PluginContainer>) pluginContainer;
+            if (pluginContainer.getInstance().equals(instance)) return Optional.of(pluginContainer);
         }
         return Optional.absent();
     }
@@ -113,14 +113,14 @@ public class GranitePluginManager implements PluginManager {
     @Override
     public Optional<PluginContainer> getPlugin(String id) {
         for (PluginContainer pluginContainer : plugins) {
-            if (pluginContainer.getId().equals(id)) return (Optional<PluginContainer>) pluginContainer;
+            if (pluginContainer.getId().equals(id)) return Optional.of(pluginContainer);
         }
         return Optional.absent();
     }
 
     @Override
     public Logger getLogger(PluginContainer plugin) {
-        return LoggerFactory.getLogger(plugin.getName());
+        return ((GranitePluginContainer) plugin).getLogger();
     }
 
     @Override

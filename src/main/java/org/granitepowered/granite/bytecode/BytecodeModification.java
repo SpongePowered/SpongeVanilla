@@ -21,43 +21,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.bytecode;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.plugin.PluginManager;
+import javassist.CtClass;
 
-public class Granite {
-    public static Granite instance;
+public abstract class BytecodeModification {
+    CtClass clazz;
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+    public BytecodeModification(CtClass clazz) {
+        this.clazz = clazz;
     }
 
-    public static Granite getInstance() {
-        return instance;
-    }
+    public abstract void modify();
 
-    public String getVersion() {
-        return version;
-    }
+    public void postModify() {
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 }

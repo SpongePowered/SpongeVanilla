@@ -21,49 +21,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.plugin;
+package org.granitepowered.granite.bytecode;
 
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
+import javassist.CannotCompileException;
+import javassist.CtMethod;
+import javassist.expr.ExprEditor;
 
-public class GranitePluginContainer implements PluginContainer {
+public class BytecodeMethodEditorModification extends BytecodeModification {
+    CtMethod method;
+    ExprEditor exprEditor;
 
-    String id;
-    String name;
-    String version;
-    String dependencies;
-    Object instance;
-
-    public GranitePluginContainer(Class clazz) {
-        Plugin plugin = (Plugin) clazz.getAnnotation(Plugin.class);
-        id = plugin.id();
-        name = plugin.name();
-        version = plugin.version();
-        dependencies = plugin.dependencies();
-        instance = this;
-    }
-
-    public String getDependencies() {
-        return dependencies;
+    public BytecodeMethodEditorModification(CtMethod method, ExprEditor editor) {
+        super(method.getDeclaringClass());
+        this.method = method;
     }
 
     @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public Object getInstance() {
-        return instance;
+    public void modify() {
+        try {
+            method.instrument(exprEditor);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
     }
 }

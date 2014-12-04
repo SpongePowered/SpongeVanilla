@@ -24,10 +24,16 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import javassist.CodeConverter;
+import javassist.expr.ExprEditor;
+import org.granitepowered.granite.bytecode.BytecodeMethodEditorModification;
+import org.granitepowered.granite.bytecode.BytecodeMethodReplacerModification;
+import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.plugin.GranitePluginManager;
+import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.SimpleLoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,11 +79,13 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.version = version;
         Granite.instance.serverConfig = new ServerConfig();
         Granite.instance.logger = LoggerFactory.getLogger("Granite");
-        Granite.instance.granitePluginManager = new GranitePluginManager();
+        Granite.instance.pluginManager = new GranitePluginManager();
 
         loadMinecraft();
 
         Mappings.load();
+
+        modifyBytecode();
 
         bootstrap();
 
@@ -86,6 +94,18 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.server = new GraniteServer();
 
         Granite.instance.getLogger().info("Starting Granite version " + version);
+    }
+
+    private void modifyBytecode() {
+        Granite.instance.getLogger().info("Modifying bytecode");
+
+        BytecodeModifier modifier = new BytecodeModifier();
+
+        modifier.getModifications().add(new BytecodeMethodReplacerModification(Mappings.getCtMethod("MinecraftServer", "getServerModName"),
+                "return \"granite\";"
+        ));
+
+        modifier.modify();
     }
 
     private void bootstrap() {

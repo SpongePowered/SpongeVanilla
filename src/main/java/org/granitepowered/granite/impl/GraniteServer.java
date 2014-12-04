@@ -111,7 +111,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public int getMaxPlayers() {
-        throw new NotImplementedException("");
+        return (int) fieldGet(getSCM(), "maxPlayers");
     }
 
     @Override
@@ -151,14 +151,12 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public boolean hasWhitelist() {
-        Object SCMInstance = fieldGet("serverConfigManager");
-        return (boolean) fieldGet(SCMInstance, "whiteListEnforced");
+        return (boolean) fieldGet(getSCM(), "whiteListEnforced");
     }
 
     @Override
     public void setHasWhitelist(boolean b) {
-        Object SCMInstance = fieldGet("serverConfigManager");
-        fieldSet(SCMInstance, "whiteListEnforced", b);
+        fieldSet(getSCM(), "whiteListEnforced", b);
     }
 
     @Override
@@ -169,5 +167,9 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
     @Override
     public Message.Text getMOTD() {
         throw new NotImplementedException("");
+    }
+
+    public Object getSCM() {
+        return fieldGet("serverConfigManager");
     }
 }

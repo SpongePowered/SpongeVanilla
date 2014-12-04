@@ -279,6 +279,14 @@ public class Mappings {
         return getMethod(getCtClass(clazz), methodName);
     }
 
+    public static CtMethod getCtMethod(CtClass clazz, String methodName) {
+        return ctMethods.get(clazz).get(methodName);
+    }
+
+    public static CtMethod getCtMethod(String clazz, String methodName) {
+        return getCtMethod(getCtClass(clazz), methodName);
+    }
+
     public static Object invoke(Object object, String methodName, Object... args) {
         return invoke(object, getMethod(getCtClass(object.getClass()), methodName), args);
     }

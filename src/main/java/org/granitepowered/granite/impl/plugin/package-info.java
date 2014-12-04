@@ -21,43 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+@NonnullByDefault
+package org.granitepowered.granite.impl.plugin;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.plugin.PluginManager;
-
-public class Granite {
-    public static Granite instance;
-
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
-    }
-
-    public static Granite getInstance() {
-        return instance;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-}
+import org.spongepowered.api.util.annotation.NonnullByDefault;

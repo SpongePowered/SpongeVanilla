@@ -21,43 +21,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.bytecode;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.plugin.PluginManager;
+import javassist.*;
+import javassist.expr.ExprEditor;
 
-public class Granite {
-    public static Granite instance;
+public class BytecodeFieldInjectorModification extends BytecodeModification {
+    String name;
+    Object value;
+    CtClass valueClass;
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+    public BytecodeFieldInjectorModification(CtClass clazz, String name, Object value) {
+        super(clazz);
+        this.name = name;
+        this.value = value;
+        try {
+            this.valueClass = ClassPool.getDefault().get(value.getClass().getName());
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static Granite getInstance() {
-        return instance;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public void modify() {
+        try {
+            clazz.addField(new CtField(valueClass, "$" + name, clazz));
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
     }
 }
