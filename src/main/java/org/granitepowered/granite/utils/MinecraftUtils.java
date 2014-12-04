@@ -26,6 +26,8 @@ package org.granitepowered.granite.utils;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.impl.entity.living.GraniteLiving;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.mappings.Mappings;
 
 import java.util.Objects;
@@ -33,6 +35,8 @@ import java.util.Objects;
 public class MinecraftUtils {
     public static ImmutableMap<Class<?>, Class<? extends Composite>> composites = ImmutableMap.<Class<?>, Class<? extends Composite>>builder()
             .put(Mappings.getClass("Entity"), GraniteEntity.class)
+            .put(Mappings.getClass("LivingEntity"), GraniteLiving.class)
+            .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
             .build();
 
     public static Composite wrapComposite(Object obj) {

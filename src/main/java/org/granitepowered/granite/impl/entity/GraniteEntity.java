@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl.entity;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
@@ -48,16 +49,19 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void remove() {
         // TODO: Multiworld (World.removeEntity())
+        throw new NotImplementedException("");
     }
 
     @Override
     public void interact(EntityInteractionType interactionType) {
         // TODO: figure out how to fake events from players which necessarily do not exist
+        throw new NotImplementedException("");
     }
 
     @Override
     public void interactWith(ItemStack itemStack, EntityInteractionType interactionType) {
         // TODO: see above
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -68,28 +72,31 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public Location getLocation() {
         // TODO: Figure out Extent
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public void teleport(Location location) {
         // TODO: Figure out Extent
+        throw new NotImplementedException("");
     }
 
     @Override
     public void teleport(Extent extent, Vector3d position) {
         // TODO: Figure out Extent
+        throw new NotImplementedException("");
     }
 
     @Override
     public Vector3d getPosition() {
         // TODO: Figure out Extent
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public void setPosition(Vector3d position) {
         // TODO: Figure out Extent
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -100,6 +107,7 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void teleport(double x, double y, double z, World world) {
         // TODO: Multiworld
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -125,17 +133,19 @@ public class GraniteEntity extends Composite implements Entity {
     @Override
     public void setVectorRotation(Vector3f rotation) {
         // TODO: Figure out Euler things
+        throw new NotImplementedException("");
     }
 
     @Override
     public EulerDirection getRotation() {
         // TODO: Figure out Euler things
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public void setRotation(EulerDirection rotation) {
         // TODO: Figure out Euler things
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -190,8 +200,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public boolean isValid() {
-        // TODO: Find out what this means
-        return true;
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -207,34 +216,35 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public int getFireDelay() {
-        return 0;
+        return (int) fieldGet("fireResistance");
     }
 
     @Override
     public <T> Optional<T> getData(Class<T> dataClass) {
         // TODO: Wait for data API
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public EntityType getType() {
         // TODO: Wait for entity types API
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public EntitySnapshot getSnapshot() {
         // TODO: Wait for data API
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public UUID getUniqueId() {
-        return null;
+        return (UUID) fieldGet("entityUniqueID");
     }
 
     @Override
     public void teleport(Vector3d position, World world) {
         // TODO: Multiworld
+        throw new NotImplementedException("");
     }
 }

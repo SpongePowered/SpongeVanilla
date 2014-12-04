@@ -25,6 +25,7 @@ package org.granitepowered.granite.impl;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.Granite;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.ProxyComposite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.Game;
@@ -60,7 +61,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Optional<Server> getServer() {
-        return Optional.fromNullable((Server) this);
+        return Optional.of((Server) this);
     }
 
     @Override
@@ -70,32 +71,32 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public EventManager getEventManager() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public GameRegistry getRegistry() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public ServiceManager getServiceManager() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Scheduler getScheduler() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public CommandService getCommandDispatcher() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public String getAPIVersion() {
-        return "Sponge 1.1-SNAPSHOT";
+        return "Sponge v1.1-SNAPSHOT";
     }
 
     @Override
@@ -105,42 +106,42 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Collection<Player> getOnlinePlayers() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public int getMaxPlayers() {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Optional<Player> getPlayer(UUID uuid) {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Optional<Player> getPlayer(String s) {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Collection<World> getWorlds() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Optional<World> getWorld(UUID uuid) {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public Optional<World> getWorld(String s) {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
     public void broadcastMessage(Message<?> message) {
-
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -167,7 +168,6 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Message.Text getMOTD() {
-        // return (String) fieldGet("motd");
-        return null;
+        throw new NotImplementedException("");
     }
 }
