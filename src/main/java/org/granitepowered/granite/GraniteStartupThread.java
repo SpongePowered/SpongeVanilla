@@ -83,8 +83,7 @@ public class GraniteStartupThread extends Thread {
 
         GranitePluginManager.loadPlugins();
 
-        GraniteServer server = new GraniteServer();
-        Granite.instance.server = server;
+        Granite.instance.server = new GraniteServer();
 
         Granite.instance.getLogger().info("Starting Granite version " + version);
     }
@@ -101,7 +100,12 @@ public class GraniteStartupThread extends Thread {
         if (!minecraftJar.exists()) {
             Granite.instance.getLogger().warn("Could not find Minecraft .jar, downloading");
             HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/1.8.1/minecraft_server.1.8.1.jar");
-            req.receive(minecraftJar);
+            if (req.code() == 404) {
+                throw new RuntimeException("Minecraft 404 error whilst trying to download");
+            } else if (req.code() == 200) {
+                req.receive(minecraftJar);
+                Granite.instance.getLogger().info("Minecraft Downloaded");
+            }
         }
 
         Granite.instance.getLogger().info("Loading " + minecraftJar.getName());

@@ -148,10 +148,6 @@ public class ProxyComposite extends Composite {
         instanceMap.get(this.getClass()).put(this.parent, this);
     }
 
-    /*public ProxyComposite(Object parent, Object... args) {
-        this(parent, ReflectionUtils.getTypes(args), args);
-    }*/
-
     public static <T extends Composite> T new_(Object parent, Class<T> compositeType) {
         if (!instanceMap.containsKey(compositeType)) {
             instanceMap.put(compositeType, new HashMap<Object, Composite>());

@@ -72,7 +72,6 @@ public class ReflectionUtils {
         try {
             f.setAccessible(true);
 
-            // Some reflection-ception trickery
             Field modifiersField = Field.class.getDeclaredField("modifiers");
             modifiersField.setAccessible(true);
             modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
@@ -86,7 +85,6 @@ public class ReflectionUtils {
         if (expected.isAssignableFrom(actual)) {
             return true;
         } else {
-            // If actual is primitive and expected isn't, or vice versa (xor)
             if (actual.isPrimitive() ^ expected.isPrimitive()) {
                 if (ctPrimitives.containsKey(actual) && ctPrimitives.get(actual).equals(expected)) {
                     return true;
@@ -162,9 +160,6 @@ public class ReflectionUtils {
     public static Class<?> extractClass(Object obj) {
         Class<?> clazz;
 
-        /*if (obj instanceof Mappings.MCClass) {
-            clazz = ((Mappings.MCClass) obj).getJavaClass();
-        } else */
         if (obj instanceof Class<?>) {
             clazz = (Class<?>) obj;
         } else {

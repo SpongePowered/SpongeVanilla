@@ -56,7 +56,6 @@ public class Mappings {
     // Class -> <Name -> Method>
     static Map<CtClass, BiMap<String, MethodHandle>> methods;
     static Map<CtClass, BiMap<String, CtMethod>> ctMethods;
-    // TODO: this BiMap may cause an issue with method overloads
 
     // Class -> <Human Name -> Method>
     static Map<CtClass, BiMap<String, Field>> fields;
@@ -71,14 +70,14 @@ public class Mappings {
             String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.1.json";
 
             if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
-                Granite.instance.getLogger().info("Querying " + url + " for updates");
+                Granite.instance.getLogger().info("Querying Granite for updates");
                 HttpRequest req = HttpRequest.get(url);
                 if (!mappingsFile.exists() || !Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
                     Granite.instance.getLogger().warn("Could not find mappings.json (or etag didn't match)");
                     Granite.instance.getLogger().warn("Downloading from " + url);
 
                     if (req.code() == 404) {
-                        throw new RuntimeException("Cannot find mappings file on either the local system or on GitHub. Try placing a mappings.json file in the root server directory.");
+                        throw new RuntimeException("GitHub 404 error whilst trying to download");
                     } else if (req.code() == 200) {
                         req.receive(mappingsFile);
                         Granite.instance.getServerConfig().set("latest-mappings-etag", req.eTag());
@@ -127,28 +126,6 @@ public class Mappings {
                         for (Map.Entry<String, ConfigValue> methodEntry : ((ConfigObject) classObject.get("methods")).entrySet()) {
                             String methodSignature = methodEntry.getKey();
                             String methodName = (String) methodEntry.getValue().unwrapped();
-
-                            SignatureParser.MethodSignature obfSig = SignatureParser.parseJvm(methodSignature);
-
-                            /*MethodHandle mh = null;
-                            try {
-                                mh = MethodHandles.lookup().findVirtual(clazz.getValue(), methodSignature.split("\\(")[0], MethodType.methodType(obfSig.getReturnType(), obfSig.getParamTypes()));
-                            } catch (NoSuchMethodException | IllegalAccessException e) {
-                                if (e.getMessage().startsWith("no such method")) {
-                                    try {
-                                        Method m = clazz.getValue().getDeclaredMethod(methodSignature.split("\\(")[0], obfSig.getParamTypes());
-                                        m.setAccessible(true);
-                                        mh = MethodHandles.lookup().unreflect(m);
-                                    } catch (NoSuchMethodException | IllegalAccessException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            }
-
-                            if (mh == null) {
-                                mh = mh;
-                            }*/
-
 
                             CtMethod method = ctClass.getMethod(methodSignature.split("\\(")[0], "(" + methodSignature.split("\\(")[1]);
                             ctMethods.get(method.getDeclaringClass()).put(methodName, method);
@@ -301,19 +278,6 @@ public class Mappings {
     public static MethodHandle getMethod(Class<?> clazz, String methodName) {
         return getMethod(getCtClass(clazz), methodName);
     }
-
-    /*public static String getMethodName(Class<?> clazz, MethodHandle methodHandle) {
-        return methods.get(getCtClass(clazz)).inverse().get(methodHandle);
-    }
-
-    public static String getMethodName(Class<?> clazz, Method method) {
-        try {
-            return getMethodName(clazz, MethodHandles.lookup().unreflect(method));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 
     public static Object invoke(Object object, String methodName, Object... args) {
         return invoke(object, getMethod(getCtClass(object.getClass()), methodName), args);

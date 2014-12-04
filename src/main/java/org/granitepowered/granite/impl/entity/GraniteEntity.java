@@ -206,8 +206,7 @@ public class GraniteEntity extends Composite implements Entity {
     }
 
     @Override
-    public int getMaxFireTicks() {
-        // TODO: Find out if this is possible to get
+    public int getFireDelay() {
         return 0;
     }
 

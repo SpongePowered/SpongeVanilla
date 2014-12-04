@@ -83,7 +83,7 @@ public class GranitePluginManager implements PluginManager {
 
                                  if (pluginContainer != null) {
                                      plugins.add(pluginContainer);
-                                     Granite.instance.getLogger().info("Loaded %s (v%s)!", pluginContainer.getName(), pluginContainer.getVersion());
+                                     Granite.instance.getLogger().info("Loaded %s (%s)!", pluginContainer.getName(), pluginContainer.getVersion());
                                  }
 
                              } catch (ClassNotFoundException e) {

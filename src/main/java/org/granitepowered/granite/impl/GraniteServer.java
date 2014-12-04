@@ -50,7 +50,6 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     public GraniteServer() {
         super(Mappings.getClass("DedicatedServer"), new Class[]{File.class}, new File("worlds/"));
-
         invoke("startServerThread");
     }
 
@@ -61,7 +60,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Optional<Server> getServer() {
-        return null;
+        return Optional.fromNullable((Server) this);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public String getImplementationVersion() {
-        return "Granite v" + version;
+        return "Granite " + version;
     }
 
     @Override
@@ -145,27 +144,30 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
     }
 
     @Override
-    public int getPort() {
-        return 0;
-    }
-
-    @Override
-    public InetSocketAddress getBoundIP() {
-        return null;
+    public Optional<InetSocketAddress> getBoundAddress() {
+        return Optional.fromNullable(new InetSocketAddress((String) fieldGet("hostname"), (int) fieldGet("port")));
     }
 
     @Override
     public boolean hasWhitelist() {
-        return false;
+        Object SCMInstance = fieldGet("serverConfigManager");
+        return (boolean) fieldGet(SCMInstance, "whiteListEnforced");
     }
 
     @Override
     public void setHasWhitelist(boolean b) {
-
+        Object SCMInstance = fieldGet("serverConfigManager");
+        fieldSet(SCMInstance, "whiteListEnforced", b);
     }
 
     @Override
     public boolean getOnlineMode() {
-        return false;
+        return (boolean) fieldGet("onlineMode");
+    }
+
+    @Override
+    public Message.Text getMOTD() {
+        // return (String) fieldGet("motd");
+        return null;
     }
 }
