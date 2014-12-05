@@ -21,48 +21,54 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl.block;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.plugin.PluginManager;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
+import org.spongepowered.api.block.BlockProperty;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
 
-public class Granite {
-    public static Granite instance;
+import java.util.Collection;
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    GraniteGameRegistry gameRegistry;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+public class GraniteBlockState implements BlockState {
+    @Override
+    public BlockType getType() {
+        return null;
     }
 
-    public static Granite getInstance() {
-        return instance;
+    @Override
+    public ImmutableMap<BlockProperty<?>, ? extends Comparable<?>> getProperties() {
+        return null;
     }
 
-    public String getVersion() {
-        return version;
+    @Override
+    public Collection<String> getPropertyNames() {
+        return null;
     }
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
+    @Override
+    public Optional<BlockProperty<?>> getPropertyByName(String s) {
+        return null;
     }
 
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-    public GameRegistry getGameRegistry() {
-        return gameRegistry;
+    @Override
+    public Optional<? extends Comparable<?>> getPropertyValue(String s) {
+        return null;
     }
 
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public BlockState withProperty(BlockProperty<?> blockProperty, Comparable<?> comparable) {
+        return null;
+    }
+
+    @Override
+    public BlockState cycleProperty(BlockProperty<?> blockProperty) {
+        return null;
+    }
+
+    @Override
+    public byte getDataValue() {
+        return 0;
     }
 }

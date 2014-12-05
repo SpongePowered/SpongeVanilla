@@ -21,48 +21,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl.item;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.plugin.PluginManager;
+import org.granitepowered.granite.composite.Composite;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.text.translation.Translation;
 
-public class Granite {
-    public static Granite instance;
+public class GraniteItemType extends Composite implements ItemType {
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    GraniteGameRegistry gameRegistry;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+    public GraniteItemType(Object parent) {
+        super(parent);
     }
 
-    public static Granite getInstance() {
-        return instance;
+    @Override
+    public String getId() {
+        return null;
     }
 
-    public String getVersion() {
-        return version;
+    @Override
+    public int getMaxStackQuantity() {
+        return (int) fieldGet("maxStackSize");
     }
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-    public GameRegistry getGameRegistry() {
-        return gameRegistry;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public Translation getTranslation() {
+        return null;
     }
 }

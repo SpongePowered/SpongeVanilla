@@ -21,48 +21,36 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl.block;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.plugin.PluginManager;
+import org.granitepowered.granite.composite.Composite;
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.text.translation.Translation;
 
-public class Granite {
-    public static Granite instance;
+public class GraniteBlockType extends Composite implements BlockType {
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    GraniteGameRegistry gameRegistry;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+    public GraniteBlockType(Object parent) {
+        super(parent);
     }
 
-    public static Granite getInstance() {
-        return instance;
+    @Override
+    public String getId() {
+        return (String) fieldGet("");
     }
 
-    public String getVersion() {
-        return version;
+    @Override
+    public BlockState getDefaultState() {
+        return null;
     }
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
+    @Override
+    public BlockState getStateFromDataValue(byte b) {
+        return null;
     }
 
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-    public GameRegistry getGameRegistry() {
-        return gameRegistry;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public Translation getTranslation() {
+        return null;
     }
 }

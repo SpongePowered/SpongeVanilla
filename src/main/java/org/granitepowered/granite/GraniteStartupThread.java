@@ -24,16 +24,12 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import javassist.CodeConverter;
-import javassist.expr.ExprEditor;
-import org.granitepowered.granite.bytecode.BytecodeMethodEditorModification;
 import org.granitepowered.granite.bytecode.BytecodeMethodReplacerModification;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
+import org.granitepowered.granite.mappings.Mappings;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.SimpleLoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +76,7 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.serverConfig = new ServerConfig();
         Granite.instance.logger = LoggerFactory.getLogger("Granite");
         Granite.instance.pluginManager = new GranitePluginManager();
+        Granite.instance.gameRegistry = new GraniteGameRegistry();
 
         loadMinecraft();
 
@@ -90,6 +87,8 @@ public class GraniteStartupThread extends Thread {
         bootstrap();
 
         GranitePluginManager.loadPlugins();
+
+        GraniteGameRegistry.register();
 
         Granite.instance.server = new GraniteServer();
 

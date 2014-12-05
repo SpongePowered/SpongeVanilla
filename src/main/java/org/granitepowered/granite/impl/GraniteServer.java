@@ -24,8 +24,8 @@
 package org.granitepowered.granite.impl;
 
 import com.google.common.base.Optional;
-import org.granitepowered.granite.Granite;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.ProxyComposite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.Game;
@@ -76,7 +76,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public GameRegistry getRegistry() {
-        throw new NotImplementedException("");
+        return Granite.instance.getGameRegistry();
     }
 
     @Override
@@ -169,7 +169,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
         throw new NotImplementedException("");
     }
 
-    public Object getSCM() {
+    private Object getSCM() {
         return fieldGet("serverConfigManager");
     }
 }

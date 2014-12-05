@@ -21,48 +21,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl.item;
 
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.plugin.PluginManager;
+import org.granitepowered.granite.impl.block.GraniteBlockType;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.item.ItemBlock;
 
-public class Granite {
-    public static Granite instance;
+public class GraniteItemBlock extends GraniteItemType implements ItemBlock {
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    GraniteGameRegistry gameRegistry;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+    public GraniteItemBlock(Object parent) {
+        super(parent);
     }
 
-    public static Granite getInstance() {
-        return instance;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-    public GameRegistry getGameRegistry() {
-        return gameRegistry;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public BlockType getBlock() {
+        return (GraniteBlockType) fieldGet("block");
     }
 }
