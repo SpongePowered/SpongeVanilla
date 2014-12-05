@@ -28,6 +28,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.ProxyComposite;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
@@ -43,8 +44,7 @@ import org.spongepowered.api.world.World;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 public class GraniteServer extends ProxyComposite implements Game, Server {
     public static String version;
@@ -106,7 +106,13 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Collection<Player> getOnlinePlayers() {
-        throw new NotImplementedException("");
+        Set<Player> ret = new HashSet<>();
+
+        for (Object playerEntity : (List) fieldGet(getSCM(), "playerEntityList")) {
+            ret.add((Player) MinecraftUtils.wrapComposite(playerEntity));
+        }
+
+        return ret;
     }
 
     @Override
@@ -116,12 +122,22 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Optional<Player> getPlayer(UUID uuid) {
-        throw new NotImplementedException("");
+        for (Player player : getOnlinePlayers()) {
+            if (player.getUniqueId().equals(uuid)) {
+                return Optional.of(player);
+            }
+        }
+        return Optional.absent();
     }
 
     @Override
     public Optional<Player> getPlayer(String s) {
-        throw new NotImplementedException("");
+        for (Player player : getOnlinePlayers()) {
+            if (player.getName().equals(s)) {
+                return Optional.of(player);
+            }
+        }
+        return Optional.absent();
     }
 
     @Override
@@ -146,7 +162,9 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Optional<InetSocketAddress> getBoundAddress() {
-        return Optional.fromNullable(new InetSocketAddress((String) fieldGet("hostname"), (int) fieldGet("port")));
+        // TODO: Check if this is possible to get
+        //return Optional.fromNullable(new InetSocketAddress((String) fieldGet("hostname"), (int) fieldGet("port")));
+        throw new NotImplementedException("");
     }
 
     @Override

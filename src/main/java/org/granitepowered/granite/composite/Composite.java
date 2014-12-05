@@ -114,4 +114,24 @@ public abstract class Composite {
             return composite;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Composite composite = (Composite) o;
+
+        if (!clazz.equals(composite.clazz)) return false;
+        if (!parent.equals(composite.parent)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parent.hashCode();
+        result = 31 * result + clazz.hashCode();
+        return result;
+    }
 }
