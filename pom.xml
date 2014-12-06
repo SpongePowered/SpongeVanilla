@@ -32,7 +32,7 @@
     <properties>
         <jdk>1.7</jdk>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <main.class>org.granitemc.granite.Main</main.class>
+        <main.class>org.granitepowered.granite.Main</main.class>
         <build.number>NA</build.number>
         <finalName>${project.name}-${project.version}</finalName>
     </properties>
@@ -66,6 +66,12 @@
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
             <version>1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.7</version>
         </dependency>
 
         <dependency>
@@ -142,10 +148,14 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.granitemc:graniteapi</include>
+                                    <include>org.spongepowered:spongeapi</include>
+                                    <include>com.google.guava:guava</include>
                                     <include>org.javassist:javassist</include>
                                     <include>com.typesafe:config</include>
                                     <include>org.apache.commons:commons-lang3</include>
+                                    <include>commons-io:commons-io</include>
+                                    <include>com.github.kevinsawicki:http-request</include>
+                                    <include>org.slf4j:*</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
