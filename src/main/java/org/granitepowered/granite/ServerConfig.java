@@ -31,7 +31,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class ServerConfig {
     public Config config;
@@ -41,9 +42,9 @@ public class ServerConfig {
         configLocation = new File("granite.conf");
         config = ConfigFactory.parseFile(configLocation);
 
-        try {
-            config = config.withFallback(ConfigFactory.parseFile(new File(getClass().getResource("/granite.conf").toURI())));
-        } catch (URISyntaxException e) {
+        try (Reader confReader = new InputStreamReader(getClass().getResourceAsStream("/granite.conf"))) {
+            config = config.withFallback(ConfigFactory.parseReader(confReader));
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
