@@ -52,7 +52,7 @@ public class GranitePluginManager implements PluginManager {
              public boolean accept(File arg0, String arg1) {
                  return arg1.endsWith(".jar");
              }
-         });
+        });
 
         if (files != null) {
              for (File plugin : files) {
@@ -85,21 +85,17 @@ public class GranitePluginManager implements PluginManager {
                                      plugins.add(pluginContainer);
                                      Granite.instance.getLogger().info("Loaded {} ({})!", pluginContainer.getName(), pluginContainer.getVersion());
                                  }
-
                              } catch (ClassNotFoundException e) {
                                  e.printStackTrace();
                              }
 
                          }
                      }
-
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
-
              }
-         }
-
+        }
     }
 
     @Override
