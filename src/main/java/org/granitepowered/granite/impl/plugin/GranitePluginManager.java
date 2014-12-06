@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.plugin;
 import com.google.common.base.Optional;
 import org.granitepowered.granite.Granite;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
@@ -37,6 +36,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -44,7 +44,7 @@ import java.util.jar.JarFile;
 
 public class GranitePluginManager implements PluginManager {
 
-    Collection<PluginContainer> plugins;
+    Collection<PluginContainer> plugins = new ArrayList<>();
 
     public void loadPlugins() {
         File[] files = Granite.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
@@ -56,7 +56,7 @@ public class GranitePluginManager implements PluginManager {
 
         if (files != null) {
              for (File plugin : files) {
-                 Granite.instance.getLogger().info("Loading jarfile plugins/%s", plugin.getName());
+                 Granite.instance.getLogger().info("Loading jarfile plugins/{}", plugin.getName());
 
                  try {
                      URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()});
@@ -83,7 +83,7 @@ public class GranitePluginManager implements PluginManager {
 
                                  if (pluginContainer != null) {
                                      plugins.add(pluginContainer);
-                                     Granite.instance.getLogger().info("Loaded %s (%s)!", pluginContainer.getName(), pluginContainer.getVersion());
+                                     Granite.instance.getLogger().info("Loaded {} ({})!", pluginContainer.getName(), pluginContainer.getVersion());
                                  }
 
                              } catch (ClassNotFoundException e) {
