@@ -68,7 +68,7 @@ public class ReflectionUtils {
      *
      * @param f The field to force access to
      */
-    public static void forceStaticAccessible(Field f) {
+    public static void forceAccessible(Field f) {
         try {
             f.setAccessible(true);
 

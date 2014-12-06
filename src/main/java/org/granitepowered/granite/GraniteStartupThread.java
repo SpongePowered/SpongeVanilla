@@ -26,6 +26,7 @@ package org.granitepowered.granite;
 import com.github.kevinsawicki.http.HttpRequest;
 import org.granitepowered.granite.bytecode.BytecodeMethodReplacerModification;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
+import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.mappings.Mappings;
@@ -86,9 +87,9 @@ public class GraniteStartupThread extends Thread {
 
         bootstrap();
 
-        GranitePluginManager.loadPlugins();
+        Granite.instance.pluginManager.loadPlugins();
 
-        GraniteGameRegistry.register();
+        Granite.instance.gameRegistry.register();
 
         Granite.instance.server = new GraniteServer();
 

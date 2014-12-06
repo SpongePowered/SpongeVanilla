@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.item;
 
-import org.granitepowered.granite.impl.block.GraniteBlockType;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemBlock;
 
@@ -35,6 +35,6 @@ public class GraniteItemBlock extends GraniteItemType implements ItemBlock {
 
     @Override
     public BlockType getBlock() {
-        return (GraniteBlockType) fieldGet("block");
+        return (BlockType) MinecraftUtils.wrapComposite(fieldGet("block"));
     }
 }

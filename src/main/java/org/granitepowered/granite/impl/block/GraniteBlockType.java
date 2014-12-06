@@ -23,7 +23,10 @@
 
 package org.granitepowered.granite.impl.block;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.text.translation.Translation;
@@ -36,21 +39,29 @@ public class GraniteBlockType extends Composite implements BlockType {
 
     @Override
     public String getId() {
-        return (String) fieldGet("");
+        Object registry = null;
+        try {
+            registry = Mappings.getField("Block", "blockRegistry").get(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        Object resourceLocation = Mappings.invoke(registry, "getNameForObject", parent);
+        return (String) fieldGet(resourceLocation, "resourcePath");
     }
 
     @Override
     public BlockState getDefaultState() {
-        return null;
+        return (BlockState) MinecraftUtils.wrapComposite(fieldGet("defaultBlockState"));
     }
 
     @Override
     public BlockState getStateFromDataValue(byte b) {
-        return null;
+        return (BlockState) MinecraftUtils.wrapComposite(invoke("getStateFromMeta", b));
     }
 
     @Override
     public Translation getTranslation() {
-        return null;
+        // TODO: Wait for Message API (see Block.getUnlocalizedName() and Block.getLocalizedName(), make sure not to use the field as the method is overridden
+        throw new NotImplementedException("");
     }
 }

@@ -23,8 +23,8 @@
 
 package org.granitepowered.granite.impl.item;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -35,7 +35,7 @@ public class GraniteItemStack extends Composite implements ItemStack {
 
     @Override
     public ItemType getItem() {
-        throw new NotImplementedException("");
+        return (ItemType) MinecraftUtils.wrapComposite(getMCItem());
     }
 
     @Override

@@ -28,6 +28,8 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
+import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
 import org.spongepowered.api.entity.player.Player;
@@ -38,6 +40,7 @@ import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.Locale;
 
@@ -94,62 +97,53 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     @Override
     public Optional<ItemStack> getHelmet() {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[4]));
     }
 
     @Override
-    public void setHelmet(ItemStack helmet) {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+    public void setHelmet(@Nullable ItemStack helmet) {
+        ((Object[]) fieldGet("equipment"))[4] = helmet == null ? null : ((GraniteItemStack) helmet).parent;
     }
 
     @Override
     public Optional<ItemStack> getChestplate() {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[3]));
     }
 
     @Override
-    public void setChestplate(ItemStack chestplate) {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+    public void setChestplate(@Nullable ItemStack chestplate) {
+        ((Object[]) fieldGet("equipment"))[3] = chestplate == null ? null : ((GraniteItemStack) chestplate).parent;
     }
 
     @Override
     public Optional<ItemStack> getLeggings() {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[2]));
     }
 
     @Override
-    public void setLeggings(ItemStack leggings) {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+    public void setLeggings(@Nullable ItemStack leggings) {
+        ((Object[]) fieldGet("equipment"))[2] = leggings == null ? null : ((GraniteItemStack) leggings).parent;
     }
 
     @Override
     public Optional<ItemStack> getBoots() {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[1]));
+
     }
 
     @Override
-    public void setBoots(ItemStack boots) {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+    public void setBoots(@Nullable ItemStack boots) {
+        ((Object[]) fieldGet("equipment"))[1] = boots == null ? null : ((GraniteItemStack) boots).parent;
     }
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[0]));
     }
 
     @Override
-    public void setItemInHand(ItemStack itemInHand) {
-        // TODO: ItemStack API
-        throw new NotImplementedException("");
+    public void setItemInHand(@Nullable ItemStack itemInHand) {
+        ((Object[]) fieldGet("equipment"))[0] = itemInHand == null ? null : ((GraniteItemStack) itemInHand).parent;
     }
 
     @Override

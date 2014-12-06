@@ -21,49 +21,41 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl.block;
 
-import org.granitepowered.granite.impl.GraniteGameRegistry;
-import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.slf4j.Logger;
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.plugin.PluginManager;
+import com.google.common.base.Optional;
+import org.granitepowered.granite.composite.Composite;
+import org.spongepowered.api.block.BlockProperty;
 
-public class Granite {
-    public static Granite instance;
+import java.util.Collection;
 
-    String version;
-    ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    GraniteGameRegistry gameRegistry;
-    Logger logger;
-
-    public Granite() {
-        version = "UNKNOWN";
+public class GraniteBlockProperty<T extends Comparable<T>> extends Composite implements BlockProperty<T> {
+    public GraniteBlockProperty(Object parent) {
+        super(parent);
     }
 
-    public static Granite getInstance() {
-        return instance;
+    @Override
+    public String getName() {
+        return (String) fieldGet("name");
     }
 
-    public String getVersion() {
-        return version;
+    @Override
+    public Collection<T> getValidValues() {
+        return (Collection<T>) invoke("getAllowedValues");
     }
 
-    public PluginManager getPluginManager() {
-        return pluginManager;
+    @Override
+    public String getNameForValue(T value) {
+        return value.toString();
     }
 
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-    public GameRegistry getGameRegistry() {
-        return gameRegistry;
-    }
-
-    public Logger getLogger() {
-        return logger;
+    @Override
+    public Optional<T> getValueForName(String name) {
+        for (T value : getValidValues()) {
+            if (getNameForValue(value).equals(name)) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.absent();
     }
 }

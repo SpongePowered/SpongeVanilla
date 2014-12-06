@@ -23,7 +23,9 @@
 
 package org.granitepowered.granite.impl.item;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.text.translation.Translation;
 
@@ -35,7 +37,14 @@ public class GraniteItemType extends Composite implements ItemType {
 
     @Override
     public String getId() {
-        return null;
+        Object registry = null;
+        try {
+            registry = Mappings.getField("Item", "itemRegistry").get(null);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        Object resourceLocation = Mappings.invoke(registry, "getNameForObject", parent);
+        return (String) fieldGet(resourceLocation, "resourcePath");
     }
 
     @Override
@@ -45,6 +54,7 @@ public class GraniteItemType extends Composite implements ItemType {
 
     @Override
     public Translation getTranslation() {
-        return null;
+        // TODO: Wait for Message API
+        throw new NotImplementedException("");
     }
 }

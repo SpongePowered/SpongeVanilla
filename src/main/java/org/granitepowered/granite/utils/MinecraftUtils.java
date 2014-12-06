@@ -25,9 +25,15 @@ package org.granitepowered.granite.utils;
 
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.block.GraniteBlockProperty;
+import org.granitepowered.granite.impl.block.GraniteBlockState;
+import org.granitepowered.granite.impl.block.GraniteBlockType;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.item.GraniteItemBlock;
+import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.mappings.Mappings;
 
 import java.util.Objects;
@@ -35,11 +41,19 @@ import java.util.Objects;
 public class MinecraftUtils {
     public static ImmutableMap<Class<?>, Class<? extends Composite>> composites = ImmutableMap.<Class<?>, Class<? extends Composite>>builder()
             .put(Mappings.getClass("Entity"), GraniteEntity.class)
-            .put(Mappings.getClass("LivingEntity"), GraniteLiving.class)
+            .put(Mappings.getClass("EntityLiving"), GraniteLiving.class)
             .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
+            .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
+            .put(Mappings.getClass("Block"), GraniteBlockType.class)
+            .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
+            .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
+            .put(Mappings.getClass("Item"), GraniteItemType.class)
+            .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)
             .build();
 
     public static Composite wrapComposite(Object obj) {
+        if (obj == null) return null;
+
         Class<?> clazz = obj.getClass();
         while (!composites.containsKey(clazz)) {
             if (Objects.equals(clazz.getName(), "Object")) {

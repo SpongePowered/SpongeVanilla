@@ -25,50 +25,82 @@ package org.granitepowered.granite.impl.block;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockProperty;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 
-import java.util.Collection;
+import java.util.*;
 
-public class GraniteBlockState implements BlockState {
+public class GraniteBlockState extends Composite implements BlockState {
+    public GraniteBlockState(Object parent) {
+        super(parent);
+    }
+
     @Override
     public BlockType getType() {
-        return null;
+        return (BlockType) MinecraftUtils.wrapComposite(fieldGet("block"));
     }
 
     @Override
     public ImmutableMap<BlockProperty<?>, ? extends Comparable<?>> getProperties() {
-        return null;
+        Map<BlockProperty<?>, Comparable<?>> ret = new HashMap<>();
+
+        for (Map.Entry<Object, Object> entry : getMCProperties().entrySet()) {
+            ret.put((BlockProperty) MinecraftUtils.wrapComposite(entry.getKey()), (Comparable<?>) entry.getValue());
+        }
+
+        return new ImmutableMap.Builder<BlockProperty<?>, Comparable<?>>().putAll(ret).build();
     }
 
     @Override
     public Collection<String> getPropertyNames() {
-        return null;
+        List<String> names = new ArrayList<>();
+        for (Object property : getMCProperties().keySet()) {
+            names.add((String) fieldGet(property, "name"));
+        }
+        return names;
     }
 
     @Override
     public Optional<BlockProperty<?>> getPropertyByName(String s) {
-        return null;
+        for (BlockProperty<?> property : getProperties().keySet()) {
+            if (property.getName().equals(s)) {
+                return (Optional<BlockProperty<?>>) Optional.of(property);
+            }
+        }
+        return Optional.absent();
     }
 
     @Override
     public Optional<? extends Comparable<?>> getPropertyValue(String s) {
-        return null;
+        return Optional.fromNullable(getProperties().get(getPropertyByName(s).orNull()));
     }
 
     @Override
     public BlockState withProperty(BlockProperty<?> blockProperty, Comparable<?> comparable) {
-        return null;
+        return (BlockState) MinecraftUtils.wrapComposite(invoke("withProperty", ((GraniteBlockProperty) blockProperty).parent, comparable));
     }
 
     @Override
     public BlockState cycleProperty(BlockProperty<?> blockProperty) {
-        return null;
+        List<? extends Comparable> sortedValues = new ArrayList<>(blockProperty.getValidValues());
+        Collections.sort(sortedValues);
+
+        int idx = sortedValues.indexOf(getProperties().get(blockProperty));
+        idx = (idx + 1) % sortedValues.size();
+
+        return withProperty(blockProperty, sortedValues.get(idx));
     }
 
     @Override
     public byte getDataValue() {
-        return 0;
+        return (byte) Mappings.invoke(fieldGet("block"), "getMetaFromState", parent);
+    }
+
+    public Map<Object, Object> getMCProperties() {
+        return (Map<Object, Object>) fieldGet("properties");
     }
 }

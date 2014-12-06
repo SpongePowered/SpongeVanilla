@@ -44,9 +44,9 @@ import java.util.jar.JarFile;
 
 public class GranitePluginManager implements PluginManager {
 
-    static Collection<PluginContainer> plugins;
+    Collection<PluginContainer> plugins;
 
-    public static void loadPlugins() {
+    public void loadPlugins() {
         File[] files = Granite.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
              @Override
              public boolean accept(File arg0, String arg1) {
