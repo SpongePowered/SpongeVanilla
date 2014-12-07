@@ -29,17 +29,28 @@ import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
+import org.granitepowered.granite.impl.text.format.GraniteTextColor;
+import org.granitepowered.granite.impl.text.format.GraniteTextStyle;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.utils.ReflectionUtils;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.text.format.GraniteTextFormatFactory;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.api.text.message.GraniteMessageFactory;
+import org.spongepowered.api.text.message.Messages;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.time.format.TextStyle;
+import java.util.Map;
 import java.util.Properties;
 
 public class GraniteStartupThread extends Thread {
@@ -91,9 +102,40 @@ public class GraniteStartupThread extends Thread {
 
         Granite.instance.gameRegistry.register();
 
+        injectSpongeFields();
+
         Granite.instance.server = new GraniteServer();
 
         Granite.instance.getLogger().info("Starting Granite version " + version);
+    }
+
+    private void injectSpongeFields() {
+        Granite.instance.getLogger().info("Injecting Sponge fields");
+
+        injectConstant(Messages.class, "factory", new GraniteMessageFactory());
+
+        GraniteTextFormatFactory formatFactory = new GraniteTextFormatFactory();
+        injectConstant(TextStyles.class, "factory", formatFactory);
+
+        injectConstants(TextColors.class, GraniteTextColor.colors);
+        injectConstants(TextStyles.class, GraniteTextStyle.styles);
+    }
+
+    private void injectConstants(Class<?> clazz, Map<String, ?> objects) {
+        for (Map.Entry<String, ?> entry : objects.entrySet()) {
+            injectConstant(clazz, entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void injectConstant(Class<?> clazz, String name, Object value) {
+        try {
+            Field f = clazz.getDeclaredField(name);
+            ReflectionUtils.forceAccessible(f);
+
+            f.set(null, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void modifyBytecode() {
