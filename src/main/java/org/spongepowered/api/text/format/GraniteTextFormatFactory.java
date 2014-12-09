@@ -33,30 +33,12 @@ import java.util.List;
 public class GraniteTextFormatFactory implements TextFormatFactory {
     @Override
     public Optional<TextColor> getColorFromName(String name) {
-        return Optional.fromNullable((TextColor) GraniteTextColor.colors.get(name.toUpperCase()));
+        return Optional.fromNullable((TextColor) GraniteTextColor.valueOf(name.toUpperCase()));
     }
 
     @Override
     public List<TextColor> getColors() {
-        return Arrays.asList(
-                (TextColor) GraniteTextColor.colors.get("BLACK"),
-                GraniteTextColor.colors.get("DARK_BLUE"),
-                GraniteTextColor.colors.get("DARK_GREEN"),
-                GraniteTextColor.colors.get("DARK_AQUA"),
-                GraniteTextColor.colors.get("DARK_RED"),
-                GraniteTextColor.colors.get("DARK_PURPLE"),
-                GraniteTextColor.colors.get("GOLD"),
-                GraniteTextColor.colors.get("GRAY"),
-                GraniteTextColor.colors.get("DARK_GRAY"),
-                GraniteTextColor.colors.get("BLUE"),
-                GraniteTextColor.colors.get("GREEN"),
-                GraniteTextColor.colors.get("AQUA"),
-                GraniteTextColor.colors.get("RED"),
-                GraniteTextColor.colors.get("LIGHT_PURPLE"),
-                GraniteTextColor.colors.get("YELLOW"),
-                GraniteTextColor.colors.get("WHITE"),
-                GraniteTextColor.colors.get("RESET")
-        );
+        return Arrays.<TextColor>asList(GraniteTextColor.values());
     }
 
     @Override
@@ -66,8 +48,8 @@ public class GraniteTextFormatFactory implements TextFormatFactory {
 
     @Override
     public List<TextStyle> getStyles() {
-        return Arrays.asList(
-                (TextStyle) GraniteTextStyle.styles.get("OBFUSCATED"),
+        return Arrays.<TextStyle>asList(
+                GraniteTextStyle.styles.get("OBFUSCATED"),
                 GraniteTextStyle.styles.get("BOLD"),
                 GraniteTextStyle.styles.get("STRIKETHROUGH"),
                 GraniteTextStyle.styles.get("UNDERLINE"),

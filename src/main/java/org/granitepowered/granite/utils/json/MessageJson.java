@@ -61,7 +61,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
 
         // TODO: add the other 3 types
 
-        builder = builder.color(src.has("color") ? TextColors.RESET : GraniteTextColor.colors.get(src.get("color").getAsString().toUpperCase()));
+        builder = builder.color(src.has("color") ? TextColors.RESET : GraniteTextColor.valueOf(src.get("color").getAsString().toUpperCase()));
 
         boolean bold, italic, underlined, strikethrough, obfuscated;
         bold = src.has("bold") && src.get("bold").getAsBoolean();
