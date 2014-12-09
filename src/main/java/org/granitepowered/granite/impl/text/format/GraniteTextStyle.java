@@ -109,6 +109,7 @@ public abstract class GraniteTextStyle implements TextStyle {
         }
 
         @Override
+        @SuppressWarnings("deprecated")
         public Optional<Character> getCode() {
             return Optional.of(type.code);
         }

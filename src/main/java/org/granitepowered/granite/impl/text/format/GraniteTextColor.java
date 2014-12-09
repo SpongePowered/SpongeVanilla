@@ -68,6 +68,8 @@ public class GraniteTextColor implements TextColor.Base {
         return name;
     }
 
+    // Why doesn't this supresswarnings work?
+    @SuppressWarnings("deprecated")
     public Optional<Character> getCode() {
         return Optional.of(code);
     }

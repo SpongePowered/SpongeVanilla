@@ -55,6 +55,7 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     @Override
+    @SuppressWarnings("deprecated")
     public BlockState getStateFromDataValue(byte b) {
         return (BlockState) MinecraftUtils.wrapComposite(invoke("getStateFromMeta", b));
     }

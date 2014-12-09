@@ -34,6 +34,8 @@ import org.granitepowered.granite.impl.text.format.GraniteTextStyle;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.text.action.GraniteTextActionFactory;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.GraniteTextFormatFactory;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -113,9 +115,8 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.getLogger().info("Injecting Sponge fields");
 
         injectConstant(Messages.class, "factory", new GraniteMessageFactory());
-
-        GraniteTextFormatFactory formatFactory = new GraniteTextFormatFactory();
-        injectConstant(TextStyles.class, "factory", formatFactory);
+        injectConstant(TextStyles.class, "factory", new GraniteTextFormatFactory());
+        injectConstant(TextActions.class, "factory", new GraniteTextActionFactory());
 
         injectConstants(TextColors.class, GraniteTextColor.colors);
         injectConstants(TextStyles.class, GraniteTextStyle.styles);

@@ -96,6 +96,7 @@ public class GraniteBlockState extends Composite implements BlockState {
     }
 
     @Override
+    @SuppressWarnings("deprecated")
     public byte getDataValue() {
         return (byte) Mappings.invoke(fieldGet("block"), "getMetaFromState", parent);
     }
