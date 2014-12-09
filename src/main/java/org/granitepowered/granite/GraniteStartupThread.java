@@ -123,7 +123,7 @@ public class GraniteStartupThread extends Thread {
         injectConstant(TextStyles.class, "factory", new GraniteTextFormatFactory());
         injectConstant(TextActions.class, "factory", new GraniteTextActionFactory());
 
-        injectConstants(TextColors.class, GraniteTextColor.colors);
+        injectEnumConstants(TextColors.class, GraniteTextColor.class);
         injectConstants(TextStyles.class, GraniteTextStyle.styles);
         injectEnumConstants(ChatTypes.class, GraniteChatType.class);
     }

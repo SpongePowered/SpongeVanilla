@@ -29,43 +29,38 @@ import org.spongepowered.api.text.format.TextColor;
 
 import java.awt.*;
 
-public class GraniteTextColor implements TextColor.Base {
-    private String name;
+public enum GraniteTextColor implements TextColor.Base {
+    BLACK('0', Color.decode("0x000000")),
+    DARK_BLUE('1', Color.decode("0x0000AA")),
+    DARK_GREEN('2', Color.decode("0x00AA00")),
+    DARK_AQUA('3', Color.decode("0x00AAAA")),
+    DARK_RED('4', Color.decode("0xAA0000")),
+    DARK_PURPLE('5', Color.decode("0xAA00AA")),
+    GOLD('6', Color.decode("0xFFAA00")),
+    GRAY('7', Color.decode("0xAAAAAA")),
+    DARK_GRAY('8', Color.decode("0x555555")),
+    BLUE('9', Color.decode("0x5555FF")),
+    GREEN('a', Color.decode("0x55FF55")),
+    AQUA('b', Color.decode("0x55FFFF")),
+    RED('c', Color.decode("0xFF5555")),
+    LIGHT_PURPLE('d', Color.decode("0xFF55FF")),
+    YELLOW('e', Color.decode("0xFFFF55")),
+    WHITE('f', Color.decode("0xFFFFFF")),
+
+    // TODO: Find out what the hex value of RESET actually is
+    RESET('r', Color.decode("0xFFFFFF"));
+
     private char code;
     private Color color;
-    private boolean isReset;
 
-    public static ImmutableMap<String, GraniteTextColor> colors = ImmutableMap.<String, GraniteTextColor>builder()
-            .put("BLACK", new GraniteTextColor("BLACK", '0', Color.decode("0x000000"), false))
-            .put("DARK_BLUE", new GraniteTextColor("DARK_BLUE", '1', Color.decode("0x0000AA"), false))
-            .put("DARK_GREEN", new GraniteTextColor("DARK_GREEN", '2', Color.decode("0x00AA00"), false))
-            .put("DARK_AQUA", new GraniteTextColor("DARK_AQUA", '3', Color.decode("0x00AAAA"), false))
-            .put("DARK_RED", new GraniteTextColor("DARK_RED", '4', Color.decode("0xAA0000"), false))
-            .put("DARK_PURPLE", new GraniteTextColor("DARK_PURPLE", '5', Color.decode("0xAA00AA"), false))
-            .put("GOLD", new GraniteTextColor("GOLD", '6', Color.decode("0xFFAA00"), false))
-            .put("GRAY", new GraniteTextColor("GRAY", '7', Color.decode("0xAAAAAA"), false))
-            .put("DARK_GRAY", new GraniteTextColor("DARK_GRAY", '8', Color.decode("0x555555"), false))
-            .put("BLUE", new GraniteTextColor("BLUE", '9', Color.decode("0x5555FF"), false))
-            .put("GREEN", new GraniteTextColor("GREEN", 'a', Color.decode("0x55FF55"), false))
-            .put("AQUA", new GraniteTextColor("AQUA", 'b', Color.decode("0x55FFFF"), false))
-            .put("RED", new GraniteTextColor("RED", 'c', Color.decode("0xFF5555"), false))
-            .put("LIGHT_PURPLE", new GraniteTextColor("LIGHT_PURPLE", 'd', Color.decode("0xFF55FF"), false))
-            .put("YELLOW", new GraniteTextColor("YELLOW", 'e', Color.decode("0xFFFF55"), false))
-            .put("WHITE", new GraniteTextColor("WHITE", 'f', Color.decode("0xFFFFFF"), false))
-
-            // TODO: Find out what the hex value of RESET actually is
-            .put("RESET", new GraniteTextColor("RESET", 'r', Color.decode("0xFFFFFF"), false))
-            .build();
-
-    public GraniteTextColor(String name, char code, Color color, boolean isReset) {
-        this.name = name;
+    GraniteTextColor(char code, Color color) {
         this.code = code;
         this.color = color;
-        this.isReset = isReset;
     }
 
+    @Override
     public String getName() {
-        return name;
+        return name();
     }
 
     // Why doesn't this suppress warnings work?
@@ -81,6 +76,6 @@ public class GraniteTextColor implements TextColor.Base {
 
     @Override
     public boolean isReset() {
-        return isReset;
+        return this == RESET;
     }
 }
