@@ -31,6 +31,7 @@ import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
+import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.impl.text.format.GraniteTextStyle;
 import org.granitepowered.granite.mappings.Mappings;
@@ -38,6 +39,7 @@ import org.granitepowered.granite.utils.ReflectionUtils;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
 import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.format.GraniteTextFormatFactory;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -123,6 +125,13 @@ public class GraniteStartupThread extends Thread {
 
         injectConstants(TextColors.class, GraniteTextColor.colors);
         injectConstants(TextStyles.class, GraniteTextStyle.styles);
+        injectEnumConstants(ChatTypes.class, GraniteChatType.class);
+    }
+
+    private void injectEnumConstants(Class<?> destination, Class<? extends Enum> source) {
+        for (Enum constant : source.getEnumConstants()) {
+            injectConstant(destination, constant.name(), constant);
+        }
     }
 
     private void injectConstants(Class<?> clazz, Map<String, ?> objects) {

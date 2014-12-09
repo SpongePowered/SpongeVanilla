@@ -24,6 +24,7 @@
 package org.granitepowered.granite.utils;
 
 import com.google.common.collect.ImmutableMap;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockProperty;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
@@ -34,7 +35,9 @@ import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.item.GraniteItemType;
+import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.mappings.Mappings;
+import org.spongepowered.api.text.message.Message;
 
 import java.util.Objects;
 
@@ -67,5 +70,10 @@ public class MinecraftUtils {
         } else {
             return null;
         }
+    }
+
+    public static Object graniteToMinecraftMessage(Message<?> message) {
+        String json = Granite.getInstance().getGson().toJson(message, Message.class);
+        return Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
     }
 }

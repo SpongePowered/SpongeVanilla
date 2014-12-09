@@ -29,8 +29,10 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
+import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
@@ -39,12 +41,14 @@ import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.chat.ChatType;
+import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.text.message.MessageBuilder;
 import org.spongepowered.api.text.title.Title;
 
 import javax.annotation.Nullable;
-import java.util.Date;
-import java.util.Locale;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class GranitePlayer extends GraniteLiving implements Player {
     private Message<?> displayName;
@@ -76,9 +80,13 @@ public class GranitePlayer extends GraniteLiving implements Player {
     }
 
     @Override
-    public void sendMessage(ChatType type, String... message) {
-        // TODO: Message API
-        throw new NotImplementedException("");
+    public void sendMessage(ChatType type, String... strings) {
+        List<Message<?>> messages = new ArrayList<>();
+        for (String string : strings) {
+            messages.add(new GraniteMessageBuilder.GraniteTextMessageBuilder().content(string).build());
+        }
+
+        sendMessage(type, messages);
     }
 
     @Override
@@ -275,13 +283,12 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     @Override
     public void sendMessage(String... messages) {
-        // TODO: Message API
-        throw new NotImplementedException("");
+        sendMessage(ChatTypes.CHAT, messages);
     }
 
     @Override
     public void sendMessage(Iterable<Message<?>> messages) {
-        // TODO: Message API
+        sendMessage(ChatTypes.CHAT, messages);
         throw new NotImplementedException("");
     }
 
@@ -297,20 +304,27 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     @Override
     public void sendMessage(Message<?>... messages) {
-        // TODO: Message API
-        throw new NotImplementedException("");
+        sendMessage(ChatTypes.CHAT, messages);
     }
 
     @Override
     public void sendMessage(ChatType type, Message<?>... message) {
-        // TODO: Message API
-        throw new NotImplementedException("");
+        sendMessage(type, Arrays.asList(message));
     }
 
     @Override
     public void sendMessage(ChatType type, Iterable<Message<?>> messages) {
-        // TODO: Message API
-        throw new NotImplementedException("");
+        try {
+            for (Message<?> message : messages) {
+                Object packet = Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
+                        MinecraftUtils.graniteToMinecraftMessage(message),
+                        ((GraniteChatType) type).getId()
+                );
+                sendPacket(packet);
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     public Object getGameProfile() {
@@ -323,5 +337,9 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     public Object getFoodStats() {
         return fieldGet("foodStats");
+    }
+
+    public void sendPacket(Object packet) {
+        Mappings.invoke(fieldGet("playerNetServerHandler"), "sendPacket", packet);
     }
 }
