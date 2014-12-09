@@ -23,13 +23,14 @@
 
 package org.granitepowered.granite.impl.text.action;
 
+import com.google.gson.JsonElement;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.message.Message;
 
 public abstract class GraniteHoverAction<R> implements HoverAction<R> {
-    public static class GraniteShowText implements ShowText {
+    public static class GraniteShowText extends GraniteHoverAction<Message<?>> implements ShowText {
         Message<?> message;
 
         public GraniteShowText(Message<?> message) {
@@ -47,7 +48,7 @@ public abstract class GraniteHoverAction<R> implements HoverAction<R> {
         }
     }
 
-    public static class GraniteShowAchievement implements ShowAchievement {
+    public static class GraniteShowAchievement extends GraniteHoverAction<Object> implements ShowAchievement {
         Object object;
 
         public GraniteShowAchievement(Object object) {
@@ -65,7 +66,7 @@ public abstract class GraniteHoverAction<R> implements HoverAction<R> {
         }
     }
 
-    public static class GraniteShowItem implements ShowItem {
+    public static class GraniteShowItem extends GraniteHoverAction<ItemStack> implements ShowItem {
         ItemStack itemStack;
 
         public GraniteShowItem(ItemStack itemStack) {
@@ -83,7 +84,7 @@ public abstract class GraniteHoverAction<R> implements HoverAction<R> {
         }
     }
 
-    public static class GraniteShowEntity implements ShowEntity {
+    public static class GraniteShowEntity extends GraniteHoverAction<Entity> implements ShowEntity {
         Entity entity;
 
         public GraniteShowEntity(Entity entity) {
