@@ -315,13 +315,13 @@ public class GranitePlayer extends GraniteLiving implements Player {
     @Override
     public void sendMessage(ChatType type, Iterable<Message<?>> messages) {
         try {
-            for (Message<?> message : messages) {
-                Object packet = Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
-                        MinecraftUtils.graniteToMinecraftMessage(message),
-                        ((GraniteChatType) type).getId()
-                );
-                sendPacket(packet);
-            }
+            Message<?> message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
+
+            Object packet = Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
+                    MinecraftUtils.graniteToMinecraftMessage(message),
+                    ((GraniteChatType) type).getId()
+            );
+            sendPacket(packet);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
