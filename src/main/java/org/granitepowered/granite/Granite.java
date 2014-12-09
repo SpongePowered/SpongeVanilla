@@ -23,12 +23,26 @@
 
 package org.granitepowered.granite;
 
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
+import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
+import org.granitepowered.granite.impl.text.action.GraniteTextAction;
+import org.granitepowered.granite.impl.text.message.GraniteMessage;
+import org.granitepowered.granite.utils.json.EntityJson;
+import org.granitepowered.granite.utils.json.ItemStackJson;
+import org.granitepowered.granite.utils.json.MessageJson;
+import org.granitepowered.granite.utils.json.TextActionJson;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.PluginManager;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class Granite {
     public static Granite instance;
@@ -39,9 +53,21 @@ public class Granite {
     GranitePluginManager pluginManager;
     GraniteGameRegistry gameRegistry;
     Logger logger;
+    Gson gson;
 
     public Granite() {
         version = "UNKNOWN";
+    }
+
+    public void createGson() {
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter(GraniteMessage.class, new MessageJson());
+        builder.registerTypeAdapter(GraniteTextAction.class, new TextActionJson());
+        builder.registerTypeAdapter(GraniteEntity.class, new EntityJson());
+        builder.registerTypeAdapter(GraniteItemStack.class, new ItemStackJson());
+
+        gson = builder.create();
     }
 
     public static Granite getInstance() {
@@ -65,5 +91,13 @@ public class Granite {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public GraniteServer getServer() {
+        return server;
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 }

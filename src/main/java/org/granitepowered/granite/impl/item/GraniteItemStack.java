@@ -24,6 +24,7 @@
 package org.granitepowered.granite.impl.item;
 
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;

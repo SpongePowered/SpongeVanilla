@@ -24,6 +24,8 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.granitepowered.granite.bytecode.BytecodeMethodReplacerModification;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
@@ -91,6 +93,7 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.logger = LoggerFactory.getLogger("Granite");
         Granite.instance.pluginManager = new GranitePluginManager();
         Granite.instance.gameRegistry = new GraniteGameRegistry();
+        Granite.instance.createGson();
 
         loadMinecraft();
 

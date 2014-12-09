@@ -23,12 +23,11 @@
 
 package org.granitepowered.granite.impl.text.action;
 
-import com.google.gson.JsonElement;
 import org.spongepowered.api.text.action.ClickAction;
 
 import java.net.URL;
 
-public abstract class GraniteClickAction<R> implements ClickAction<R> {
+public abstract class GraniteClickAction<R> extends GraniteTextAction<R> implements ClickAction<R> {
     public static class GraniteOpenUrl extends GraniteClickAction<URL> implements OpenUrl {
         URL url;
 

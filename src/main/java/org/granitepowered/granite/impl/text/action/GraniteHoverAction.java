@@ -29,7 +29,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.message.Message;
 
-public abstract class GraniteHoverAction<R> implements HoverAction<R> {
+public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> implements HoverAction<R> {
     public static class GraniteShowText extends GraniteHoverAction<Message<?>> implements ShowText {
         Message<?> message;
 

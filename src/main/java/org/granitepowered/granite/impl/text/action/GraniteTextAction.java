@@ -23,24 +23,7 @@
 
 package org.granitepowered.granite.impl.text.action;
 
-import org.spongepowered.api.text.action.ShiftClickAction;
+import org.spongepowered.api.text.action.TextAction;
 
-public abstract class GraniteShiftClickAction<R> extends GraniteTextAction<R> implements ShiftClickAction<R> {
-    public static class GraniteInsertText extends GraniteShiftClickAction<String> implements InsertText {
-        String insertion;
-
-        public GraniteInsertText(String insertion) {
-            this.insertion = insertion;
-        }
-
-        @Override
-        public String getId() {
-            return "insertion";
-        }
-
-        @Override
-        public String getResult() {
-            return insertion;
-        }
-    }
+public abstract class GraniteTextAction<R> implements TextAction<R> {
 }

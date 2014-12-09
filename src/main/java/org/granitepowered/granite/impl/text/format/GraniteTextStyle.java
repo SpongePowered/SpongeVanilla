@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.format.TextStyle;
 
-public abstract class GraniteTextStyle implements TextStyle {
+public class GraniteTextStyle implements TextStyle {
     public static ImmutableMap<String, GraniteTextStyle> styles = ImmutableMap.<String, GraniteTextStyle>builder()
             .put("BOLD", new GraniteTextStyle.Base(Base.TextStyleType.BOLD))
             .put("ITALIC", new GraniteTextStyle.Base(Base.TextStyleType.ITALIC))

@@ -29,6 +29,8 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.text.message.GraniteMessage;
+import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
@@ -45,13 +47,15 @@ import java.util.Date;
 import java.util.Locale;
 
 public class GranitePlayer extends GraniteLiving implements Player {
+    private Message<?> displayName;
+
     public GranitePlayer(Object parent) {
         super(parent);
     }
 
     @Override
     public Message<?> getDisplayName() {
-        throw new NotImplementedException("");
+        return displayName == null ? new GraniteMessageBuilder.GraniteTextMessageBuilder().content(getName()).build() : displayName;
     }
 
     @Override
