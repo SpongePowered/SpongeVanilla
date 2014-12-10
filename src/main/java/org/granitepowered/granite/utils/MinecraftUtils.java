@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.utils;
 
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.Granite;
@@ -42,6 +43,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.text.message.Message;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public class MinecraftUtils {
@@ -79,6 +81,15 @@ public class MinecraftUtils {
     public static Object graniteToMinecraftMessage(Message<?> message) {
         String json = Granite.getInstance().getGson().toJson(message, Message.class);
         return Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
+    }
+
+    public static Object graniteToMinecraftBlockPos(Vector3i vector) {
+        try {
+            return Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(vector.getX(), vector.getY(), vector.getZ());
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static class WrapFunction<T> implements Function<Object, T> {

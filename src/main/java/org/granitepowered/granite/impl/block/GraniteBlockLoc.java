@@ -25,6 +25,10 @@ package org.granitepowered.granite.impl.block;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.world.GraniteWorld;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -37,145 +41,168 @@ import org.spongepowered.api.world.extent.Extent;
 import java.util.Collection;
 
 public class GraniteBlockLoc implements BlockLoc {
+    Location location;
+
     @Override
     public Extent getExtent() {
-        return null;
+        return location.getExtent();
     }
 
     @Override
     public Vector3i getPosition() {
-        return null;
+        return location.getPosition().toInt();
     }
 
     @Override
     public Location getLocation() {
-        return null;
+        return location;
     }
 
     @Override
     public int getX() {
-        return 0;
+        return location.getPosition().getFloorX();
     }
 
     @Override
     public int getY() {
-        return 0;
+        return location.getPosition().getFloorY();
     }
 
     @Override
     public int getZ() {
-        return 0;
+        return location.getPosition().getFloorZ();
     }
 
     @Override
     public BlockType getType() {
-        return null;
+        return getState().getType();
     }
 
     @Override
     public BlockState getState() {
-        return null;
+        return (BlockState) MinecraftUtils.wrapComposite(getWorld().invoke("getBlockState", getBlockPos()));
     }
 
     @Override
     public BlockSnapshot getSnapshot() {
-        return null;
+        // TODO: Snapshot API
+        throw new NotImplementedException("");
     }
 
     @Override
     public byte getLuminanceFromGround() {
-        return 0;
+        return (byte) getWorld().invoke("getLightFor", Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
     }
 
     @Override
     public boolean isPowered() {
-        return false;
+        // TODO: Get clarification on what indirectly means
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean isIndirectlyPowered() {
-        return false;
+        // TODO: Get clarification on what indirectly means
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean isFacePowered(Direction direction) {
-        return false;
+        // TODO: Get clarification on what indirectly means
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean isFaceIndirectlyPowered(Direction direction) {
-        return false;
+        // TODO: Get clarification on what indirectly means
+        throw new NotImplementedException("");
     }
 
     @Override
     public Collection<Direction> getPoweredFaces() {
-        return null;
+        // TODO: Get clarification on what indirectly means
+        throw new NotImplementedException("");
     }
 
     @Override
     public Collection<Direction> getIndirectlyPoweredFaces() {
-        return null;
+        // TODO: Get clarification on what indirectly means
+        throw new NotImplementedException("");
     }
 
     @Override
     public byte getLuminanceFromSky() {
-        return 0;
+        return (byte) getWorld().invoke("getLightFor", Mappings.getClass("EnumSkyBlock").getEnumConstants()[0], getBlockPos());
     }
 
     @Override
     public boolean dig() {
-        return false;
+        // TODO: Figure out if this is possible to simulate
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean digWith(ItemStack itemStack) {
-        return false;
+        // TODO: Figure out if this is possible to simulate
+        throw new NotImplementedException("");
     }
 
     @Override
     public int getDigTime() {
-        return 0;
+        // TODO: See what unit this is in (Item.getStrVsBlock())
+        throw new NotImplementedException("");
     }
 
     @Override
     public int getDigTimeWith(ItemStack itemStack) {
-        return 0;
+        // TODO: See what unit this is in (Item.getStrVsBlock())
+        throw new NotImplementedException("");
     }
 
     @Override
     public byte getLuminance() {
-        return 0;
+        return (byte) ((GraniteBlockType) getType()).fieldGet("lightValue");
     }
 
     @Override
     public void replaceWith(BlockState state) {
-
+        getWorld().invoke("setBlockState", getBlockPos(), ((GraniteBlockState) state).parent);
     }
 
     @Override
     public void replaceWith(BlockType type) {
-
+        replaceWith(type.getDefaultState());
     }
 
     @Override
     public void replaceWith(BlockSnapshot snapshot) {
-
+        // TODO: Snapshot API
+        throw new NotImplementedException("");
     }
 
     @Override
     public void interact() {
-
+        // TODO: Figure out if this is possible to simulate
+        throw new NotImplementedException("");
     }
 
     @Override
     public void interactWith(ItemStack itemStack) {
-
+        // TODO: Figure out if this is possible to simulate
+        throw new NotImplementedException("");
     }
 
     @Override
     public <T> Optional<T> getData(Class<T> dataClass) {
-        return null;
+        // TODO: Data API
+        throw new NotImplementedException("");
     }
 
-    !Compile
+    public GraniteWorld getWorld() {
+        return ((GraniteWorld) getExtent());
+    }
+
+    public Object getBlockPos() {
+        return MinecraftUtils.graniteToMinecraftBlockPos(getPosition());
+    }
 }
