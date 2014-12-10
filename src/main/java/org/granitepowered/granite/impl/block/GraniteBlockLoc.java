@@ -26,6 +26,8 @@ package org.granitepowered.granite.impl.block;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.MinecraftUtils;
@@ -38,6 +40,7 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class GraniteBlockLoc implements BlockLoc {
@@ -149,14 +152,40 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public int getDigTime() {
-        // TODO: See what unit this is in (Item.getStrVsBlock())
-        throw new NotImplementedException("");
+        return getDigTimeWith(null);
     }
 
     @Override
-    public int getDigTimeWith(ItemStack itemStack) {
-        // TODO: See what unit this is in (Item.getStrVsBlock())
-        throw new NotImplementedException("");
+    public int getDigTimeWith(@Nullable ItemStack itemStack) {
+        // This is mostly copied from Minecraft's source, I have no idea how most of it works
+        float hardness = (float) ((GraniteBlockType) getType()).fieldGet("blockHardness");
+
+        Object material = ((GraniteBlockType) getType()).fieldGet("blockMaterial");
+
+        boolean canHarvest = false;
+        try {
+            canHarvest = (boolean) Mappings.getField("Material", "requiresNoTool").get(material) || itemStack != null && (boolean) ((GraniteItemStack) itemStack).invoke("canHarvestBlock", ((GraniteBlockType) getType()).parent);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        float strength = 1.0F;
+        if (itemStack != null) {
+            strength *= (float) ((GraniteItemType) itemStack.getItem()).invoke("getStrVsBlock", ((GraniteItemStack) itemStack).parent, ((GraniteBlockType) getType()).parent);
+        }
+
+        if (strength > 2.0F) {
+            int efficiencyModifier = (int) Mappings.invokeStatic("EnchantmentHelper", "getEnchantmentLevel", 32, ((GraniteItemStack) itemStack).parent);
+
+            if (efficiencyModifier > 0) {
+                strength += efficiencyModifier * efficiencyModifier + 1;
+            }
+        }
+
+        int thumps = (int) (hardness < 0.0F ? 0.0F : (!canHarvest ? strength / hardness / 100.0F : strength / hardness / 30.0F));
+
+        // One thump every 4 ticks (or 5 times per second)
+        return thumps * 4;
     }
 
     @Override
