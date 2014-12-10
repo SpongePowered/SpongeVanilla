@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.block;
 
+import javassist.ClassPool;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;

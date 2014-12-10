@@ -89,14 +89,12 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public Vector3d getPosition() {
-        // TODO: Figure out Extent
-        throw new NotImplementedException("");
+        return new Vector3d(getX(), getY(), getZ());
     }
 
     @Override
     public void setPosition(Vector3d position) {
-        // TODO: Figure out Extent
-        throw new NotImplementedException("");
+        invoke("setPosition", position.getX(), position.getY(), position.getZ());
     }
 
     @Override

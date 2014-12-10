@@ -23,7 +23,13 @@
 
 package org.granitepowered.granite.impl;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.ProxyComposite;
@@ -42,6 +48,7 @@ import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.World;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -71,6 +78,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public EventManager getEventManager() {
+        // TODO
         throw new NotImplementedException("");
     }
 
@@ -81,16 +89,19 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public ServiceManager getServiceManager() {
+        // TODO
         throw new NotImplementedException("");
     }
 
     @Override
     public Scheduler getScheduler() {
+        // TODO
         throw new NotImplementedException("");
     }
 
     @Override
     public CommandService getCommandDispatcher() {
+        // TODO
         throw new NotImplementedException("");
     }
 
@@ -142,21 +153,31 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Collection<World> getWorlds() {
-        throw new NotImplementedException("");
+        // See MinecraftServer.worldServers, and for expansion, see MinecraftServer line 270 (this.worldServers = new WorldServer[3];)
+        return ImmutableList.copyOf(Iterables.transform(Arrays.asList(fieldGet("worldServers")), new MinecraftUtils.WrapFunction<World>()));
     }
 
     @Override
-    public Optional<World> getWorld(UUID uuid) {
-        throw new NotImplementedException("");
+    public Optional<World> getWorld(final UUID uuid) {
+        return Optional.fromNullable(Iterables.find(getWorlds(), new Predicate<World>() {
+            public boolean apply(World input) {
+                return input.getUniqueID().equals(uuid);
+            }
+        }, null));
     }
 
     @Override
-    public Optional<World> getWorld(String s) {
-        throw new NotImplementedException("");
+    public Optional<World> getWorld(final String s) {
+        return Optional.fromNullable(Iterables.find(getWorlds(), new Predicate<World>() {
+            public boolean apply(World input) {
+                return input.getName().equals(s);
+            }
+        }, null));
     }
 
     @Override
     public void broadcastMessage(Message<?> message) {
+        // TODO
         throw new NotImplementedException("");
     }
 
@@ -184,6 +205,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public Message.Text getMOTD() {
+        // TODO
         throw new NotImplementedException("");
     }
 

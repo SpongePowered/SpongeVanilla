@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.utils;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
@@ -36,9 +37,11 @@ import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
+import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.text.message.Message;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class MinecraftUtils {
@@ -52,6 +55,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)
+            .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
             .build();
 
     public static Composite wrapComposite(Object obj) {
@@ -75,5 +79,13 @@ public class MinecraftUtils {
     public static Object graniteToMinecraftMessage(Message<?> message) {
         String json = Granite.getInstance().getGson().toJson(message, Message.class);
         return Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
+    }
+
+    public static class WrapFunction<T> implements Function<Object, T> {
+        @Nullable
+        @Override
+        public T apply(Object input) {
+            return (T) wrapComposite(input);
+        }
     }
 }
