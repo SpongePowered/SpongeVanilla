@@ -54,7 +54,7 @@ public class GraniteTextActionFactory implements TextActionFactory {
     }
 
     @Override
-    public HoverAction.ShowText createShowText(Message<?> text) {
+    public HoverAction.ShowText createShowText(Message text) {
         return new GraniteHoverAction.GraniteShowText(text);
     }
 

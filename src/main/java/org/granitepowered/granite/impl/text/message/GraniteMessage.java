@@ -41,9 +41,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class GraniteMessage<T> implements Message<T> {
+public abstract class GraniteMessage<T> implements Message {
     T content;
-    ImmutableList<Message<?>> children;
+    ImmutableList<Message> children;
     TextColor color;
     TextStyle style;
     Optional<ClickAction<?>> clickAction;
@@ -51,7 +51,7 @@ public abstract class GraniteMessage<T> implements Message<T> {
     Optional<ShiftClickAction<?>> shiftClickAction;
 
     GraniteMessage() {
-        children = ImmutableList.<Message<?>>builder().build();
+        children = ImmutableList.<Message>builder().build();
         color = TextColors.RESET;
         style = TextStyles.RESET;
         clickAction = Optional.absent();
@@ -59,7 +59,7 @@ public abstract class GraniteMessage<T> implements Message<T> {
         shiftClickAction = Optional.absent();
     }
 
-    GraniteMessage(ImmutableList<Message<?>> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
+    GraniteMessage(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
         this.children = children;
         this.color = color;
         this.style = style;
@@ -84,7 +84,7 @@ public abstract class GraniteMessage<T> implements Message<T> {
     }
 
     @Override
-    public List<Message<?>> getChildren() {
+    public List<Message> getChildren() {
         return children;
     }
 
@@ -110,12 +110,12 @@ public abstract class GraniteMessage<T> implements Message<T> {
     }
 
     public static class GraniteText extends GraniteMessage<String> implements Message.Text {
-        public GraniteText(ImmutableList<Message<?>> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, String text) {
+        public GraniteText(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, String text) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
         }
 
         @Override
-        public MessageBuilder<String> builder() {
+        public MessageBuilder.Text builder() {
             return new GraniteMessageBuilder.GraniteTextMessageBuilder(getContent(), children, color, style, clickAction, hoverAction, shiftClickAction);
         }
     }

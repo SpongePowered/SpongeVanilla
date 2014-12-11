@@ -65,8 +65,8 @@ public enum GraniteTextColor implements TextColor.Base {
 
     // Why doesn't this suppress warnings work?
     @SuppressWarnings("deprecated")
-    public Optional<Character> getCode() {
-        return Optional.of(code);
+    public char getCode() {
+        return code;
     }
 
     @Override

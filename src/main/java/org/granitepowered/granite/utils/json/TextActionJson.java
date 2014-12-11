@@ -61,7 +61,7 @@ public class TextActionJson implements JsonSerializer<GraniteTextAction<?>>, Jso
                 return new GraniteClickAction.GraniteSuggestCommand(val.getAsString());
 
             case "show_text":
-                return new GraniteHoverAction.GraniteShowText((Message<?>) context.deserialize(val, GraniteMessage.class));
+                return new GraniteHoverAction.GraniteShowText((Message) context.deserialize(val, GraniteMessage.class));
             case "show_item":
                 return new GraniteHoverAction.GraniteShowItem((ItemStack) context.deserialize(val, GraniteItemStack.class));
             case "show_achievement":

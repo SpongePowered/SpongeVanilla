@@ -78,7 +78,7 @@ public class MinecraftUtils {
         }
     }
 
-    public static Object graniteToMinecraftMessage(Message<?> message) {
+    public static Object graniteToMinecraftMessage(Message message) {
         String json = Granite.getInstance().getGson().toJson(message, Message.class);
         return Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
     }

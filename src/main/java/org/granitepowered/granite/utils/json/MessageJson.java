@@ -86,7 +86,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
 
         if (src.has("extra")) {
             for (JsonElement elem : src.getAsJsonArray("extra")) {
-                builder = builder.append((Message<?>[]) context.deserialize(elem, GraniteMessage.class));
+                builder = builder.append((Message[]) context.deserialize(elem, GraniteMessage.class));
             }
         }
 
@@ -126,7 +126,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         if (!src.getChildren().isEmpty()) {
             JsonArray extra = new JsonArray();
 
-            for (Message<?> child : src.getChildren()) {
+            for (Message child : src.getChildren()) {
                 extra.add(context.serialize(child));
             }
 

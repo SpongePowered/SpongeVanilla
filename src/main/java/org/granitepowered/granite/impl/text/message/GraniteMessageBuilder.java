@@ -36,20 +36,19 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class GraniteMessageBuilder<T> implements MessageBuilder<T> {
-    T content;
-    List<Message<?>> children;
+public abstract class GraniteMessageBuilder<T extends MessageBuilder<T>> implements MessageBuilder<T> {
+    List<Message> children;
     TextColor color;
     TextStyle style;
     Optional<ClickAction<?>> clickAction;
     Optional<HoverAction<?>> hoverAction;
     Optional<ShiftClickAction<?>> shiftClickAction;
 
-    public GraniteMessageBuilder(T content, ImmutableList<Message<?>> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
-        this.content = content;
+    public GraniteMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
         this.children = children;
         this.color = color;
         this.style = style;
@@ -59,7 +58,7 @@ public abstract class GraniteMessageBuilder<T> implements MessageBuilder<T> {
     }
 
     public GraniteMessageBuilder() {
-        children = ImmutableList.<Message<?>>builder().build();
+        children = ImmutableList.<Message>builder().build();
         color = TextColors.RESET;
         style = TextStyles.RESET;
         clickAction = Optional.absent();
@@ -68,66 +67,68 @@ public abstract class GraniteMessageBuilder<T> implements MessageBuilder<T> {
     }
 
     @Override
-    public MessageBuilder<T> color(TextColor color) {
+    public T color(@Nullable TextColor color) {
         this.color = color;
-        return this;
+        return (T) this;
     }
 
     @Override
-    public MessageBuilder<T> style(TextStyle... styles) {
+    public T style(TextStyle... styles) {
         this.style = TextStyles.of(styles);
-        return this;
+        return (T) this;
     }
 
     @Override
-    public MessageBuilder<T> onClick(ClickAction<?> action) {
+    public T onClick(@Nullable ClickAction<?> action) {
         this.clickAction = Optional.<ClickAction<?>>fromNullable(action);
-        return this;
+        return (T) this;
     }
 
     @Override
-    public MessageBuilder<T> onHover(HoverAction<?> action) {
+    public T onHover(@Nullable HoverAction<?> action) {
         this.hoverAction = Optional.<HoverAction<?>>fromNullable(action);
-        return this;
+        return (T) this;
     }
 
     @Override
-    public MessageBuilder<T> onShiftClick(ShiftClickAction<?> action) {
+    public T onShiftClick(@Nullable ShiftClickAction<?> action) {
         this.shiftClickAction = Optional.<ShiftClickAction<?>>fromNullable(action);
-        return this;
+        return (T) this;
     }
 
     @Override
-    public MessageBuilder<T> append(Message<?>... children) {
+    public T append(Message... children) {
         return append(Arrays.asList(children));
     }
 
     @Override
-    public MessageBuilder<T> append(Iterable<Message<?>> children) {
+    public T append(Iterable<Message> children) {
         this.children.addAll(Lists.newArrayList(children));
-        return this;
+        return (T) this;
     }
 
-    public static class GraniteTextMessageBuilder extends GraniteMessageBuilder<String> {
+    public static class GraniteTextMessageBuilder extends GraniteMessageBuilder<Text> implements Text {
+        String content;
+
+        public GraniteTextMessageBuilder(String content, ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
+            super(children, color, style, clickAction, hoverAction, shiftClickAction);
+            this.content = content;
+        }
+
         public GraniteTextMessageBuilder() {
             super();
             content = "";
         }
 
-        public GraniteTextMessageBuilder(String content, ImmutableList<Message<?>> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
-            super(content, children, color, style, clickAction, hoverAction, shiftClickAction);
-        }
-
         @Override
-        public MessageBuilder<String> content(String content) {
-            this.content = content;
+        public Text content(String text) {
+            this.content = text;
             return this;
         }
 
         @Override
-        public Message<String> build() {
-            GraniteMessage.GraniteText text = new GraniteMessage.GraniteText(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction, content);
-            return text;
+        public Message.Text build() {
+            return new GraniteMessage.GraniteText(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction, content);
         }
     }
 

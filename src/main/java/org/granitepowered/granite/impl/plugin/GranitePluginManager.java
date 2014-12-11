@@ -24,6 +24,7 @@
 package org.granitepowered.granite.impl.plugin;
 
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
@@ -122,5 +123,11 @@ public class GranitePluginManager implements PluginManager {
     @Override
     public Collection<PluginContainer> getPlugins() {
         return plugins;
+    }
+
+    @Override
+    public boolean isLoaded(String id) {
+        // TODO: Implement this
+        throw new NotImplementedException("");
     }
 }

@@ -38,23 +38,36 @@ public class GraniteMessageFactory implements MessageFactory {
     // This is in a different package due to Sponge for some reason making MessageFactory package private
 
     @Override
-    public <T> MessageBuilder<T> createBuilder(T content) {
-        if (content instanceof String) {
-            return (MessageBuilder<T>) new GraniteMessageBuilder.GraniteTextMessageBuilder();
-        }
-        throw new UnsupportedOperationException("The specified content type is not supported by this server");
+    public MessageBuilder<?> createEmptyBuilder() {
+        return new GraniteMessageBuilder.GraniteTextMessageBuilder();
     }
 
     @Override
-    public MessageBuilder<Translation> createTranslationBuilder(Translation translation, Object[] args) {
-        // TODO: Wait for Translation API
+    public MessageBuilder.Text createTextBuilder(String text) {
+        return new GraniteMessageBuilder.GraniteTextMessageBuilder().content(text);
+    }
+
+    @Override
+    public MessageBuilder.Translatable createTranslatableBuilder(Translation translation, Object[] args) {
+        // TODO: Translation API
         throw new NotImplementedException("");
     }
 
     @Override
-    public MessageBuilder<Object> createScoreBuilder(Object score, String override) {
-        // TODO: Wait for Score API
+    public MessageBuilder.Selector createSelectorBuilder(String selector) {
+        // TODO: Translation API
         throw new NotImplementedException("");
+    }
+
+    @Override
+    public MessageBuilder.Score createScoreBuilder(Object score) {
+        // TODO: Translation API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Message.Text createPlain(String text) {
+        return createTextBuilder(text).build();
     }
 
     @Override
@@ -64,7 +77,7 @@ public class GraniteMessageFactory implements MessageFactory {
 
     @Override
     public Message.Text parseLegacyMessage(String message, char color) {
-        MessageBuilder<String> builder = new GraniteMessageBuilder.GraniteTextMessageBuilder();
+        MessageBuilder.Text builder = new GraniteMessageBuilder.GraniteTextMessageBuilder();
 
         LinkedList<String> stack = new LinkedList<>(Arrays.asList(message.split(color + "")));
         builder.content(stack.removeLast());
@@ -74,7 +87,7 @@ public class GraniteMessageFactory implements MessageFactory {
             char code = element.charAt(0);
             element = element.substring(1);
 
-            MessageBuilder<String> childBuilder = new GraniteMessageBuilder.GraniteTextMessageBuilder();
+            MessageBuilder.Text childBuilder = new GraniteMessageBuilder.GraniteTextMessageBuilder();
             childBuilder.content(element);
 
             switch (code) {
@@ -149,7 +162,7 @@ public class GraniteMessageFactory implements MessageFactory {
             builder.append(childBuilder.build());
         }
 
-        return (Message.Text) builder.build();
+        return builder.build();
     }
 
     @Override

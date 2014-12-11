@@ -110,8 +110,8 @@ public class GraniteTextStyle implements TextStyle {
 
         @Override
         @SuppressWarnings("deprecated")
-        public Optional<Character> getCode() {
-            return Optional.of(type.code);
+        public char getCode() {
+            return type.code;
         }
 
         public static enum TextStyleType {

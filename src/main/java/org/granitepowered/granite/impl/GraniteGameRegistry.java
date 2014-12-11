@@ -25,6 +25,7 @@ package org.granitepowered.granite.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.block.GraniteBlockType;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
@@ -35,12 +36,24 @@ import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.effect.Particle;
+import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.hanging.art.Art;
+import org.spongepowered.api.entity.living.meta.*;
+import org.spongepowered.api.entity.living.villager.Career;
+import org.spongepowered.api.entity.living.villager.Profession;
+import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStackBuilder;
+import org.spongepowered.api.item.merchant.TradeOfferBuilder;
+import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.world.biome.BiomeType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -129,5 +142,197 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public List<ItemType> getItems() {
         return (List<ItemType>) itemTypes.values();
+    }
+
+    @Override
+    public Optional<BiomeType> getBiome(String id) {
+        // TODO: Biome API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<BiomeType> getBiomes() {
+        // TODO: Biome API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public ItemStackBuilder getItemBuilder() {
+        // TODO: ItemStackBuilder API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public TradeOfferBuilder getTradeOfferBuilder() {
+        // TODO: TradeOfferBuilder API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Particle> getParticle(String id) {
+        // TODO: Particle API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Particle> getParticles() {
+        // TODO: Particle API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<EntityType> getEntity(String id) {
+        // TODO: EntityType API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<EntityType> getEntities() {
+        // TODO: EntityType API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Art> getArt(String id) {
+        // TODO: Art API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Art> getArts() {
+        // TODO: Art API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<DyeColor> getDye(String id) {
+        // TODO: Dye API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<DyeColor> getDyes() {
+        // TODO: Dye API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<HorseColor> getHorseColor(String id) {
+        // TODO: Horse API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<HorseColor> getHorseColors() {
+        // TODO: Horse API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<HorseStyle> getHorseStyle(String id) {
+        // TODO: Horse API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<HorseStyle> getHorseStyles() {
+        // TODO: Horse API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<HorseVariant> getHorseVariant(String id) {
+        // TODO: Horse API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<HorseVariant> getHorseVariants() {
+        // TODO: Horse API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<OcelotType> getOcelotType(String id) {
+        // TODO: Ocelot API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<OcelotType> getOcelotTypes() {
+        // TODO: Ocelot API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<RabbitType> getRabbitType(String id) {
+        // TODO: Rabbit API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<RabbitType> getRabbitTypes() {
+        // TODO: Rabbit API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<SkeletonType> getSkeletonType(String id) {
+        // TODO: Spooky Skary Skellingtons API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<SkeletonType> getSkeletonTypes() {
+        // TODO: Spooky Skary Skellingtons API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Career> getCareer(String id) {
+        // TODO: Career API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Career> getCareers() {
+        // TODO: Career API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Career> getCareers(Profession profession) {
+        // TODO: Career API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Profession> getProfession(String id) {
+        // TODO: Profession API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Profession> getProfessions() {
+        // TODO: Profession API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<GameMode> getGameModes() {
+        // TODO: GameMode API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<PotionEffectType> getPotionEffects() {
+        // TODO: Potion Effects API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<String> getDefaultGameRules() {
+        // TODO: Game Rules API
+        throw new NotImplementedException("");
     }
 }

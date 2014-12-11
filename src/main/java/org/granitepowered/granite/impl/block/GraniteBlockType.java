@@ -62,6 +62,18 @@ public class GraniteBlockType extends Composite implements BlockType {
     }
 
     @Override
+    public boolean getTickRandomly() {
+        // TODO: implement
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setTickRandomly(boolean tickRandomly) {
+        // TODO: implement
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Translation getTranslation() {
         // TODO: Wait for Message API (see Block.getUnlocalizedName() and Block.getLocalizedName(), make sure not to use the field as the method is overridden
         throw new NotImplementedException("");

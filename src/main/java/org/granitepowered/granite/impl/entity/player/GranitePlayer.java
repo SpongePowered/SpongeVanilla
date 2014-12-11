@@ -51,14 +51,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class GranitePlayer extends GraniteLiving implements Player {
-    private Message<?> displayName;
+    private Message displayName;
 
     public GranitePlayer(Object parent) {
         super(parent);
     }
 
     @Override
-    public Message<?> getDisplayName() {
+    public Message getDisplayName() {
         return displayName == null ? new GraniteMessageBuilder.GraniteTextMessageBuilder().content(getName()).build() : displayName;
     }
 
@@ -81,7 +81,7 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     @Override
     public void sendMessage(ChatType type, String... strings) {
-        List<Message<?>> messages = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
         for (String string : strings) {
             messages.add(new GraniteMessageBuilder.GraniteTextMessageBuilder().content(string).build());
         }
@@ -287,7 +287,7 @@ public class GranitePlayer extends GraniteLiving implements Player {
     }
 
     @Override
-    public void sendMessage(Iterable<Message<?>> messages) {
+    public void sendMessage(Iterable<Message> messages) {
         sendMessage(ChatTypes.CHAT, messages);
         throw new NotImplementedException("");
     }
@@ -303,19 +303,19 @@ public class GranitePlayer extends GraniteLiving implements Player {
     }
 
     @Override
-    public void sendMessage(Message<?>... messages) {
+    public void sendMessage(Message... messages) {
         sendMessage(ChatTypes.CHAT, messages);
     }
 
     @Override
-    public void sendMessage(ChatType type, Message<?>... message) {
+    public void sendMessage(ChatType type, Message... message) {
         sendMessage(type, Arrays.asList(message));
     }
 
     @Override
-    public void sendMessage(ChatType type, Iterable<Message<?>> messages) {
+    public void sendMessage(ChatType type, Iterable<Message> messages) {
         try {
-            Message<?> message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
+            Message message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
 
             Object packet = Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
                     MinecraftUtils.graniteToMinecraftMessage(message),

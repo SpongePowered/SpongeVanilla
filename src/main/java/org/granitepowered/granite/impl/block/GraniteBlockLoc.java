@@ -46,6 +46,10 @@ import java.util.Collection;
 public class GraniteBlockLoc implements BlockLoc {
     Location location;
 
+    public GraniteBlockLoc(Location location) {
+        this.location = location;
+    }
+
     @Override
     public Extent getExtent() {
         return location.getExtent();

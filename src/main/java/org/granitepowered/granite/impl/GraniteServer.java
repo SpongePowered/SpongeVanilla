@@ -176,7 +176,13 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
     }
 
     @Override
-    public void broadcastMessage(Message<?> message) {
+    public int getRunningTimeTicks() {
+        // TODO: add
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void broadcastMessage(Message message) {
         // TODO
         throw new NotImplementedException("");
     }

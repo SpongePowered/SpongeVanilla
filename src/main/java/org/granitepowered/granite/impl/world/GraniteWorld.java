@@ -31,6 +31,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.MinecraftUtils;
@@ -42,11 +43,14 @@ import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.world.Chunk;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.WorldBorder;
 import org.spongepowered.api.world.biome.Biome;
 import org.spongepowered.api.world.weather.Weather;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 public class GraniteWorld extends Composite implements World {
@@ -93,6 +97,30 @@ public class GraniteWorld extends Composite implements World {
     }
 
     @Override
+    public WorldBorder getWorldBorder() {
+        // TODO: WorldBorder API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<String> getGameRule(String gameRule) {
+        // TODO: GameRule API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setGameRule(String gameRule, String value) {
+        // TODO: GameRule API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Map<String, String> getGameRules() {
+        // TODO: GameRule API
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Biome getBiome(Vector3d position) {
         // TODO: Biome API
         throw new NotImplementedException("");
@@ -100,12 +128,12 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public BlockLoc getBlock(Vector3d position) {
-        return null;
+        return new GraniteBlockLoc(new Location(this, position));
     }
 
     @Override
     public BlockLoc getBlock(int x, int y, int z) {
-        return null;
+        return getBlock(new Vector3d(x, y, z));
     }
 
     @Override

@@ -30,10 +30,10 @@ import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.message.Message;
 
 public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> implements HoverAction<R> {
-    public static class GraniteShowText extends GraniteHoverAction<Message<?>> implements ShowText {
-        Message<?> message;
+    public static class GraniteShowText extends GraniteHoverAction<Message> implements ShowText {
+        Message message;
 
-        public GraniteShowText(Message<?> message) {
+        public GraniteShowText(Message message) {
             this.message = message;
         }
 
@@ -43,7 +43,7 @@ public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> impleme
         }
 
         @Override
-        public Message<?> getResult() {
+        public Message getResult() {
             return message;
         }
     }
