@@ -49,7 +49,7 @@ public abstract class GraniteMessage<T> implements Message<T> {
     Optional<HoverAction<?>> hoverAction;
     Optional<ShiftClickAction<?>> shiftClickAction;
 
-    public GraniteMessage() {
+    GraniteMessage() {
         children = ImmutableList.<Message<?>>builder().build();
         color = TextColors.RESET;
         style = TextStyles.RESET;
