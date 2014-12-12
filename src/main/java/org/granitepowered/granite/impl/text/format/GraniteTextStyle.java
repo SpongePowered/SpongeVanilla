@@ -25,8 +25,15 @@ package org.granitepowered.granite.impl.text.format;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.format.TextStyle;
+import org.spongepowered.api.text.format.TextStyles;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GraniteTextStyle implements TextStyle {
     public static ImmutableMap<String, GraniteTextStyle> styles = ImmutableMap.<String, GraniteTextStyle>builder()
@@ -38,54 +45,100 @@ public class GraniteTextStyle implements TextStyle {
             .put("RESET", new GraniteTextStyle.Base(Base.TextStyleType.RESET))
             .build();
 
-    boolean bold;
-    boolean italic;
-    boolean underline;
-    boolean strikethrough;
-    boolean obfuscated;
+    Map<Base.TextStyleType, TextStyleMode> values;
 
-    public GraniteTextStyle(boolean bold, boolean italic, boolean underline, boolean strikethrough, boolean obfuscated) {
-        this.bold = bold;
-        this.italic = italic;
-        this.underline = underline;
-        this.strikethrough = strikethrough;
-        this.obfuscated = obfuscated;
+    public GraniteTextStyle(TextStyleMode bold, TextStyleMode italic, TextStyleMode underline, TextStyleMode strikethrough, TextStyleMode obfuscated) {
+        values = new HashMap<>();
+        values.put(Base.TextStyleType.BOLD, bold);
+        values.put(Base.TextStyleType.ITALIC, italic);
+        values.put(Base.TextStyleType.UNDERLINE, underline);
+        values.put(Base.TextStyleType.STRIKETHROUGH, strikethrough);
+        values.put(Base.TextStyleType.OBFUSCATED, obfuscated);
+    }
+
+    public GraniteTextStyle(HashMap<Base.TextStyleType, TextStyleMode> values) {
+        this.values = values;
     }
 
     @Override
     public boolean isComposite() {
         int count = 0;
-        if (bold) count++;
-        if (italic) count++;
-        if (underline) count++;
-        if (strikethrough) count++;
-        if (obfuscated) count++;
+
+        for (TextStyleMode mode : values.values()) {
+            if (mode != TextStyleMode.NEUTRAL) count++;
+        }
 
         return count > 1;
     }
 
     @Override
     public boolean is(TextStyle style) {
-        // TODO: Figure out what these things do
-        throw new NotImplementedException("");
+        for (Map.Entry<Base.TextStyleType, TextStyleMode> entry : ((GraniteTextStyle) style).values.entrySet()) {
+            if (!values.containsKey(entry.getKey())) return false;
+            if (values.get(entry.getKey()) != entry.getValue()) return false;
+        }
+        return true;
     }
 
     @Override
     public TextStyle negate() {
-        // TODO: Figure out what these things do
-        throw new NotImplementedException("");
+        HashMap<Base.TextStyleType, TextStyleMode> newValues = new HashMap<>();
+        for (Map.Entry<Base.TextStyleType, TextStyleMode> entry : values.entrySet()) {
+            newValues.put(entry.getKey(), entry.getValue().negate());
+        }
+
+        return new GraniteTextStyle(newValues);
     }
 
     @Override
     public TextStyle and(TextStyle... styles) {
-        // TODO: Figure out what these things do
-        throw new NotImplementedException("");
+        HashMap<Base.TextStyleType, TextStyleMode> newValues = new HashMap<>(values);
+        for (TextStyle style : styles) {
+            for (Map.Entry<Base.TextStyleType, TextStyleMode> entry : ((GraniteTextStyle) style).values.entrySet()) {
+                newValues.put(entry.getKey(), newValues.get(entry.getKey()).add(entry.getValue()));
+            }
+        }
+        return new GraniteTextStyle(newValues);
     }
 
     @Override
     public TextStyle andNot(TextStyle... styles) {
-        // TODO: Figure out what these things do
-        throw new NotImplementedException("");
+        List<TextStyle> newStyles = new ArrayList<>();
+        for (TextStyle style : styles) {
+            newStyles.add(style.negate());
+        }
+
+        return and(newStyles.toArray(new TextStyle[newStyles.size()]));
+    }
+
+    public static enum TextStyleMode {
+        APPLIED,
+        NEGATED,
+        NEUTRAL;
+
+        public TextStyleMode add(TextStyleMode other) {
+            switch (this) {
+                case NEUTRAL:
+                    return other;
+                case APPLIED:
+                    if (other == NEGATED) return NEUTRAL;
+                    return APPLIED;
+                default:
+                    if (other == APPLIED) return NEUTRAL;
+                    return NEGATED;
+            }
+        }
+
+        public TextStyleMode negate() {
+            switch (this) {
+                case NEUTRAL:
+                    return APPLIED;
+                case APPLIED:
+                    return NEGATED;
+                default:
+                    return NEUTRAL;
+            }
+        }
     }
 
     public static class Base extends GraniteTextStyle implements TextStyle.Base {
