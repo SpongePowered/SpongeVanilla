@@ -40,7 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class GraniteMessageBuilder<T extends MessageBuilder<T>> implements MessageBuilder<T> {
+public abstract class GraniteMessageBuilder<T extends Message> implements MessageBuilder<T> {
     List<Message> children;
     TextColor color;
     TextStyle style;
@@ -66,48 +66,7 @@ public abstract class GraniteMessageBuilder<T extends MessageBuilder<T>> impleme
         shiftClickAction = Optional.absent();
     }
 
-    @Override
-    public T color(@Nullable TextColor color) {
-        this.color = color;
-        return (T) this;
-    }
-
-    @Override
-    public T style(TextStyle... styles) {
-        this.style = TextStyles.of(styles);
-        return (T) this;
-    }
-
-    @Override
-    public T onClick(@Nullable ClickAction<?> action) {
-        this.clickAction = Optional.<ClickAction<?>>fromNullable(action);
-        return (T) this;
-    }
-
-    @Override
-    public T onHover(@Nullable HoverAction<?> action) {
-        this.hoverAction = Optional.<HoverAction<?>>fromNullable(action);
-        return (T) this;
-    }
-
-    @Override
-    public T onShiftClick(@Nullable ShiftClickAction<?> action) {
-        this.shiftClickAction = Optional.<ShiftClickAction<?>>fromNullable(action);
-        return (T) this;
-    }
-
-    @Override
-    public T append(Message... children) {
-        return append(Arrays.asList(children));
-    }
-
-    @Override
-    public T append(Iterable<Message> children) {
-        this.children.addAll(Lists.newArrayList(children));
-        return (T) this;
-    }
-
-    public static class GraniteTextMessageBuilder extends GraniteMessageBuilder<Text> implements Text {
+    public static class GraniteTextMessageBuilder extends GraniteMessageBuilder<Message.Text> implements Text {
         String content;
 
         public GraniteTextMessageBuilder(String content, ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
@@ -121,14 +80,60 @@ public abstract class GraniteMessageBuilder<T extends MessageBuilder<T>> impleme
         }
 
         @Override
-        public Text content(String text) {
-            this.content = text;
-            return this;
+        public MessageBuilder<Message.Text> content(Object o) {
+            return content((String) o);
         }
 
         @Override
         public Message.Text build() {
             return new GraniteMessage.GraniteText(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction, content);
+        }
+
+        @Override
+        public MessageBuilder.Text color(@Nullable TextColor color) {
+            this.color = color;
+            return this;
+        }
+
+        @Override
+        public MessageBuilder.Text style(TextStyle... styles) {
+            this.style = TextStyles.of(styles);
+            return this;
+        }
+
+        @Override
+        public MessageBuilder.Text onClick(@Nullable ClickAction<?> action) {
+            this.clickAction = Optional.<ClickAction<?>>fromNullable(action);
+            return this;
+        }
+
+        @Override
+        public MessageBuilder.Text onHover(@Nullable HoverAction<?> action) {
+            this.hoverAction = Optional.<HoverAction<?>>fromNullable(action);
+            return this;
+        }
+
+        @Override
+        public MessageBuilder.Text onShiftClick(@Nullable ShiftClickAction<?> action) {
+            this.shiftClickAction = Optional.<ShiftClickAction<?>>fromNullable(action);
+            return this;
+        }
+
+        @Override
+        public MessageBuilder.Text content(String s) {
+            this.content = s;
+            return this;
+        }
+
+        @Override
+        public MessageBuilder.Text append(Message... children) {
+            return append(Arrays.asList(children));
+        }
+
+        @Override
+        public MessageBuilder.Text append(Iterable<Message> children) {
+            this.children.addAll(Lists.newArrayList(children));
+            return this;
         }
     }
 
