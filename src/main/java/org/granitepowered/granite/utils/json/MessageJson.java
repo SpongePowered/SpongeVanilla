@@ -70,7 +70,13 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         strikethrough = src.has("strikethrough") && src.get("strikethrough").getAsBoolean();
         obfuscated = src.has("obfuscated") && src.get("obfuscated").getAsBoolean();
 
-        builder = builder.style(new GraniteTextStyle(bold, italic, underlined, strikethrough, obfuscated));
+        builder = builder.style(new GraniteTextStyle(
+                bold ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
+                italic ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
+                underlined ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
+                strikethrough ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
+                obfuscated ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL
+        ));
 
         if (src.has("hoverEvent")) {
             builder = builder.onHover((HoverAction<?>) context.deserialize(src.get("hoverEvent"), GraniteHoverAction.class));

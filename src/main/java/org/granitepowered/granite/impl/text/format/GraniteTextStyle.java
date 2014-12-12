@@ -146,11 +146,11 @@ public class GraniteTextStyle implements TextStyle {
 
         public Base(TextStyleType type) {
             super(
-                    type == TextStyleType.BOLD,
-                    type == TextStyleType.ITALIC,
-                    type == TextStyleType.UNDERLINE,
-                    type == TextStyleType.STRIKETHROUGH,
-                    type == TextStyleType.OBFUSCATED
+                    type == TextStyleType.BOLD ? TextStyleMode.APPLIED : TextStyleMode.NEUTRAL,
+                    type == TextStyleType.ITALIC ? TextStyleMode.APPLIED : TextStyleMode.NEUTRAL,
+                    type == TextStyleType.UNDERLINE ? TextStyleMode.APPLIED : TextStyleMode.NEUTRAL,
+                    type == TextStyleType.STRIKETHROUGH ? TextStyleMode.APPLIED : TextStyleMode.NEUTRAL,
+                    type == TextStyleType.OBFUSCATED ? TextStyleMode.APPLIED : TextStyleMode.NEUTRAL
             );
 
             this.type = type;
