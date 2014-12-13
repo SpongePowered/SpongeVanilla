@@ -32,4 +32,7 @@ public interface MCServer extends MCInterface {
     boolean fieldGet$onlineMode();
 
     void startServerThread();
+
+    // This method will conflict, don't uncomment
+    // String getServerModName();
 }

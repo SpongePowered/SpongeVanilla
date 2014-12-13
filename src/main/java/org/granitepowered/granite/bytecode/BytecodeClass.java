@@ -183,6 +183,33 @@ public class BytecodeClass {
         }
     }
 
+    public void replaceMethod(String methodName, String code) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            method.setBody(code);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void beforeMethod(String methodName, String code) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            method.insertBefore(code);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void afterMethod(String methodName, String code) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            method.insertAfter(code);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void instrumentMethod(String methodName, ExprEditor editor) {
         CtMethod method = Mappings.getCtMethod(clazz, methodName);
         try {
@@ -215,6 +242,22 @@ public class BytecodeClass {
         } catch (CannotCompileException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BytecodeClass that = (BytecodeClass) o;
+
+        return clazz.getName().equals(that.clazz.getName());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return clazz.getName().hashCode();
     }
 
     public void post() {

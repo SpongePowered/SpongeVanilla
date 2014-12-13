@@ -33,14 +33,14 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class BytecodeModifier {
-    List<BytecodeClass> runPostOn;
+    Set<BytecodeClass> runPostOn;
 
     public void modify() {
-        runPostOn = new ArrayList<>();
+        runPostOn = new LinkedHashSet<>();
 
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClassesRecursive("org.granitepowered.granite.mc")) {
@@ -61,6 +61,11 @@ public class BytecodeModifier {
                     runPostOn.add(bc);
                 }
             }
+
+            BytecodeClass minecraftServer = new BytecodeClass(Mappings.getCtClass("MinecraftServer"));
+            minecraftServer.replaceMethod("getServerModName", "return \"granite\";");
+
+            runPostOn.add(minecraftServer);
 
             for (BytecodeClass bc : runPostOn) {
                 bc.post();
