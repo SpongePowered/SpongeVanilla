@@ -24,24 +24,34 @@
 package org.granitepowered.granite.impl.block;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mc.MCProperty;
 import org.spongepowered.api.block.BlockProperty;
 
+import java.util.Arrays;
 import java.util.Collection;
 
-public class GraniteBlockProperty<T extends Comparable<T>> extends Composite implements BlockProperty<T> {
-    public GraniteBlockProperty(Object parent) {
-        super(parent);
+public class GraniteBlockProperty<T extends Comparable<T>> extends Composite<MCProperty> implements BlockProperty<T> {
+    public GraniteBlockProperty(MCProperty obj) {
+        super(obj);
     }
 
     @Override
     public String getName() {
-        return (String) fieldGet("name");
+        return obj.fieldGet$name();
     }
 
     @Override
     public Collection<T> getValidValues() {
-        return (Collection<T>) invoke("getAllowedValues");
+        ImmutableList.Builder<T> builder = ImmutableList.builder();
+
+        for (Comparable<?> value : obj.getAllowedValues()) {
+            builder.add((T) value);
+        }
+
+        return builder.build();
     }
 
     @Override

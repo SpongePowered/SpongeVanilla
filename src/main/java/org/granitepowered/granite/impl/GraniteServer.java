@@ -23,17 +23,16 @@
 
 package org.granitepowered.granite.impl;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.composite.ProxyComposite;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
@@ -48,17 +47,18 @@ import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.World;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-public class GraniteServer extends ProxyComposite implements Game, Server {
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
+
+public class GraniteServer extends Composite<MCServer> implements Game, Server {
     public static String version;
 
     public GraniteServer() {
         super(Mappings.getClass("DedicatedServer"), new Class[]{File.class}, new File("worlds/"));
-        invoke("startServerThread");
+        obj.startServerThread();
     }
 
     @Override
@@ -119,8 +119,8 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
     public Collection<Player> getOnlinePlayers() {
         Set<Player> ret = new HashSet<>();
 
-        for (Object playerEntity : (List) fieldGet(getSCM(), "playerEntityList")) {
-            ret.add((Player) MinecraftUtils.wrapComposite(playerEntity));
+        for (MCEntityPlayerMP playerEntity : getSCM().fieldGet$playerEntityList()) {
+            ret.add((Player) wrap(playerEntity));
         }
 
         return ret;
@@ -128,7 +128,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public int getMaxPlayers() {
-        return (int) fieldGet(getSCM(), "maxPlayers");
+        return getSCM().fieldGet$maxPlayers();
     }
 
     @Override
@@ -154,7 +154,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
     @Override
     public Collection<World> getWorlds() {
         // See MinecraftServer.worldServers, and for expansion, see MinecraftServer line 270 (this.worldServers = new WorldServer[3];)
-        return ImmutableList.copyOf(Iterables.transform(Arrays.asList(fieldGet("worldServers")), new MinecraftUtils.WrapFunction<World>()));
+        return ImmutableList.<World>copyOf(Iterables.transform(Arrays.asList(obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
     }
 
     @Override
@@ -196,17 +196,17 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
 
     @Override
     public boolean hasWhitelist() {
-        return (boolean) fieldGet(getSCM(), "whiteListEnforced");
+        return getSCM().fieldGet$whitelistEnforced();
     }
 
     @Override
     public void setHasWhitelist(boolean b) {
-        fieldSet(getSCM(), "whiteListEnforced", b);
+       getSCM().fieldSet$whitelistEnforced(b);
     }
 
     @Override
     public boolean getOnlineMode() {
-        return (boolean) fieldGet("onlineMode");
+        return obj.fieldGet$onlineMode();
     }
 
     @Override
@@ -215,7 +215,7 @@ public class GraniteServer extends ProxyComposite implements Game, Server {
         throw new NotImplementedException("");
     }
 
-    private Object getSCM() {
-        return fieldGet("serverConfigManager");
+    private MCServerConfigurationManager getSCM() {
+        return obj.fieldGet$serverConfigManager();
     }
 }

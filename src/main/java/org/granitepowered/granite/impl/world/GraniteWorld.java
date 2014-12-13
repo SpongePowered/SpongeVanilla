@@ -34,6 +34,9 @@ import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.mc.MCWorldInfo;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.effect.Particle;
@@ -53,9 +56,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public class GraniteWorld extends Composite implements World {
-    public GraniteWorld(Object parent) {
-        super(parent);
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
+public class GraniteWorld extends Composite<MCWorld> implements World {
+    public GraniteWorld(MCWorld obj) {
+        super(obj);
     }
 
     @Override
@@ -65,7 +70,7 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public String getName() {
-        return (String) fieldGet(getWorldInfo(), "levelName");
+        return getWorldInfo().fieldGet$levelName();
     }
 
     @Override
@@ -138,16 +143,16 @@ public class GraniteWorld extends Composite implements World {
 
     @Override
     public Collection<Entity> getEntities() {
-        return Lists.newArrayList(Iterables.transform((Iterable<Object>) fieldGet("loadedEntityList"), new MinecraftUtils.WrapFunction<Entity>()));
+        return Lists.<Entity>newArrayList(Iterables.transform(obj.fieldGet$loadedEntityList(), new MinecraftUtils.WrapFunction<GraniteEntity>()));
     }
 
     @Override
     public Optional<Entity> createEntity(EntityType type, Vector3d position) {
-        GraniteEntity entity = (GraniteEntity) MinecraftUtils.wrapComposite(Mappings.invokeStatic("createEntityByName", type.getId(), parent));
-        entity.setPosition(position);
-        boolean ret = (boolean) invoke("spawnEntityInWorld", entity);
+        MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type.getId(), obj);
+        entity.setPosition(position.getX(), position.getY(), position.getZ());
+        boolean ret = obj.spawnEntityInWorld(entity);
 
-        return ret ? Optional.<Entity>of(entity) : Optional.<Entity>absent();
+        return ret ? Optional.of((Entity) wrap(entity)) : Optional.<Entity>absent();
     }
 
     @Override
@@ -227,7 +232,7 @@ public class GraniteWorld extends Composite implements World {
         throw new NotImplementedException("");
     }
 
-    public Object getWorldInfo() {
-        return fieldGet("worldInfo");
+    public MCWorldInfo getWorldInfo() {
+        return obj.fieldGet$worldInfo();
     }
 }

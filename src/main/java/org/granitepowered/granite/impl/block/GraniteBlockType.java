@@ -23,54 +23,55 @@
 
 package org.granitepowered.granite.impl.block;
 
-import javassist.ClassPool;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.text.translation.Translation;
 
-public class GraniteBlockType extends Composite implements BlockType {
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
 
-    public GraniteBlockType(Object parent) {
-        super(parent);
+public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
+    public GraniteBlockType(MCBlock obj) {
+        super(obj);
     }
 
     @Override
     public String getId() {
-        Object registry = null;
         try {
-            registry = Mappings.getField("Block", "blockRegistry").get(null);
+            Object registry = Mappings.getField("Block", "blockRegistry").get(null);
+
+            Object resourceLocation = Mappings.invoke(registry, "getNameForObject", obj);
+            return (String) Mappings.getField(resourceLocation.getClass(), "resourcePath").get(resourceLocation);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        Object resourceLocation = Mappings.invoke(registry, "getNameForObject", parent);
-        return (String) fieldGet(resourceLocation, "resourcePath");
+
+        return "error";
     }
 
     @Override
     public BlockState getDefaultState() {
-        return (BlockState) MinecraftUtils.wrapComposite(fieldGet("defaultBlockState"));
+        return wrap(obj.fieldGet$defaultBlockState());
     }
 
     @Override
     @SuppressWarnings("deprecated")
     public BlockState getStateFromDataValue(byte b) {
-        return (BlockState) MinecraftUtils.wrapComposite(invoke("getStateFromMeta", b));
+        return wrap(obj.getStateFromMeta(b));
     }
 
     @Override
     public boolean getTickRandomly() {
-        // TODO: implement
-        throw new NotImplementedException("");
+        return obj.fieldGet$needsRandomTick();
     }
 
     @Override
     public void setTickRandomly(boolean tickRandomly) {
-        // TODO: implement
-        throw new NotImplementedException("");
+        obj.fieldSet$needsRandomTick(tickRandomly);
     }
 
     @Override

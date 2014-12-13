@@ -24,34 +24,37 @@
 package org.granitepowered.granite.impl.item;
 
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCItem;
+import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-public class GraniteItemStack extends Composite implements ItemStack {
-    public GraniteItemStack(Object parent) {
-        super(parent);
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
+
+public class GraniteItemStack extends Composite<MCItemStack> implements ItemStack {
+    public GraniteItemStack(MCItemStack obj) {
+        super(obj);
     }
 
     @Override
     public ItemType getItem() {
-        return (ItemType) MinecraftUtils.wrapComposite(getMCItem());
+        return (ItemType) wrap(getMCItem());
     }
 
     @Override
     public short getDamage() {
-        return (short) fieldGet("itemDamage");
+        return (short) obj.fieldGet$itemDamage();
     }
 
     @Override
     public void setDamage(short damage) {
-        fieldSet("itemDamage", damage);
+        obj.fieldSet$itemDamage(damage);
     }
 
     @Override
     public int getQuantity() {
-        return (int) fieldGet("stackSize");
+        return obj.fieldGet$stackSize();
     }
 
     @Override
@@ -59,12 +62,12 @@ public class GraniteItemStack extends Composite implements ItemStack {
         if (quantity > getMaxStackQuantity()) {
             throw new IllegalArgumentException("Quantity exceeds maximum quantity");
         }
-        fieldSet("stackSize", quantity);
+        obj.fieldSet$stackSize(quantity);
     }
 
     @Override
     public int getMaxStackQuantity() {
-        return (int) fieldGet(getMCItem(), "maxStackSize");
+        return getMCItem().fieldGet$maxStackSize();
     }
 
     @Override
@@ -79,7 +82,7 @@ public class GraniteItemStack extends Composite implements ItemStack {
         return 0;
     }
 
-    public Object getMCItem() {
-        return fieldGet("item");
+    public MCItem getMCItem() {
+        return obj.fieldGet$item();
     }
 }

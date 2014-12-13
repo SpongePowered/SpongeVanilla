@@ -21,22 +21,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+import java.util.List;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+@Implement(name="ServerConfigurationManager")
+public interface MCServerConfigurationManager extends MCInterface {
+    boolean fieldGet$whitelistEnforced();
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    void fieldSet$whitelistEnforced(boolean value);
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    int fieldGet$maxPlayers();
+
+    List<MCEntityPlayerMP> fieldGet$playerEntityList();
 }

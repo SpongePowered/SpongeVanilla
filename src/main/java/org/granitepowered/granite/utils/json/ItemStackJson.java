@@ -26,23 +26,28 @@ package org.granitepowered.granite.utils.json;
 import com.google.gson.*;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCNBTTagCompound;
 import org.granitepowered.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Type;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class ItemStackJson implements JsonSerializer<GraniteItemStack>, JsonDeserializer<GraniteItemStack> {
     @Override
     public GraniteItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String nbtString = json.getAsString();
-        Object nbt = Mappings.invokeStatic("JsonToNBT", "func_180713_a", nbtString);
+        MCNBTTagCompound nbt = (MCNBTTagCompound) Mappings.invokeStatic("JsonToNBT", "func_180713_a", nbtString);
 
-        return (GraniteItemStack) MinecraftUtils.wrapComposite(Mappings.invokeStatic("ItemStack", "loadItemStackFromNBT", nbt));
+        return wrap((MCItemStack) Mappings.invokeStatic("ItemStack", "loadItemStackFromNBT", nbt));
     }
 
     @Override
     public JsonElement serialize(GraniteItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         try {
-            Object nbt = Mappings.invoke(src.parent, "writeToNBT", Mappings.getClass("NBTTagCompound").newInstance());
+            Object nbt = Mappings.invoke(src.obj, "writeToNBT", Mappings.getClass("NBTTagCompound").newInstance());
             return new JsonPrimitive(nbt.toString());
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();

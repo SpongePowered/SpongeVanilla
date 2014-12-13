@@ -28,6 +28,8 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.world.GraniteWorld;
+import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityInteractionType;
@@ -41,9 +43,11 @@ import org.spongepowered.api.world.extent.Extent;
 
 import java.util.UUID;
 
-public class GraniteEntity extends Composite implements Entity {
-    public GraniteEntity(Object parent) {
-        super(parent);
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
+
+public class GraniteEntity<T extends MCEntity> extends Composite<T> implements Entity {
+    public GraniteEntity(T obj) {
+        super(obj);
     }
 
     @Override
@@ -66,7 +70,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public boolean isOnGround() {
-        return (boolean) fieldGet("onGround");
+        return obj.fieldGet$onGround();
     }
 
     @Override
@@ -94,12 +98,12 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void setPosition(Vector3d position) {
-        invoke("setPosition", position.getX(), position.getY(), position.getZ());
+        obj.setPosition(position.getX(), position.getY(), position.getZ());
     }
 
     @Override
     public World getWorld() {
-        return null;
+        return wrap(obj.fieldGet$worldObj());
     }
 
     @Override
@@ -110,17 +114,17 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public double getX() {
-        return (double) fieldGet("posX");
+        return obj.fieldGet$posX();
     }
 
     @Override
     public double getY() {
-        return (double) fieldGet("posY");
+        return obj.fieldGet$posY();
     }
 
     @Override
     public double getZ() {
-        return (double) fieldGet("posZ");
+        return obj.fieldGet$posZ();
     }
 
     @Override
@@ -148,7 +152,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public void mount(Entity entity) {
-        invoke("mountEntity", ((GraniteEntity) entity).parent);
+        obj.mountEntity(entity == null ? null : (MCEntity) unwrap(entity));
     }
 
     @Override
@@ -164,25 +168,24 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public Optional<Entity> getRider() {
-        Entity rider = (Entity) MinecraftUtils.wrapComposite(fieldGet("riddenByEntity"));
+        Entity rider = wrap(obj.fieldGet$riddenByEntity());
         return Optional.fromNullable(rider);
     }
 
     @Override
     public Optional<Entity> getRiding() {
-        Entity riding = (Entity) MinecraftUtils.wrapComposite(fieldGet("ridingEntity"));
+        Entity riding = wrap(obj.fieldGet$ridingEntity());
         return Optional.fromNullable(riding);
     }
 
     @Override
     public float getBase() {
-        // TODO: Make sure this means what I think it means
-        return (float) fieldGet("width");
+        return obj.fieldGet$width();
     }
 
     @Override
     public float getHeight() {
-        return (float) fieldGet("height");
+        return obj.fieldGet$height();
     }
 
     @Override
@@ -193,28 +196,29 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public boolean isDead() {
-        return (boolean) fieldGet("isDead");
+        return obj.fieldGet$isDead();
     }
 
     @Override
     public boolean isValid() {
+        // TODO: What is this?
         throw new NotImplementedException("");
     }
 
     @Override
     public int getFireTicks() {
-        return (int) fieldGet("fire");
+        return obj.fieldGet$fire();
     }
 
     @Override
     public void setFireTicks(int ticks) {
         // TODO: This might need to check enchantments first
-        fieldSet("fire", ticks);
+        obj.fieldSet$fire(ticks);
     }
 
     @Override
     public int getFireDelay() {
-        return (int) fieldGet("fireResistance");
+        return obj.fieldGet$fireResistance();
     }
 
     @Override
@@ -237,7 +241,7 @@ public class GraniteEntity extends Composite implements Entity {
 
     @Override
     public UUID getUniqueId() {
-        return (UUID) fieldGet("entityUniqueID");
+        return obj.fieldGet$entityUniqueID();
     }
 
     @Override

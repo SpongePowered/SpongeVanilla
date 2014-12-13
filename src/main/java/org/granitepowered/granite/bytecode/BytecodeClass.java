@@ -1,0 +1,271 @@
+/*
+ * License (MIT)
+ *
+ * Copyright (c) 2014 Granite Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package org.granitepowered.granite.bytecode;
+
+import javassist.*;
+import javassist.bytecode.AccessFlag;
+import javassist.expr.ExprEditor;
+import org.apache.commons.lang3.ArrayUtils;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCInterface;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+
+public class BytecodeClass {
+    CtClass clazz;
+
+    List<PostCallback> callbacks;
+
+    static Map<CtClass, Class<?>> classMap;
+
+    public BytecodeClass(CtClass clazz) {
+        this.clazz = clazz;
+
+        classMap = new HashMap<>();
+
+        callbacks = new ArrayList<>();
+    }
+
+    public void proxy(String methodName, ProxyHandler handler) {
+        try {
+            final CtMethod method = Mappings.getCtMethod(clazz, methodName);
+
+            final String oldName = method.getName();
+            method.setName(oldName + "$cb");
+
+            injectField(ClassPool.getDefault().get(Method.class.getName()), oldName + "$method", new PostCallback() {
+                @Override
+                public void callback() {
+                    try {
+                        Field f = getFromCt(clazz).getDeclaredField(oldName + "$method");
+
+                        Class<?>[] paramTypes = new Class[method.getParameterTypes().length];
+                        for (int i = 0; i < paramTypes.length; i++) {
+                            paramTypes[i] = method.getParameterTypes()[i].toClass();
+                        }
+
+                        @SuppressWarnings("unchecked")
+                        Method m = getFromCt(method.getDeclaringClass()).getDeclaredMethod(method.getName(), paramTypes);
+
+                        f.setAccessible(true);
+                        f.set(null, m);
+                    } catch (NoSuchFieldException | NoSuchMethodException | NotFoundException | IllegalAccessException | CannotCompileException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            injectField(ClassPool.getDefault().get(ProxyHandler.class.getName()), oldName + "$handler", handler);
+
+            CtMethod newMethod = new CtMethod(method.getReturnType(), oldName, method.getParameterTypes(), method.getDeclaringClass());
+            newMethod.setBody("return " + oldName + "$handler.preHandle(this, $args, " + oldName + "$method);");
+
+            clazz.addMethod(newMethod);
+        } catch (NotFoundException | CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void injectField(String name, Object value) {
+        injectField(clazz, name, value);
+    }
+
+    public void injectField(CtClass type, String name, PostCallback callback) {
+        try {
+            CtField f = new CtField(type, name, clazz);
+            f.setModifiers(0x0008); // static
+            clazz.addField(f);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+
+        callbacks.add(callback);
+    }
+
+    public void injectField(CtClass type, final String name, final Object value) {
+        injectField(type, name, new PostCallback() {
+            @Override
+            public void callback() {
+                try {
+                    Field f = getFromCt(clazz).getDeclaredField(name);
+                    f.setAccessible(true);
+                    f.set(null, value);
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void implement(Class<? extends MCInterface> mcInterface) {
+        try {
+            CtClass ctMcInterface = ClassPool.getDefault().get(mcInterface.getName());
+
+            if (!Arrays.asList(clazz.getInterfaces()).contains(ctMcInterface)) {
+                for (CtMethod interfaceMethod : ctMcInterface.getDeclaredMethods()) {
+                    if (interfaceMethod.getName().startsWith("fieldGet$")) {
+                        CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldSet$".length()));
+                        mcField.setModifiers(AccessFlag.setPublic(mcField.getModifiers()));
+
+                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), new CtClass[]{}, mcField.getDeclaringClass());
+
+                        newMethod.setBody("return ($r)" + mcField.getName() + ";");
+
+                        mcField.getDeclaringClass().addMethod(newMethod);
+                    } else if (interfaceMethod.getName().startsWith("fieldSet$")) {
+                        CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldSet$".length()));
+
+                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), mcField.getDeclaringClass());
+
+                        newMethod.setBody(mcField.getName() + " = $1;");
+
+                        mcField.getDeclaringClass().addMethod(newMethod);
+                    } else {
+                        CtMethod mcMethod = Mappings.getCtMethod(clazz, interfaceMethod.getName());
+
+                        if (mcMethod == null) {
+                            throw new RuntimeException(interfaceMethod.getName() + " not found in mappings");
+                        }
+
+                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
+
+                        String methodSig;
+                        if (newMethod.getParameterTypes().length > 0) {
+                            methodSig = "(";
+
+                            for (int i = 0; i < newMethod.getParameterTypes().length; i++) {
+                                CtClass actualType = mcMethod.getParameterTypes()[i];
+
+                                methodSig += "(" + actualType.getName() + ") $" + (i + 1) + ",";
+                            }
+
+                            methodSig = methodSig.substring(0, methodSig.length() - 1) + ")";
+                        } else {
+                            methodSig = "()";
+                        }
+
+                        newMethod.setBody("return ($r) " + mcMethod.getName() + methodSig + ";");
+
+                        clazz.addMethod(newMethod);
+                    }
+                }
+
+                clazz.addInterface(ctMcInterface);
+            }
+        } catch (NotFoundException | CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void instrumentMethod(String methodName, ExprEditor editor) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            method.instrument(editor);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void instrument(ExprEditor editor) {
+        try {
+            clazz.instrument(editor);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void convertMethod(String methodName, CodeConverter converter) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            method.instrument(converter);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void convert(CodeConverter converter) {
+        try {
+            clazz.instrument(converter);
+        } catch (CannotCompileException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void post() {
+        try {
+            clazz.toClass();
+            clazz.writeFile("debug/");
+        } catch (CannotCompileException e) {
+            if (!(e.getCause() instanceof LinkageError)) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (PostCallback callback : callbacks) {
+            callback.callback();
+        }
+    }
+
+    private static Class<?> getFromCt(CtClass clazz) {
+        if (!classMap.containsKey(clazz)) {
+            try {
+                classMap.put(clazz, clazz.toClass());
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+        }
+        return classMap.get(clazz);
+    }
+
+    public static interface ProxyHandlerCallback {
+        Object invokeParent(Object... args) throws Throwable;
+    }
+
+    public static abstract class ProxyHandler {
+        public Object preHandle(final Object caller, Object[] args, final Method method) throws Throwable {
+            ProxyHandlerCallback callback = new ProxyHandlerCallback() {
+                @Override
+                public Object invokeParent(Object... args) throws Throwable {
+                    MethodHandle handle = MethodHandles.lookup().unreflect(method);
+                    return handle.invokeWithArguments(ArrayUtils.add(args, 0, caller));
+                }
+            };
+
+            return handle(caller, args, callback);
+        }
+
+        protected abstract Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable;
+    }
+
+    private static interface PostCallback {
+        void callback();
+    }
+}

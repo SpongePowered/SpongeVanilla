@@ -21,26 +21,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode;
+package org.granitepowered.granite.mc;
 
-import javassist.*;
+@Implement(name="Block")
+public interface MCBlock extends MCInterface {
+    MCBlockState fieldGet$defaultBlockState();
 
-public class BytecodeMethodReplacerModification extends BytecodeModification {
-    CtMethod method;
-    String code;
+    boolean fieldGet$needsRandomTick();
 
-    public BytecodeMethodReplacerModification(CtMethod method, String code) {
-        super(method.getDeclaringClass());
-        this.code = code;
-        this.method = method;
-    }
+    void fieldSet$needsRandomTick(boolean value);
 
-    @Override
-    public void modify() {
-        try {
-            method.setBody(code);
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
-        }
-    }
+    int fieldGet$lightValue();
+
+    float fieldGet$blockHardness();
+
+    MCMaterial fieldGet$blockMaterial();
+
+    MCBlockState getStateFromMeta(int meta);
+
+    int getMetaFromState(MCBlockState state);
 }

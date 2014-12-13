@@ -21,22 +21,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+@Implement(name="EntityPlayerMP")
+public interface MCEntityPlayerMP extends MCEntityLiving {
+    MCPlayerCapabilities fieldGet$capabilities();
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+    MCFoodStats fieldGet$foodStats();
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    MCGameProfile fieldGet$gameProfile();
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    MCContainer fieldGet$openContainer();
+
+    //void addChatComponentMessage(MCChatComponent component);
+
+    MCNetHandlerPlayServer fieldGet$playerNetServerHandler();
 }

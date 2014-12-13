@@ -27,10 +27,15 @@ import com.google.gson.*;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializer<GraniteEntity> {
     // Can't be bothered to wrap the proper methods so doing string manipulation
@@ -60,14 +65,14 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
             }
         }
 
-        Object world = ((Object[]) Granite.getInstance().getServer().fieldGet("worldServers"))[0];
+        MCWorld world = unwrap(Granite.getInstance().getServer().getWorlds().iterator().next());
 
-        GraniteEntity entity = (GraniteEntity) MinecraftUtils.wrapComposite(Mappings.invokeStatic("createEntityByName", type, world));
-        if (!entity.invoke("getName").equals(name)) {
-            entity.invoke("setCustomNameTag", name);
+        MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type, world);
+        if (!entity.getName().equals(name)) {
+           entity.setCustomNameTag(name);
         }
 
-        return entity;
+        return wrap(entity);
     }
 
     @Override
@@ -75,8 +80,8 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
         String id = src.getUniqueId().toString();
         try {
             Map<Class<?>, String> map = (Map<Class<?>, String>) Mappings.getField("EntityList", "classToStringMapping").get(null);
-            String type = map.get(src.parent.getClass());
-            String name = (String) src.invoke("getName");
+            String type = map.get(src.obj.getClass());
+            String name = ((MCEntity) unwrap(src)).getName();
 
             return new JsonPrimitive("{name:\"" + name + "\",id:\"" + id + "\n,type:\"" + type + "\n}");
         } catch (IllegalAccessException e) {

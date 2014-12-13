@@ -30,9 +30,9 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
-import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
@@ -43,33 +43,34 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.message.Message;
-import org.spongepowered.api.text.message.MessageBuilder;
 import org.spongepowered.api.text.title.Title;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class GranitePlayer extends GraniteLiving implements Player {
-    private Message displayName;
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
 
-    public GranitePlayer(Object parent) {
-        super(parent);
+public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Player {
+    private Optional<Message> displayName = Optional.absent();
+
+    public GranitePlayer(MCEntityPlayerMP obj) {
+        super(obj);
     }
 
     @Override
     public Message getDisplayName() {
-        return displayName == null ? new GraniteMessageBuilder.GraniteTextMessageBuilder().content(getName()).build() : displayName;
+        return displayName.or(new GraniteMessageBuilder.GraniteTextMessageBuilder().content(getName()).build());
     }
 
     @Override
     public boolean getAllowFlight() {
-        return (boolean) fieldGet(getPlayerCapabilities(), "allowFlying");
+        return getPlayerCapabilities().fieldGet$allowFlying();
     }
 
     @Override
     public void setAllowFlight(boolean allowFlight) {
-        fieldSet(getPlayerCapabilities(), "allowFlying", allowFlight);
+        getPlayerCapabilities().fieldSet$allowFlying(allowFlight);
     }
 
     @Override
@@ -109,58 +110,58 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     @Override
     public Optional<ItemStack> getHelmet() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[4]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[4]));
     }
 
     @Override
     public void setHelmet(@Nullable ItemStack helmet) {
-        ((Object[]) fieldGet("equipment"))[4] = helmet == null ? null : ((GraniteItemStack) helmet).parent;
+        obj.fieldGet$equipment()[4] = helmet == null ? null : (MCItemStack) unwrap(helmet);
     }
 
     @Override
     public Optional<ItemStack> getChestplate() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[3]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[3]));
     }
 
     @Override
     public void setChestplate(@Nullable ItemStack chestplate) {
-        ((Object[]) fieldGet("equipment"))[3] = chestplate == null ? null : ((GraniteItemStack) chestplate).parent;
+        obj.fieldGet$equipment()[3] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
     }
 
     @Override
     public Optional<ItemStack> getLeggings() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[2]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[2]));
     }
 
     @Override
     public void setLeggings(@Nullable ItemStack leggings) {
-        ((Object[]) fieldGet("equipment"))[2] = leggings == null ? null : ((GraniteItemStack) leggings).parent;
+        obj.fieldGet$equipment()[2] = leggings == null ? null : (MCItemStack) unwrap(leggings);
     }
 
     @Override
     public Optional<ItemStack> getBoots() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[1]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[1]));
 
     }
 
     @Override
     public void setBoots(@Nullable ItemStack boots) {
-        ((Object[]) fieldGet("equipment"))[1] = boots == null ? null : ((GraniteItemStack) boots).parent;
+        obj.fieldGet$equipment()[1] = boots == null ? null : (MCItemStack) unwrap(boots);
     }
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrapComposite(((Object[]) fieldGet("equipment"))[0]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[0]));
     }
 
     @Override
     public void setItemInHand(@Nullable ItemStack itemInHand) {
-        ((Object[]) fieldGet("equipment"))[0] = itemInHand == null ? null : ((GraniteItemStack) itemInHand).parent;
+        obj.fieldGet$equipment()[0] = itemInHand == null ? null : (MCItemStack) unwrap(itemInHand);
     }
 
     @Override
     public String getName() {
-        return (String) fieldGet(getGameProfile(), "name");
+        return getGameProfile().fieldGet$name();
     }
 
     @Override
@@ -246,27 +247,27 @@ public class GranitePlayer extends GraniteLiving implements Player {
 
     @Override
     public float getHunger() {
-        return (float) fieldGet(getFoodStats(), "foodLevel");
+        return getFoodStats().fieldGet$foodLevel();
     }
 
     @Override
     public void setHunger(float hunger) {
-        fieldSet(getFoodStats(), "foodLevel", hunger);
+        getFoodStats().fieldSet$foodLevel((int) hunger);
     }
 
     @Override
     public float getSaturation() {
-        return (float) fieldGet(getFoodStats(), "foodSaturationLevel");
+        return getFoodStats().fieldGet$foodSaturationLevel();
     }
 
     @Override
     public void setSaturation(float saturation) {
-        fieldSet(getFoodStats(), "foodSaturationLevel", saturation);
+        getFoodStats().fieldSet$foodSaturationLevel(saturation);
     }
 
     @Override
     public boolean isViewingInventory() {
-        return fieldGet("openContainer") != null;
+        return obj.fieldGet$openContainer() != null;
     }
 
     @Override
@@ -317,8 +318,8 @@ public class GranitePlayer extends GraniteLiving implements Player {
         try {
             Message message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
 
-            Object packet = Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
-                    MinecraftUtils.graniteToMinecraftMessage(message),
+            MCPacket packet = (MCPacket) Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
+                    graniteToMinecraftMessage(message),
                     ((GraniteChatType) type).getId()
             );
             sendPacket(packet);
@@ -327,19 +328,19 @@ public class GranitePlayer extends GraniteLiving implements Player {
         }
     }
 
-    public Object getGameProfile() {
-        return fieldGet("gameProfile");
+    public MCGameProfile getGameProfile() {
+        return obj.fieldGet$gameProfile();
     }
 
-    public Object getPlayerCapabilities() {
-        return fieldGet("capabilities");
+    public MCPlayerCapabilities getPlayerCapabilities() {
+        return obj.fieldGet$capabilities();
     }
 
-    public Object getFoodStats() {
-        return fieldGet("foodStats");
+    public MCFoodStats getFoodStats() {
+        return obj.fieldGet$foodStats();
     }
 
-    public void sendPacket(Object packet) {
-        Mappings.invoke(fieldGet("playerNetServerHandler"), "sendPacket", packet);
+    public void sendPacket(MCPacket packet) {
+        obj.fieldGet$playerNetServerHandler().sendPacket(packet);
     }
 }

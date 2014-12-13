@@ -24,9 +24,6 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.granitepowered.granite.bytecode.BytecodeMethodReplacerModification;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
@@ -154,11 +151,6 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.getLogger().info("Modifying bytecode");
 
         BytecodeModifier modifier = new BytecodeModifier();
-
-        modifier.getModifications().add(new BytecodeMethodReplacerModification(Mappings.getCtMethod("MinecraftServer", "getServerModName"),
-                "return \"granite\";"
-        ));
-
         modifier.modify();
     }
 

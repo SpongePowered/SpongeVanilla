@@ -21,33 +21,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode;
+package org.granitepowered.granite.mc;
 
-import javassist.*;
-import javassist.expr.ExprEditor;
-
-public class BytecodeFieldInjectorModification extends BytecodeModification {
-    String name;
-    Object value;
-    CtClass valueClass;
-
-    public BytecodeFieldInjectorModification(CtClass clazz, String name, Object value) {
-        super(clazz);
-        this.name = name;
-        this.value = value;
-        try {
-            this.valueClass = ClassPool.getDefault().get(value.getClass().getName());
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void modify() {
-        try {
-            clazz.addField(new CtField(valueClass, "$" + name, clazz));
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
-        }
-    }
+@Implement(name="Packet")
+public interface MCPacket extends MCInterface {
 }

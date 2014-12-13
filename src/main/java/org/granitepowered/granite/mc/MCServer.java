@@ -21,22 +21,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+@Implement(name="MinecraftServer")
+public interface MCServer extends MCInterface {
+    MCWorld[] fieldGet$worldServers();
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+    MCServerConfigurationManager fieldGet$serverConfigManager();
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    boolean fieldGet$onlineMode();
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    void startServerThread();
 }

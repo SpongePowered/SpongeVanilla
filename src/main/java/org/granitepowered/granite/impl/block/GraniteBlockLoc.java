@@ -27,10 +27,9 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
-import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.utils.MinecraftUtils;
+import org.granitepowered.granite.mc.*;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -42,6 +41,8 @@ import org.spongepowered.api.world.extent.Extent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
 
 public class GraniteBlockLoc implements BlockLoc {
     Location location;
@@ -87,7 +88,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public BlockState getState() {
-        return (BlockState) MinecraftUtils.wrapComposite(getWorld().invoke("getBlockState", getBlockPos()));
+        return wrap(getWorld().obj.getBlockState(getBlockPos()));
     }
 
     @Override
@@ -98,7 +99,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminanceFromGround() {
-        return (byte) getWorld().invoke("getLightFor", Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
+        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
     }
 
     @Override
@@ -139,7 +140,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminanceFromSky() {
-        return (byte) getWorld().invoke("getLightFor", Mappings.getClass("EnumSkyBlock").getEnumConstants()[0], getBlockPos());
+        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
     }
 
     @Override
@@ -162,24 +163,21 @@ public class GraniteBlockLoc implements BlockLoc {
     @Override
     public int getDigTimeWith(@Nullable ItemStack itemStack) {
         // This is mostly copied from Minecraft's source, I have no idea how most of it works
-        float hardness = (float) ((GraniteBlockType) getType()).fieldGet("blockHardness");
 
-        Object material = ((GraniteBlockType) getType()).fieldGet("blockMaterial");
+        float hardness = getMCType().fieldGet$blockHardness();
 
-        boolean canHarvest = false;
-        try {
-            canHarvest = (boolean) Mappings.getField("Material", "requiresNoTool").get(material) || itemStack != null && (boolean) ((GraniteItemStack) itemStack).invoke("canHarvestBlock", ((GraniteBlockType) getType()).parent);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        MCMaterial material = getMCType().fieldGet$blockMaterial();
+
+        boolean canHarvest = material.fieldGet$requiresNoTool() || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCType());
 
         float strength = 1.0F;
         if (itemStack != null) {
-            strength *= (float) ((GraniteItemType) itemStack.getItem()).invoke("getStrVsBlock", ((GraniteItemStack) itemStack).parent, ((GraniteBlockType) getType()).parent);
+            MCItem item = unwrap(itemStack.getItem());
+            strength *= item.getStrVsBlock((MCItemStack) unwrap(itemStack), (MCBlock) unwrap(getType()));
         }
 
         if (strength > 2.0F) {
-            int efficiencyModifier = (int) Mappings.invokeStatic("EnchantmentHelper", "getEnchantmentLevel", 32, ((GraniteItemStack) itemStack).parent);
+            int efficiencyModifier = (int) Mappings.invokeStatic("EnchantmentHelper", "getEnchantmentLevel", 32, ((GraniteItemStack) itemStack).obj);
 
             if (efficiencyModifier > 0) {
                 strength += efficiencyModifier * efficiencyModifier + 1;
@@ -194,12 +192,12 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminance() {
-        return (byte) ((GraniteBlockType) getType()).fieldGet("lightValue");
+        return (byte) getMCType().fieldGet$lightValue();
     }
 
     @Override
     public void replaceWith(BlockState state) {
-        getWorld().invoke("setBlockState", getBlockPos(), ((GraniteBlockState) state).parent);
+        getWorld().obj.setBlockState(getBlockPos(), (MCBlockState) unwrap(state));
     }
 
     @Override
@@ -235,7 +233,11 @@ public class GraniteBlockLoc implements BlockLoc {
         return ((GraniteWorld) getExtent());
     }
 
-    public Object getBlockPos() {
-        return MinecraftUtils.graniteToMinecraftBlockPos(getPosition());
+    public MCBlockPos getBlockPos() {
+        return (MCBlockPos) graniteToMinecraftBlockPos(getPosition());
+    }
+
+    public MCBlock getMCType() {
+        return unwrap(getType());
     }
 }

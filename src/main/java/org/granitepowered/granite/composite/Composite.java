@@ -23,28 +23,28 @@
 
 package org.granitepowered.granite.composite;
 
-import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.utils.ReflectionUtils;
+import org.granitepowered.granite.mc.MCInterface;
 
-import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Composite {
+public abstract class Composite<T extends MCInterface> {
     public static Map<Class<? extends Composite>, Map<Object, Composite>> instanceMap = new HashMap<>();
-    public Object parent;
-    public Class<?> clazz;
+    public T obj;
 
-    public Composite(Object parent) {
-        this.parent = parent;
-        this.clazz = ReflectionUtils.extractClass(parent);
+    public Composite(Object obj) {
+        this.obj = (T) obj;
+    }
+
+    public Composite(T obj) {
+        this.obj = obj;
     }
 
     public Composite(Class<?> clazz, Class<?>[] constructorArgTypes, Object... constructorArgs) {
         try {
-            this.parent = clazz.getConstructor(constructorArgTypes).newInstance(constructorArgs);
-            this.clazz = clazz;
+            this.obj = (T) clazz.getConstructor(constructorArgTypes).newInstance(constructorArgs);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -54,23 +54,23 @@ public abstract class Composite {
         this(clazz, ReflectionUtils.getTypes(constructorArgs), constructorArgs);
     }*/
 
-    public Object invoke(Object instance, MethodHandle m, Object... args) {
+    /*public Object invoke(Object instance, MethodHandle m, Object... args) {
         return Mappings.invoke(instance, m, args);
     }
 
     public Object invoke(MethodHandle m, Object... args) {
-        return invoke(parent, m, args);
+        return invoke(obj, m, args);
     }
 
     public Object invoke(String methodName, Object... args) {
         return invoke(Mappings.getMethod(clazz, methodName), args);
-    }
+    }*/
 
     /*public Object invoke(String className, SignatureParser.MethodSignature methodSignature, Object... args) {
         return invoke(Mappings.getMethod(className, methodSignature), args);
     }*/
 
-    public Object fieldGet(Object instance, String fieldName) {
+    /*public Object fieldGet(Object instance, String fieldName) {
         try {
             return Mappings.getField(instance.getClass(), fieldName).get(instance);
         } catch (IllegalAccessException e) {
@@ -80,7 +80,7 @@ public abstract class Composite {
     }
 
     public Object fieldGet(String fieldName) {
-        return fieldGet(parent, fieldName);
+        return fieldGet(obj, fieldName);
     }
 
 
@@ -93,11 +93,11 @@ public abstract class Composite {
     }
 
     public void fieldSet(String fieldName, Object value) {
-        fieldSet(parent, fieldName, value);
-    }
+        fieldSet(obj, fieldName, value);
+    }*/
 
 
-    public static <T extends Composite> T new_(Object parent, Class<T> compositeType) {
+    public static <T extends Composite> T new_(MCInterface parent, Class<T> compositeType) {
         if (!instanceMap.containsKey(compositeType)) {
             instanceMap.put(compositeType, new HashMap<Object, Composite>());
         }
@@ -106,8 +106,12 @@ public abstract class Composite {
         } else {
             T composite = null;
             try {
-                composite = compositeType.getConstructor(Object.class).newInstance(parent);
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                for (Constructor c : compositeType.getConstructors()) {
+                    if (c.getParameterTypes().length == 1 && c.getParameterTypes()[0].isAssignableFrom(parent.getClass())) {
+                        composite = (T) c.newInstance(parent);
+                    }
+                }
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
             instanceMap.get(compositeType).put(parent, composite);
@@ -122,16 +126,11 @@ public abstract class Composite {
 
         Composite composite = (Composite) o;
 
-        if (!clazz.equals(composite.clazz)) return false;
-        if (!parent.equals(composite.parent)) return false;
-
-        return true;
+        return obj.equals(composite.obj);
     }
 
     @Override
     public int hashCode() {
-        int result = parent.hashCode();
-        result = 31 * result + clazz.hashCode();
-        return result;
+        return obj.hashCode();
     }
 }

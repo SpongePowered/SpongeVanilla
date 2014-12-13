@@ -21,22 +21,61 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+import java.util.UUID;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+@Implement(name="Entity")
+public interface MCEntity extends MCInterface {
+    boolean fieldGet$onGround();
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    double fieldGet$posX();
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    double fieldGet$posY();
+
+    double fieldGet$posZ();
+
+    MCEntity fieldGet$riddenByEntity();
+
+    MCEntity fieldGet$ridingEntity();
+
+    float fieldGet$width();
+
+    float fieldGet$height();
+
+    boolean fieldGet$isDead();
+
+    int fieldGet$fire();
+
+    void fieldSet$fire(int ticks);
+
+    UUID fieldGet$entityUniqueID();
+
+    int fieldGet$fireResistance();
+
+    MCWorld fieldGet$worldObj();
+
+    int fieldGet$hurtResistantTime();
+
+    void fieldSet$hurtResistantTime(int ticks);
+
+    void mountEntity(MCEntity other);
+
+    float getEyeHeight();
+
+    int getAir();
+
+    void setAir(int air);
+
+    String getCustomNameTag();
+
+    void setCustomNameTag(String tag);
+
+    boolean getAlwaysRenderNameTag();
+
+    void setAlwaysRenderNameTag(boolean value);
+
+    String getName();
+
+    void setPosition(double x, double y, double z);
 }

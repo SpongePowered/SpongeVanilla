@@ -280,16 +280,63 @@ public class Mappings {
     }
 
     public static CtMethod getCtMethod(CtClass clazz, String methodName) {
-        return ctMethods.get(clazz).get(methodName);
+        if (ctMethods.containsKey(clazz) && ctMethods.get(clazz).containsKey(methodName)) {
+            return ctMethods.get(clazz).get(methodName);
+        }
+
+        try {
+            for (CtClass interfac : clazz.getInterfaces()) {
+                CtMethod imethod = getCtMethod(interfac, methodName);
+                if (imethod != null) {
+                    return imethod;
+                }
+            }
+
+            CtClass superClass = clazz.getSuperclass();
+
+            if (superClass != null) {
+                CtMethod method = getCtMethod(superClass, methodName);
+                if (method != null) {
+                    return method;
+                }
+            }
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static CtMethod getCtMethod(String clazz, String methodName) {
         return getCtMethod(getCtClass(clazz), methodName);
     }
 
+    public static CtField getCtField(CtClass clazz, String humanFieldName) {
+        try {
+            CtField ctField = ctFields.get(clazz).get(humanFieldName);
+
+            if (ctField == null && !clazz.getName().equals("java.lang.Object")) {
+                return getCtField(clazz.getSuperclass(), humanFieldName);
+            }
+
+            return ctField;
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static CtField getCtField(String clazz, String humanCtfieldName) {
+        return getCtField(getCtClass(clazz), humanCtfieldName);
+    }
+
+    public static CtField getCtField(Class<?> clazz, String humanCtfieldName) {
+        return getCtField(getCtClass(clazz), humanCtfieldName);
+    }
+
     public static Object invoke(Object object, String methodName, Object... args) {
         return invoke(object, getMethod(getCtClass(object.getClass()), methodName), args);
     }
+
 
     public static Object invoke(Object object, MethodHandle handle, Object... args) {
         try {

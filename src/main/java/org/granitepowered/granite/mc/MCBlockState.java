@@ -21,22 +21,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+import com.google.common.collect.ImmutableMap;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+@Implement(name="BlockState")
+public interface MCBlockState extends MCInterface {
+    MCBlock fieldGet$block();
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    ImmutableMap<MCProperty, Comparable> fieldGet$properties();
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    MCBlockState withProperty(MCProperty property, Comparable value);
 }

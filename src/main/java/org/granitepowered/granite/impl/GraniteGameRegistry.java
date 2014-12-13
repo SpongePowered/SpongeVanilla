@@ -27,10 +27,10 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.block.GraniteBlockType;
-import org.granitepowered.granite.impl.item.GraniteItemBlock;
-import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBlock;
+import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
@@ -43,7 +43,6 @@ import org.spongepowered.api.entity.living.meta.*;
 import org.spongepowered.api.entity.living.villager.Career;
 import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
-import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
@@ -52,10 +51,11 @@ import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.world.biome.BiomeType;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
 
 public class GraniteGameRegistry implements GameRegistry {
     Map<String, BlockType> blockTypes = Maps.newHashMap();
@@ -74,9 +74,9 @@ public class GraniteGameRegistry implements GameRegistry {
 
             String name = field.getName().toLowerCase();
             try {
-                Object mcBlock = Mappings.invokeStatic("Blocks", "getRegisteredBlock", name);
+                MCBlock mcBlock = (MCBlock) Mappings.invokeStatic("Blocks", "getRegisteredBlock", name);
 
-                BlockType block = (BlockType) MinecraftUtils.wrapComposite(mcBlock);
+                BlockType block = wrap(mcBlock);
                 field.set(null, block);
                 blockTypes.put(name, block);
 
@@ -99,21 +99,9 @@ public class GraniteGameRegistry implements GameRegistry {
 
             String name = field.getName().toLowerCase();
             try {
+                Object mcItem = Mappings.invokeStatic("Items", "getRegisteredItem", name);
 
-                String nameInMc = name;
-
-                // This is needed because of a Sponge API bug, should be fixed soon
-                if (name.equals("oak_fence")) {
-                    nameInMc = "fence";
-                } else if (name.equals("oak_fence_gate")) {
-                    nameInMc = "fence_gate";
-                } else if (name.equals("slime_block")) {
-                    nameInMc = "slime";
-                }
-
-                Object mcItem = Mappings.invokeStatic("Items", "getRegisteredItem", nameInMc);
-
-                ItemType item = (ItemType) MinecraftUtils.wrapComposite(mcItem);
+                ItemType item = wrap((MCItem) mcItem);
                 field.set(null, item);
                 itemTypes.put(name, item);
 

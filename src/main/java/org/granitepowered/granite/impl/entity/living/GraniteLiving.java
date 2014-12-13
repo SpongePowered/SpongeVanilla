@@ -28,25 +28,29 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCDamageSource;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEntityLiving;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
 
-import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.List;
 
-public class GraniteLiving extends GraniteEntity implements Living {
-    public GraniteLiving(Object parent) {
-        super(parent);
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
+
+public class GraniteLiving<T extends MCEntityLiving> extends GraniteEntity<T> implements Living {
+    public GraniteLiving(T obj) {
+        super(obj);
     }
 
     @Override
     public void damage(double amount) {
         try {
-            invoke("damageEntity", Mappings.getField("DamageSource", "generic").get(null));
+            obj.damageEntity((MCDamageSource) Mappings.getField("DamageSource", "generic").get(null), (float) amount);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -54,17 +58,17 @@ public class GraniteLiving extends GraniteEntity implements Living {
 
     @Override
     public double getHealth() {
-        return (double) invoke("getHealth");
+        return obj.getHealth();
     }
 
     @Override
     public void setHealth(double health) {
-        invoke("setHealth", health);
+        obj.setHealth((float) health);
     }
 
     @Override
     public double getMaxHealth() {
-        return (double) invoke("getMaxHealth");
+        return obj.getMaxHealth();
     }
 
     @Override
@@ -105,27 +109,23 @@ public class GraniteLiving extends GraniteEntity implements Living {
 
     @Override
     public Optional<Living> getLastAttacker() {
-        Object living = fieldGet("lastAttacker");
-        if (living != null) {
-            return Optional.of((Living) MinecraftUtils.wrapComposite(living));
-        } else {
-            return Optional.absent();
-        }
+        MCEntityLiving living = obj.fieldGet$lastAttacker();
+        return Optional.fromNullable((Living) wrap(living));
     }
 
     @Override
     public void setLastAttacker(Living lastAttacker) {
-        fieldSet("lastAttacker", ((GraniteLiving) lastAttacker).parent);
+        obj.fieldSet$lastAttacker((MCEntityLiving) unwrap(lastAttacker));
     }
 
     @Override
     public boolean isLeashed() {
-        return (boolean) fieldGet("isLeashed");
+        return obj.fieldGet$isLeashed();
     }
 
     @Override
     public void setLeashed(boolean leashed) {
-        fieldSet("isLeashed", leashed);
+        obj.fieldSet$isLeashed(leashed);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class GraniteLiving extends GraniteEntity implements Living {
 
     @Override
     public double getEyeHeight() {
-        return (double) invoke("getEyeHeight");
+        return obj.getEyeHeight();
     }
 
     @Override
@@ -153,12 +153,12 @@ public class GraniteLiving extends GraniteEntity implements Living {
 
     @Override
     public int getRemainingAir() {
-        return (int) invoke("getAir");
+        return obj.getAir();
     }
 
     @Override
     public void setRemainingAir(int air) {
-        invoke("setAir", air);
+        obj.setAir(air);
     }
 
     @Override
@@ -175,65 +175,62 @@ public class GraniteLiving extends GraniteEntity implements Living {
 
     @Override
     public double getLastDamage() {
-        return (double) fieldGet("lastDamage");
+        return obj.fieldGet$lastDamage();
     }
 
     @Override
     public void setLastDamage(double damage) {
-        fieldSet("lastDamage", damage);
+        obj.fieldSet$lastDamage((float) damage);
     }
 
     @Override
     public int getInvulnerabilityTicks() {
-        // TODO: Where are invulnerability ticks in Minecraft?
-        throw new NotImplementedException("");
+        return obj.fieldGet$hurtResistantTime();
     }
 
     @Override
     public void setInvulnerabilityTicks(int ticks) {
-        // TODO: Where are invulnerability ticks in Minecraft?
-        throw new NotImplementedException("");
+        obj.fieldSet$hurtResistantTime(ticks);
     }
 
     @Override
     public int getMaxInvulnerabilityTicks() {
-        // TODO: Where are invulnerability ticks in Minecraft?
-        throw new NotImplementedException("");
+        // Minecraft stores this as half-ticks for some reason (default is 20 = 0.5 seconds, wut?)
+        return obj.fieldGet$maxHurtResistantTime() / 2;
     }
 
     @Override
     public void setMaxInvulnerabilityTicks(int ticks) {
-        // TODO: Where are invulnerability ticks in Minecraft?
-        throw new NotImplementedException("");
+        obj.fieldSet$maxHurtResistantTime(ticks * 2);
     }
 
     @Override
     public boolean getCanPickupItems() {
-        return (boolean) fieldGet("canPickUpLoot");
+        return obj.fieldGet$canPickUpLoot();
     }
 
     @Override
     public void setCanPickupItems(boolean canPickupItems) {
-        fieldSet("canPickUpLoot", canPickupItems);
+        obj.fieldSet$canPickUpLoot(canPickupItems);
     }
 
     @Override
     public String getCustomName() {
-        return (String) invoke("getCustomNameTag");
+        return obj.getCustomNameTag();
     }
 
     @Override
     public void setCustomName(String name) {
-        invoke("setCustomNameTag", name);
+        obj.setCustomNameTag(name);
     }
 
     @Override
     public boolean isCustomNameVisible() {
-        return (boolean) invoke("getAlwaysRenderNameTag");
+        return obj.getAlwaysRenderNameTag();
     }
 
     @Override
     public void setCustomNameVisible(boolean visible) {
-        invoke("setAlwaysRenderNameTag", visible);
+        obj.setAlwaysRenderNameTag(visible);
     }
 }

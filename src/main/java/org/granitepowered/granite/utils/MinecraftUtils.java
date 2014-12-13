@@ -37,11 +37,12 @@ import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.item.GraniteItemType;
-import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCInterface;
 import org.spongepowered.api.text.message.Message;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
@@ -60,7 +61,8 @@ public class MinecraftUtils {
             .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
             .build();
 
-    public static Composite wrapComposite(Object obj) {
+    @Nonnull
+    public static <T extends Composite> T wrap(MCInterface obj) {
         if (obj == null) return null;
 
         Class<?> clazz = obj.getClass();
@@ -72,10 +74,18 @@ public class MinecraftUtils {
         }
 
         if (composites.containsKey(clazz)) {
-            return Composite.new_(obj, composites.get(clazz));
+            return (T) Composite.new_(obj, composites.get(clazz));
         } else {
             return null;
         }
+    }
+
+    public static <T extends MCInterface> T unwrap(Object composite) {
+        return (T) unwrap((Composite<?>) composite);
+    }
+
+    public static <T extends MCInterface> T unwrap(Composite<T> composite) {
+        return composite.obj;
     }
 
     public static Object graniteToMinecraftMessage(Message message) {
@@ -92,11 +102,11 @@ public class MinecraftUtils {
         return null;
     }
 
-    public static class WrapFunction<T> implements Function<Object, T> {
+    public static class WrapFunction<T extends Composite> implements Function<MCInterface, T> {
         @Nullable
         @Override
-        public T apply(Object input) {
-            return (T) wrapComposite(input);
+        public T apply(@Nullable MCInterface input) {
+            return wrap(input);
         }
     }
 }

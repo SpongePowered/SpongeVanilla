@@ -21,27 +21,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode;
+package org.granitepowered.granite.mc;
 
-import javassist.CannotCompileException;
-import javassist.CtMethod;
-import javassist.expr.ExprEditor;
-
-public class BytecodeMethodEditorModification extends BytecodeModification {
-    CtMethod method;
-    ExprEditor exprEditor;
-
-    public BytecodeMethodEditorModification(CtMethod method, ExprEditor editor) {
-        super(method.getDeclaringClass());
-        this.method = method;
-    }
-
-    @Override
-    public void modify() {
-        try {
-            method.instrument(exprEditor);
-        } catch (CannotCompileException e) {
-            e.printStackTrace();
-        }
-    }
+@Implement(name="WorldInfo")
+public interface MCWorldInfo extends MCInterface {
+    String fieldGet$levelName();
 }

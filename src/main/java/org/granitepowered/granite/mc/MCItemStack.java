@@ -21,22 +21,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+@Implement(name="ItemStack")
+public interface MCItemStack extends MCInterface {
+    int fieldGet$stackSize();
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+    void fieldSet$stackSize(int size);
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    int fieldGet$itemDamage();
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    void fieldSet$itemDamage(int damage);
+
+    MCItem fieldGet$item();
+
+    MCNBTTagCompound writeToNBT(MCNBTTagCompound nbt);
+
+    boolean canHarvestBlock(MCBlock block);
 }

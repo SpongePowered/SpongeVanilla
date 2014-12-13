@@ -21,22 +21,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.item;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCItemBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.ItemBlock;
+@Implement(name="EntityLiving")
+public interface MCEntityLiving extends MCEntity {
+    MCEntityLiving fieldGet$lastAttacker();
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+    void fieldSet$lastAttacker(MCEntityLiving living);
 
-public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
-    public GraniteItemBlock(MCItemBlock obj) {
-        super(obj);
-    }
+    float fieldGet$lastDamage();
 
-    @Override
-    public BlockType getBlock() {
-        return wrap(obj.fieldGet$block());
-    }
+    void fieldSet$lastDamage(float damage);
+
+    boolean fieldGet$isLeashed();
+
+    void fieldSet$isLeashed(boolean leashed);
+
+    MCEntity fieldGet$leashedToEntity();
+
+    boolean fieldGet$canPickUpLoot();
+
+    void fieldSet$canPickUpLoot(boolean value);
+
+    MCItemStack[] fieldGet$equipment();
+
+    int fieldGet$maxHurtResistantTime();
+
+    void fieldSet$maxHurtResistantTime(int halfTicks);
+
+    void damageEntity(MCDamageSource source, float amount);
+
+    float getHealth();
+
+    void setHealth(float health);
+
+    float getMaxHealth();
 }

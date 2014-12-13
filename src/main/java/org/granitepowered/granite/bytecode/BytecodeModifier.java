@@ -23,33 +23,50 @@
 
 package org.granitepowered.granite.bytecode;
 
+import com.google.common.reflect.ClassPath;
 import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
+import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.Implement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BytecodeModifier {
-    List<BytecodeModification> modifications;
-
-    public BytecodeModifier() {
-        modifications = new ArrayList<>();
-    }
+    List<BytecodeClass> runPostOn;
 
     public void modify() {
-        for (BytecodeModification mod : modifications) {
-            mod.modify();
+        runPostOn = new ArrayList<>();
 
-            try {
-                mod.clazz.toClass();
-            } catch (CannotCompileException e) {
-                e.printStackTrace();
+        try {
+            for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClassesRecursive("org.granitepowered.granite.mc")) {
+                CtClass ctClass = ClassPool.getDefault().get(classInfo.getName());
+
+                if (ctClass.hasAnnotation(Implement.class)) {
+                    CtClass mcClass = Mappings.getCtClass(((Implement) ctClass.getAnnotation(Implement.class)).name());
+
+                    if (mcClass == null) {
+                        throw new RuntimeException(((Implement) ctClass.getAnnotation(Implement.class)).name() + " not in mappings");
+                    }
+
+                    Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
+
+                    BytecodeClass bc = new BytecodeClass(mcClass);
+                    bc.implement(ctClass.toClass());
+
+                    runPostOn.add(bc);
+                }
             }
-            
-            mod.postModify();
-        }
-    }
 
-    public List<BytecodeModification> getModifications() {
-        return modifications;
+            for (BytecodeClass bc : runPostOn) {
+                bc.post();
+            }
+        } catch (IOException | NotFoundException | ClassNotFoundException | CannotCompileException e) {
+            e.printStackTrace();
+        }
     }
 }

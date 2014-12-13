@@ -21,20 +21,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode;
+package org.granitepowered.granite.mc;
 
-import javassist.CtClass;
+import java.util.List;
 
-public abstract class BytecodeModification {
-    CtClass clazz;
+@Implement(name="WorldServer")
+public interface MCWorld extends MCInterface {
+    MCWorldInfo fieldGet$worldInfo();
 
-    public BytecodeModification(CtClass clazz) {
-        this.clazz = clazz;
-    }
+    List<MCEntity> fieldGet$loadedEntityList();
 
-    public abstract void modify();
+    boolean spawnEntityInWorld(MCEntity entity);
 
-    public void postModify() {
+    MCBlockState getBlockState(MCBlockPos blockPos);
 
-    }
+    boolean setBlockState(MCBlockPos blockPos, MCBlockState blockState);
+
+    int getLightFor(Enum source, MCBlockPos blockPos);
 }

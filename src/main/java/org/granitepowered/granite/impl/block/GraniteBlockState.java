@@ -26,7 +26,8 @@ package org.granitepowered.granite.impl.block;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBlockState;
+import org.granitepowered.granite.mc.MCProperty;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockProperty;
 import org.spongepowered.api.block.BlockState;
@@ -34,22 +35,24 @@ import org.spongepowered.api.block.BlockType;
 
 import java.util.*;
 
-public class GraniteBlockState extends Composite implements BlockState {
-    public GraniteBlockState(Object parent) {
-        super(parent);
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
+
+public class GraniteBlockState extends Composite<MCBlockState> implements BlockState {
+    public GraniteBlockState(MCBlockState obj) {
+        super(obj);
     }
 
     @Override
     public BlockType getType() {
-        return (BlockType) MinecraftUtils.wrapComposite(fieldGet("block"));
+        return MinecraftUtils.<GraniteBlockType>wrap(obj.fieldGet$block());
     }
 
     @Override
     public ImmutableMap<BlockProperty<?>, ? extends Comparable<?>> getProperties() {
         Map<BlockProperty<?>, Comparable<?>> ret = new HashMap<>();
 
-        for (Map.Entry<Object, Object> entry : getMCProperties().entrySet()) {
-            ret.put((BlockProperty) MinecraftUtils.wrapComposite(entry.getKey()), (Comparable<?>) entry.getValue());
+        for (Map.Entry<MCProperty, Comparable> entry : obj.fieldGet$properties().entrySet()) {
+            ret.put((BlockProperty) wrap(entry.getKey()), (Comparable<?>) entry.getValue());
         }
 
         return new ImmutableMap.Builder<BlockProperty<?>, Comparable<?>>().putAll(ret).build();
@@ -58,8 +61,8 @@ public class GraniteBlockState extends Composite implements BlockState {
     @Override
     public Collection<String> getPropertyNames() {
         List<String> names = new ArrayList<>();
-        for (Object property : getMCProperties().keySet()) {
-            names.add((String) fieldGet(property, "name"));
+        for (MCProperty property : obj.fieldGet$properties().keySet()) {
+            names.add(property.fieldGet$name());
         }
         return names;
     }
@@ -81,7 +84,7 @@ public class GraniteBlockState extends Composite implements BlockState {
 
     @Override
     public BlockState withProperty(BlockProperty<?> blockProperty, Comparable<?> comparable) {
-        return (BlockState) MinecraftUtils.wrapComposite(invoke("withProperty", ((GraniteBlockProperty) blockProperty).parent, comparable));
+        return wrap(obj.withProperty((MCProperty) unwrap(blockProperty), comparable));
     }
 
     @Override
@@ -98,10 +101,6 @@ public class GraniteBlockState extends Composite implements BlockState {
     @Override
     @SuppressWarnings("deprecated")
     public byte getDataValue() {
-        return (byte) Mappings.invoke(fieldGet("block"), "getMetaFromState", parent);
-    }
-
-    public Map<Object, Object> getMCProperties() {
-        return (Map<Object, Object>) fieldGet("properties");
+        return (byte) obj.fieldGet$block().getMetaFromState(obj);
     }
 }
