@@ -36,6 +36,7 @@ import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
+import org.spongepowered.api.text.translation.Translation;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -120,6 +121,26 @@ public abstract class GraniteMessage<T> implements Message {
         @Override
         public MessageBuilder.Text builder() {
             return new GraniteMessageBuilder.GraniteTextMessageBuilder(getContent(), children, color, style, clickAction, hoverAction, shiftClickAction);
+        }
+    }
+
+    public static class GraniteTranslatable extends GraniteMessage<Translation> implements Message.Translatable {
+        List<Object> arguments;
+
+        public GraniteTranslatable(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, List<Object> arguments) {
+            super(children, color, style, clickAction, hoverAction, shiftClickAction);
+            this.content = translation;
+            this.arguments = arguments;
+        }
+
+        @Override
+        public List<Object> getArguments() {
+            return arguments;
+        }
+
+        @Override
+        public MessageBuilder.Translatable builder() {
+            return new GraniteMessageBuilder.GraniteTranslatableMessageBuilder(children, color, style, clickAction, hoverAction, shiftClickAction, content, arguments.toArray(new Object[arguments.size()]));
         }
     }
 

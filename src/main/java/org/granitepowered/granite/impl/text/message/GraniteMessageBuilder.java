@@ -35,6 +35,7 @@ import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
+import org.spongepowered.api.text.translation.Translation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -138,5 +139,79 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
         }
     }
 
-    // TODO: The other three types (translation, score and selector)
+    public static class GraniteTranslatableMessageBuilder extends GraniteMessageBuilder<Message.Translatable> implements Translatable {
+        Translation translation;
+        Object[] objects;
+
+        public GraniteTranslatableMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, Object[] objects) {
+            super(children, color, style, clickAction, hoverAction, shiftClickAction);
+            this.translation = translation;
+            this.objects = objects;
+        }
+
+        @Override
+        public Translatable content(Translation translation, Object... objects) {
+            this.translation = translation;
+            this.objects = objects;
+            return this;
+        }
+
+        @Override
+        public Translatable content(org.spongepowered.api.text.translation.Translatable translatable, Object... objects) {
+            return content(translatable.getTranslation(), objects);
+        }
+
+        @Override
+        public MessageBuilder<Message.Translatable> content(Object content) {
+            return content((Translation) content, new Object[]{});
+        }
+
+        @Override
+        public Translatable append(Message... messages) {
+            return append(Arrays.asList(messages));
+        }
+
+        @Override
+        public Translatable append(Iterable<Message> iterable) {
+            this.children.addAll(Lists.newArrayList(children));
+            return this;
+        }
+
+        @Override
+        public Translatable color(@Nullable TextColor textColor) {
+            this.color = textColor;
+            return this;
+        }
+
+        @Override
+        public Translatable style(TextStyle... textStyles) {
+            this.style = TextStyles.of(textStyles);
+            return this;
+        }
+
+        @Override
+        public Translatable onClick(@Nullable ClickAction<?> clickAction) {
+            this.clickAction = Optional.<ClickAction<?>>fromNullable(clickAction);
+            return this;
+        }
+
+        @Override
+        public Translatable onHover(@Nullable HoverAction<?> hoverAction) {
+            this.hoverAction = Optional.<HoverAction<?>>fromNullable(hoverAction);
+            return this;
+        }
+
+        @Override
+        public Translatable onShiftClick(@Nullable ShiftClickAction<?> shiftClickAction) {
+            this.shiftClickAction = Optional.<ShiftClickAction<?>>fromNullable(shiftClickAction);
+            return this;
+        }
+
+        @Override
+        public Message.Translatable build() {
+            return new GraniteMessage.GraniteTranslatable(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction, translation, ImmutableList.copyOf(objects));
+        }
+    }
+
+    // TODO: The other two types (score and selector)
 }

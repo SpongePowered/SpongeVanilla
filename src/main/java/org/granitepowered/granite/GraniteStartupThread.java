@@ -37,11 +37,14 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.text.chat.GraniteChatTypeFactory;
 import org.spongepowered.api.text.format.GraniteTextFormatFactory;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.GraniteMessageFactory;
 import org.spongepowered.api.text.message.Messages;
+import org.spongepowered.api.text.translation.GraniteTranslationFactory;
+import org.spongepowered.api.text.translation.Translations;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,6 +121,8 @@ public class GraniteStartupThread extends Thread {
         injectConstant(Messages.class, "factory", new GraniteMessageFactory());
         injectConstant(TextStyles.class, "factory", new GraniteTextFormatFactory());
         injectConstant(TextActions.class, "factory", new GraniteTextActionFactory());
+        injectConstant(Translations.class, "factory", new GraniteTranslationFactory());
+        injectConstant(ChatTypes.class, "factory", new GraniteChatTypeFactory());
 
         injectEnumConstants(TextColors.class, GraniteTextColor.class);
         injectConstants(TextStyles.class, GraniteTextStyle.styles);
