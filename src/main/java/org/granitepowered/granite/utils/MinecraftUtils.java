@@ -37,8 +37,11 @@ import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.item.GraniteItemType;
+import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCInterface;
 import org.spongepowered.api.text.message.Message;
 
@@ -88,14 +91,14 @@ public class MinecraftUtils {
         return composite.obj;
     }
 
-    public static Object graniteToMinecraftMessage(Message message) {
-        String json = Granite.getInstance().getGson().toJson(message, Message.class);
-        return Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
+    public static MCChatComponent graniteToMinecraftChatComponent(Message message) {
+        String json = Granite.getInstance().getGson().toJson(message, GraniteMessage.class);
+        return (MCChatComponent) Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
     }
 
-    public static Object graniteToMinecraftBlockPos(Vector3i vector) {
+    public static MCBlockPos graniteToMinecraftBlockPos(Vector3i vector) {
         try {
-            return Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(vector.getX(), vector.getY(), vector.getZ());
+            return (MCBlockPos) Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(vector.getX(), vector.getY(), vector.getZ());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }

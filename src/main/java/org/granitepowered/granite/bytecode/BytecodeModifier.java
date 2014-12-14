@@ -23,24 +23,38 @@
 
 package org.granitepowered.granite.bytecode;
 
+import com.google.common.base.Function;
 import com.google.common.reflect.ClassPath;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import javassist.expr.ExprEditor;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.utils.BooleanReturner;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.text.message.MessageBuilder;
+import org.spongepowered.api.text.message.Messages;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
 
 public class BytecodeModifier {
-    Set<BytecodeClass> runPostOn;
+    Map<String, BytecodeClass> bcs;
 
     public void modify() {
-        runPostOn = new LinkedHashSet<>();
+        bcs = new LinkedHashMap<>();
 
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClassesRecursive("org.granitepowered.granite.mc")) {
@@ -55,23 +69,71 @@ public class BytecodeModifier {
 
                     Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
 
-                    BytecodeClass bc = new BytecodeClass(mcClass);
-                    bc.implement(ctClass.toClass());
+                    BytecodeClass bc = create(((Implement) ctClass.getAnnotation(Implement.class)).name());
 
-                    runPostOn.add(bc);
+                    //System.out.println(bc);
+                    bc.implement(ctClass.toClass());
                 }
             }
 
-            BytecodeClass minecraftServer = new BytecodeClass(Mappings.getCtClass("MinecraftServer"));
-            minecraftServer.replaceMethod("getServerModName", "return \"Granite\";");
+            BytecodeClass minecraftServer = create("MinecraftServer");
+            minecraftServer.replaceMethod("getServerModName", "return \"granite\";");
 
-            runPostOn.add(minecraftServer);
+            BytecodeClass scm = create("ServerConfigurationManager");
+            /*scm.injectField("iCTP$handler", new BooleanReturner() {
+                @Override
+                public boolean apply() {
+                    return false;
+                }
+            });
+            scm.instrumentMethod("initializeConnectionToPlayer", new ExprEditor() {
 
-            for (BytecodeClass bc : runPostOn) {
+            });*/
+            /*scm.proxy("initializeConnectionToPlayer", new BytecodeClass.ProxyHandler() {
+                @Override
+                protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+                    MCEntityPlayerMP p = (MCEntityPlayerMP) args[1];
+                    ((GranitePlayer) wrap(p)).sendMessage(Messages.builder("Hello").color(TextColors.BLUE).style(TextStyles.of(TextStyles.BOLD, TextStyles.ITALIC)).build());
+
+                    return callback.invokeParent(args);
+                }
+            });z*/
+            scm.proxy("playerLoggedIn", new BytecodeClass.ProxyHandler() {
+                @Override
+                protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+                    callback.invokeParent(args);
+
+                    Message.Text hello = Messages.builder(" HELLO").color(TextColors.AQUA).style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE, TextStyles.STRIKETHROUGH.negate()).build();
+
+                    Message.Text andnot = Messages.builder("ANDNOT").style(TextStyles.BOLD.andNot(TextStyles.STRIKETHROUGH)).color(TextColors.GOLD).build();
+
+                    Message.Text and = Messages.builder(" AND").style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE).color(TextColors.GOLD).build();
+
+                    Message.Text mainmessage = Messages.builder("PIG SAYS").color(TextColors.GREEN).style(TextStyles.STRIKETHROUGH).append(hello).append(andnot).append(and).build();
+
+                    MCEntityPlayerMP p = (MCEntityPlayerMP) args[0];
+                    ((GranitePlayer) wrap(p)).sendMessage(mainmessage);
+                    // TODO: add player join event here
+
+                    return null;
+                }
+            });
+
+            for (BytecodeClass bc : bcs.values()) {
                 bc.post();
             }
         } catch (IOException | NotFoundException | ClassNotFoundException | CannotCompileException e) {
             e.printStackTrace();
         }
+    }
+
+    public BytecodeClass create(String className) {
+        if (bcs.containsKey(className)) {
+            return bcs.get(className);
+        }
+
+        BytecodeClass bc = new BytecodeClass(Mappings.getCtClass(className));
+        bcs.put(className, bc);
+        return bc;
     }
 }

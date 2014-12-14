@@ -104,7 +104,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         JsonObject out = new JsonObject();
 
         if (src instanceof GraniteMessage.GraniteText) {
-            out.add("text", (JsonElement) src.getContent());
+            out.add("text", context.serialize(src.getContent()));
         }
         // TODO: add the other 3 types
 
@@ -133,7 +133,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
             JsonArray extra = new JsonArray();
 
             for (Message child : src.getChildren()) {
-                extra.add(context.serialize(child));
+                extra.add(context.serialize(child, GraniteMessage.class));
             }
 
             out.add("extra", extra);

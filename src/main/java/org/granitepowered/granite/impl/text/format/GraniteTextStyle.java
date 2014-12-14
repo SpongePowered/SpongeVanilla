@@ -71,7 +71,7 @@ public class GraniteTextStyle implements TextStyle {
     public boolean is(TextStyle style) {
         for (Map.Entry<Base.TextStyleType, TextStyleMode> entry : ((GraniteTextStyle) style).values.entrySet()) {
             if (!values.containsKey(entry.getKey())) return false;
-            if (values.get(entry.getKey()) != entry.getValue()) return false;
+            if (((GraniteTextStyle) style).values.get(entry.getKey()) != TextStyleMode.NEUTRAL && values.get(entry.getKey()) != entry.getValue()) return false;
         }
         return true;
     }
@@ -127,7 +127,7 @@ public class GraniteTextStyle implements TextStyle {
 
         public TextStyleMode negate() {
             switch (this) {
-                case NEUTRAL:
+                case NEGATED:
                     return APPLIED;
                 case APPLIED:
                     return NEGATED;

@@ -67,7 +67,7 @@ public class BytecodeClass {
 
                         Class<?>[] paramTypes = new Class[method.getParameterTypes().length];
                         for (int i = 0; i < paramTypes.length; i++) {
-                            paramTypes[i] = method.getParameterTypes()[i].toClass();
+                            paramTypes[i] = getFromCt(method.getParameterTypes()[i]);
                         }
 
                         @SuppressWarnings("unchecked")
@@ -75,7 +75,7 @@ public class BytecodeClass {
 
                         f.setAccessible(true);
                         f.set(null, m);
-                    } catch (NoSuchFieldException | NoSuchMethodException | NotFoundException | IllegalAccessException | CannotCompileException e) {
+                    } catch (NoSuchFieldException | NoSuchMethodException | NotFoundException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
@@ -281,8 +281,16 @@ public class BytecodeClass {
         if (!classMap.containsKey(clazz)) {
             try {
                 classMap.put(clazz, clazz.toClass());
-            } catch (CannotCompileException e) {
-                e.printStackTrace();
+            } catch (CannotCompileException | LinkageError e) {
+                if (!(e.getCause() instanceof LinkageError)) {
+                    e.printStackTrace();
+                } else {
+                    try {
+                        classMap.put(clazz, Class.forName(clazz.getName()));
+                    } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
         }
         return classMap.get(clazz);

@@ -288,7 +288,6 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
     @Override
     public void sendMessage(Iterable<Message> messages) {
         sendMessage(ChatTypes.CHAT, messages);
-        throw new NotImplementedException("");
     }
 
     @Override
@@ -316,9 +315,9 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
         try {
             Message message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
 
-            MCPacket packet = (MCPacket) Mappings.getClass("S02PlayerChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
-                    graniteToMinecraftMessage(message),
-                    ((GraniteChatType) type).getId()
+            MCPacket packet = (MCPacket) Mappings.getClass("S02PacketChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
+                    graniteToMinecraftChatComponent(message),
+                    (byte) ((GraniteChatType) type).getId()
             );
             sendPacket(packet);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

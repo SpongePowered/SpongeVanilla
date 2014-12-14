@@ -37,6 +37,7 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
     }
 
     public GraniteMessageBuilder() {
-        children = ImmutableList.<Message>builder().build();
+        children = new ArrayList<>();
         color = TextColors.RESET;
         style = TextStyles.RESET;
         clickAction = Optional.absent();

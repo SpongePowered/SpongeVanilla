@@ -105,12 +105,15 @@ public abstract class GraniteMessage<T> implements Message {
     @Override
     public Iterator iterator() {
         // I have no idea what I'm doing
-        return Iterators.concat(Iterators.singletonIterator(this), Iterables.concat(children).iterator());
+        //return Iterators.concat(Iterators.singletonIterator(this), Iterables.concat(children).iterator());
+
+        return children.iterator();
     }
 
     public static class GraniteText extends GraniteMessage<String> implements Message.Text {
         public GraniteText(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, String text) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
+            this.content = text;
         }
 
         @Override

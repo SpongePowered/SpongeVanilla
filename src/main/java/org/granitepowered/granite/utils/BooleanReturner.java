@@ -21,20 +21,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.utils;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
-
-    MCServerConfigurationManager fieldGet$serverConfigManager();
-
-    boolean fieldGet$onlineMode();
-
-    void startServerThread();
-
-    void setGuiEnabled();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+public interface BooleanReturner {
+    boolean apply();
 }

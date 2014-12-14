@@ -21,20 +21,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.service.event;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
+import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.util.event.Event;
 
-    MCServerConfigurationManager fieldGet$serverConfigManager();
+public class GraniteEventManager implements EventManager {
+    @Override
+    public void register(Object plugin, Object obj) {
 
-    boolean fieldGet$onlineMode();
+    }
 
-    void startServerThread();
+    @Override
+    public void unregister(Object obj) {
 
-    void setGuiEnabled();
+    }
 
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+    @Override
+    public boolean post(Event event) {
+        return false;
+    }
 }
