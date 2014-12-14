@@ -37,6 +37,7 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,10 +105,10 @@ public abstract class GraniteMessage<T> implements Message {
 
     @Override
     public Iterator iterator() {
-        // I have no idea what I'm doing
-        //return Iterators.concat(Iterators.singletonIterator(this), Iterables.concat(children).iterator());
-
-        return children.iterator();
+        List<Message> messageList = new ArrayList<>();
+        messageList.add(this);
+        messageList.addAll(children);
+        return messageList.iterator();
     }
 
     public static class GraniteText extends GraniteMessage<String> implements Message.Text {

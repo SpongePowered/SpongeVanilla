@@ -109,7 +109,7 @@ public class BytecodeModifier {
 
                     Message.Text and = Messages.builder(" AND").style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE).color(TextColors.GOLD).build();
 
-                    Message.Text mainmessage = Messages.builder("PIG SAYS").color(TextColors.GREEN).style(TextStyles.STRIKETHROUGH).append(hello).append(andnot).append(and).build();
+                    Message.Text mainmessage = Messages.builder("PIG SAYS ").color(TextColors.GREEN).style(TextStyles.STRIKETHROUGH).append(hello).append(andnot).append(and).build();
 
                     MCEntityPlayerMP p = (MCEntityPlayerMP) args[0];
                     ((GranitePlayer) wrap(p)).sendMessage(mainmessage);

@@ -127,6 +127,12 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         if (style.is(TextStyles.STRIKETHROUGH)) out.add("strikethrough", context.serialize(true));
         if (style.is(TextStyles.OBFUSCATED)) out.add("obfuscated", context.serialize(true));
 
+        if (style.is(TextStyles.BOLD.negate())) out.add("bold", context.serialize(false));
+        if (style.is(TextStyles.ITALIC.negate())) out.add("italic", context.serialize(false));
+        if (style.is(TextStyles.UNDERLINE.negate())) out.add("underlined", context.serialize(false));
+        if (style.is(TextStyles.STRIKETHROUGH.negate())) out.add("strikethrough", context.serialize(false));
+        if (style.is(TextStyles.OBFUSCATED.negate())) out.add("obfuscated", context.serialize(false));
+
         out.add("color", context.serialize(((TextColor.Base) src.getColor()).getName().toLowerCase()));
 
         if (!src.getChildren().isEmpty()) {

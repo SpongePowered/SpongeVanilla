@@ -29,6 +29,7 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
+import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
@@ -313,7 +314,12 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
     @Override
     public void sendMessage(ChatType type, Iterable<Message> messages) {
         try {
-            Message message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
+            Message message;
+            if (messages instanceof GraniteMessage) {
+                message = (Message) messages;
+            } else {
+                message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
+            }
 
             MCPacket packet = (MCPacket) Mappings.getClass("S02PacketChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
                     graniteToMinecraftChatComponent(message),
