@@ -25,7 +25,7 @@ package org.granitepowered.granite.mc;
 
 import java.util.Collection;
 
-@Implement(name="PropertyHelper")
+@Implement(name = "PropertyHelper")
 public interface MCProperty extends MCInterface {
     String fieldGet$name();
 

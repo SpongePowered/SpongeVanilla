@@ -29,9 +29,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
-import org.granitepowered.granite.mc.MCInterface;
 import org.granitepowered.granite.mc.MCItem;
-import org.granitepowered.granite.utils.MinecraftUtils;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
@@ -55,7 +53,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteGameRegistry implements GameRegistry {
     Map<String, BlockType> blockTypes = Maps.newHashMap();

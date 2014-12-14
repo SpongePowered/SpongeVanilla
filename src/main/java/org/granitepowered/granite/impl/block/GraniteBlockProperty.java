@@ -25,12 +25,10 @@ package org.granitepowered.granite.impl.block;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCProperty;
 import org.spongepowered.api.block.BlockProperty;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public class GraniteBlockProperty<T extends Comparable<T>> extends Composite<MCProperty> implements BlockProperty<T> {

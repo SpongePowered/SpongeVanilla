@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.impl.text.format;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import org.spongepowered.api.text.format.TextColor;
 
 import java.awt.*;

@@ -49,53 +49,53 @@ public class GranitePluginManager implements PluginManager {
 
     public void loadPlugins() {
         File[] files = Granite.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
-             @Override
-             public boolean accept(File arg0, String arg1) {
-                 return arg1.endsWith(".jar");
-             }
+            @Override
+            public boolean accept(File arg0, String arg1) {
+                return arg1.endsWith(".jar");
+            }
         });
 
         if (files != null) {
-             for (File plugin : files) {
-                 Granite.instance.getLogger().info("Loading jarfile plugins/{}", plugin.getName());
+            for (File plugin : files) {
+                Granite.instance.getLogger().info("Loading jarfile plugins/{}", plugin.getName());
 
-                 try {
-                     URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()});
-                     JarFile jarFile = new JarFile(plugin);
+                try {
+                    URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()});
+                    JarFile jarFile = new JarFile(plugin);
 
-                     Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+                    Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
 
-                     while (jarEntryEnumeration.hasMoreElements()) {
-                         JarEntry jarEntry = jarEntryEnumeration.nextElement();
+                    while (jarEntryEnumeration.hasMoreElements()) {
+                        JarEntry jarEntry = jarEntryEnumeration.nextElement();
 
-                         if (jarEntry.getName().endsWith(".class")) {
-                             String className = jarEntry.getName().replaceAll("/", ".").substring(0, jarEntry.getName().length() - ".class".length());
+                        if (jarEntry.getName().endsWith(".class")) {
+                            String className = jarEntry.getName().replaceAll("/", ".").substring(0, jarEntry.getName().length() - ".class".length());
 
-                             try {
-                                 Class<?> clazz = classLoader.loadClass(className);
+                            try {
+                                Class<?> clazz = classLoader.loadClass(className);
 
-                                 PluginContainer pluginContainer = null;
+                                PluginContainer pluginContainer = null;
 
-                                 for (Annotation annotation : clazz.getAnnotations()) {
-                                     if (annotation.annotationType().equals(Plugin.class)) {
-                                         pluginContainer = new GranitePluginContainer(clazz);
-                                     }
-                                 }
+                                for (Annotation annotation : clazz.getAnnotations()) {
+                                    if (annotation.annotationType().equals(Plugin.class)) {
+                                        pluginContainer = new GranitePluginContainer(clazz);
+                                    }
+                                }
 
-                                 if (pluginContainer != null) {
-                                     plugins.add(pluginContainer);
-                                     Granite.instance.getLogger().info("Loaded {} ({})!", pluginContainer.getName(), pluginContainer.getVersion());
-                                 }
-                             } catch (ClassNotFoundException e) {
-                                 e.printStackTrace();
-                             }
+                                if (pluginContainer != null) {
+                                    plugins.add(pluginContainer);
+                                    Granite.instance.getLogger().info("Loaded {} ({})!", pluginContainer.getName(), pluginContainer.getVersion());
+                                }
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
 
-                         }
-                     }
-                 } catch (IOException e) {
-                     e.printStackTrace();
-                 }
-             }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

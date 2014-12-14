@@ -28,9 +28,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.EntitySnapshot;
@@ -43,7 +41,8 @@ import org.spongepowered.api.world.extent.Extent;
 
 import java.util.UUID;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteEntity<T extends MCEntity> extends Composite<T> implements Entity {
     public GraniteEntity(T obj) {

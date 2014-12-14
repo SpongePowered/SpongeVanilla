@@ -37,7 +37,6 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 

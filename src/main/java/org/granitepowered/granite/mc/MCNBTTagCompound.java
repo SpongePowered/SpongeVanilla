@@ -23,6 +23,6 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="NBTTagCompound")
+@Implement(name = "NBTTagCompound")
 public interface MCNBTTagCompound extends MCInterface {
 }

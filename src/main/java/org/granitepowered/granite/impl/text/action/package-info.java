@@ -21,7 +21,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-@NonnullByDefault
-package org.granitepowered.granite.impl.text.action;
+@NonnullByDefault package org.granitepowered.granite.impl.text.action;
 
 import org.spongepowered.api.util.annotation.NonnullByDefault;

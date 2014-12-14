@@ -29,7 +29,6 @@ import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
 
         MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type, world);
         if (!entity.getName().equals(name)) {
-           entity.setCustomNameTag(name);
+            entity.setCustomNameTag(name);
         }
 
         return wrap(entity);

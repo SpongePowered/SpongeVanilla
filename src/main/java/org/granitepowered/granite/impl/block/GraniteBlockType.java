@@ -27,12 +27,11 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
-import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.text.translation.Translation;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
     public GraniteBlockType(MCBlock obj) {

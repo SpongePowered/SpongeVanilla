@@ -25,7 +25,7 @@ package org.granitepowered.granite.mc;
 
 import java.util.UUID;
 
-@Implement(name="Entity")
+@Implement(name = "Entity")
 public interface MCEntity extends MCInterface {
     boolean fieldGet$onGround();
 

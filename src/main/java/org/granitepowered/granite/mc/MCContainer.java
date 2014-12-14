@@ -23,6 +23,6 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="Container")
+@Implement(name = "Container")
 public interface MCContainer extends MCInterface {
 }

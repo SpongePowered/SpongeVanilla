@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="FoodStats")
+@Implement(name = "FoodStats")
 public interface MCFoodStats extends MCInterface {
     int fieldGet$foodLevel();
 

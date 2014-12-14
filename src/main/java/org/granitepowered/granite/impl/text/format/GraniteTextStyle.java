@@ -23,12 +23,8 @@
 
 package org.granitepowered.granite.impl.text.format;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.format.TextStyle;
-import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.ArrayList;
 import java.util.HashMap;

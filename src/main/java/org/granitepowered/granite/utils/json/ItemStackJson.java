@@ -26,10 +26,8 @@ package org.granitepowered.granite.utils.json;
 import com.google.gson.*;
 import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCInterface;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCNBTTagCompound;
-import org.granitepowered.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Type;
 

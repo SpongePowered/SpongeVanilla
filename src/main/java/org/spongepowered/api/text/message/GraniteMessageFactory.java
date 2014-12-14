@@ -167,11 +167,11 @@ public class GraniteMessageFactory implements MessageFactory {
 
     @Override
     public String stripLegacyCodes(String message, char color) {
-        return StringUtils.join(message.split(Pattern.quote(color+"") + "[0-9a-fk-or]"), "");
+        return StringUtils.join(message.split(Pattern.quote(color + "") + "[0-9a-fk-or]"), "");
     }
 
     @Override
     public String replaceLegacyCodes(String message, char from, char to) {
-        return message.replaceAll(Pattern.quote(from+"") + "([0-9a-fk-or])", Pattern.quote(to+"") + "$1");
+        return message.replaceAll(Pattern.quote(from + "") + "([0-9a-fk-or])", Pattern.quote(to + "") + "$1");
     }
 }

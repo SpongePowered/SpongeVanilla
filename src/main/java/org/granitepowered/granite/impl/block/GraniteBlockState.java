@@ -35,7 +35,8 @@ import org.spongepowered.api.block.BlockType;
 
 import java.util.*;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteBlockState extends Composite<MCBlockState> implements BlockState {
     public GraniteBlockState(MCBlockState obj) {

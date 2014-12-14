@@ -32,7 +32,9 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCServer;
+import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
@@ -51,7 +53,7 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteServer extends Composite<MCServer> implements Game, Server {
     public static String version;
@@ -201,7 +203,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public void setHasWhitelist(boolean b) {
-       getSCM().fieldSet$whitelistEnforced(b);
+        getSCM().fieldSet$whitelistEnforced(b);
     }
 
     @Override

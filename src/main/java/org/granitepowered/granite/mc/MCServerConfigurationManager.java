@@ -25,7 +25,7 @@ package org.granitepowered.granite.mc;
 
 import java.util.List;
 
-@Implement(name="ServerConfigurationManager")
+@Implement(name = "ServerConfigurationManager")
 public interface MCServerConfigurationManager extends MCInterface {
     boolean fieldGet$whitelistEnforced();
 

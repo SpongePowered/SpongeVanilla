@@ -23,6 +23,6 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="DamageSource")
+@Implement(name = "DamageSource")
 public interface MCDamageSource extends MCInterface {
 }

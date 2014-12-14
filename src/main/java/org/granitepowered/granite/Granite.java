@@ -23,9 +23,8 @@
 
 package org.granitepowered.granite;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
@@ -40,9 +39,6 @@ import org.granitepowered.granite.utils.json.TextActionJson;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.PluginManager;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
 
 public class Granite {
     public static Granite instance;
@@ -85,6 +81,7 @@ public class Granite {
     public ServerConfig getServerConfig() {
         return serverConfig;
     }
+
     public GameRegistry getGameRegistry() {
         return gameRegistry;
     }

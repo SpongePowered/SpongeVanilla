@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="MinecraftServer")
+@Implement(name = "MinecraftServer")
 public interface MCServer extends MCInterface {
     MCWorld[] fieldGet$worldServers();
 

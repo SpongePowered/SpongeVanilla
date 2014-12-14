@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="GameProfile")
+@Implement(name = "GameProfile")
 public interface MCGameProfile extends MCInterface {
     String fieldGet$name();
 }

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="BlockPos")
+@Implement(name = "BlockPos")
 public interface MCBlockPos extends MCInterface {
     int fieldGet$x();
 

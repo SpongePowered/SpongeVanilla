@@ -85,7 +85,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         if (src.has("clickEvent")) {
             builder = builder.onClick((ClickAction<?>) context.deserialize(src.get("clickEvent"), GraniteClickAction.class));
         }
-        
+
         if (src.has("insertion")) {
             builder = builder.onShiftClick(new GraniteShiftClickAction.GraniteInsertText(src.get("insertion").getAsString()));
         }

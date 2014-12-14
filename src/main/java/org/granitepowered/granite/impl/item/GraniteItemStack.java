@@ -26,11 +26,10 @@ package org.granitepowered.granite.impl.item;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteItemStack extends Composite<MCItemStack> implements ItemStack {
     public GraniteItemStack(MCItemStack obj) {

@@ -29,9 +29,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
-import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityLiving;
-import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
@@ -40,7 +38,8 @@ import org.spongepowered.api.potion.PotionEffectType;
 import java.util.Collection;
 import java.util.List;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteLiving<T extends MCEntityLiving> extends GraniteEntity<T> implements Living {
     public GraniteLiving(T obj) {

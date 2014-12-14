@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="Item")
+@Implement(name = "Item")
 public interface MCItem extends MCInterface {
     float getStrVsBlock(MCItemStack itemStack, MCBlock block);
 

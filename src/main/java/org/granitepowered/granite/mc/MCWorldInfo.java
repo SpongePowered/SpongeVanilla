@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="WorldInfo")
+@Implement(name = "WorldInfo")
 public interface MCWorldInfo extends MCInterface {
     String fieldGet$levelName();
 }

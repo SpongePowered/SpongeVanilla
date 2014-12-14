@@ -25,7 +25,7 @@ package org.granitepowered.granite.mc;
 
 import com.google.common.collect.ImmutableMap;
 
-@Implement(name="BlockState")
+@Implement(name = "BlockState")
 public interface MCBlockState extends MCInterface {
     MCBlock fieldGet$block();
 

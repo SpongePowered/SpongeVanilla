@@ -63,7 +63,7 @@ public class BytecodeModifier {
             }
 
             BytecodeClass minecraftServer = new BytecodeClass(Mappings.getCtClass("MinecraftServer"));
-            minecraftServer.replaceMethod("getServerModName", "return \"granite\";");
+            minecraftServer.replaceMethod("getServerModName", "return \"Granite\";");
 
             runPostOn.add(minecraftServer);
 

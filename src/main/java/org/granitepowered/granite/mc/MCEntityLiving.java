@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="EntityLiving")
+@Implement(name = "EntityLiving")
 public interface MCEntityLiving extends MCEntity {
     MCEntityLiving fieldGet$lastAttacker();
 

@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.impl.text.action;
 
-import com.google.gson.JsonElement;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.action.HoverAction;
