@@ -24,13 +24,13 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.collect.Maps;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
-import org.granitepowered.granite.impl.text.format.GraniteTextStyle;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.slf4j.LoggerFactory;
@@ -40,6 +40,7 @@ import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.chat.GraniteChatTypeFactory;
 import org.spongepowered.api.text.format.GraniteTextFormatFactory;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.GraniteMessageFactory;
 import org.spongepowered.api.text.message.Messages;
@@ -55,6 +56,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -125,7 +127,14 @@ public class GraniteStartupThread extends Thread {
         injectConstant(ChatTypes.class, "factory", new GraniteChatTypeFactory());
 
         injectEnumConstants(TextColors.class, GraniteTextColor.class);
-        injectConstants(TextStyles.class, GraniteTextStyle.styles);
+
+
+        Map<String, TextStyle.Base> styles = new HashMap<>();
+        for (Map.Entry<String, TextStyle.Base> entry : GraniteTextFormatFactory.styles.entrySet()) {
+            styles.put(entry.getKey().toUpperCase(), entry.getValue());
+        }
+
+        injectConstants(TextStyles.class, styles);
         injectEnumConstants(ChatTypes.class, GraniteChatType.class);
     }
 

@@ -24,13 +24,24 @@
 package org.spongepowered.api.text.format;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
-import org.granitepowered.granite.impl.text.format.GraniteTextStyle;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class GraniteTextFormatFactory implements TextFormatFactory {
+    public static ImmutableMap<String, TextStyle.Base> styles = ImmutableMap.<String, TextStyle.Base>builder()
+            .put("obfuscated", new TextStyle.Base("obfuscated", 'k'))
+            .put("bold", new TextStyle.Base("bold", 'l'))
+            .put("strikethrough", new TextStyle.Base("strikethrough", 'm'))
+            .put("underline", new TextStyle.Base("underline", 'n'))
+            .put("italic", new TextStyle.Base("italic", 'o'))
+            .put("reset", new TextStyle.Base("reset", 'r'))
+            .build();
+
+
     @Override
     public Optional<TextColor> getColorFromName(String name) {
         return Optional.fromNullable((TextColor) GraniteTextColor.valueOf(name.toUpperCase()));
@@ -43,23 +54,16 @@ public class GraniteTextFormatFactory implements TextFormatFactory {
 
     @Override
     public Optional<TextStyle> getStyleFromName(String name) {
-        return Optional.fromNullable((TextStyle) GraniteTextStyle.styles.get(name.toUpperCase()));
+        return Optional.<TextStyle>fromNullable(styles.get(name.toLowerCase()));
     }
 
     @Override
     public List<TextStyle> getStyles() {
-        return Arrays.<TextStyle>asList(
-                GraniteTextStyle.styles.get("OBFUSCATED"),
-                GraniteTextStyle.styles.get("BOLD"),
-                GraniteTextStyle.styles.get("STRIKETHROUGH"),
-                GraniteTextStyle.styles.get("UNDERLINE"),
-                GraniteTextStyle.styles.get("ITALIC"),
-                GraniteTextStyle.styles.get("RESET")
-        );
+        return ImmutableList.<TextStyle>builder().addAll(styles.values()).build();
     }
 
     @Override
     public TextStyle createStyle(TextStyle[] styles) {
-        return new GraniteTextStyle.Base(GraniteTextStyle.Base.TextStyleType.RESET).and(styles);
+        return new TextStyle().and(styles);
     }
 }

@@ -23,14 +23,13 @@
 
 package org.granitepowered.granite.utils.json;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.text.action.GraniteClickAction;
 import org.granitepowered.granite.impl.text.action.GraniteHoverAction;
 import org.granitepowered.granite.impl.text.action.GraniteShiftClickAction;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
-import org.granitepowered.granite.impl.text.format.GraniteTextStyle;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.spongepowered.api.text.action.ClickAction;
@@ -89,12 +88,15 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         strikethrough = src.has("strikethrough") && src.get("strikethrough").getAsBoolean();
         obfuscated = src.has("obfuscated") && src.get("obfuscated").getAsBoolean();
 
-        builder = builder.style(new GraniteTextStyle(
-                bold ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
-                italic ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
-                underlined ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
-                strikethrough ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL,
-                obfuscated ? GraniteTextStyle.TextStyleMode.APPLIED : GraniteTextStyle.TextStyleMode.NEUTRAL
+        builder = builder.style(new TextStyle(
+                ImmutableMap.<TextStyle.Base, TextStyle.TextStyleComponent>builder()
+                        .put(TextStyles.BOLD, bold ? TextStyle.TextStyleComponent.APPLIED : TextStyle.TextStyleComponent.UNAPPLIED)
+                        .put(TextStyles.ITALIC, italic ? TextStyle.TextStyleComponent.APPLIED : TextStyle.TextStyleComponent.UNAPPLIED)
+                        .put(TextStyles.UNDERLINE, underlined ? TextStyle.TextStyleComponent.APPLIED : TextStyle.TextStyleComponent.UNAPPLIED)
+                        .put(TextStyles.STRIKETHROUGH, strikethrough ? TextStyle.TextStyleComponent.APPLIED : TextStyle.TextStyleComponent.UNAPPLIED)
+                        .put(TextStyles.OBFUSCATED, obfuscated ? TextStyle.TextStyleComponent.APPLIED : TextStyle.TextStyleComponent.UNAPPLIED)
+                        .put(TextStyles.RESET, TextStyle.TextStyleComponent.UNAPPLIED)
+                        .build()
         ));
 
         if (src.has("hoverEvent")) {
@@ -158,17 +160,12 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         }
 
         TextStyle style = src.getStyle();
-        if (style.is(TextStyles.BOLD)) out.add("bold", context.serialize(true));
-        if (style.is(TextStyles.ITALIC)) out.add("italic", context.serialize(true));
-        if (style.is(TextStyles.UNDERLINE)) out.add("underlined", context.serialize(true));
-        if (style.is(TextStyles.STRIKETHROUGH)) out.add("strikethrough", context.serialize(true));
-        if (style.is(TextStyles.OBFUSCATED)) out.add("obfuscated", context.serialize(true));
 
-        if (style.is(TextStyles.BOLD.negate())) out.add("bold", context.serialize(false));
-        if (style.is(TextStyles.ITALIC.negate())) out.add("italic", context.serialize(false));
-        if (style.is(TextStyles.UNDERLINE.negate())) out.add("underlined", context.serialize(false));
-        if (style.is(TextStyles.STRIKETHROUGH.negate())) out.add("strikethrough", context.serialize(false));
-        if (style.is(TextStyles.OBFUSCATED.negate())) out.add("obfuscated", context.serialize(false));
+        if (style.applied(TextStyles.BOLD).toBoolean().isPresent()) out.add("bold", context.serialize(style.applied(TextStyles.BOLD).toBoolean().get()));
+        if (style.applied(TextStyles.ITALIC).toBoolean().isPresent()) out.add("italic", context.serialize(style.applied(TextStyles.ITALIC).toBoolean().get()));
+        if (style.applied(TextStyles.UNDERLINE).toBoolean().isPresent()) out.add("underlined", context.serialize(style.applied(TextStyles.UNDERLINE).toBoolean().get()));
+        if (style.applied(TextStyles.STRIKETHROUGH).toBoolean().isPresent()) out.add("strikethrough", context.serialize(style.applied(TextStyles.STRIKETHROUGH).toBoolean().get()));
+        if (style.applied(TextStyles.OBFUSCATED).toBoolean().isPresent()) out.add("obfuscated", context.serialize(style.applied(TextStyles.OBFUSCATED).toBoolean().get()));
 
         out.add("color", context.serialize(((TextColor.Base) src.getColor()).getName().toLowerCase()));
 
