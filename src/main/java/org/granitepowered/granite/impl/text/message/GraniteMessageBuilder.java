@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl.text.message;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.action.ShiftClickAction;
@@ -76,9 +77,8 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
             this.content = content;
         }
 
-        public GraniteTextMessageBuilder() {
-            super();
-            content = "";
+        public GraniteTextMessageBuilder(String content) {
+            this.content = content;
         }
 
         @Override
@@ -142,6 +142,11 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
     public static class GraniteTranslatableMessageBuilder extends GraniteMessageBuilder<Message.Translatable> implements Translatable {
         Translation translation;
         Object[] objects;
+
+        public GraniteTranslatableMessageBuilder(Translation translation, Object... objects) {
+            this.translation = translation;
+            this.objects = objects;
+        }
 
         public GraniteTranslatableMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, Object[] objects) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);

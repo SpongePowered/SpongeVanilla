@@ -39,18 +39,17 @@ public class GraniteMessageFactory implements MessageFactory {
 
     @Override
     public MessageBuilder<?> createEmptyBuilder() {
-        return new GraniteMessageBuilder.GraniteTextMessageBuilder();
+        return new GraniteMessageBuilder.GraniteTextMessageBuilder("");
     }
 
     @Override
     public MessageBuilder.Text createTextBuilder(String text) {
-        return new GraniteMessageBuilder.GraniteTextMessageBuilder().content(text);
+        return new GraniteMessageBuilder.GraniteTextMessageBuilder(text);
     }
 
     @Override
     public MessageBuilder.Translatable createTranslatableBuilder(Translation translation, Object[] args) {
-        // TODO: Translation API
-        throw new NotImplementedException("");
+        return new GraniteMessageBuilder.GraniteTranslatableMessageBuilder(translation, args);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class GraniteMessageFactory implements MessageFactory {
 
     @Override
     public Message.Text parseLegacyMessage(String message, char color) {
-        MessageBuilder.Text builder = new GraniteMessageBuilder.GraniteTextMessageBuilder();
+        MessageBuilder.Text builder = new GraniteMessageBuilder.GraniteTextMessageBuilder("");
 
         LinkedList<String> stack = new LinkedList<>(Arrays.asList(message.split(color + "")));
         builder.content(stack.removeLast());
@@ -87,7 +86,7 @@ public class GraniteMessageFactory implements MessageFactory {
             char code = element.charAt(0);
             element = element.substring(1);
 
-            MessageBuilder.Text childBuilder = new GraniteMessageBuilder.GraniteTextMessageBuilder();
+            MessageBuilder.Text childBuilder = new GraniteMessageBuilder.GraniteTextMessageBuilder("");
             childBuilder.content(element);
 
             switch (code) {

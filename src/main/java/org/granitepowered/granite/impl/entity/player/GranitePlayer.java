@@ -59,7 +59,7 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
 
     @Override
     public Message getDisplayName() {
-        return displayName.or(new GraniteMessageBuilder.GraniteTextMessageBuilder().content(getName()).build());
+        return displayName.or(new GraniteMessageBuilder.GraniteTextMessageBuilder("").content(getName()).build());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
     public void sendMessage(ChatType type, String... strings) {
         List<Message> messages = new ArrayList<>();
         for (String string : strings) {
-            messages.add(new GraniteMessageBuilder.GraniteTextMessageBuilder().content(string).build());
+            messages.add(new GraniteMessageBuilder.GraniteTextMessageBuilder("").content(string).build());
         }
 
         sendMessage(type, messages);
@@ -318,7 +318,7 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
             if (messages instanceof GraniteMessage) {
                 message = (Message) messages;
             } else {
-                message = new GraniteMessageBuilder.GraniteTextMessageBuilder().content("").append(messages).build();
+                message = new GraniteMessageBuilder.GraniteTextMessageBuilder("").content("").append(messages).build();
             }
 
             MCPacket packet = (MCPacket) Mappings.getClass("S02PacketChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(

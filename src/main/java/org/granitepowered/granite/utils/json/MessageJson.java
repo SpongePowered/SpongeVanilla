@@ -25,6 +25,7 @@ package org.granitepowered.granite.utils.json;
 
 import com.google.gson.*;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.text.action.GraniteClickAction;
 import org.granitepowered.granite.impl.text.action.GraniteHoverAction;
 import org.granitepowered.granite.impl.text.action.GraniteShiftClickAction;
@@ -40,26 +41,44 @@ import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
+import org.spongepowered.api.text.translation.Translation;
+import org.spongepowered.api.text.translation.Translations;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeserializer<GraniteMessage<?>> {
     @Override
     public GraniteMessage<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
-            return (GraniteMessage<?>) new GraniteMessageBuilder.GraniteTextMessageBuilder().content(json.getAsString()).build();
+            return (GraniteMessage<?>) new GraniteMessageBuilder.GraniteTextMessageBuilder("").content(json.getAsString()).build();
         }
 
         JsonObject src = json.getAsJsonObject();
 
         MessageBuilder<?> builder;
         if (src.has("text")) {
-            builder = new GraniteMessageBuilder.GraniteTextMessageBuilder().content(src.get("text").getAsString());
+            builder = new GraniteMessageBuilder.GraniteTextMessageBuilder("").content(src.get("text").getAsString());
+        } else if (src.has("translation")) {
+            Translation translation = Translations.of(src.get("translation").getAsString()).get();
+            builder = new GraniteMessageBuilder.GraniteTranslatableMessageBuilder(translation);
+
+            if (src.has("with")) {
+                List<Object> withList = new ArrayList<>();
+
+                for (JsonElement withElement : src.getAsJsonArray("with")) {
+                    Message with = context.deserialize(withElement, GraniteMessage.class);
+                    withList.add(with);
+                }
+
+                ((MessageBuilder.Translatable) builder).content(translation, withList.toArray(new Object[withList.size()]));
+            }
         } else {
             throw new NotImplementedException("");
         }
 
-        // TODO: add the other 3 types
+        // TODO: add the other 2 types
 
         builder = builder.color(src.has("color") ? TextColors.RESET : GraniteTextColor.valueOf(src.get("color").getAsString().toUpperCase()));
 
@@ -105,8 +124,26 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
 
         if (src instanceof GraniteMessage.GraniteText) {
             out.add("text", context.serialize(src.getContent()));
+        } else if (src instanceof GraniteMessage.GraniteTranslatable) {
+            out.add("translate", context.serialize(((GraniteMessage.GraniteTranslatable) src).getContent().getId()));
+
+            JsonArray withArr = new JsonArray();
+            if (!((GraniteMessage.GraniteTranslatable) src).getArguments().isEmpty()) {
+                for (Object obj : ((GraniteMessage.GraniteTranslatable) src).getArguments()) {
+                    JsonElement serialized = null;
+                    if (obj instanceof GraniteMessage || obj instanceof String) {
+                        serialized = context.serialize(obj, GraniteMessage.class);
+                    } else {
+                        serialized = context.serialize(obj);
+                    }
+
+                    withArr.add(serialized);
+                }
+            }
+
+            out.add("with", withArr);
         }
-        // TODO: add the other 3 types
+        // TODO: add the other 2 types
 
         if (src.getHoverAction().isPresent()) {
             out.add("hoverEvent", context.serialize(src.getHoverAction().get()));

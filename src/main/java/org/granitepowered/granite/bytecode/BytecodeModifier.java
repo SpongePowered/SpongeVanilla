@@ -33,6 +33,7 @@ import javassist.expr.ExprEditor;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
+import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
@@ -42,6 +43,7 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 import org.spongepowered.api.text.message.Messages;
+import org.spongepowered.api.text.translation.Translations;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -103,7 +105,7 @@ public class BytecodeModifier {
                 protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
                     callback.invokeParent(args);
 
-                    Message.Text hello = Messages.builder(" HELLO").color(TextColors.AQUA).style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE, TextStyles.STRIKETHROUGH.negate()).build();
+                    Message.Translatable hello = Messages.builder(Translations.of("translation.test.none").get()).color(TextColors.AQUA).style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE, TextStyles.STRIKETHROUGH.negate()).build();
 
                     Message.Text andnot = Messages.builder("ANDNOT").style(TextStyles.BOLD.andNot(TextStyles.STRIKETHROUGH)).color(TextColors.GOLD).build();
 
