@@ -105,7 +105,7 @@ public class BytecodeModifier {
                 protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
                     callback.invokeParent(args);
 
-                    Message.Translatable hello = Messages.builder(Translations.of("translation.test.none").get()).color(TextColors.AQUA).style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE, TextStyles.STRIKETHROUGH.negate()).build();
+                    Message.Translatable hello = Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), "Snoop Lion", "Snoop Dogg").color(TextColors.AQUA).style(TextStyles.BOLD, TextStyles.ITALIC, TextStyles.UNDERLINE, TextStyles.STRIKETHROUGH.negate()).build();
 
                     Message.Text andnot = Messages.builder("ANDNOT").style(TextStyles.BOLD.andNot(TextStyles.STRIKETHROUGH)).color(TextColors.GOLD).build();
 

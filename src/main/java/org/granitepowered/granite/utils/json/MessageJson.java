@@ -130,8 +130,8 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
             JsonArray withArr = new JsonArray();
             if (!((GraniteMessage.GraniteTranslatable) src).getArguments().isEmpty()) {
                 for (Object obj : ((GraniteMessage.GraniteTranslatable) src).getArguments()) {
-                    JsonElement serialized = null;
-                    if (obj instanceof GraniteMessage || obj instanceof String) {
+                    JsonElement serialized;
+                    if (obj instanceof GraniteMessage) {
                         serialized = context.serialize(obj, GraniteMessage.class);
                     } else {
                         serialized = context.serialize(obj);
