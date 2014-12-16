@@ -24,11 +24,14 @@
 package org.granitepowered.granite.bytecode;
 
 import javassist.*;
-import javassist.bytecode.AccessFlag;
+import javassist.bytecode.*;
+import javassist.compiler.CompileError;
+import javassist.compiler.Javac;
 import javassist.expr.ExprEditor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCInterface;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -133,19 +136,49 @@ public class BytecodeClass {
                         CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldSet$".length()));
                         mcField.setModifiers(AccessFlag.setPublic(mcField.getModifiers()));
 
-                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), new CtClass[]{}, mcField.getDeclaringClass());
+                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), new CtClass[]{}, clazz);
+                        newMethod.setModifiers(Modifier.PUBLIC);
 
-                        newMethod.setBody("return ($r)" + mcField.getName() + ";");
+                        MethodInfo mi = newMethod.getMethodInfo();
 
-                        mcField.getDeclaringClass().addMethod(newMethod);
+                        Bytecode bytecode = new Bytecode(mi.getConstPool(), 2, 1);
+                        bytecode.addLoad(0, clazz);
+                        bytecode.addGetfield(mcField.getDeclaringClass(), mcField.getName(), mcField.getFieldInfo().getDescriptor());
+
+                        if (!interfaceMethod.getReturnType().isPrimitive()) {
+                            bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
+                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast", "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                            bytecode.addCheckcast(interfaceMethod.getReturnType());
+                        }
+
+                        bytecode.addReturn(mcField.getType());
+
+                        mi.setCodeAttribute(bytecode.toCodeAttribute());
+
+                        clazz.addMethod(newMethod);
                     } else if (interfaceMethod.getName().startsWith("fieldSet$")) {
                         CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldSet$".length()));
 
-                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), mcField.getDeclaringClass());
+                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
+                        newMethod.setModifiers(Modifier.PUBLIC);
 
-                        newMethod.setBody(mcField.getName() + " = $1;");
+                        MethodInfo mi = newMethod.getMethodInfo();
+                        Bytecode bytecode = new Bytecode(mi.getConstPool(), 2, 2);
+                        bytecode.addAload(0);
+                        bytecode.addLoad(1, mcField.getType());
 
-                        mcField.getDeclaringClass().addMethod(newMethod);
+                        if (!mcField.getType().isPrimitive()) {
+                            bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
+                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast", "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                            bytecode.addCheckcast(mcField.getType());
+                        }
+
+                        bytecode.addPutfield(mcField.getDeclaringClass(), mcField.getName(), mcField.getFieldInfo().getDescriptor());
+                        bytecode.addReturn(CtClass.voidType);
+
+                        mi.setCodeAttribute(bytecode.toCodeAttribute());
+
+                        clazz.addMethod(newMethod);
                     } else {
                         CtMethod mcMethod = Mappings.getCtMethod(clazz, interfaceMethod.getName());
 
@@ -261,17 +294,6 @@ public class BytecodeClass {
     }
 
     public void post() {
-        try {
-            clazz.toClass();
-            clazz.writeFile("debug/");
-        } catch (CannotCompileException e) {
-            if (!(e.getCause() instanceof LinkageError)) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         for (PostCallback callback : callbacks) {
             callback.callback();
         }
@@ -282,18 +304,15 @@ public class BytecodeClass {
             try {
                 classMap.put(clazz, clazz.toClass());
             } catch (CannotCompileException | LinkageError e) {
-                if (!(e.getCause() instanceof LinkageError)) {
-                    e.printStackTrace();
-                } else {
-                    try {
-                        classMap.put(clazz, Class.forName(clazz.getName()));
-                    } catch (ClassNotFoundException e1) {
-                        e1.printStackTrace();
-                    }
-                }
+                e.printStackTrace();
+                return null;
             }
         }
         return classMap.get(clazz);
+    }
+
+    public void loadClass() {
+        getFromCt(clazz);
     }
 
     public static interface ProxyHandlerCallback {

@@ -99,7 +99,7 @@ public class BytecodeModifier {
 
                     return callback.invokeParent(args);
                 }
-            });z*/
+            });*/
             scm.proxy("playerLoggedIn", new BytecodeClass.ProxyHandler() {
                 @Override
                 protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
@@ -117,9 +117,15 @@ public class BytecodeModifier {
                     ((GranitePlayer) wrap(p)).sendMessage(mainmessage);
                     // TODO: add player join event here
 
+                    Granite.getInstance().getServer().obj.fieldGet$worldServers();
+
                     return null;
                 }
             });
+
+            for (BytecodeClass bc : bcs.values()) {
+                bc.loadClass();
+            }
 
             for (BytecodeClass bc : bcs.values()) {
                 bc.post();

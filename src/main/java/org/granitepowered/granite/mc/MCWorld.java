@@ -25,7 +25,7 @@ package org.granitepowered.granite.mc;
 
 import java.util.List;
 
-@Implement(name = "WorldServer")
+@Implement(name = "World")
 public interface MCWorld extends MCInterface {
     MCWorldInfo fieldGet$worldInfo();
 

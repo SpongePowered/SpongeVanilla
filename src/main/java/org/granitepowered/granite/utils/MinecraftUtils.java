@@ -40,6 +40,7 @@ import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.Implement;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCInterface;
@@ -47,6 +48,9 @@ import org.spongepowered.api.text.message.Message;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
@@ -101,6 +105,28 @@ public class MinecraftUtils {
             return (MCBlockPos) Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(vector.getX(), vector.getY(), vector.getZ());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T extends MCInterface> T instantiate(Class<T> clazz, Object... args) {
+        Class<?> mcClass = Mappings.getClass(clazz.getAnnotation(Implement.class).name());
+
+        Class<?>[] argTypes = new Class[args.length];
+
+        for (int i = 0; i < args.length; i++) {
+            argTypes[i] = args[i].getClass();
+
+            if (argTypes[i].isAnnotationPresent(Implement.class)) {
+                argTypes[i] = Mappings.getClass(clazz.getAnnotation(Implement.class).name());
+            }
+        }
+
+        try {
+            MethodHandle constructor = MethodHandles.lookup().findConstructor(mcClass, MethodType.methodType(void.class, argTypes));
+            return (T) constructor.invoke(args);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
         return null;
     }

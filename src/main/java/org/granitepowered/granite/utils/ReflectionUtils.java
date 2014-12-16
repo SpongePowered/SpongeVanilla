@@ -34,6 +34,7 @@ import org.granitepowered.granite.mappings.Mappings;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ReflectionUtils {
@@ -252,5 +253,27 @@ public class ReflectionUtils {
         }
 
         return ret;
+    }
+
+    // Used from bytecode, don't remove
+    public static Object cast(Object input, Class clazz) {
+        if (clazz.isArray()) {
+            try {
+                Class<?> actualType = Class.forName(clazz.getName().substring(2, clazz.getName().length() - 1));
+
+                Object[] src = (Object[]) input;
+
+                Object[] out = (Object[]) Array.newInstance(actualType, src.length);
+
+                for (int i = 0; i < src.length; i++) {
+                    out[i] = actualType.cast(src[i]);
+                }
+
+                return out;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return input;
     }
 }
