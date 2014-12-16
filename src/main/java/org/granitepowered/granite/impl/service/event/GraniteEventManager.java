@@ -23,22 +23,62 @@
 
 package org.granitepowered.granite.impl.service.event;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
+import org.spongepowered.api.event.player.PlayerChatEvent;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Subscribe;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class GraniteEventManager implements EventManager {
+    Multimap<Class<? extends Event>, GraniteEventHandler> handlers = MultimapBuilder.SetMultimapBuilder.hashKeys().hashSetValues().build();
+
     @Override
     public void register(Object plugin, Object obj) {
+        PluginContainer container = Granite.getInstance().getPluginManager().fromInstance(plugin).or(new Supplier<PluginContainer>() {
+            @Override
+            public PluginContainer get() {
+                throw new IllegalArgumentException("\"plugin\" is not a plugin instance");
+            }
+        });
 
+        Class<?> objClass = obj.getClass();
+
+        for (Method m : objClass.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Subscribe.class)) {
+                Subscribe annotation = m.getAnnotation(Subscribe.class);
+
+                if (m.getParameterTypes().length != 1) {
+                    throw new IllegalArgumentException("A handler method should only have one parameter");
+                }
+
+                Class<? extends Event> type = (Class<? extends Event>) m.getParameterTypes()[0];
+                if (type.getName().startsWith("Granite")) {
+                    type = (Class<? extends Event>) type.getInterfaces()[0];
+                }
+
+                GraniteEventHandler handler = new GraniteEventHandler(obj, type, container, annotation.order(), annotation.ignoreCancelled());
+                handlers.put(type, handler);
+            }
+        }
     }
 
     @Override
     public void unregister(Object obj) {
-
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean post(Event event) {
-        return false;
+        throw new NotImplementedException("");
     }
 }
