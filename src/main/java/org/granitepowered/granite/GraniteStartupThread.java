@@ -44,6 +44,8 @@ import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.GraniteMessageFactory;
 import org.spongepowered.api.text.message.Messages;
+import org.spongepowered.api.text.title.GraniteTitleFactory;
+import org.spongepowered.api.text.title.Titles;
 import org.spongepowered.api.text.translation.GraniteTranslationFactory;
 import org.spongepowered.api.text.translation.Translations;
 
@@ -125,6 +127,7 @@ public class GraniteStartupThread extends Thread {
         injectConstant(TextActions.class, "factory", new GraniteTextActionFactory());
         injectConstant(Translations.class, "factory", new GraniteTranslationFactory());
         injectConstant(ChatTypes.class, "factory", new GraniteChatTypeFactory());
+        injectConstant(Titles.class, "factory", new GraniteTitleFactory());
 
         injectEnumConstants(TextColors.class, GraniteTextColor.class);
 

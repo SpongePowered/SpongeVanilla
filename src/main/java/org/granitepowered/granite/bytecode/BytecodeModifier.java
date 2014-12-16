@@ -43,6 +43,7 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 import org.spongepowered.api.text.message.Messages;
+import org.spongepowered.api.text.title.Titles;
 import org.spongepowered.api.text.translation.Translations;
 
 import javax.annotation.Nullable;
@@ -114,10 +115,11 @@ public class BytecodeModifier {
                     Message.Text mainmessage = Messages.builder("PIG SAYS ").color(TextColors.GREEN).style(TextStyles.STRIKETHROUGH).append(hello).append(andnot).append(and).build();
 
                     MCEntityPlayerMP p = (MCEntityPlayerMP) args[0];
-                    ((GranitePlayer) wrap(p)).sendMessage(mainmessage);
+                    GranitePlayer pp = wrap(p);
+                    pp.sendMessage(mainmessage);
                     // TODO: add player join event here
 
-                    Granite.getInstance().getServer().obj.fieldGet$worldServers();
+                    pp.sendTitle(Titles.builder().title(andnot).subtitle(and).build());
 
                     return null;
                 }

@@ -52,6 +52,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class MinecraftUtils {
@@ -109,26 +110,25 @@ public class MinecraftUtils {
         return null;
     }
 
-    public static <T extends MCInterface> T instantiate(Class<T> clazz, Object... args) {
-        Class<?> mcClass = Mappings.getClass(clazz.getAnnotation(Implement.class).name());
-
-        Class<?>[] argTypes = new Class[args.length];
-
-        for (int i = 0; i < args.length; i++) {
-            argTypes[i] = args[i].getClass();
-
-            if (argTypes[i].isAnnotationPresent(Implement.class)) {
-                argTypes[i] = Mappings.getClass(clazz.getAnnotation(Implement.class).name());
-            }
+    public static <T> T instantiate(Class<?> clazz, Class<?>[] types, Object... args) {
+        Class<?> mcClass;
+        if (clazz.isAnnotationPresent(Implement.class)) {
+            mcClass = Mappings.getClass(clazz.getAnnotation(Implement.class).name());
+        } else {
+            mcClass = clazz;
         }
 
         try {
-            MethodHandle constructor = MethodHandles.lookup().findConstructor(mcClass, MethodType.methodType(void.class, argTypes));
-            return (T) constructor.invoke(args);
+            MethodHandle constructor = MethodHandles.lookup().findConstructor(mcClass, MethodType.methodType(void.class, types));
+            return (T) constructor.invokeWithArguments(Arrays.asList(args));
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
         return null;
+    }
+
+    public static Enum enumValue(Class<?> clazz, int number) {
+        return (Enum) clazz.getEnumConstants()[number];
     }
 
     public static class WrapFunction<T extends Composite> implements Function<MCInterface, T> {

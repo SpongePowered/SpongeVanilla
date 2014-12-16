@@ -33,6 +33,7 @@ import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
 import org.spongepowered.api.entity.player.Player;
@@ -43,6 +44,7 @@ import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
+import org.spongepowered.api.text.title.Titles;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -91,20 +93,58 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
 
     @Override
     public void sendTitle(Title title) {
-        // TODO: Title API
-        throw new NotImplementedException("");
+        if (title.isReset() || title.isClear()) {
+            Enum type = MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
+
+            MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
+                    new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
+                    type, null);
+
+            sendPacket(packet);
+        }
+
+        if (title.getFadeIn().isPresent() || title.getStay().isPresent() || title.getFadeOut().isPresent()) {
+            int fadeIn = title.getFadeIn().or(-1);
+            int stay = title.getFadeIn().or(-1);
+            int fadeOut = title.getFadeIn().or(-1);
+
+            MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
+                    new Class[]{int.class, int.class, int.class},
+                    fadeIn, stay, fadeOut);
+
+            sendPacket(packet);
+        }
+
+        if (title.getTitle().isPresent()) {
+            Enum type = MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 0);
+
+            MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
+                    new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
+                    type, MinecraftUtils.graniteToMinecraftChatComponent(title.getTitle().get()));
+
+            sendPacket(packet);
+        }
+
+        if (title.getTitle().isPresent()) {
+            Enum type = MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 1);
+
+            MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
+                    new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
+                    type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
+
+            sendPacket(packet);
+        }
     }
 
     @Override
     public void resetTitle() {
-        // TODO: Title API
-        throw new NotImplementedException("");
+        sendTitle(Titles.update().reset().build());
+
     }
 
     @Override
     public void clearTitle() {
-        // TODO: Title API
-        throw new NotImplementedException("");
+        sendTitle(Titles.update().clear().build());
     }
 
     @Override

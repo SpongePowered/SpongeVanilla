@@ -304,7 +304,9 @@ public class BytecodeClass {
             try {
                 classMap.put(clazz, clazz.toClass());
             } catch (CannotCompileException | LinkageError e) {
-                e.printStackTrace();
+                if (!(e.getCause() instanceof LinkageError && e.getCause().getMessage().contains("duplicate class definition"))) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         }
