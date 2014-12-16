@@ -56,7 +56,7 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
 
         JsonObject src = json.getAsJsonObject();
 
-        MessageBuilder<?> builder;
+        MessageBuilder builder;
         if (src.has("text")) {
             builder = new GraniteMessageBuilder.GraniteTextMessageBuilder("").content(src.get("text").getAsString());
         } else if (src.has("translation")) {

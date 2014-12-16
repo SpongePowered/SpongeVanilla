@@ -38,7 +38,7 @@ public class GraniteMessageFactory implements MessageFactory {
     // This is in a different package due to Sponge for some reason making MessageFactory package private
 
     @Override
-    public MessageBuilder<?> createEmptyBuilder() {
+    public MessageBuilder createEmptyBuilder() {
         return new GraniteMessageBuilder.GraniteTextMessageBuilder("");
     }
 

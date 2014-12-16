@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.text.message;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.action.ShiftClickAction;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class GraniteMessageBuilder<T extends Message> implements MessageBuilder<T> {
+public abstract class GraniteMessageBuilder<T extends Message> implements MessageBuilder {
     List<Message> children;
     TextColor color;
     TextStyle style;
@@ -79,11 +78,6 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
 
         public GraniteTextMessageBuilder(String content) {
             this.content = content;
-        }
-
-        @Override
-        public MessageBuilder<Message.Text> content(Object o) {
-            return content((String) o);
         }
 
         @Override
@@ -164,11 +158,6 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
         @Override
         public Translatable content(org.spongepowered.api.text.translation.Translatable translatable, Object... objects) {
             return content(translatable.getTranslation(), objects);
-        }
-
-        @Override
-        public MessageBuilder<Message.Translatable> content(Object content) {
-            return content((Translation) content, new Object[]{});
         }
 
         @Override
