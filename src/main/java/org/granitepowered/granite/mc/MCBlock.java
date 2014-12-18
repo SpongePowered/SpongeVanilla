@@ -40,4 +40,6 @@ public interface MCBlock extends MCInterface {
     MCBlockState getStateFromMeta(int meta);
 
     int getMetaFromState(MCBlockState state);
+
+    String getUnlocalizedName();
 }

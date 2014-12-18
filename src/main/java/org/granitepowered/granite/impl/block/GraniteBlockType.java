@@ -23,8 +23,8 @@
 
 package org.granitepowered.granite.impl.block;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.spongepowered.api.block.BlockState;
@@ -75,7 +75,6 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public Translation getTranslation() {
-        // TODO: Wait for Message API (see Block.getUnlocalizedName() and Block.getLocalizedName(), make sure not to use the field as the method is overridden
-        throw new NotImplementedException("");
+        return new GraniteTranslation(obj.getUnlocalizedName());
     }
 }

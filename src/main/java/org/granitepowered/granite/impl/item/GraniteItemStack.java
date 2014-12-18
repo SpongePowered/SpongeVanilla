@@ -43,25 +43,32 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     public GraniteItemStack(ItemType type, int amount) {
         this((MCItem) unwrap(type), amount);
     }
+    public GraniteItemStack(ItemType type, int amount, int damage) {
+        this((MCItem) unwrap(type), amount, damage);
+    }
 
     public GraniteItemStack(BlockType type, int amount) {
         this((MCBlock) unwrap(type), amount);
+    }
+
+    public GraniteItemStack(BlockType type, int amount, int damage) {
+        this((MCBlock) unwrap(type), amount, damage);
     }
 
     public GraniteItemStack(MCItem item, int amount) {
         this(item, amount, 0);
     }
 
-    public GraniteItemStack(MCItem item, int amount, int meta) {
-        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Item"), int.class, int.class}, item, amount, meta);
+    public GraniteItemStack(MCItem item, int amount, int damage) {
+        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Item"), int.class, int.class}, item, amount, damage);
     }
 
     public GraniteItemStack(MCBlock block, int amount) {
         this(block, amount, 0);
     }
 
-    public GraniteItemStack(MCBlock block, int amount, int meta) {
-        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Block"), int.class, int.class}, block, amount, meta);
+    public GraniteItemStack(MCBlock block, int amount, int damage) {
+        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Block"), int.class, int.class}, block, amount, damage);
     }
 
     @Override
@@ -86,9 +93,7 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
 
     @Override
     public void setQuantity(int quantity) throws IllegalArgumentException {
-        if (quantity > getMaxStackQuantity()) {
-            throw new IllegalArgumentException("Quantity exceeds maximum quantity");
-        }
+        if (quantity > getMaxStackQuantity()) quantity = getMaxStackQuantity();
         obj.fieldSet$stackSize(quantity);
     }
 
@@ -99,14 +104,13 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
 
     @Override
     public void setMaxStackQuantity(int quantity) {
-        // TODO: Check if you can set max stack size on an ItemStack
-        throw new UnsupportedOperationException("Cannot set max stack size on a single ItemStack");
+        // TODO: Decision lies with Sponge on this as is impossible to change the max size of a stack
+        throw new UnsupportedOperationException("Decision lies with Sponge on this as is impossible to change the max size of a stack");
     }
 
     @Override
-    public int compareTo(ItemStack o) {
-        // TODO: Check what this actually compares
-        return 0;
+    public int compareTo(ItemStack itemStack) {
+        throw new UnsupportedOperationException("This is going to be removed in a later release of Sponge");
     }
 
     public MCItem getMCItem() {

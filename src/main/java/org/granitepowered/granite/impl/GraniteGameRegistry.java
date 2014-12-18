@@ -27,6 +27,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.item.GraniteItemStackBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
@@ -58,6 +59,8 @@ import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 public class GraniteGameRegistry implements GameRegistry {
     Map<String, BlockType> blockTypes = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
+
+    GraniteItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
 
     public void register() {
         registerBlocks();
@@ -144,8 +147,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public ItemStackBuilder getItemBuilder() {
-        // TODO: ItemStackBuilder API
-        throw new NotImplementedException("");
+        return itemStackBuilder;
     }
 
     @Override
