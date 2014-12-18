@@ -24,16 +24,44 @@
 package org.granitepowered.granite.impl.item;
 
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
+import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteItemStack extends Composite<MCItemStack> implements ItemStack {
     public GraniteItemStack(MCItemStack obj) {
         super(obj);
+    }
+
+    public GraniteItemStack(ItemType type, int amount) {
+        this((MCItem) unwrap(type), amount);
+    }
+
+    public GraniteItemStack(BlockType type, int amount) {
+        this((MCBlock) unwrap(type), amount);
+    }
+
+    public GraniteItemStack(MCItem item, int amount) {
+        this(item, amount, 0);
+    }
+
+    public GraniteItemStack(MCItem item, int amount, int meta) {
+        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Item"), int.class, int.class}, item, amount, meta);
+    }
+
+    public GraniteItemStack(MCBlock block, int amount) {
+        this(block, amount, 0);
+    }
+
+    public GraniteItemStack(MCBlock block, int amount, int meta) {
+        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Block"), int.class, int.class}, block, amount, meta);
     }
 
     @Override
