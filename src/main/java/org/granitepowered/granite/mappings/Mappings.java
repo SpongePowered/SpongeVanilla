@@ -63,29 +63,32 @@ public class Mappings {
 
     static ClassPool pool;
 
+    private static void downloadMappings(File mappingsFile, String url, HttpRequest req) {
+        Granite.instance.getLogger().warn("Downloading from " + url);
+        if (req.code() == 404) {
+            throw new RuntimeException("GitHub 404 error whilst trying to download");
+        } else if (req.code() == 200) {
+            req.receive(mappingsFile);
+            Granite.instance.getServerConfig().set("latest-mappings-etag", req.eTag());
+            Granite.instance.getServerConfig().save();
+        }
+    }
+
     public static void load() {
         try {
             File mappingsFile = new File(Granite.instance.getServerConfig().getMappingsFile().getAbsolutePath());
-
             String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.1.json";
-
+            HttpRequest req = HttpRequest.get(url);
             if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
                 Granite.instance.getLogger().info("Querying Granite for updates");
-                HttpRequest req = HttpRequest.get(url);
-                if (!mappingsFile.exists() || !Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
-                    Granite.instance.getLogger().warn("Could not find mappings.json (or etag didn't match)");
-                    Granite.instance.getLogger().warn("Downloading from " + url);
-
-                    if (req.code() == 404) {
-                        throw new RuntimeException("GitHub 404 error whilst trying to download");
-                    } else if (req.code() == 200) {
-                        req.receive(mappingsFile);
-                        Granite.instance.getServerConfig().set("latest-mappings-etag", req.eTag());
-                        Granite.instance.getServerConfig().save();
-                    }
+                if (!mappingsFile.exists()) {
+                    Granite.instance.getLogger().warn("Could not find mappings.json");
+                    downloadMappings(mappingsFile, url, req);
+                } else if (!Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
+                    Granite.instance.getLogger().info("Update found");
+                    downloadMappings(mappingsFile, url, req);
                 }
             }
-
             file = ConfigFactory.parseReader(
                     new InputStreamReader(
                             new FileInputStream(mappingsFile)
