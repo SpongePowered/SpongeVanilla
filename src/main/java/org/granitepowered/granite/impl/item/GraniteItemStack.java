@@ -23,14 +23,18 @@
 
 package org.granitepowered.granite.impl.item;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+
+import java.util.Map;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
@@ -106,6 +110,36 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     public void setMaxStackQuantity(int quantity) {
         // TODO: Decision lies with Sponge on this as is impossible to change the max size of a stack
         throw new UnsupportedOperationException("Decision lies with Sponge on this as is impossible to change the max size of a stack");
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getEnchantments() {
+        // TODO: Enchantment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isEnchanted() {
+        // TODO: Enchantment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setEnchantment(Enchantment enchant, int level) {
+        // TODO: Enchantment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void removeEnchantment(Enchantment enchant) {
+        // TODO: Enchantment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getEnchantment(Enchantment enchant) {
+        // TODO: Enchantment API
+        throw new NotImplementedException("");
     }
 
     @Override

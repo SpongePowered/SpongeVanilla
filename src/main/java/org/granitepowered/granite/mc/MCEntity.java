@@ -39,6 +39,11 @@ public interface MCEntity extends MCInterface {
 
     MCEntity fieldGet$ridingEntity();
 
+    void fieldSet$riddenByEntity(MCEntity entity);
+
+    void fieldSet$ridingEntity(MCEntity entity);
+
+
     float fieldGet$width();
 
     float fieldGet$height();

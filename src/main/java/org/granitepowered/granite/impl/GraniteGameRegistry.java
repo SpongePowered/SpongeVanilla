@@ -42,10 +42,12 @@ import org.spongepowered.api.entity.living.meta.*;
 import org.spongepowered.api.entity.living.villager.Career;
 import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
+import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
+import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.world.biome.BiomeType;
 
@@ -153,6 +155,12 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public TradeOfferBuilder getTradeOfferBuilder() {
         // TODO: TradeOfferBuilder API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public PotionEffectBuilder getPotionEffectBuilder() {
+        // TODO: Potion API
         throw new NotImplementedException("");
     }
 
@@ -315,6 +323,18 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public List<PotionEffectType> getPotionEffects() {
         // TODO: Potion Effects API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Enchantment> getEnchantment(String id) {
+        // TODO: Enchantment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Enchantment> getEnchantments() {
+        // TODO: Enchantment API
         throw new NotImplementedException("");
     }
 

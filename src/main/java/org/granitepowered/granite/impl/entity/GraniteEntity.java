@@ -30,14 +30,10 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCEntity;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.util.EulerDirection;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.extent.Extent;
 
 import java.util.UUID;
 
@@ -56,48 +52,36 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     }
 
     @Override
-    public void interact(EntityInteractionType interactionType) {
-        // TODO: figure out how to fake events from players which necessarily do not exist
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void interactWith(ItemStack itemStack, EntityInteractionType interactionType) {
-        // TODO: see above
-        throw new NotImplementedException("");
-    }
-
-    @Override
     public boolean isOnGround() {
         return obj.fieldGet$onGround();
     }
 
     @Override
+    public boolean isRemoved() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isLoaded() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Location getLocation() {
-        // TODO: Figure out Extent
+        return new Location(getWorld(), new Vector3d(obj.fieldGet$posX(), obj.fieldGet$posY(), obj.fieldGet$posZ()));
+    }
+
+    @Override
+    public boolean setLocation(Location location) {
+        // TODO: set world
+        obj.setPosition(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
+        return true;
+    }
+
+    @Override
+    public Vector3f getRotation() {
+        // TODO: Figure out Euler stuff
         throw new NotImplementedException("");
-    }
-
-    @Override
-    public void teleport(Location location) {
-        // TODO: Figure out Extent
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void teleport(Extent extent, Vector3d position) {
-        // TODO: Figure out Extent
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public Vector3d getPosition() {
-        return new Vector3d(getX(), getY(), getZ());
-    }
-
-    @Override
-    public void setPosition(Vector3d position) {
-        obj.setPosition(position.getX(), position.getY(), position.getZ());
     }
 
     @Override
@@ -106,75 +90,30 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     }
 
     @Override
-    public void teleport(double x, double y, double z, World world) {
-        // TODO: Multiworld
+    public Optional<Entity> getPassenger() {
+        return Optional.fromNullable((Entity) wrap(obj.fieldGet$riddenByEntity()));
+    }
+
+    @Override
+    public Optional<Entity> getVehicle() {
+        return Optional.fromNullable((Entity) wrap(obj.fieldGet$ridingEntity()));
+    }
+
+    @Override
+    public Entity getBaseVehicle() {
         throw new NotImplementedException("");
     }
 
     @Override
-    public double getX() {
-        return obj.fieldGet$posX();
+    public boolean setPassenger(Entity entity) {
+        obj.fieldSet$riddenByEntity((MCEntity) unwrap(entity));
+        return true;
     }
 
     @Override
-    public double getY() {
-        return obj.fieldGet$posY();
-    }
-
-    @Override
-    public double getZ() {
-        return obj.fieldGet$posZ();
-    }
-
-    @Override
-    public Vector3f getVectorRotation() {
-        return getRotation().toVector();
-    }
-
-    @Override
-    public void setVectorRotation(Vector3f rotation) {
-        // TODO: Figure out Euler things
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public EulerDirection getRotation() {
-        // TODO: Figure out Euler things
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void setRotation(EulerDirection rotation) {
-        // TODO: Figure out Euler things
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void mount(Entity entity) {
-        obj.mountEntity(entity == null ? null : (MCEntity) unwrap(entity));
-    }
-
-    @Override
-    public void dismount() {
-        mount(null);
-    }
-
-    @Override
-    public void eject() {
-        // 99% sure these two use the same internal mechanism
-        dismount();
-    }
-
-    @Override
-    public Optional<Entity> getRider() {
-        Entity rider = wrap(obj.fieldGet$riddenByEntity());
-        return Optional.fromNullable(rider);
-    }
-
-    @Override
-    public Optional<Entity> getRiding() {
-        Entity riding = wrap(obj.fieldGet$ridingEntity());
-        return Optional.fromNullable(riding);
+    public boolean setVehicle(Entity entity) {
+        obj.fieldSet$ridingEntity((MCEntity) unwrap(entity));
+        return true;
     }
 
     @Override
@@ -191,17 +130,6 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     public float getScale() {
         // TODO: Find out if this is even possible to get
         return 1;
-    }
-
-    @Override
-    public boolean isDead() {
-        return obj.fieldGet$isDead();
-    }
-
-    @Override
-    public boolean isValid() {
-        // TODO: What is this?
-        throw new NotImplementedException("");
     }
 
     @Override
@@ -244,8 +172,8 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     }
 
     @Override
-    public void teleport(Vector3d position, World world) {
-        // TODO: Multiworld
+    public void setRotation(Vector3f vector) {
+        // TODO: Figure out Euler stuff
         throw new NotImplementedException("");
     }
 }
