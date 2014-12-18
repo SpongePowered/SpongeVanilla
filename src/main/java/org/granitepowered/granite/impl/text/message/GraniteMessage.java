@@ -25,6 +25,9 @@ package org.granitepowered.granite.impl.text.message;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.action.ShiftClickAction;
@@ -108,7 +111,8 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public Iterable<Message> withChildren() {
-            return null;
+            // I still have no idea what I'm doing
+            return (Iterable<Message>) Iterators.concat(Iterators.singletonIterator(this), Iterables.concat(children).iterator());
         }
 
         @Override
@@ -118,12 +122,12 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public String toLegacy() {
-            return null;
+            throw new NotImplementedException("");
         }
 
         @Override
         public String toLegacy(char c) {
-            return null;
+            throw new NotImplementedException("");
         }
     }
 
@@ -143,7 +147,8 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public Iterable<Message> withChildren() {
-            return null;
+            // I still have no idea what I'm doing
+            return (Iterable<Message>) Iterators.concat(Iterators.singletonIterator(this), Iterables.concat(children).iterator());
         }
 
         @Override
@@ -153,14 +158,14 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public String toLegacy() {
-            return null;
+            throw new NotImplementedException("");
         }
 
         @Override
         public String toLegacy(char c) {
-            return null;
+            throw new NotImplementedException("");
         }
     }
 
-    // TODO: The other three types (translation, score and selector)
+    // TODO: The other two types (score and selector)
 }
