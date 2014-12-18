@@ -34,6 +34,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.world.Location;
 
 import java.util.Collection;
 import java.util.List;
@@ -231,5 +232,50 @@ public class GraniteLiving<T extends MCEntityLiving> extends GraniteEntity<T> im
     @Override
     public void setCustomNameVisible(boolean visible) {
         obj.setAlwaysRenderNameTag(visible);
+    }
+
+    @Override
+    public boolean setLocation(Location location) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setRotation(Vector3f vector3f) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Entity> getPassenger() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Entity> getVehicle() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Entity getBaseVehicle() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean setPassenger(Entity entity) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean setVehicle(Entity entity) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isRemoved() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isLoaded() {
+        throw new NotImplementedException("");
     }
 }

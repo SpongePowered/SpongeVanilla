@@ -29,6 +29,8 @@ import java.util.List;
 public interface MCWorld extends MCInterface {
     MCWorldInfo fieldGet$worldInfo();
 
+    MCWorldBorder fieldGet$worldBorder();
+
     List<MCEntity> fieldGet$loadedEntityList();
 
     boolean spawnEntityInWorld(MCEntity entity);
