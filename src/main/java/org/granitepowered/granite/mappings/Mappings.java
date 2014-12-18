@@ -108,7 +108,7 @@ public class Mappings {
         fields = new HashMap<>();
         ctFields = new HashMap<>();
 
-        pool = new ClassPool(true);
+        pool = Granite.getInstance().getClassPool();
 
         try {
             for (Map.Entry<String, ConfigValue> classObject : file.getObject("classes").entrySet()) {

@@ -24,11 +24,15 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.google.common.collect.Maps;
+import javassist.ClassPool;
+import javassist.NotFoundException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
+import org.granitepowered.granite.impl.service.event.GraniteEventManager;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.mappings.Mappings;
@@ -49,22 +53,24 @@ import org.spongepowered.api.text.title.Titles;
 import org.spongepowered.api.text.translation.GraniteTranslationFactory;
 import org.spongepowered.api.text.translation.Translations;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class GraniteStartupThread extends Thread {
-
     String[] args;
+    BytecodeModifier modifier;
 
     public GraniteStartupThread(String args[]) {
         this.args = args;
@@ -98,13 +104,24 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.logger = LoggerFactory.getLogger("Granite");
         Granite.instance.pluginManager = new GranitePluginManager();
         Granite.instance.gameRegistry = new GraniteGameRegistry();
+        Granite.instance.eventManager = new GraniteEventManager();
+        Granite.instance.classPool = new ClassPool(true);
+
+        try {
+            Granite.instance.classesDir = Files.createTempDirectory("graniteClasses").toFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Granite.instance.createGson();
 
-        loadMinecraft();
+        loadMinecraftToClassPool();
 
         Mappings.load();
 
         modifyBytecode();
+
+        loadClasses();
 
         bootstrap();
 
@@ -117,6 +134,22 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.server = new GraniteServer();
 
         Granite.instance.getLogger().info("Starting Granite version " + version);
+    }
+
+    private void loadClasses() {
+        try {
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            method.setAccessible(true);
+
+            //method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getServerConfig().getMinecraftJar().toURI().toURL());
+            method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getClassesDir().toURI().toURL());
+
+            modifier.post();
+
+            Granite.instance.getClassesDir().deleteOnExit();
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void injectSpongeFields() {
@@ -167,7 +200,25 @@ public class GraniteStartupThread extends Thread {
     private void modifyBytecode() {
         Granite.instance.getLogger().info("Modifying bytecode");
 
-        BytecodeModifier modifier = new BytecodeModifier();
+        try {
+            JarFile file = new JarFile(Granite.instance.getServerConfig().getMinecraftJar());
+            Enumeration<JarEntry> entries = file.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+
+                File f = new File(Granite.instance.getClassesDir() + java.io.File.separator + entry.getName());
+
+                if (entry.isDirectory()) {
+                    f.mkdirs();
+                } else {
+                    IOUtils.copy(file.getInputStream(entry), new FileOutputStream(f));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        modifier = new BytecodeModifier();
         modifier.modify();
     }
 
@@ -177,7 +228,7 @@ public class GraniteStartupThread extends Thread {
         Mappings.invokeStatic("Bootstrap", "func_151354_b");
     }
 
-    private void loadMinecraft() {
+    private void loadMinecraftToClassPool() {
         File minecraftJar = Granite.instance.getServerConfig().getMinecraftJar();
 
         if (!minecraftJar.exists()) {
@@ -194,10 +245,8 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.getLogger().info("Loading " + minecraftJar.getName());
 
         try {
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getServerConfig().getMinecraftJar().toURI().toURL());
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | MalformedURLException e) {
+            Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());
+        } catch (NotFoundException e) {
             e.printStackTrace();
         }
     }

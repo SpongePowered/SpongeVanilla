@@ -30,6 +30,7 @@ import javassist.CtClass;
 import javassist.NotFoundException;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 
 import java.lang.invoke.MethodHandle;
@@ -219,18 +220,18 @@ public class ReflectionUtils {
         }
 
         try {
-            clazz = ClassPool.getDefault().get(name);
+            clazz = Granite.getInstance().getClassPool().get(name);
         } catch (NotFoundException ignored) {
         }
 
         try {
-            clazz = ClassPool.getDefault().get("java.lang." + name);
+            clazz = Granite.getInstance().getClassPool().get("java.lang." + name);
         } catch (NotFoundException ignored) {
         }
 
         if (array) {
             try {
-                clazz = ClassPool.getDefault().get(name + "[]");
+                clazz = Granite.getInstance().getClassPool().get(name + "[]");
             } catch (NotFoundException ignored) {
             }
         }

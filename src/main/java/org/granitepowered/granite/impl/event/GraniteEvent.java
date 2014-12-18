@@ -21,22 +21,34 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.event;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
+import org.apache.commons.lang3.NotImplementedException;
+import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.callback.CallbackList;
 
-    MCServerConfigurationManager fieldGet$serverConfigManager();
+public class GraniteEvent implements Event {
+    public boolean isModifiable;
+    public boolean isCancellable;
 
-    boolean fieldGet$onlineMode();
+    public boolean cancelled;
 
-    MCPlayerProfileCache fieldGet$playerCache();
+    public void checkModify() {
+        checkCancel();
 
-    void startServerThread();
+        if (!isModifiable) {
+            throw new UnsupportedOperationException("Can not modify event at this event Order");
+        }
+    }
 
-    void setGuiEnabled();
+    public void checkCancel() {
+        if (!isCancellable) {
+            throw new UnsupportedOperationException("Can not modify event at this event Order");
+        }
+    }
 
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+    @Override
+    public CallbackList getCallbacks() {
+        throw new NotImplementedException("");
+    }
 }

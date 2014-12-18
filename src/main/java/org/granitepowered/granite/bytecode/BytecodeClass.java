@@ -25,13 +25,11 @@ package org.granitepowered.granite.bytecode;
 
 import javassist.*;
 import javassist.bytecode.*;
-import javassist.compiler.CompileError;
-import javassist.compiler.Javac;
 import javassist.expr.ExprEditor;
 import org.apache.commons.lang3.ArrayUtils;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCInterface;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -47,26 +45,34 @@ public class BytecodeClass {
 
     static Map<CtClass, Class<?>> classMap;
 
+    Set<String> classesToLoad;
+
+    ClassPool pool;
+
     public BytecodeClass(CtClass clazz) {
         this.clazz = clazz;
 
         classMap = new HashMap<>();
 
         callbacks = new ArrayList<>();
+
+        classesToLoad = new HashSet<>();
+
+        pool = Granite.getInstance().getClassPool();
     }
 
-    public void proxy(String methodName, ProxyHandler handler) {
+    public void proxy(final String methodName, ProxyHandler handler) {
         try {
             final CtMethod method = Mappings.getCtMethod(clazz, methodName);
 
             final String oldName = method.getName();
             method.setName(oldName + "$cb");
 
-            injectField(ClassPool.getDefault().get(Method.class.getName()), oldName + "$method", new PostCallback() {
+            injectField(pool.get(Method.class.getName()), methodName + "$method", new PostCallback() {
                 @Override
                 public void callback() {
                     try {
-                        Field f = getFromCt(clazz).getDeclaredField(oldName + "$method");
+                        Field f = getFromCt(clazz).getDeclaredField(methodName + "$method");
 
                         Class<?>[] paramTypes = new Class[method.getParameterTypes().length];
                         for (int i = 0; i < paramTypes.length; i++) {
@@ -84,10 +90,10 @@ public class BytecodeClass {
                 }
             });
 
-            injectField(ClassPool.getDefault().get(ProxyHandler.class.getName()), oldName + "$handler", handler);
+            injectField(pool.get(ProxyHandler.class.getName()), methodName + "$handler", handler);
 
             CtMethod newMethod = new CtMethod(method.getReturnType(), oldName, method.getParameterTypes(), method.getDeclaringClass());
-            newMethod.setBody("return " + oldName + "$handler.preHandle(this, $args, " + oldName + "$method);");
+            newMethod.setBody("return " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
 
             clazz.addMethod(newMethod);
         } catch (NotFoundException | CannotCompileException e) {
@@ -126,15 +132,26 @@ public class BytecodeClass {
         });
     }
 
+    private Class getFromCt(CtClass clazz) {
+        try {
+            return Class.forName(clazz.getName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void implement(Class<? extends MCInterface> mcInterface) {
         try {
-            CtClass ctMcInterface = ClassPool.getDefault().get(mcInterface.getName());
+            CtClass ctMcInterface = pool.get(mcInterface.getName());
 
             if (!Arrays.asList(clazz.getInterfaces()).contains(ctMcInterface)) {
                 for (CtMethod interfaceMethod : ctMcInterface.getDeclaredMethods()) {
                     if (interfaceMethod.getName().startsWith("fieldGet$")) {
-                        CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldSet$".length()));
+                        CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldGet$".length()));
                         mcField.setModifiers(AccessFlag.setPublic(mcField.getModifiers()));
+
+                        classesToLoad.add(mcField.getDeclaringClass().getName());
 
                         CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), new CtClass[]{}, clazz);
                         newMethod.setModifiers(Modifier.PUBLIC);
@@ -158,6 +175,9 @@ public class BytecodeClass {
                         clazz.addMethod(newMethod);
                     } else if (interfaceMethod.getName().startsWith("fieldSet$")) {
                         CtField mcField = Mappings.getCtField(clazz, interfaceMethod.getName().substring("fieldSet$".length()));
+                        mcField.setModifiers(Modifier.setPublic(mcField.getModifiers()));
+
+                        classesToLoad.add(mcField.getDeclaringClass().getName());
 
                         CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
                         newMethod.setModifiers(Modifier.PUBLIC);
@@ -210,6 +230,8 @@ public class BytecodeClass {
                 }
 
                 clazz.addInterface(ctMcInterface);
+
+                classesToLoad.add(clazz.getName());
             }
         } catch (NotFoundException | CannotCompileException e) {
             e.printStackTrace();
@@ -299,22 +321,15 @@ public class BytecodeClass {
         }
     }
 
-    private static Class<?> getFromCt(CtClass clazz) {
-        if (!classMap.containsKey(clazz)) {
+    public void writeClass() {
+        for (String className : classesToLoad) {
             try {
-                classMap.put(clazz, clazz.toClass());
-            } catch (CannotCompileException | LinkageError e) {
-                if (!(e.getCause() instanceof LinkageError && e.getCause().getMessage().contains("duplicate class definition"))) {
-                    e.printStackTrace();
-                }
-                return null;
+                CtClass ctClass = pool.get(className);
+                ctClass.writeFile(Granite.getInstance().getClassesDir().getAbsolutePath());
+            } catch (IOException | NotFoundException | CannotCompileException e) {
+                e.printStackTrace();
             }
         }
-        return classMap.get(clazz);
-    }
-
-    public void loadClass() {
-        getFromCt(clazz);
     }
 
     public static interface ProxyHandlerCallback {
@@ -337,7 +352,7 @@ public class BytecodeClass {
         protected abstract Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable;
     }
 
-    private static interface PostCallback {
+    public static interface PostCallback {
         void callback();
     }
 }

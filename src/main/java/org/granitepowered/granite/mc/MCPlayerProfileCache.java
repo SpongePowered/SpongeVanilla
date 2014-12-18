@@ -23,20 +23,9 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
+import java.util.UUID;
 
-    MCServerConfigurationManager fieldGet$serverConfigManager();
-
-    boolean fieldGet$onlineMode();
-
-    MCPlayerProfileCache fieldGet$playerCache();
-
-    void startServerThread();
-
-    void setGuiEnabled();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+@Implement(name="PlayerProfileCache")
+public interface MCPlayerProfileCache extends MCInterface {
+    MCGameProfile func_152652_a(UUID uuid);
 }

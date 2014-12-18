@@ -21,22 +21,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+@NonnullByDefault package org.granitepowered.granite.impl.service.event;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
-
-    MCServerConfigurationManager fieldGet$serverConfigManager();
-
-    boolean fieldGet$onlineMode();
-
-    MCPlayerProfileCache fieldGet$playerCache();
-
-    void startServerThread();
-
-    void setGuiEnabled();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
-}
+import org.spongepowered.api.util.annotation.NonnullByDefault;

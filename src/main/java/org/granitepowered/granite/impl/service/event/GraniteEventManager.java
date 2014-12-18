@@ -30,13 +30,17 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.event.GraniteEvent;
 import org.spongepowered.api.event.player.PlayerChatEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.util.event.Order;
 import org.spongepowered.api.util.event.Subscribe;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
 public class GraniteEventManager implements EventManager {
@@ -66,7 +70,7 @@ public class GraniteEventManager implements EventManager {
                     type = (Class<? extends Event>) type.getInterfaces()[0];
                 }
 
-                GraniteEventHandler handler = new GraniteEventHandler(obj, type, container, annotation.order(), annotation.ignoreCancelled());
+                GraniteEventHandler handler = new GraniteEventHandler(obj, type, container, annotation.order(), annotation.ignoreCancelled(), m);
                 handlers.put(type, handler);
             }
         }
@@ -79,6 +83,50 @@ public class GraniteEventManager implements EventManager {
 
     @Override
     public boolean post(Event event) {
-        throw new NotImplementedException("");
+        GraniteEvent graniteEvent = (GraniteEvent) event;
+
+        graniteEvent.isModifiable = false;
+        graniteEvent.isCancellable = false;
+        postEventWithOrder(graniteEvent, Order.PRE);
+        postEventWithOrder(graniteEvent, Order.AFTER_PRE);
+
+        graniteEvent.isCancellable = true;
+        postEventWithOrder(graniteEvent, Order.FIRST);
+
+        graniteEvent.isModifiable = true;
+        postEventWithOrder(graniteEvent, Order.EARLY);
+        postEventWithOrder(graniteEvent, Order.DEFAULT);
+        postEventWithOrder(graniteEvent, Order.LATE);
+        
+        graniteEvent.isModifiable = false;
+        postEventWithOrder(graniteEvent, Order.LAST);
+        
+        graniteEvent.isCancellable = false;
+        postEventWithOrder(graniteEvent, Order.BEFORE_POST);
+        postEventWithOrder(graniteEvent, Order.POST);
+        
+        return graniteEvent.cancelled;
+    }
+
+    public boolean postEventWithOrder(Event event, Order order) {
+        Class<?> type = event.getClass();
+
+        while (type.getSuperclass() != null && Event.class.isAssignableFrom(type)) {
+            for (GraniteEventHandler handler : handlers.get((Class<? extends Event>) type)) {
+                if (handler.getOrder() == order) {
+                    if (!((GraniteEvent) event).cancelled || !handler.isIgnoreCancelled()) {
+                        try {
+                            handler.getMethod().invoke(handler.getInstance(), event);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            type = type.getSuperclass();
+        }
+
+        return ((GraniteEvent) event).cancelled;
     }
 }

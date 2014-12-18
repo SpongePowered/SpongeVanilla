@@ -21,22 +21,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.event.player;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.spongepowered.api.event.player.PlayerJoinEvent;
+import org.spongepowered.api.text.message.Message;
 
-    MCServerConfigurationManager fieldGet$serverConfigManager();
+public class GranitePlayerJoinEvent extends GranitePlayerEvent implements PlayerJoinEvent {
+    Message joinMessage;
 
-    boolean fieldGet$onlineMode();
+    public GranitePlayerJoinEvent(GranitePlayer player, Message joinMessage) {
+        super(player);
 
-    MCPlayerProfileCache fieldGet$playerCache();
+        this.joinMessage = joinMessage;
+    }
 
-    void startServerThread();
+    @Override
+    public Message getJoinMessage() {
+        return joinMessage;
+    }
 
-    void setGuiEnabled();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+    @Override
+    public void setJoinMessage(Message joinMessage) {
+        checkModify();
+        this.joinMessage = joinMessage;
+    }
 }

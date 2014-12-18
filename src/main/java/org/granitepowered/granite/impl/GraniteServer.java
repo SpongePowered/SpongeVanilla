@@ -80,8 +80,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public EventManager getEventManager() {
-        // TODO
-        throw new NotImplementedException("");
+        return Granite.instance.getEventManager();
     }
 
     @Override
