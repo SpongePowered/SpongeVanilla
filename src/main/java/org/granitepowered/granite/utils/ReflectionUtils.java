@@ -25,7 +25,6 @@ package org.granitepowered.granite.utils;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import javassist.util.proxy.MethodHandler;
@@ -35,7 +34,6 @@ import org.granitepowered.granite.mappings.Mappings;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.*;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class ReflectionUtils {

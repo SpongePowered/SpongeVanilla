@@ -23,15 +23,12 @@
 
 package org.granitepowered.granite.impl.service.event;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Multimaps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
-import org.spongepowered.api.event.player.PlayerChatEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Event;
@@ -40,8 +37,6 @@ import org.spongepowered.api.util.event.Subscribe;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Map;
 
 public class GraniteEventManager implements EventManager {
     Multimap<Class<? extends Event>, GraniteEventHandler> handlers = MultimapBuilder.SetMultimapBuilder.hashKeys().hashSetValues().build();

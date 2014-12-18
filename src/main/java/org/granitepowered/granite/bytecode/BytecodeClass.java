@@ -24,7 +24,9 @@
 package org.granitepowered.granite.bytecode;
 
 import javassist.*;
-import javassist.bytecode.*;
+import javassist.bytecode.AccessFlag;
+import javassist.bytecode.Bytecode;
+import javassist.bytecode.MethodInfo;
 import javassist.expr.ExprEditor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;

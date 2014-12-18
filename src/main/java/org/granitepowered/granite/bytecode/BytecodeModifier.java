@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
