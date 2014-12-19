@@ -25,7 +25,6 @@ package org.granitepowered.granite.impl.world;
 
 import com.flowpowered.math.vector.Vector2d;
 import com.flowpowered.math.vector.Vector3d;
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCWorldBorder;
 import org.spongepowered.api.world.WorldBorder;
@@ -37,22 +36,23 @@ public class GraniteWorldBoarder extends Composite<MCWorldBorder> implements Wor
 
     @Override
     public double getNewRadius() {
-        return obj.getDiameter();
+        return obj.getDiameter() / 2;
     }
 
     @Override
     public double getRadius() {
-        return obj.fieldGet$startDiameter();
+        return obj.fieldGet$startDiameter() / 2;
     }
 
     @Override
-    public void setRadius(double size) {
-        throw new NotImplementedException("");
+    public void setRadius(double diameter) {
+        obj.setTarget(diameter);
     }
 
     @Override
-    public void setRadius(double v, long l) {
-        throw new NotImplementedException("");
+    public void setRadius(double endDiameter, long time) {
+        // TODO: Temp fix until Marvin looks at mappings
+        obj.setTarget1((obj.fieldGet$startDiameter()), endDiameter, time);
     }
 
     @Override
