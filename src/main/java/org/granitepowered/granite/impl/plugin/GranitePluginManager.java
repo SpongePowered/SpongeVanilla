@@ -55,6 +55,8 @@ public class GranitePluginManager implements PluginManager {
         });
 
         if (files != null) {
+             ArrayList<PluginContainer> pluginContainers = new ArrayList<PluginContainer>();
+            
              for (File plugin : files) {
                  Granite.instance.getLogger().info("Loading jarfile plugins/{}", plugin.getName());
 
@@ -82,8 +84,7 @@ public class GranitePluginManager implements PluginManager {
                                  }
 
                                  if (pluginContainer != null) {
-                                     plugins.add(pluginContainer);
-                                     Granite.instance.getLogger().info("Loaded {} ({})!", pluginContainer.getName(), pluginContainer.getVersion());
+                                     pluginContainers.add(pluginContainer);
                                  }
                              } catch (ClassNotFoundException e) {
                                  e.printStackTrace();
@@ -94,6 +95,35 @@ public class GranitePluginManager implements PluginManager {
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
+             }
+             
+             for(PluginContainer plugin : pluginContainers) {
+                 boolean canBeLoaded = true;
+                 
+                 String[] dependencies = ((GranitePluginContainer) plugin).getDependencies().split(";");
+                 for(String s : dependencies) {
+                     String[] args = s.split(":");
+                     if(args.length != 2) continue;
+                     
+                     boolean required = false;
+                     String pluginName = args[1];
+                     
+                     if(args[0].startsWith("required-")) required = true;
+                    
+                     for(PluginContainer p : pluginContainers) {
+                         if(!p.getId().equals(pluginName) && required) {
+                             canBeLoaded = false;
+                             break;
+                         }
+                     }
+                }
+                 
+                if (canBeLoaded) {
+                    plugins.add(plugin);
+                    Granite.instance.getLogger().info("Loaded {} ({})!", plugin.getName(), plugin.getVersion());
+                } else {
+                    Granite.instance.getLogger().info("Could not load {} ({})! Missing Dependencies!", plugin.getName(), plugin.getVersion());
+                }
              }
         }
     }
