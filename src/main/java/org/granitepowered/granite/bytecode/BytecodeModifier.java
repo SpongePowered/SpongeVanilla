@@ -23,22 +23,26 @@
 
 package org.granitepowered.granite.bytecode;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.ClassPath;
 import javassist.*;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.event.block.GraniteBlockBreakEvent;
 import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
+import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.Implement;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.text.translation.Translations;
+import org.spongepowered.api.world.Location;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -77,6 +81,7 @@ public class BytecodeModifier {
             minecraftServer.replaceMethod("getServerModName", "return \"granite\";");
 
             modifyScm();
+            modifyItemInWorld();
 
             for (BytecodeClass bc : bcs.values()) {
                 bc.writeClass();
@@ -145,6 +150,25 @@ public class BytecodeModifier {
         scm.proxy("sendChatMsg", new BytecodeClass.ProxyHandler() {
             @Override
             protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+                return callback.invokeParent(args);
+            }
+        });
+    }
+
+    public void modifyItemInWorld() {
+        BytecodeClass iiwm = create("ItemInWorldManager");
+
+        iiwm.proxy("func_180237_b", new BytecodeClass.ProxyHandler() {
+            @Override
+            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+                MCItemInWorldManager thisIiwm = (MCItemInWorldManager) caller;
+
+                MCBlockPos mcBlockPos = (MCBlockPos) args[0];
+                Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
+
+                GraniteBlockBreakEvent event = new GraniteBlockBreakEvent(new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos)));
+                Granite.getInstance().getServer().getEventManager().post(event);
+
                 return callback.invokeParent(args);
             }
         });
