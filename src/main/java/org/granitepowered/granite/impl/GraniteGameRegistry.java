@@ -28,6 +28,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.item.GraniteItemStackBuilder;
+import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
@@ -63,6 +64,7 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, ItemType> itemTypes = Maps.newHashMap();
 
     GraniteItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
+    GranitePotionBuilder potionBuilder = new GranitePotionBuilder();
 
     public void register() {
         registerBlocks();
@@ -160,8 +162,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public PotionEffectBuilder getPotionEffectBuilder() {
-        // TODO: Potion API
-        throw new NotImplementedException("");
+        return potionBuilder;
     }
 
     @Override
