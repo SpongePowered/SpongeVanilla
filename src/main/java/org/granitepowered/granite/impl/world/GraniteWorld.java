@@ -35,6 +35,7 @@ import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.mc.MCWorldInfo;
 import org.granitepowered.granite.utils.MinecraftUtils;
@@ -53,6 +54,7 @@ import org.spongepowered.api.world.biome.Biome;
 import org.spongepowered.api.world.weather.Weather;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -70,7 +72,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public String getName() {
-        return getWorldInfo().fieldGet$levelName();
+        return getMCWorldInfo().fieldGet$levelName();
     }
 
     @Override
@@ -108,20 +110,22 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Optional<String> getGameRule(String gameRule) {
-        // TODO: GameRule API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(getMCGameRules().getGameRuleStringValue(gameRule));
     }
 
     @Override
     public void setGameRule(String gameRule, String value) {
-        // TODO: GameRule API
-        throw new NotImplementedException("");
+        getMCGameRules().setOrCreateGameRule(gameRule, value);
     }
 
     @Override
     public Map<String, String> getGameRules() {
-        // TODO: GameRule API
-        throw new NotImplementedException("");
+        Map<String, String> map = new HashMap<>();
+        String[] rules = getMCGameRules().getRules();
+        for (int i = 0; i < rules.length; i++) {
+            map.put(rules[i], String.valueOf(getGameRule(rules[i])));
+        }
+        return map;
     }
 
     @Override
@@ -231,7 +235,11 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
         throw new NotImplementedException("");
     }
 
-    public MCWorldInfo getWorldInfo() {
+    public MCWorldInfo getMCWorldInfo() {
         return obj.fieldGet$worldInfo();
+    }
+
+    public MCGameRules getMCGameRules() {
+        return getMCWorldInfo().fieldGet$gameRules();
     }
 }

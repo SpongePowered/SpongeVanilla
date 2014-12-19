@@ -46,13 +46,13 @@ public class GraniteWorldBoarder extends Composite<MCWorldBorder> implements Wor
 
     @Override
     public void setRadius(double diameter) {
-        obj.setTarget(diameter);
+        obj.setDiameter(diameter);
     }
 
     @Override
     public void setRadius(double endDiameter, long time) {
         // TODO: Temp fix until Marvin looks at mappings
-        obj.setTarget1((obj.fieldGet$startDiameter()), endDiameter, time);
+        obj.setTargetAndTime((obj.fieldGet$startDiameter()), endDiameter, time);
     }
 
     @Override

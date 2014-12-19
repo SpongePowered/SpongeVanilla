@@ -26,4 +26,6 @@ package org.granitepowered.granite.mc;
 @Implement(name = "WorldInfo")
 public interface MCWorldInfo extends MCInterface {
     String fieldGet$levelName();
+
+    MCGameRules fieldGet$gameRules();
 }
