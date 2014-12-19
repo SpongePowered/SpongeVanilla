@@ -145,13 +145,13 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public boolean dig() {
-        // TODO: Figure out if this is possible to simulate
+        // TODO: Figure out if this is possible to simulate (see ItemStack.onBlockDestroyed() or Block.harvestBlock()?)
         throw new NotImplementedException("");
     }
 
     @Override
     public boolean digWith(ItemStack itemStack) {
-        // TODO: Figure out if this is possible to simulate
+        // TODO: Figure out if this is possible to simulate (see ItemStack.onBlockDestroyed() or Block.harvestBlock()?)
         throw new NotImplementedException("");
     }
 

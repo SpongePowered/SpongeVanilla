@@ -95,7 +95,7 @@ public class BytecodeClass {
             injectField(pool.get(ProxyHandler.class.getName()), methodName + "$handler", handler);
 
             CtMethod newMethod = new CtMethod(method.getReturnType(), oldName, method.getParameterTypes(), method.getDeclaringClass());
-            newMethod.setBody("return " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
+            newMethod.setBody("return ($r) " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
 
             clazz.addMethod(newMethod);
         } catch (NotFoundException | CannotCompileException e) {
