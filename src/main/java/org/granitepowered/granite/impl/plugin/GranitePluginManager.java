@@ -98,7 +98,7 @@ public class GranitePluginManager implements PluginManager {
              }
              
              for(PluginContainer plugin : pluginContainers) {
-                 boolean canBeLoaded = true;
+                 ArrayList<String> missingDependencies = new ArrayList<String>();
                  
                  String[] dependencies = ((GranitePluginContainer) plugin).getDependencies().split(";");
                  for(String s : dependencies) {
@@ -112,17 +112,16 @@ public class GranitePluginManager implements PluginManager {
                     
                      for(PluginContainer p : pluginContainers) {
                          if(!p.getId().equals(pluginName) && required) {
-                             canBeLoaded = false;
-                             break;
+                             missingDependencies.add(pluginName);
                          }
                      }
                 }
                  
-                if (canBeLoaded) {
+                if (missingDependencies.size() == 0) {
                     plugins.add(plugin);
                     Granite.instance.getLogger().info("Loaded {} ({})!", plugin.getName(), plugin.getVersion());
                 } else {
-                    Granite.instance.getLogger().info("Could not load {} ({})! Missing Dependencies!", plugin.getName(), plugin.getVersion());
+                    Granite.instance.getLogger().info("Could not load {} ({})! Missing dependencies: {}", plugin.getName(), plugin.getVersion(), missingDependencies.toString());
                 }
              }
         }
