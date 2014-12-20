@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
+import org.granitepowered.granite.impl.event.state.*;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.service.event.GraniteEventManager;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
@@ -108,6 +109,10 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.eventManager = new GraniteEventManager();
         Granite.instance.classPool = new ClassPool(true);
 
+        Granite.instance.eventManager.post(new GraniteConstructionEvent());
+
+        Granite.instance.pluginManager.loadPlugins();
+
         try {
             Granite.instance.classesDir = Files.createTempDirectory("graniteClasses").toFile();
         } catch (IOException e) {
@@ -126,11 +131,14 @@ public class GraniteStartupThread extends Thread {
 
         bootstrap();
 
-        Granite.instance.pluginManager.loadPlugins();
-
         Granite.instance.gameRegistry.register();
 
         injectSpongeFields();
+
+        Granite.instance.eventManager.post(new GranitePreInitializationEvent());
+        Granite.instance.eventManager.post(new GraniteInitializationEvent());
+        Granite.instance.eventManager.post(new GranitePostInitializationEvent());
+        Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
         Granite.instance.server = new GraniteServer();
 

@@ -70,11 +70,11 @@ public class BytecodeClass {
             final String oldName = method.getName();
             method.setName(oldName + "$cb");
 
-            injectField(pool.get(Method.class.getName()), methodName + "$method", new PostCallback() {
+            injectField(method.getDeclaringClass(), pool.get(Method.class.getName()), methodName + "$method", new PostCallback() {
                 @Override
                 public void callback() {
                     try {
-                        Field f = getFromCt(clazz).getDeclaredField(methodName + "$method");
+                        Field f = getFromCt(method.getDeclaringClass()).getDeclaredField(methodName + "$method");
 
                         Class<?>[] paramTypes = new Class[method.getParameterTypes().length];
                         for (int i = 0; i < paramTypes.length; i++) {
@@ -92,22 +92,26 @@ public class BytecodeClass {
                 }
             });
 
-            injectField(pool.get(ProxyHandler.class.getName()), methodName + "$handler", handler);
+            injectField(method.getDeclaringClass(), pool.get(ProxyHandler.class.getName()), methodName + "$handler", handler);
 
             CtMethod newMethod = new CtMethod(method.getReturnType(), oldName, method.getParameterTypes(), method.getDeclaringClass());
             newMethod.setBody("return ($r) " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
 
-            clazz.addMethod(newMethod);
+            method.getDeclaringClass().addMethod(newMethod);
         } catch (NotFoundException | CannotCompileException e) {
             e.printStackTrace();
         }
     }
 
-    public void injectField(String name, Object value) {
-        injectField(clazz, name, value);
+    public void injectField(CtClass type, String name, Object value) {
+        injectField(this.clazz, type, name, value);
     }
 
     public void injectField(CtClass type, String name, PostCallback callback) {
+        injectField(this.clazz, type, name, callback);
+    }
+
+    public void injectField(CtClass clazz, CtClass type, String name, PostCallback callback) {
         try {
             CtField f = new CtField(type, name, clazz);
             f.setModifiers(0x0008); // static
@@ -119,8 +123,8 @@ public class BytecodeClass {
         callbacks.add(callback);
     }
 
-    public void injectField(CtClass type, final String name, final Object value) {
-        injectField(type, name, new PostCallback() {
+    public void injectField(final CtClass clazz, CtClass type, final String name, final Object value) {
+        injectField(clazz, type, name, new PostCallback() {
             @Override
             public void callback() {
                 try {
@@ -343,6 +347,7 @@ public class BytecodeClass {
             ProxyHandlerCallback callback = new ProxyHandlerCallback() {
                 @Override
                 public Object invokeParent(Object... args) throws Throwable {
+                    method.setAccessible(true);
                     MethodHandle handle = MethodHandles.lookup().unreflect(method);
                     return handle.invokeWithArguments(ArrayUtils.add(args, 0, caller));
                 }
