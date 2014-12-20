@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.entity;
 
+import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -79,7 +80,13 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     }
 
     @Override
-    public Vector3f getRotation() {
+    public Vector2f getRotation() {
+        // TODO: Figure out Euler stuff
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setRotation(Vector2f vector2f) {
         // TODO: Figure out Euler stuff
         throw new NotImplementedException("");
     }
@@ -169,11 +176,5 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     @Override
     public UUID getUniqueId() {
         return obj.fieldGet$entityUniqueID();
-    }
-
-    @Override
-    public void setRotation(Vector3f vector) {
-        // TODO: Figure out Euler stuff
-        throw new NotImplementedException("");
     }
 }

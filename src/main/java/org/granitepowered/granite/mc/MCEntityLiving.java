@@ -49,6 +49,10 @@ public interface MCEntityLiving extends MCEntity {
 
     void fieldSet$maxHurtResistantTime(int halfTicks);
 
+    boolean fieldGet$persistenceRequired();
+
+    boolean fieldSet$persistenceRequired(boolean persistence);
+
     void damageEntity(MCDamageSource source, float amount);
 
     float getHealth();

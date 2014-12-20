@@ -60,7 +60,7 @@ public class GranitePluginManager implements PluginManager {
                 Granite.instance.getLogger().info("Loading jarfile plugins/{}", plugin.getName());
 
                 try {
-                    URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()});
+                    URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()}, ClassLoader.getSystemClassLoader());
                     JarFile jarFile = new JarFile(plugin);
 
                     Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
@@ -84,6 +84,7 @@ public class GranitePluginManager implements PluginManager {
 
                                 if (pluginContainer != null) {
                                     plugins.add(pluginContainer);
+                                    Granite.instance.getEventManager().register(pluginContainer.getInstance(), pluginContainer.getInstance());
                                     Granite.instance.getLogger().info("Loaded {} ({})!", pluginContainer.getName(), pluginContainer.getVersion());
                                 }
                             } catch (ClassNotFoundException e) {

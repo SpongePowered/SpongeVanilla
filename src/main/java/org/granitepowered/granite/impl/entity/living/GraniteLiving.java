@@ -235,12 +235,17 @@ public class GraniteLiving<T extends MCEntityLiving> extends GraniteEntity<T> im
     }
 
     @Override
-    public boolean setLocation(Location location) {
-        throw new NotImplementedException("");
+    public boolean isPersistent() {
+        return obj.fieldGet$persistenceRequired();
     }
 
     @Override
-    public void setRotation(Vector3f vector3f) {
+    public void setPersistent(boolean b) {
+        obj.fieldSet$persistenceRequired(b);
+    }
+
+    @Override
+    public boolean setLocation(Location location) {
         throw new NotImplementedException("");
     }
 
