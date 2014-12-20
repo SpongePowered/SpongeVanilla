@@ -23,64 +23,21 @@
 
 package org.granitepowered.granite.mc;
 
-import java.util.UUID;
+@Implement(name = "EntityFallingBlock")
+public interface MCEntityFallingBlock extends MCInterface, MCEntity {
+    float fieldGet$fallHurtAmount();
 
-@Implement(name = "Entity")
-public interface MCEntity extends MCInterface {
-    boolean fieldGet$onGround();
+    void fieldSet$fallHurtAmount(float amount);
 
-    double fieldGet$posX();
+    int fieldGet$fallHurtMax();
 
-    double fieldGet$posY();
+    void fieldSet$fallHurtMax(int amount);
 
-    double fieldGet$posZ();
+    boolean fieldGet$canPlaceAsBlock();
 
-    MCEntity fieldGet$riddenByEntity();
+    void fieldSet$canPlaceAsBlock(boolean canPlace);
 
-    MCEntity fieldGet$ridingEntity();
+    boolean fieldGet$shouldDropItem();
 
-    void fieldSet$riddenByEntity(MCEntity entity);
-
-    void fieldSet$ridingEntity(MCEntity entity);
-
-    float fieldGet$width();
-
-    float fieldGet$height();
-
-    boolean fieldGet$isDead();
-
-    int fieldGet$fire();
-
-    void fieldSet$fire(int ticks);
-
-    UUID fieldGet$entityUniqueID();
-
-    int fieldGet$fireResistance();
-
-    MCWorld fieldGet$worldObj();
-
-    int fieldGet$hurtResistantTime();
-
-    void fieldSet$hurtResistantTime(int ticks);
-
-    void mountEntity(MCEntity other);
-
-    float getEyeHeight();
-
-    int getAir();
-
-    void setAir(int air);
-
-    String getCustomNameTag();
-
-    void setCustomNameTag(String tag);
-
-    boolean getAlwaysRenderNameTag();
-
-    void setAlwaysRenderNameTag(boolean value);
-
-    String getName();
-
-    void setPosition(double x, double y, double z);
-
+    void fieldSet$shouldDropItem(boolean drop);
 }
