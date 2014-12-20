@@ -146,11 +146,7 @@ public class GraniteStartupThread extends Thread {
 
         Granite.instance.server = new GraniteServer();
 
-        Granite.instance.getLogger().info("Starting Granite SUPER SPECTACULAR COMMIT #501 EDITION THAT JIM MAY NOT USE BECAUSE HE STOLE #500 :( version " + version);
-        Granite.instance.getLogger().info("Starting Granite SUPER SPECTACULAR COMMIT #501 EDITION THAT JIM MAY NOT USE BECAUSE HE STOLE #500 :( version " + version);
-        Granite.instance.getLogger().info("Starting Granite SUPER SPECTACULAR COMMIT #501 EDITION THAT JIM MAY NOT USE BECAUSE HE STOLE #500 :( version " + version);
-        Granite.instance.getLogger().info("Starting Granite SUPER SPECTACULAR COMMIT #501 EDITION THAT JIM MAY NOT USE BECAUSE HE STOLE #500 :( version " + version);
-        Granite.instance.getLogger().info("Starting Granite SUPER SPECTACULAR COMMIT #501 EDITION THAT JIM MAY NOT USE BECAUSE HE STOLE #500 :( version " + version);
+        Granite.instance.getLogger().info("Starting Granite version " + version);
     }
 
     private void loadClasses() {
