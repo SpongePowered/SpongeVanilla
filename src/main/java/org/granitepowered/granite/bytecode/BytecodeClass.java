@@ -98,6 +98,8 @@ public class BytecodeClass {
             newMethod.setBody("return ($r) " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
 
             method.getDeclaringClass().addMethod(newMethod);
+
+            classesToLoad.add(method.getDeclaringClass().getName());
         } catch (NotFoundException | CannotCompileException e) {
             e.printStackTrace();
         }

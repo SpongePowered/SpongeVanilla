@@ -29,10 +29,12 @@ import com.google.common.reflect.ClassPath;
 import javassist.*;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import org.apache.commons.lang3.StringUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.block.GraniteBlockBreakEvent;
+import org.granitepowered.granite.impl.event.message.GraniteCommandEvent;
 import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.impl.event.state.*;
 import org.granitepowered.granite.impl.world.GraniteWorld;
@@ -43,10 +45,12 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.text.translation.Translations;
+import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -81,6 +85,7 @@ public class BytecodeModifier {
             BytecodeClass minecraftServer = create("MinecraftServer");
             minecraftServer.replaceMethod("getServerModName", "return \"granite\";");
 
+            modifyCommandHandler();
             modifyScm();
             modifyItemInWorld();
             modifyServer();
@@ -91,6 +96,37 @@ public class BytecodeModifier {
         } catch (IOException | NotFoundException | ClassNotFoundException | CannotCompileException e) {
             e.printStackTrace();
         }
+    }
+
+    public void modifyCommandHandler() {
+        BytecodeClass ch = create("CommandHandler");
+
+        ch.proxy("executeCommand", new BytecodeClass.ProxyHandler() {
+            @Override
+            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+                String fullCommand = (String) args[1];
+
+                if (fullCommand.startsWith("/"))
+                {
+                    fullCommand = fullCommand.substring(1);
+                }
+
+                String[] commandArgs = fullCommand.split(" ");
+                String commandName = commandArgs[0];
+                commandArgs = Arrays.copyOfRange(commandArgs, 1, commandArgs.length);
+
+                CommandSource sender = wrap((MCInterface) args[0]);
+
+                GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
+                Granite.getInstance().getEventManager().post(event);
+
+                if (!event.isCancelled()) {
+                    return callback.invokeParent(args);
+                } else {
+                    return 0;
+                }
+            }
+        });
     }
 
     public void modifyScm() {

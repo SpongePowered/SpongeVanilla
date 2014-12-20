@@ -41,9 +41,4 @@ public class GraniteEntityEvent extends GraniteEvent implements EntityEvent {
     public Entity getEntity() {
         return entity;
     }
-
-    @Override
-    public Game getGame() {
-        return Granite.getInstance().getServer();
-    }
 }

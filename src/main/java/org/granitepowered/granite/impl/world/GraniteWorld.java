@@ -105,7 +105,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public WorldBorder getWorldBorder() {
-        return new GraniteWorldBoarder(obj.fieldGet$worldBorder());
+        return new GraniteWorldBorder(obj.fieldGet$worldBorder());
     }
 
     @Override

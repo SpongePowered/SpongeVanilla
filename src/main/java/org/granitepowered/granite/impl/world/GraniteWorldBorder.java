@@ -29,8 +29,8 @@ import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCWorldBorder;
 import org.spongepowered.api.world.WorldBorder;
 
-public class GraniteWorldBoarder extends Composite<MCWorldBorder> implements WorldBorder {
-    public GraniteWorldBoarder(Object obj) {
+public class GraniteWorldBorder extends Composite<MCWorldBorder> implements WorldBorder {
+    public GraniteWorldBorder(Object obj) {
         super(obj);
     }
 

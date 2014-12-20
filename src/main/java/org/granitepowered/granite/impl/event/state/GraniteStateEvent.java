@@ -29,8 +29,4 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.event.state.StateEvent;
 
 public class GraniteStateEvent extends GraniteEvent implements StateEvent {
-    @Override
-    public Game getGame() {
-        return Granite.getInstance().getServer();
-    }
 }

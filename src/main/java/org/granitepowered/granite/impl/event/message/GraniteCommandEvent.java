@@ -21,32 +21,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.block;
+package org.granitepowered.granite.impl.event.message;
 
-import com.google.common.base.Optional;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.event.block.BlockEvent;
-import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.message.CommandEvent;
+import org.spongepowered.api.util.command.CommandSource;
 
-public class GraniteBlockEvent extends GraniteEvent implements BlockEvent {
-    BlockLoc loc;
-    Optional<Cause> cause;
+public class GraniteCommandEvent extends GraniteEvent implements CommandEvent {
+    String command;
+    String arguments;
+    CommandSource source;
 
-    public GraniteBlockEvent(BlockLoc loc) {
-        this.loc = loc;
-        cause = Optional.absent();
+    public GraniteCommandEvent(String command, String arguments, CommandSource source) {
+        this.command = command;
+        this.arguments = arguments;
+        this.source = source;
     }
 
     @Override
-    public BlockLoc getBlock() {
-        return loc;
+    public CommandSource getSource() {
+        return source;
     }
 
     @Override
-    public Optional<Cause> getCause() {
-        return cause;
+    public String getCommand() {
+        return command;
+    }
+
+    @Override
+    public String getArguments() {
+        return arguments;
     }
 }

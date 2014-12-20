@@ -39,6 +39,7 @@ import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteWorld;
+import org.granitepowered.granite.impl.world.GraniteWorldBorder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
 import org.granitepowered.granite.mc.MCBlockPos;
@@ -67,6 +68,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)
             .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
+            .put(Mappings.getClass("WorldBorder"), GraniteWorldBorder.class)
             .build();
 
     @Nonnull
