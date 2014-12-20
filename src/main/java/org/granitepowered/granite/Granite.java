@@ -41,6 +41,8 @@ import org.granitepowered.granite.utils.json.TextActionJson;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.service.SimpleServiceManager;
+import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.event.EventManager;
 
 import java.io.File;
@@ -55,6 +57,8 @@ public class Granite {
     GraniteGameRegistry gameRegistry;
     GraniteEventManager eventManager;
     ClassPool classPool;
+    SimpleCommandService commandService;
+    SimpleServiceManager serviceManager;
     Logger logger;
     Gson gson;
     File classesDir;
@@ -116,5 +120,13 @@ public class Granite {
 
     public EventManager getEventManager() {
         return eventManager;
+    }
+
+    public SimpleServiceManager getServiceManager() {
+        return serviceManager;
+    }
+
+    public SimpleCommandService getCommandService() {
+        return commandService;
     }
 }

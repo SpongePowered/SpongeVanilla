@@ -38,6 +38,8 @@ import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.service.SimpleServiceManager;
+import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
@@ -108,6 +110,8 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.gameRegistry = new GraniteGameRegistry();
         Granite.instance.eventManager = new GraniteEventManager();
         Granite.instance.classPool = new ClassPool(true);
+        Granite.instance.commandService = new SimpleCommandService(Granite.instance.getPluginManager());
+        Granite.instance.serviceManager = new SimpleServiceManager(Granite.instance.getPluginManager());
 
         Granite.instance.eventManager.post(new GraniteConstructionEvent());
 

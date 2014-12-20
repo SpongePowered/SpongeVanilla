@@ -90,8 +90,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public ServiceManager getServiceManager() {
-        // TODO
-        throw new NotImplementedException("");
+        return Granite.instance.getServiceManager();
     }
 
     @Override
@@ -102,8 +101,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public CommandService getCommandDispatcher() {
-        // TODO
-        throw new NotImplementedException("");
+        return Granite.instance.getCommandService();
     }
 
     @Override
