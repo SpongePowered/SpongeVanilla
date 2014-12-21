@@ -51,7 +51,7 @@ public interface MCEntityLiving extends MCEntity {
 
     boolean fieldGet$persistenceRequired();
 
-    boolean fieldSet$persistenceRequired(boolean persistence);
+    void fieldSet$persistenceRequired(boolean persistence);
 
     void damageEntity(MCDamageSource source, float amount);
 

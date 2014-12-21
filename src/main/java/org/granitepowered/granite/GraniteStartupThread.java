@@ -28,6 +28,10 @@ import javassist.ClassPool;
 import javassist.NotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.*;
@@ -232,6 +236,12 @@ public class GraniteStartupThread extends Thread {
         }
 
         modifier = new BytecodeModifier();
+
+        modifier.add(new CommandHandlerClass());
+        modifier.add(new DedicatedServerClass());
+        modifier.add(new ItemInWorldManagerClass());
+        modifier.add(new ServerConfigurationManagerClass());
+
         modifier.modify();
     }
 

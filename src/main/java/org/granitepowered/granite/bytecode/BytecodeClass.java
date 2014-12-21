@@ -51,6 +51,10 @@ public class BytecodeClass {
 
     ClassPool pool;
 
+    public BytecodeClass(String str) {
+        this(Mappings.getCtClass(str));
+    }
+
     public BytecodeClass(CtClass clazz) {
         this.clazz = clazz;
 
