@@ -25,6 +25,8 @@ package org.granitepowered.granite;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Injector;
+
 import javassist.ClassPool;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
@@ -41,29 +43,44 @@ import org.granitepowered.granite.utils.json.TextActionJson;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
+import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.event.EventManager;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 public class Granite {
     public static Granite instance;
 
+    // Not injected directly; initialization is done after classes are rewritten
+    GraniteServer server;
+
+    final GranitePluginManager pluginManager;
+    final GraniteGameRegistry gameRegistry;
+    final GraniteEventManager eventManager;
+    final CommandService commandService;
+    final ServiceManager serviceManager;
+
     String version;
     ServerConfig serverConfig;
-    GraniteServer server;
-    GranitePluginManager pluginManager;
-    GraniteGameRegistry gameRegistry;
-    GraniteEventManager eventManager;
     ClassPool classPool;
-    SimpleCommandService commandService;
-    SimpleServiceManager serviceManager;
     Logger logger;
     Gson gson;
     File classesDir;
 
-    public Granite() {
+    @Inject
+    public Granite(GranitePluginManager pluginManager,
+                   GraniteGameRegistry gameRegistry,
+                   GraniteEventManager eventManager) {
+        this.pluginManager = pluginManager;
+        this.gameRegistry = gameRegistry;
+        this.eventManager = eventManager;
+        this.serviceManager = new SimpleServiceManager(pluginManager);
+        this.commandService = new SimpleCommandService(pluginManager);
         version = "UNKNOWN";
     }
 
@@ -122,11 +139,11 @@ public class Granite {
         return eventManager;
     }
 
-    public SimpleServiceManager getServiceManager() {
+    public ServiceManager getServiceManager() {
         return serviceManager;
     }
 
-    public SimpleCommandService getCommandService() {
+    public CommandService getCommandService() {
         return commandService;
     }
 }

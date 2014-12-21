@@ -69,6 +69,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.7</version>
@@ -163,6 +169,9 @@
                                     <include>com.github.kevinsawicki:http-request</include>
                                     <include>org.slf4j:*</include>
                                     <include>com.google.code.gson:gson</include>
+                                    <include>com.google.inject:guice</include>
+                                    <include>javax.inject:javax.inject</include>
+                                    <include>aopalliance:aopalliance</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
