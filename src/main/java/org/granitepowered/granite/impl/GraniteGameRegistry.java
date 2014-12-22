@@ -50,6 +50,7 @@ import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.world.Environment;
 import org.spongepowered.api.world.biome.BiomeType;
 
 import java.lang.reflect.Field;
@@ -342,6 +343,24 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public Collection<String> getDefaultGameRules() {
         // TODO: Game Rules API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Environment> getEnvironment(String name) {
+        // TODO: Environment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Environment> getEnvironment(int dimensionId) {
+        // TODO: Environment API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Environment> getEnvironments() {
+        // TODO: Environment API
         throw new NotImplementedException("");
     }
 }

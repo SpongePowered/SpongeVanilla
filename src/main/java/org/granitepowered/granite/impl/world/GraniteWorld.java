@@ -47,6 +47,7 @@ import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.world.Chunk;
+import org.spongepowered.api.world.Environment;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.WorldBorder;
@@ -126,6 +127,12 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
             map.put(rules[i], String.valueOf(getGameRule(rules[i])));
         }
         return map;
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        // TODO: Environment API
+        throw new NotImplementedException("");
     }
 
     @Override
