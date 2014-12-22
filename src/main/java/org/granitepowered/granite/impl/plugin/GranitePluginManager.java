@@ -24,8 +24,11 @@
 package org.granitepowered.granite.impl.plugin;
 
 import com.google.common.base.Optional;
+import com.google.inject.Injector;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.guice.PluginScope;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -43,9 +46,20 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.inject.Inject;
+
 public class GranitePluginManager implements PluginManager {
 
     Collection<PluginContainer> plugins = new ArrayList<>();
+
+    private Injector injector;
+    private PluginScope pluginScope;
+
+    @Inject
+    public GranitePluginManager(Injector injector, PluginScope pluginScope) {
+        this.injector = injector;
+        this.pluginScope = pluginScope;
+    }
 
     public void loadPlugins() {
         File[] files = Granite.instance.getServerConfig().getPluginDirectory().listFiles(new FilenameFilter() {
@@ -121,11 +135,27 @@ public class GranitePluginManager implements PluginManager {
                 if (missingDependencies.size() == 0) {
                     plugins.add(plugin);
                     Granite.instance.getEventManager().register(plugin.getInstance(), plugin.getInstance());
+                    bootstrapPlugin(plugin);
                     Granite.instance.getLogger().info("Loaded {} ({})!", plugin.getName(), plugin.getVersion());
                 } else {
                     Granite.instance.getLogger().info("Could not load {} ({})! Missing dependencies: {}", plugin.getName(), plugin.getVersion(), missingDependencies.toString());
                 }
             }
+        }
+    }
+
+    /**
+     * Bootstraps a plugin container.
+     *
+     * @param container
+     */
+    private void bootstrapPlugin(PluginContainer container) {
+        try {
+            pluginScope.enter(container);
+
+            injector.injectMembers(container.getInstance());
+        } finally {
+            pluginScope.exit();
         }
     }
 

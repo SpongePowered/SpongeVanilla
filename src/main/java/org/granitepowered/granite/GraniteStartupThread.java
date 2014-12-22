@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import com.github.kevinsawicki.http.HttpRequest;
 import javassist.ClassPool;
 import javassist.NotFoundException;
@@ -32,18 +35,15 @@ import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
 import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
 import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
 import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
-import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.*;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.granitepowered.granite.impl.service.event.GraniteEventManager;
+import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.api.service.SimpleServiceManager;
-import org.spongepowered.api.service.command.SimpleCommandService;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
@@ -106,20 +106,16 @@ public class GraniteStartupThread extends Thread {
 
         if (version == null) version = "UNKNOWN";
 
-        Granite.instance = new Granite();
+        Injector injector = Guice.createInjector(new GraniteGuiceModule());
+
+        Granite.instance = injector.getInstance(Granite.class);
         Granite.instance.version = version;
-        Granite.instance.serverConfig = new ServerConfig();
         Granite.instance.logger = LoggerFactory.getLogger("Granite");
-        Granite.instance.pluginManager = new GranitePluginManager();
-        Granite.instance.gameRegistry = new GraniteGameRegistry();
-        Granite.instance.eventManager = new GraniteEventManager();
+
+        Granite.instance.serverConfig = new ServerConfig();
         Granite.instance.classPool = new ClassPool(true);
-        Granite.instance.commandService = new SimpleCommandService(Granite.instance.getPluginManager());
-        Granite.instance.serviceManager = new SimpleServiceManager(Granite.instance.getPluginManager());
 
         Granite.instance.eventManager.post(new GraniteConstructionEvent());
-
-        Granite.instance.pluginManager.loadPlugins();
 
         try {
             Granite.instance.classesDir = Files.createTempDirectory("graniteClasses").toFile();
@@ -143,12 +139,14 @@ public class GraniteStartupThread extends Thread {
 
         injectSpongeFields();
 
+        Granite.instance.pluginManager.loadPlugins();
+
         Granite.instance.eventManager.post(new GranitePreInitializationEvent());
         Granite.instance.eventManager.post(new GraniteInitializationEvent());
         Granite.instance.eventManager.post(new GranitePostInitializationEvent());
         Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
-        Granite.instance.server = new GraniteServer();
+        Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
 
         Granite.instance.getLogger().info("Starting Granite version " + version);
     }
