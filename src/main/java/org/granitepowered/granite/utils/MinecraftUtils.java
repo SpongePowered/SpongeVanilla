@@ -28,6 +28,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.block.GraniteBlockProperty;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.block.GraniteBlockType;
@@ -63,6 +64,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
             .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
             .put(Mappings.getClass("Block"), GraniteBlockType.class)
+            .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)
