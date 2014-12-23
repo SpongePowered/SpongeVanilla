@@ -139,6 +139,16 @@ public class GraniteBlockLoc implements BlockLoc {
     }
 
     @Override
+    public boolean isPassable() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isFaceFlammable(Direction direction) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public byte getLuminanceFromSky() {
         return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
     }

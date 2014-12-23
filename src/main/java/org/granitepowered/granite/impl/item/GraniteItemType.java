@@ -54,6 +54,11 @@ public class GraniteItemType<T extends MCItem> extends Composite<T> implements I
     }
 
     @Override
+    public int getMaxDamage() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Translation getTranslation() {
         // TODO: Wait for Message API
         throw new NotImplementedException("");

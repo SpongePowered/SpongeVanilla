@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.block;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
@@ -71,6 +72,31 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
     @Override
     public void setTickRandomly(boolean tickRandomly) {
         obj.fieldSet$needsRandomTick(tickRandomly);
+    }
+
+    @Override
+    public boolean isLiquid() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isSolidCube() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isAffectedByGravity() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean areStatisticsEnabled() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public float getEmittedLight() {
+        return obj.fieldGet$lightValue();
     }
 
     @Override
