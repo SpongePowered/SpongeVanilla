@@ -27,10 +27,14 @@ import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
-import org.granitepowered.granite.impl.event.block.GraniteBlockBreakEvent;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.event.player.GranitePlayerBreakBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
+import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCItemInWorldManager;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.world.Location;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
@@ -47,10 +51,21 @@ public class ItemInWorldManagerClass extends BytecodeClass {
                 MCBlockPos mcBlockPos = (MCBlockPos) args[0];
                 Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
 
-                GraniteBlockBreakEvent event = new GraniteBlockBreakEvent(new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos)));
+                GranitePlayer player = wrap(thisIiwm.fieldGet$thisPlayerMP());
+
+                GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos)), player);
                 Granite.getInstance().getServer().getEventManager().post(event);
 
-                return callback.invokeParent(args);
+                if (!event.isCancelled()) {
+                    return callback.invokeParent(args);
+                } else {
+                    MCPacket p = MinecraftUtils.instantiate(Mappings.getClass("S23PacketBlockChange"),
+                            new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
+                            thisIiwm.fieldGet$theWorld(), mcBlockPos
+                    );
+                    player.sendPacket(p);
+                    return false;
+                }
             }
         });
     }
