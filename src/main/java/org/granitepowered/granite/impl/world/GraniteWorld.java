@@ -23,8 +23,8 @@
 
 package org.granitepowered.granite.impl.world;
 
-import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -52,6 +52,8 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.WorldBorder;
 import org.spongepowered.api.world.biome.Biome;
+import org.spongepowered.api.world.biome.BiomeManager;
+import org.spongepowered.api.world.gen.WorldGenerator;
 import org.spongepowered.api.world.weather.Weather;
 
 import java.util.Collection;
@@ -77,20 +79,22 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public Optional<Chunk> getChunk(Vector2i position) {
-        // TODO: Chunk API
+    public Optional<Chunk> getChunk(Vector3i vector3i) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public Optional<Chunk> loadChunk(Vector2i position, boolean shouldGenerate) {
-        // TODO: Chunk API
+    public Optional<Chunk> loadChunk(Vector3i vector3i, boolean b) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public Chunk loadChunk(Vector2i position) {
-        // TODO: Chunk API
+    public boolean deleteChunk(Chunk chunk) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Iterable<Chunk> getLoadedChunks() {
         throw new NotImplementedException("");
     }
 
@@ -136,6 +140,31 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
+    public long getWorldSeed() {
+        return getMCWorldInfo().fieldGet$randomSeed();
+    }
+
+    @Override
+    public void setSeed(long seed) {
+        getMCWorldInfo().fieldSet$randomSeed(seed);
+    }
+
+    @Override
+    public WorldGenerator getWorldGenerator() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setWorldGenerator(WorldGenerator worldGenerator) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public BiomeManager getBiomeManager() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Biome getBiome(Vector3d position) {
         // TODO: Biome API
         throw new NotImplementedException("");
@@ -154,6 +183,11 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     @Override
     public Collection<Entity> getEntities() {
         return Lists.<Entity>newArrayList(Iterables.transform(obj.fieldGet$loadedEntityList(), new MinecraftUtils.WrapFunction<GraniteEntity>()));
+    }
+
+    @Override
+    public Collection<Entity> getEntities(Predicate<Entity> predicate) {
+        throw new NotImplementedException("");
     }
 
     @Override

@@ -28,4 +28,8 @@ public interface MCWorldInfo extends MCInterface {
     String fieldGet$levelName();
 
     MCGameRules fieldGet$gameRules();
+
+    long fieldGet$randomSeed();
+
+    void fieldSet$randomSeed(long seed);
 }

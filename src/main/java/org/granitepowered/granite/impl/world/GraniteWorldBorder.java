@@ -51,7 +51,6 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public void setRadius(double endDiameter, long time) {
-        // TODO: Temp fix until Marvin looks at mappings
         obj.setTargetAndTime((obj.fieldGet$startDiameter()), endDiameter, time);
     }
 

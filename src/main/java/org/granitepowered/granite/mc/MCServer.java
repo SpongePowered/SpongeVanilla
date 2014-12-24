@@ -35,7 +35,11 @@ public interface MCServer extends MCInterface {
 
     void startServerThread();
 
-    void setGuiEnabled();
+    String fieldGet$hostname();
+
+    int fieldGet$serverPort();
+
+    String fieldGet$motd();
 
     // This method will conflict, don't uncomment
     // String getServerModName();

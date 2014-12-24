@@ -47,7 +47,9 @@ import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -175,6 +177,21 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
+    public Optional<World> loadWorld(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean unloadWorld(World world) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<World> createWorld(String s, WorldGenerator worldGenerator, long l) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public int getRunningTimeTicks() {
         // TODO: add
         throw new NotImplementedException("");
@@ -188,9 +205,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public Optional<InetSocketAddress> getBoundAddress() {
-        // TODO: Check if this is possible to get
-        //return Optional.fromNullable(new InetSocketAddress((String) fieldGet("hostname"), (int) fieldGet("port")));
-        throw new NotImplementedException("");
+        return Optional.fromNullable(new InetSocketAddress(obj.fieldGet$hostname(), obj.fieldGet$serverPort()));
     }
 
     @Override
@@ -210,8 +225,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public Message.Text getMOTD() {
-        // TODO
-        throw new NotImplementedException("");
+        return Messages.of(obj.fieldGet$motd());
     }
 
     private MCServerConfigurationManager getSCM() {
