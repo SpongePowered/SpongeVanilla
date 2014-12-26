@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.mc.MCEntityItem;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.spongepowered.api.entity.Item;

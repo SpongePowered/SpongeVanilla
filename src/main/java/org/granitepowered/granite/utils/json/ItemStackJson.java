@@ -24,7 +24,7 @@
 package org.granitepowered.granite.utils.json;
 
 import com.google.gson.*;
-import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCNBTTagCompound;

@@ -36,8 +36,8 @@ import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
-import org.granitepowered.granite.impl.item.GraniteItemStack;
 import org.granitepowered.granite.impl.item.GraniteItemType;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.impl.world.GraniteWorldBorder;
@@ -65,6 +65,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
             .put(Mappings.getClass("Block"), GraniteBlockType.class)
             .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
+            .put(Mappings.getClass("Enchantment"), GraniteServer.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)

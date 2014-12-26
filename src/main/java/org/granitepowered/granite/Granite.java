@@ -25,13 +25,11 @@ package org.granitepowered.granite;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.inject.Injector;
-
 import javassist.ClassPool;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.service.event.GraniteEventManager;
 import org.granitepowered.granite.impl.text.action.GraniteTextAction;
@@ -49,9 +47,8 @@ import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.event.EventManager;
 
-import java.io.File;
-
 import javax.inject.Inject;
+import java.io.File;
 
 public class Granite {
     public static Granite instance;

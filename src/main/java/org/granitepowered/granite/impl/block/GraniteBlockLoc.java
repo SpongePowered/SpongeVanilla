@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.block;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;

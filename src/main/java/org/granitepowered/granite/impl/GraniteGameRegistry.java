@@ -27,11 +27,12 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.item.GraniteItemStackBuilder;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.world.GraniteEnvironment;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
+import org.granitepowered.granite.mc.MCEnchantment;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
@@ -45,6 +46,7 @@ import org.spongepowered.api.entity.living.villager.Career;
 import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.item.Enchantment;
+import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
@@ -65,6 +67,7 @@ import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 public class GraniteGameRegistry implements GameRegistry {
     Map<String, BlockType> blockTypes = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
+    Map<String, Enchantment> enchantments = Maps.newHashMap();
 
     GraniteItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
     GranitePotionBuilder potionBuilder = new GranitePotionBuilder();
@@ -74,6 +77,7 @@ public class GraniteGameRegistry implements GameRegistry {
     public void register() {
         registerBlocks();
         registerItems();
+        registerEnchantments();
         registerEnvironments();
     }
 
@@ -89,7 +93,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 BlockType block = wrap(mcBlock);
                 field.set(null, block);
-                blockTypes.put(name, block);
+                blockTypes.put("minecraft:" + name, block);
 
                 Granite.getInstance().getLogger().info("Registered block " + block.getId());
 
@@ -114,12 +118,33 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 ItemType item = wrap((MCItem) mcItem);
                 field.set(null, item);
-                itemTypes.put(name, item);
+                itemTypes.put("minecraft:" + name, item);
 
                 Granite.getInstance().getLogger().info("Registered item " + item.getId());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void registerEnchantments() {
+        Granite.instance.getLogger().info("Registering enchantments");
+
+        for (Field field : Enchantments.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                Object mcEnchantment = Mappings.invokeStatic("Enchantment", "getEnchantmentByLocation", name);
+
+                Enchantment enchantment = wrap((MCEnchantment) mcEnchantment);
+                field.set(null, enchantment);
+                enchantments.put("minecraft:" + name, enchantment);
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -145,8 +170,8 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<BlockType> getBlock(String s) {
-        return Optional.fromNullable(blockTypes.get(s));
+    public Optional<BlockType> getBlock(String id) {
+        return Optional.fromNullable(blockTypes.get(id));
     }
 
     @Override
@@ -155,8 +180,8 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<ItemType> getItem(String s) {
-        return Optional.fromNullable(itemTypes.get(s));
+    public Optional<ItemType> getItem(String id) {
+        return Optional.fromNullable(itemTypes.get(id));
     }
 
     @Override
@@ -356,14 +381,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Enchantment> getEnchantment(String id) {
-        // TODO: Enchantment API
-        throw new NotImplementedException("");
+        return (Optional<Enchantment>) enchantments.get(id);
     }
 
     @Override
     public List<Enchantment> getEnchantments() {
-        // TODO: Enchantment API
-        throw new NotImplementedException("");
+        return (List<Enchantment>) enchantments.values();
     }
 
     @Override
@@ -374,9 +397,9 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Environment> getEnvironment(String name) {
-        for (int i = 0; i < environments.size(); i++) {
-            if (environments.get(i).getName().equals(name)) {
-                return (Optional<Environment>) environments.get(i);
+        for (Environment environment : environments) {
+            if (environment.getName().equals(name)) {
+                return (Optional<Environment>) environment;
             }
         }
         return Optional.absent();
@@ -384,10 +407,10 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Environment> getEnvironment(int dimensionId) {
-        for (int i = 0; i < environments.size(); i++) {
-           if (environments.get(i).getDimensionId() == dimensionId) {
-               return (Optional<Environment>) environments.get(i);
-           }
+        for (Environment environment : environments) {
+            if (environment.getDimensionId() == dimensionId) {
+                return (Optional<Environment>) environment;
+            }
         }
         return Optional.absent();
     }

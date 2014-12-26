@@ -26,7 +26,7 @@ package org.granitepowered.granite.utils.json;
 import com.google.gson.*;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.item.GraniteItemStack;
+import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.text.action.GraniteClickAction;
 import org.granitepowered.granite.impl.text.action.GraniteHoverAction;
 import org.granitepowered.granite.impl.text.action.GraniteShiftClickAction;
