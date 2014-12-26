@@ -29,6 +29,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.item.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
+import org.granitepowered.granite.impl.world.GraniteEnvironment;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
@@ -51,6 +52,7 @@ import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.world.Environment;
+import org.spongepowered.api.world.Environments;
 import org.spongepowered.api.world.biome.BiomeType;
 
 import java.lang.reflect.Field;
@@ -67,9 +69,12 @@ public class GraniteGameRegistry implements GameRegistry {
     GraniteItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
     GranitePotionBuilder potionBuilder = new GranitePotionBuilder();
 
+    List<Environment> environments;
+
     public void register() {
         registerBlocks();
         registerItems();
+        registerEnvironments();
     }
 
     private void registerBlocks() {
@@ -112,6 +117,27 @@ public class GraniteGameRegistry implements GameRegistry {
                 itemTypes.put(name, item);
 
                 Granite.getInstance().getLogger().info("Registered item " + item.getId());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerEnvironments() {
+        Granite.instance.getLogger().info("Registering environments");
+
+        for (Field field : Environments.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                if (name.equals("overworld")) {
+                    field.set(null, new GraniteEnvironment(0, "Overworld"));
+                } else if (name.equals("nether")) {
+                    field.set(null, new GraniteEnvironment(1, "Nether"));
+                } else if (name.equals("end")) {
+                    field.set(null, new GraniteEnvironment(-1, "The End"));
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -348,19 +374,26 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Environment> getEnvironment(String name) {
-        // TODO: Environment API
-        throw new NotImplementedException("");
+        for (int i = 0; i < environments.size(); i++) {
+            if (environments.get(i).getName().equals(name)) {
+                return (Optional<Environment>) environments.get(i);
+            }
+        }
+        return Optional.absent();
     }
 
     @Override
     public Optional<Environment> getEnvironment(int dimensionId) {
-        // TODO: Environment API
-        throw new NotImplementedException("");
+        for (int i = 0; i < environments.size(); i++) {
+           if (environments.get(i).getDimensionId() == dimensionId) {
+               return (Optional<Environment>) environments.get(i);
+           }
+        }
+        return Optional.absent();
     }
 
     @Override
     public List<Environment> getEnvironments() {
-        // TODO: Environment API
-        throw new NotImplementedException("");
+        return environments;
     }
 }

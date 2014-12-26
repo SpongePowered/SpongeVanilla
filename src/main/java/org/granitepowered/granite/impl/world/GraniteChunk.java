@@ -1,4 +1,4 @@
-package org.granitepowered.granite.impl.world.chunk;
+package org.granitepowered.granite.impl.world;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;

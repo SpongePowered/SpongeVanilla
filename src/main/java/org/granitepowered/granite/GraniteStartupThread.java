@@ -23,10 +23,9 @@
 
 package org.granitepowered.granite;
 
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import com.github.kevinsawicki.http.HttpRequest;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import org.apache.commons.io.IOUtils;
@@ -89,7 +88,7 @@ public class GraniteStartupThread extends Thread {
         String version = null;
 
         Properties mavenProp = new Properties();
-        InputStream in = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitemc/granite/pom.properties");
+        InputStream in = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
         if (in != null) {
             try {
                 mavenProp.load(in);
@@ -156,7 +155,6 @@ public class GraniteStartupThread extends Thread {
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
 
-            //method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getServerConfig().getMinecraftJar().toURI().toURL());
             method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getClassesDir().toURI().toURL());
 
             modifier.post();
