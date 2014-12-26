@@ -26,7 +26,7 @@
 
     <groupId>org.granitemc</groupId>
     <name>Granite</name>
-    <version>0.3.0-SPONGE</version>
+    <version>0.3.0-SNAPSHOT</version>
     <artifactId>granite</artifactId>
 
     <properties>
