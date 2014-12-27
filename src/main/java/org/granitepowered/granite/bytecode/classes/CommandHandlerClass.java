@@ -28,6 +28,7 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.event.message.GraniteCommandEvent;
 import org.granitepowered.granite.mc.MCInterface;
+import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.util.command.CommandSource;
 
 import java.util.Arrays;
@@ -56,6 +57,16 @@ public class CommandHandlerClass extends BytecodeClass {
 
                 GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
                 Granite.getInstance().getEventManager().post(event);
+
+                if (!event.isCancelled()) {
+                    SimpleCommandService dispatcher = (SimpleCommandService) Granite.getInstance().getCommandService();
+
+                    // TODO while SimpleCommandService does listen for CommandEvent, what's the
+                    // expected way to actually register it? It requires a valid plugin instance,
+                    // so is the server software expected to be an implicit plugin itself?
+                    event.isCancellable = true;
+                    dispatcher.onCommandEvent(event);
+                }
 
                 if (!event.isCancelled()) {
                     return callback.invokeParent(args);
