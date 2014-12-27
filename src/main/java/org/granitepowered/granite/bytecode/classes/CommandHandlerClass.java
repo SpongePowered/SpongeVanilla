@@ -60,15 +60,8 @@ public class CommandHandlerClass extends BytecodeClass {
 
                 if (!event.isCancelled()) {
                     SimpleCommandService dispatcher = (SimpleCommandService) Granite.getInstance().getCommandService();
-
-                    // TODO while SimpleCommandService does listen for CommandEvent, what's the
-                    // expected way to actually register it? It requires a valid plugin instance,
-                    // so is the server software expected to be an implicit plugin itself?
                     event.isCancellable = true;
                     dispatcher.onCommandEvent(event);
-                }
-
-                if (!event.isCancelled()) {
                     return callback.invokeParent(args);
                 } else {
                     return 0;
