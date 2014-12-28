@@ -35,6 +35,10 @@ public interface MCBlock extends MCInterface {
 
     float fieldGet$blockHardness();
 
+    boolean fieldGet$enableStats();
+
+    boolean isSolidFullCube();
+
     MCMaterial fieldGet$blockMaterial();
 
     MCBlockState getStateFromMeta(int meta);

@@ -81,7 +81,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean isSolidCube() {
-        throw new NotImplementedException("");
+        return obj.isSolidFullCube();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean areStatisticsEnabled() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$enableStats();
     }
 
     @Override

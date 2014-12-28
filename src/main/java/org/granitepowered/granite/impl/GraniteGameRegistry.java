@@ -29,6 +29,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
+import org.granitepowered.granite.impl.util.GraniteRotation;
 import org.granitepowered.granite.impl.world.GraniteEnvironment;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
@@ -53,6 +54,8 @@ import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.util.rotation.Rotation;
+import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.Environment;
 import org.spongepowered.api.world.Environments;
 import org.spongepowered.api.world.biome.BiomeType;
@@ -79,6 +82,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerItems();
         registerEnchantments();
         registerEnvironments();
+        registerRotations();
     }
 
     private void registerBlocks() {
@@ -156,6 +160,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
             String name = field.getName().toLowerCase();
             try {
+                // TODO: This is UGLY and bulky. Needs a better approach
                 if (name.equals("overworld")) {
                     field.set(null, new GraniteEnvironment(0, "Overworld"));
                 } else if (name.equals("nether")) {
@@ -167,6 +172,27 @@ public class GraniteGameRegistry implements GameRegistry {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void registerRotations() {
+        Granite.instance.getLogger().info("Registering Rotations");
+
+        List<Rotation> rotations = null;
+        Field[] fields = Rotations.class.getDeclaredFields();
+
+        for (int i = 0; i < fields.length; i++) {
+            ReflectionUtils.forceAccessible(fields[i]);
+
+            try {
+                Rotation rotation = new GraniteRotation(i);
+                fields[i].set(null, rotation);
+                rotations.add(rotation);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // TODO: This also needs to change the return value of the first method to @rotations.
     }
 
     @Override

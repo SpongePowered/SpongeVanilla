@@ -64,7 +64,6 @@ public class BytecodeModifier {
                     BytecodeClass bc = new BytecodeClass(((Implement) ctClass.getAnnotation(Implement.class)).name());
                     bcs.add(bc);
 
-                    //System.out.println(bc);
                     bc.implement(ctClass.toClass());
                 }
             }
