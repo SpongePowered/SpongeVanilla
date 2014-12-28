@@ -51,7 +51,7 @@ public class Mappings {
     static BiMap<String, CtClass> ctClasses;
 
     // Class -> <Signature -> Obfuscated Signature>
-    //static Map<Class<?>, BiMap<SignatureParser.MethodSignature, String>> methodNames;
+    // static Map<Class<?>, BiMap<SignatureParser.MethodSignature, String>> methodNames;
 
     // Class -> <Name -> Method>
     static Map<CtClass, BiMap<String, MethodHandle>> methods;
