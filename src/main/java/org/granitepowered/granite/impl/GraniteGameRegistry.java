@@ -61,6 +61,7 @@ import org.spongepowered.api.world.Environments;
 import org.spongepowered.api.world.biome.BiomeType;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,7 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerRotations() {
         Granite.instance.getLogger().info("Registering Rotations");
 
-        List<Rotation> rotations = null;
+        List<Rotation> rotations = new ArrayList<>();
         Field[] fields = Rotations.class.getDeclaredFields();
 
         for (int i = 0; i < fields.length; i++) {
