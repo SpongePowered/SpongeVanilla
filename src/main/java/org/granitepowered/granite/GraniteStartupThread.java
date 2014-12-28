@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
 import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
 import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
 import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.impl.GraniteServer;
@@ -237,6 +238,7 @@ public class GraniteStartupThread extends Thread {
         modifier.add(new DedicatedServerClass());
         modifier.add(new ItemInWorldManagerClass());
         modifier.add(new ServerConfigurationManagerClass());
+        modifier.add(new EntityPlayerMPClass());
 
         modifier.modify();
     }
