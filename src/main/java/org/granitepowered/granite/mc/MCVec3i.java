@@ -23,7 +23,11 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "BlockPos")
-public interface MCBlockPos extends MCVec3i {
-    MCBlockPos offset(MCEnumFacing facing, int amount);
+@Implement(name = "Vec3i")
+public interface MCVec3i extends MCInterface {
+    int fieldGet$x();
+
+    int fieldGet$y();
+
+    int fieldGet$z();
 }

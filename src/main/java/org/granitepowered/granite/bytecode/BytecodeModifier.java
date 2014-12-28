@@ -64,14 +64,14 @@ public class BytecodeModifier {
                     BytecodeClass bc = new BytecodeClass(((Implement) ctClass.getAnnotation(Implement.class)).name());
                     bcs.add(bc);
 
-                    bc.implement(ctClass.toClass());
+                    bc.implement(BytecodeClass.getFromCt(ctClass));
                 }
             }
 
             for (BytecodeClass bc : bcs) {
                 bc.writeClass();
             }
-        } catch (IOException | NotFoundException | ClassNotFoundException | CannotCompileException e) {
+        } catch (IOException | NotFoundException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

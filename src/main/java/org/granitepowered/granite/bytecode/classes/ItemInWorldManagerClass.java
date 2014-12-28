@@ -59,7 +59,7 @@ public class ItemInWorldManagerClass extends BytecodeClass {
 
                 GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos));
                 GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
-                
+
                 GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
                 Granite.getInstance().getServer().getEventManager().post(event);
 

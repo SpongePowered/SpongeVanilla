@@ -144,7 +144,21 @@ public class BytecodeClass {
         });
     }
 
-    private Class getFromCt(CtClass clazz) {
+    public static Class getFromCt(CtClass clazz) {
+        if (clazz.isPrimitive()) {
+            switch (clazz.getName()) {
+                case "float": return float.class;
+                case "double": return double.class;
+                case "byte": return byte.class;
+                case "int": return int.class;
+                case "boolean": return boolean.class;
+                case "char": return char.class;
+                case "short": return short.class;
+                case "long": return long.class;
+                case "void": return void.class;
+            }
+        }
+
         try {
             return Class.forName(clazz.getName());
         } catch (ClassNotFoundException e) {

@@ -21,9 +21,36 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.event.player;
 
-@Implement(name = "BlockPos")
-public interface MCBlockPos extends MCVec3i {
-    MCBlockPos offset(MCEnumFacing facing, int amount);
+import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
+import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.player.PlayerPlaceBlockEvent;
+public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements PlayerPlaceBlockEvent {
+    Player player;
+    BlockSnapshot previous;
+
+    public GranitePlayerPlaceBlockEvent(BlockLoc loc, Player player, BlockSnapshot previous) {
+        super(loc);
+        this.player = player;
+        this.previous = previous;
+    }
+
+    @Override
+    public BlockSnapshot getReplacementBlock() {
+        return previous;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public Entity getEntity() {
+        return player;
+    }
 }

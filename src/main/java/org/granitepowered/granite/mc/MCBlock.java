@@ -46,4 +46,6 @@ public interface MCBlock extends MCInterface {
     int getMetaFromState(MCBlockState state);
 
     String getUnlocalizedName();
+
+    boolean isReplaceable(MCWorld world, MCBlockPos pos);
 }
