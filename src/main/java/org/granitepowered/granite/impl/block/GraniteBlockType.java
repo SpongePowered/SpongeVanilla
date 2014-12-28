@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.impl.block;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
@@ -76,7 +75,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean isLiquid() {
-        throw new NotImplementedException("");
+        return Mappings.getClass("BlockLiquid").isAssignableFrom(this.getClass());
     }
 
     @Override
@@ -86,7 +85,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean isAffectedByGravity() {
-        throw new NotImplementedException("");
+        return Mappings.getClass("BlockFalling").isAssignableFrom(this.getClass());
     }
 
     @Override
