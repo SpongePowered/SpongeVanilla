@@ -33,16 +33,17 @@ import org.spongepowered.api.event.player.PlayerBreakBlockEvent;
 
 public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements PlayerBreakBlockEvent {
     Player player;
+    BlockSnapshot nextBlock;
 
-    public GranitePlayerBreakBlockEvent(BlockLoc loc, Player player) {
+    public GranitePlayerBreakBlockEvent(BlockLoc loc, Player player, BlockSnapshot nextBlock) {
         super(loc);
         this.player = player;
+        this.nextBlock = nextBlock;
     }
 
     @Override
     public BlockSnapshot getReplacementBlock() {
-        // TODO: Block Snapshot stuff
-        throw new NotImplementedException("");
+        return nextBlock;
     }
 
     @Override

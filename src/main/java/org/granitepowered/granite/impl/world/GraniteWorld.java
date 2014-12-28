@@ -196,7 +196,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Optional<Entity> createEntity(EntitySnapshot snapshot, Vector3d position) {
-        // TODO: Snapshot API
+        // TODO: Entity Snapshot API
         throw new NotImplementedException("");
     }
 

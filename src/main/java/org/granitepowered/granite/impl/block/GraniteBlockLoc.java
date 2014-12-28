@@ -93,8 +93,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public BlockSnapshot getSnapshot() {
-        // TODO: Snapshot API
-        throw new NotImplementedException("");
+        return new GraniteBlockSnapshot((GraniteBlockState) getState());
     }
 
     @Override
@@ -217,8 +216,8 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public void replaceWith(BlockSnapshot snapshot) {
-        // TODO: Snapshot API
-        throw new NotImplementedException("");
+        // TODO: The other snapshot fields when they come
+        replaceWith(snapshot.getState());
     }
 
     @Override
