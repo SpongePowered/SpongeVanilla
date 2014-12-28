@@ -25,7 +25,6 @@ package org.granitepowered.granite.impl.plugin;
 
 import com.google.common.base.Optional;
 import com.google.inject.Injector;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.guice.PluginScope;
@@ -34,6 +33,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -45,8 +45,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import javax.inject.Inject;
 
 public class GranitePluginManager implements PluginManager {
 

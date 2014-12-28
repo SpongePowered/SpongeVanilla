@@ -23,9 +23,7 @@
 
 package org.granitepowered.granite.impl.event.state;
 
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.event.state.StateEvent;
 
 public class GraniteStateEvent extends GraniteEvent implements StateEvent {

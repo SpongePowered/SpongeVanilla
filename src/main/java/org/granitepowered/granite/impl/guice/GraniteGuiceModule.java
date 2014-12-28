@@ -27,7 +27,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scopes;
-
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
@@ -40,10 +39,9 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.event.EventManager;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.lang.annotation.Annotation;
-
-import javax.inject.Inject;
 
 public class GraniteGuiceModule extends AbstractModule {
 

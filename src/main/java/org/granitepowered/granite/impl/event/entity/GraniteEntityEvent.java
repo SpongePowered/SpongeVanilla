@@ -23,10 +23,8 @@
 
 package org.granitepowered.granite.impl.event.entity;
 
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.event.GraniteEvent;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.entity.EntityEvent;
 
