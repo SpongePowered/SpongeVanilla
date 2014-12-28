@@ -205,6 +205,7 @@ public class BytecodeClass {
                             bytecode.addCheckcast(mcField.getType());
                         }
 
+                        bytecode.incMaxLocals(1);
                         bytecode.addPutfield(mcField.getDeclaringClass(), mcField.getName(), mcField.getFieldInfo().getDescriptor());
                         bytecode.addReturn(CtClass.voidType);
 
