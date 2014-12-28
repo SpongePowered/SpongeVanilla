@@ -34,8 +34,8 @@ import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
+import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.ItemType;
@@ -243,25 +243,13 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
     }
 
     @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed) {
+    public void spawnParticles(ParticleEffect particleEffect, Vector3d position) {
         // TODO: Particles API
         throw new NotImplementedException("");
     }
 
     @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed, int radius) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed, ItemType itemType) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed, int radius, ItemType itemType) {
+    public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
         // TODO: Particles API
         throw new NotImplementedException("");
     }

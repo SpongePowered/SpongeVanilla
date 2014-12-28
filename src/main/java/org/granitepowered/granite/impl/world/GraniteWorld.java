@@ -40,12 +40,11 @@ import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.mc.MCWorldInfo;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.effect.Particle;
 import org.spongepowered.api.effect.Sound;
+import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Environment;
 import org.spongepowered.api.world.Location;
@@ -235,25 +234,13 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed) {
+    public void spawnParticles(ParticleEffect particleEffect, Vector3d position) {
         // TODO: Particles API
         throw new NotImplementedException("");
     }
 
     @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed, int radius) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed, ItemType itemType) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void spawnParticles(Particle particle, int particleCount, Vector3d position, Vector3d offset, double speed, int radius, ItemType itemType) {
+    public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
         // TODO: Particles API
         throw new NotImplementedException("");
     }

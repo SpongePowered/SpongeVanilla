@@ -17,16 +17,6 @@ public class GranitePrimedTNT extends GraniteEntity<MCPrimedTNT> implements Prim
     }
 
     @Override
-    public void ignite() {
-
-    }
-
-    @Override
-    public void ignite(int i) {
-
-    }
-
-    @Override
     public int getFuseDuration() {
         return obj.fieldGet$fuse();
     }
