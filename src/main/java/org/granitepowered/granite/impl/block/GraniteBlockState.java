@@ -72,7 +72,7 @@ public class GraniteBlockState extends Composite<MCBlockState> implements BlockS
     public Optional<BlockProperty<?>> getPropertyByName(String s) {
         for (BlockProperty<?> property : getProperties().keySet()) {
             if (property.getName().equals(s)) {
-                return (Optional<BlockProperty<?>>) Optional.of(property);
+                return Optional.<BlockProperty<?>>of(property);
             }
         }
         return Optional.absent();

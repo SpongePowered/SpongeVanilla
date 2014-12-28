@@ -24,9 +24,7 @@
 package org.granitepowered.granite.impl.event.block;
 
 import com.google.common.base.Optional;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.event.block.BlockEvent;
 import org.spongepowered.api.event.cause.Cause;

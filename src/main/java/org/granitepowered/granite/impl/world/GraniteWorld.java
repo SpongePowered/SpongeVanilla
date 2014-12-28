@@ -45,11 +45,7 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.Environment;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.WorldBorder;
+import org.spongepowered.api.world.*;
 import org.spongepowered.api.world.biome.Biome;
 import org.spongepowered.api.world.biome.BiomeManager;
 import org.spongepowered.api.world.gen.WorldGenerator;
@@ -200,7 +196,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Optional<Entity> createEntity(EntitySnapshot snapshot, Vector3d position) {
-        // TODO: Snapshot API
+        // TODO: Entity Snapshot API
         throw new NotImplementedException("");
     }
 

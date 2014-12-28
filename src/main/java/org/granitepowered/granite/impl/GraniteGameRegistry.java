@@ -177,7 +177,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerRotations() {
-        Granite.instance.getLogger().info("Registering Rotations");
+        Granite.instance.getLogger().info("Registering rotations");
 
         List<Rotation> rotations = new ArrayList<>();
         Field[] fields = Rotations.class.getDeclaredFields();

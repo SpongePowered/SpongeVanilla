@@ -58,10 +58,14 @@ public class CommandHandlerClass extends BytecodeClass {
                 GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
                 Granite.getInstance().getEventManager().post(event);
 
+                // DO NOT MERGE AS THIS CAUSES ISSUES!!!
                 if (!event.isCancelled()) {
                     SimpleCommandService dispatcher = (SimpleCommandService) Granite.getInstance().getCommandService();
                     event.isCancellable = true;
                     dispatcher.onCommandEvent(event);
+                }
+
+                if (!event.isCancelled()) {
                     return callback.invokeParent(args);
                 } else {
                     return 0;
