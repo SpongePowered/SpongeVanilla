@@ -38,7 +38,8 @@ import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.effect.Particle;
+import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
+import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.living.meta.*;
@@ -218,14 +219,20 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<Particle> getParticle(String id) {
-        // TODO: Particle API
+    public Optional<ParticleType> getParticleType(String name) {
+        // TODO: Particles API
         throw new NotImplementedException("");
     }
 
     @Override
-    public List<Particle> getParticles() {
-        // TODO: Particle API
+    public List<ParticleType> getParticleTypes() {
+        // TODO: Particles API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public ParticleEffectBuilder getParticleEffectBuilder(ParticleType particle) {
+        // TODO: Particles API
         throw new NotImplementedException("");
     }
 
