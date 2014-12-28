@@ -27,7 +27,10 @@ import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
+import org.granitepowered.granite.impl.block.GraniteBlockSnapshot;
+import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.granitepowered.granite.impl.event.player.GranitePlayerBreakBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
@@ -35,6 +38,7 @@ import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCItemInWorldManager;
 import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.utils.MinecraftUtils;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
@@ -53,7 +57,10 @@ public class ItemInWorldManagerClass extends BytecodeClass {
 
                 GranitePlayer player = wrap(thisIiwm.fieldGet$thisPlayerMP());
 
-                GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos)), player);
+                GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos));
+                GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
+                
+                GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
                 Granite.getInstance().getServer().getEventManager().post(event);
 
                 if (!event.isCancelled()) {
