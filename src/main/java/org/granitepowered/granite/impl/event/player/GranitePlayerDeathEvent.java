@@ -42,7 +42,11 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     public GranitePlayerDeathEvent(GranitePlayer player, MCDamageSource playerDeathCause) {
         super(player);
         GraniteEntity source = MinecraftUtils.wrap(playerDeathCause.getSourceOfDamage());
-        this.deathCause = Optional.of(new Cause(new Cause(null, playerDeathCause.getDamageType(), null), source, null ));
+        if ( source == null ){
+            this.deathCause = Optional.of(new Cause(new Cause(null,playerDeathCause.getDamageType(), null), player, null ));
+        }else{
+            this.deathCause = Optional.of(new Cause(new Cause(null,playerDeathCause.getDamageType(), null), source, null ));
+        }
     }
 
     @Override
