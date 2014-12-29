@@ -24,11 +24,11 @@
 package org.granitepowered.granite.bytecode;
 
 import com.google.common.reflect.ClassPath;
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.Main;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
 
@@ -59,7 +59,7 @@ public class BytecodeModifier {
                         throw new RuntimeException(((Implement) ctClass.getAnnotation(Implement.class)).name() + " not in mappings");
                     }
 
-                    Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
+                    if ( Main.debugLog ) Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
 
                     BytecodeClass bc = new BytecodeClass(((Implement) ctClass.getAnnotation(Implement.class)).name());
                     bcs.add(bc);

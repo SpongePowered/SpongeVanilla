@@ -27,6 +27,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.Main;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.util.GraniteRotation;
@@ -101,7 +102,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, block);
                 blockTypes.put("minecraft:" + name, block);
 
-                Granite.getInstance().getLogger().info("Registered block " + block.getId());
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered block " + block.getId());
 
                 if (name.equals("redstone_wire")) {
                     block.getDefaultState().cycleProperty(block.getDefaultState().getPropertyByName("power").get());
@@ -126,7 +127,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, item);
                 itemTypes.put("minecraft:" + name, item);
 
-                Granite.getInstance().getLogger().info("Registered item " + item.getId());
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered item " + item.getId());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
