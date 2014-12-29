@@ -142,11 +142,6 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
         throw new NotImplementedException("");
     }
 
-    @Override
-    public int compareTo(ItemStack itemStack) {
-        throw new UnsupportedOperationException("This is going to be removed in a later release of Sponge");
-    }
-
     public MCItem getMCItem() {
         return obj.fieldGet$item();
     }
