@@ -232,9 +232,10 @@ public class GraniteStartupThread extends Thread {
 
         modifier.add(new CommandHandlerClass());
         modifier.add(new DedicatedServerClass());
+        modifier.add(new EntityPlayerMPClass());
         modifier.add(new ItemInWorldManagerClass());
-        modifier.add(new ServerConfigurationManagerClass());
         modifier.add(new ItemStackClass());
+        modifier.add(new ServerConfigurationManagerClass());
 
         modifier.modify();
     }
