@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.block;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
@@ -30,6 +31,7 @@ import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -40,6 +42,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.*;
@@ -88,7 +91,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public BlockState getState() {
-        return wrap(getWorld().obj.getBlockState(getBlockPos()));
+        return wrap(getWorld().obj.getBlockState(getMCBlockPos()));
     }
 
     @Override
@@ -98,48 +101,64 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminanceFromGround() {
-        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
+        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getMCBlockPos());
     }
 
     @Override
     public boolean isPowered() {
-        // TODO: Get clarification on what indirectly means
-        throw new NotImplementedException("");
+        return getWorld().isPowered(getMCBlockPos());
     }
 
     @Override
     public boolean isIndirectlyPowered() {
-        // TODO: Get clarification on what indirectly means
-        throw new NotImplementedException("");
+        return getWorld().isIndirectlyPowered(getMCBlockPos());
     }
 
     @Override
     public boolean isFacePowered(Direction direction) {
-        // TODO: Get clarification on what indirectly means
-        throw new NotImplementedException("");
+        return getPoweredFaces().contains(direction);
     }
 
     @Override
     public boolean isFaceIndirectlyPowered(Direction direction) {
-        // TODO: Get clarification on what indirectly means
-        throw new NotImplementedException("");
+        return getIndirectlyPoweredFaces().contains(direction);
     }
 
+    // TODO: There may be a better way to do this but it works for now
     @Override
     public Collection<Direction> getPoweredFaces() {
-        // TODO: Get clarification on what indirectly means
-        throw new NotImplementedException("");
+        Collection<Direction> directions = new ArrayList<>();
+        MCEnumFacing[] enums = (MCEnumFacing[]) ReflectionUtils.getClassByName("EnumFacing").getEnumConstants();
+        for (MCEnumFacing enumFacing : enums) {
+            Vector3d vector3d = new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(), enumFacing.fieldGet$directionVec().fieldGet$z());
+            if (getWorld().isFacePowered(getMCBlockPos(), enumFacing)) {
+                for (Direction direction : Direction.values()) {
+                    if (vector3d.equals(direction.toVector3d())) directions.add(direction);
+                }
+            }
+        }
+        return directions;
     }
 
+    // TODO: There may be a better way to do this but it works for now
     @Override
     public Collection<Direction> getIndirectlyPoweredFaces() {
-        // TODO: Get clarification on what indirectly means
-        throw new NotImplementedException("");
+        Collection<Direction> directions = new ArrayList<>();
+        MCEnumFacing[] enumFacings = (MCEnumFacing[]) ReflectionUtils.getClassByName("EnumFacing").getEnumConstants();
+        for (MCEnumFacing enumFacing : enumFacings) {
+            Vector3d vector3d = new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(), enumFacing.fieldGet$directionVec().fieldGet$z());
+            if (getWorld().isFacePowered(getMCBlockPos().offset(enumFacing, 1), enumFacing)) {
+                for (Direction direction : Direction.values()) {
+                    if (vector3d.equals(direction.toVector3d())) directions.add(direction);
+                }
+            }
+        }
+        return directions;
     }
 
     @Override
     public boolean isPassable() {
-        throw new NotImplementedException("");
+        return !getMCBlock().fieldGet$blockMaterial().blocksMovement();
     }
 
     @Override
@@ -149,7 +168,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminanceFromSky() {
-        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getBlockPos());
+        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getMCBlockPos());
     }
 
     @Override
@@ -171,13 +190,9 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public int getDigTimeWith(@Nullable ItemStack itemStack) {
-        // This is mostly copied from Minecraft's source, I have no idea how most of it works
-
-        float hardness = getMCType().fieldGet$blockHardness();
-
-        MCMaterial material = getMCType().fieldGet$blockMaterial();
-
-        boolean canHarvest = material.fieldGet$requiresNoTool() || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCType());
+        float hardness = getMCBlock().fieldGet$blockHardness();
+        MCMaterial material = getMCBlock().fieldGet$blockMaterial();
+        boolean canHarvest = material.fieldGet$requiresNoTool() || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCBlock());
 
         float strength = 1.0F;
         if (itemStack != null) {
@@ -201,12 +216,12 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminance() {
-        return (byte) getMCType().fieldGet$lightValue();
+        return (byte) getMCBlock().fieldGet$lightValue();
     }
 
     @Override
     public void replaceWith(BlockState state) {
-        getWorld().obj.setBlockState(getBlockPos(), (MCBlockState) unwrap(state));
+        getWorld().obj.setBlockState(getMCBlockPos(), (MCBlockState) unwrap(state));
     }
 
     @Override
@@ -242,11 +257,11 @@ public class GraniteBlockLoc implements BlockLoc {
         return ((GraniteWorld) getExtent());
     }
 
-    public MCBlockPos getBlockPos() {
-        return (MCBlockPos) graniteToMinecraftBlockPos(getPosition());
+    public MCBlockPos getMCBlockPos() {
+        return graniteToMinecraftBlockPos(getPosition());
     }
 
-    public MCBlock getMCType() {
+    public MCBlock getMCBlock() {
         return unwrap(getType());
     }
 }

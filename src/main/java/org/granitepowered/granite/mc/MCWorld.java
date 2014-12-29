@@ -40,4 +40,10 @@ public interface MCWorld extends MCInterface {
     boolean setBlockState(MCBlockPos blockPos, MCBlockState blockState);
 
     int getLightFor(Enum source, MCBlockPos blockPos);
+
+    boolean isPowered(MCBlockPos blockPos);
+
+    boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing);
+
+    int isIndirectlyPowered(MCBlockPos blockPos);
 }

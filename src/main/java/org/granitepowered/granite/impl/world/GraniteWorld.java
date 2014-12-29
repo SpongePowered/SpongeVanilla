@@ -34,10 +34,7 @@ import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.mc.MCWorldInfo;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.effect.Sound;
@@ -122,8 +119,8 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     public Map<String, String> getGameRules() {
         Map<String, String> map = new HashMap<>();
         String[] rules = getMCGameRules().getRules();
-        for (int i = 0; i < rules.length; i++) {
-            map.put(rules[i], String.valueOf(getGameRule(rules[i])));
+        for (String rule : rules) {
+            map.put(rule, String.valueOf(getGameRule(rule)));
         }
         return map;
     }
@@ -257,6 +254,18 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     public void playSound(Sound sound, Vector3d position, double volume, double pitch, double minVolume) {
         // TODO: Sound API
         throw new NotImplementedException("");
+    }
+
+    public boolean isPowered(MCBlockPos blockPos) {
+        return obj.isPowered(blockPos);
+    }
+
+    public boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing) {
+        return obj.isFacePowered(blockPos, enumFacing);
+    }
+
+    public boolean isIndirectlyPowered(MCBlockPos blockPos) {
+        return obj.isIndirectlyPowered(blockPos) > 0;
     }
 
     public MCWorldInfo getMCWorldInfo() {

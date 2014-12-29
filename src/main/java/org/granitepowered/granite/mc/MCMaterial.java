@@ -26,4 +26,6 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Material")
 public interface MCMaterial extends MCInterface {
     boolean fieldGet$requiresNoTool();
+
+    boolean blocksMovement();
 }
