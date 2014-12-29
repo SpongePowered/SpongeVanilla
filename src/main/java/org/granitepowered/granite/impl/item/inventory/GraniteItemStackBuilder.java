@@ -42,20 +42,20 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     }
 
     @Override
-    public ItemStackBuilder withItemType(ItemType itemType) {
+    public ItemStackBuilder itemType(ItemType itemType) {
         this.itemType = itemType;
         return this;
     }
 
     @Override
-    public ItemStackBuilder withDamage(int damage) {
+    public ItemStackBuilder damage(int damage) {
         if (damage < 0) damage = 0;
         this.damage = damage;
         return this;
     }
 
     @Override
-    public ItemStackBuilder withQuantity(int quantity) throws IllegalArgumentException {
+    public ItemStackBuilder quantity(int quantity) throws IllegalArgumentException {
         if (quantity < 0) quantity = 0;
         if (quantity > 64) quantity = 64;
         this.quantity = quantity;
@@ -63,9 +63,8 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     }
 
     @Override
-    public ItemStackBuilder withMaxQuantity(int maxQuantity) {
-        // TODO: Decision lies with Sponge on this as is impossible to change the max size of a stack
-        throw new NotImplementedException("Decision lies with Sponge on this as is impossible to change the max size of a stack");
+    public ItemStackBuilder maxQuantity(int i) {
+        throw new NotImplementedException("I DON'T LIKE YOU SPONGE!!!");
     }
 
     @Override
