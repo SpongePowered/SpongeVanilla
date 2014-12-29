@@ -28,6 +28,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.util.GraniteRotation;
@@ -81,11 +82,16 @@ public class GraniteGameRegistry implements GameRegistry {
     List<Environment> environments;
 
     public void register() {
+        registerBiomes();
         registerBlocks();
-        registerItems();
         registerEnchantments();
         registerEnvironments();
+        registerItems();
         registerRotations();
+    }
+
+    private void registerBiomes() {
+
     }
 
     private void registerBlocks() {
@@ -102,11 +108,50 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, block);
                 blockTypes.put("minecraft:" + name, block);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered block " + block.getId());
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered block minecraft:" + block.getId());
 
                 if (name.equals("redstone_wire")) {
                     block.getDefaultState().cycleProperty(block.getDefaultState().getPropertyByName("power").get());
                 }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerEnchantments() {
+        Granite.instance.getLogger().info("Registering enchantments");
+
+        for (Field field : Enchantments.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                MCEnchantment mcEnchantment = (MCEnchantment) Mappings.invokeStatic("Enchantment", "getEnchantmentByLocation", name);
+
+                Enchantment enchantment = new GraniteEnchantment(mcEnchantment);
+                field.set(null, enchantment);
+                enchantments.put("minecraft:" + name, enchantment);
+
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered enchantment minecraft:" + name);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void registerEnvironments() {
+        Granite.instance.getLogger().info("Registering environments");
+
+        for (Field field : Environments.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                Environment environment = new GraniteEnvironment(0, "minecraft:" + name);
+                field.set(null, environment);
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered environment " + environment.getName());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -127,50 +172,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, item);
                 itemTypes.put("minecraft:" + name, item);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered item " + item.getId());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void registerEnchantments() {
-        Granite.instance.getLogger().info("Registering enchantments");
-
-        for (Field field : Enchantments.class.getDeclaredFields()) {
-            ReflectionUtils.forceAccessible(field);
-
-            String name = field.getName().toLowerCase();
-            try {
-                Object mcEnchantment = Mappings.invokeStatic("Enchantment", "getEnchantmentByLocation", name);
-
-                Enchantment enchantment = wrap((MCEnchantment) mcEnchantment);
-                field.set(null, enchantment);
-                enchantments.put("minecraft:" + name, enchantment);
-
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    private void registerEnvironments() {
-        Granite.instance.getLogger().info("Registering environments");
-
-        for (Field field : Environments.class.getDeclaredFields()) {
-            ReflectionUtils.forceAccessible(field);
-
-            String name = field.getName().toLowerCase();
-            try {
-                // TODO: This is UGLY and bulky. Needs a better approach
-                if (name.equals("overworld")) {
-                    field.set(null, new GraniteEnvironment(0, "Overworld"));
-                } else if (name.equals("nether")) {
-                    field.set(null, new GraniteEnvironment(1, "Nether"));
-                } else if (name.equals("end")) {
-                    field.set(null, new GraniteEnvironment(-1, "The End"));
-                }
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered item minecraft:" + item.getId());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -180,22 +182,23 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerRotations() {
         Granite.instance.getLogger().info("Registering rotations");
 
+        int angle = 0;
         List<Rotation> rotations = new ArrayList<>();
         Field[] fields = Rotations.class.getDeclaredFields();
 
-        for (int i = 0; i < fields.length; i++) {
-            ReflectionUtils.forceAccessible(fields[i]);
+        for (Field field : fields) {
+            ReflectionUtils.forceAccessible(field);
 
             try {
-                Rotation rotation = new GraniteRotation(i);
-                fields[i].set(null, rotation);
+                Rotation rotation = new GraniteRotation(angle);
+                field.set(null, rotation);
                 rotations.add(rotation);
+                angle += 45;
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered rotation angle:" + rotation.getAngle());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-
-        // TODO: This also needs to change the return value of the first method to @rotations.
     }
 
     @Override
