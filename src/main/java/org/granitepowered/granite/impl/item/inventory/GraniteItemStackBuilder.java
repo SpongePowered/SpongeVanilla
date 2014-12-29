@@ -42,20 +42,20 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     }
 
     @Override
-    public ItemStackBuilder itemType(ItemType itemType) {
+    public ItemStackBuilder withItemType(ItemType itemType) {
         this.itemType = itemType;
         return this;
     }
 
     @Override
-    public ItemStackBuilder damage(int damage) {
+    public ItemStackBuilder withDamage(int damage) {
         if (damage < 0) damage = 0;
         this.damage = damage;
         return this;
     }
 
     @Override
-    public ItemStackBuilder quantity(int quantity) throws IllegalArgumentException {
+    public ItemStackBuilder withQuantity(int quantity) throws IllegalArgumentException {
         if (quantity < 0) quantity = 0;
         if (quantity > 64) quantity = 64;
         this.quantity = quantity;
@@ -63,7 +63,7 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     }
 
     @Override
-    public ItemStackBuilder maxQuantity(int i) {
+    public ItemStackBuilder withMaxQuantity(int i) {
         throw new NotImplementedException("I DON'T LIKE YOU SPONGE!!!");
     }
 
