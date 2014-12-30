@@ -24,32 +24,70 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerDeathEvent;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.utils.MinecraftUtils;
+import org.spongepowered.api.text.message.Message;
+
+import java.lang.reflect.Field;
 
 public class EntityPlayerMPClass extends BytecodeClass {
 
     public EntityPlayerMPClass() {
-
         super("EntityPlayerMP");
+
+        final Field[] deathMessageField = new Field[1];
+        injectField(Mappings.getCtClass("IChatComponent"), "deathMessage", new BytecodeClass.PostCallback() {
+            @Override
+            public void callback() {
+                try {
+                    deathMessageField[0] = Mappings.getClass("EntityPlayerMP").getDeclaredField("deathMessage");
+                    deathMessageField[0].setAccessible(true);
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        instrumentMethod("onDeath", new ExprEditor() {
+            @Override
+            public void edit(MethodCall m) throws CannotCompileException {
+                try {
+                    if (m.getMethod().equals(Mappings.getCtMethod("CombatTracker", "func_151521_b"))) {
+                        m.replace("$_ = this.deathMessage;");
+                    }
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         proxy("onDeath", new BytecodeClass.ProxyHandler() {
             @Override
             protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-
                 GranitePlayer player = new GranitePlayer((MCEntityPlayerMP) caller);
                 MCDamageSource source = (MCDamageSource) args[0];
 
-                GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source);
+                MCChatComponent deathComponent = ((MCEntityPlayerMP) caller).fieldGet$_combatTracker().func_151521_b();
+                Message deathMessage = MinecraftUtils.minecraftToGraniteMessage(deathComponent);
+
+                GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source, deathMessage);
                 Granite.getInstance().getEventManager().post(deathEvent);
 
-                return null;
+                deathMessageField[0].set(null, MinecraftUtils.graniteToMinecraftChatComponent(deathEvent.getDeathMessage()));
+
+                return callback.invokeParent(args);
             }
         });
     }
-
 }

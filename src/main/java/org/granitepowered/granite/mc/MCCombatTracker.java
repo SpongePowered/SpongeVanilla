@@ -23,21 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EntityLiving")
-public interface MCEntityLiving extends MCEntityLivingBase {
-    boolean fieldGet$isLeashed();
-
-    void fieldSet$isLeashed(boolean leashed);
-
-    MCEntity fieldGet$leashedToEntity();
-
-    boolean fieldGet$canPickUpLoot();
-
-    void fieldSet$canPickUpLoot(boolean value);
-
-    MCItemStack[] fieldGet$equipment();
-
-    boolean fieldGet$persistenceRequired();
-
-    void fieldSet$persistenceRequired(boolean persistence);
+@Implement(name = "CombatTracker")
+public interface MCCombatTracker extends MCEntityLiving {
+    MCChatComponent func_151521_b();
 }

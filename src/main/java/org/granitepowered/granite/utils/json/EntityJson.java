@@ -66,7 +66,7 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
 
         MCWorld world = unwrap(Granite.getInstance().getServer().getWorlds().iterator().next());
 
-        MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type, world);
+        MCEntity entity = (MCEntity) Mappings.invokeStatic("EntityList", "createEntityByName", type != null ? type : "XPOrb", world);
         if (!entity.getName().equals(name)) {
             entity.setCustomNameTag(name);
         }

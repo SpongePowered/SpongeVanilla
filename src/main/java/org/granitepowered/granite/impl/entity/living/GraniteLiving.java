@@ -30,6 +30,7 @@ import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.mc.MCEntityLiving;
+import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
@@ -109,7 +110,7 @@ public class GraniteLiving<T extends MCEntityLiving> extends GraniteEntity<T> im
 
     @Override
     public Optional<Living> getLastAttacker() {
-        MCEntityLiving living = obj.fieldGet$lastAttacker();
+        MCEntityLivingBase living = obj.fieldGet$lastAttacker();
         return Optional.fromNullable((Living) wrap(living));
     }
 

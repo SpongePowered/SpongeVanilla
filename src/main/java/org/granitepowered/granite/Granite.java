@@ -88,7 +88,6 @@ public class Granite {
         builder.registerTypeAdapter(GraniteTextAction.class, new TextActionJson());
         builder.registerTypeAdapter(GraniteEntity.class, new EntityJson());
         builder.registerTypeAdapter(GraniteItemStack.class, new ItemStackJson());
-
         gson = builder.create();
     }
 

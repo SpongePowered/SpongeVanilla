@@ -29,6 +29,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.text.action.GraniteClickAction;
 import org.granitepowered.granite.impl.text.action.GraniteHoverAction;
 import org.granitepowered.granite.impl.text.action.GraniteShiftClickAction;
+import org.granitepowered.granite.impl.text.action.GraniteTextAction;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
@@ -59,8 +60,8 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         MessageBuilder builder;
         if (src.has("text")) {
             builder = new GraniteMessageBuilder.GraniteTextMessageBuilder("").content(src.get("text").getAsString());
-        } else if (src.has("translation")) {
-            Translation translation = Translations.of(src.get("translation").getAsString()).get();
+        } else if (src.has("translate")) {
+            Translation translation = Translations.of(src.get("translate").getAsString()).get();
             builder = new GraniteMessageBuilder.GraniteTranslatableMessageBuilder(translation);
 
             if (src.has("with")) {
@@ -74,12 +75,12 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
                 ((MessageBuilder.Translatable) builder).content(translation, withList.toArray(new Object[withList.size()]));
             }
         } else {
-            throw new NotImplementedException("");
+            builder = new GraniteMessageBuilder.GraniteTextMessageBuilder("");
         }
 
         // TODO: add the other 2 types
 
-        builder = builder.color(src.has("color") ? TextColors.RESET : GraniteTextColor.valueOf(src.get("color").getAsString().toUpperCase()));
+        builder = builder.color(src.has("color") ? GraniteTextColor.valueOf(src.get("color").getAsString().toUpperCase()) : TextColors.RESET);
 
         boolean bold, italic, underlined, strikethrough, obfuscated;
         bold = src.has("bold") && src.get("bold").getAsBoolean();
@@ -100,11 +101,11 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         ));
 
         if (src.has("hoverEvent")) {
-            builder = builder.onHover((HoverAction<?>) context.deserialize(src.get("hoverEvent"), GraniteHoverAction.class));
+            builder = builder.onHover((HoverAction<?>) context.deserialize(src.get("hoverEvent"), GraniteTextAction.class));
         }
 
         if (src.has("clickEvent")) {
-            builder = builder.onClick((ClickAction<?>) context.deserialize(src.get("clickEvent"), GraniteClickAction.class));
+            builder = builder.onClick((ClickAction<?>) context.deserialize(src.get("clickEvent"), GraniteTextAction.class));
         }
 
         if (src.has("insertion")) {

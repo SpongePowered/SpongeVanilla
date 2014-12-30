@@ -136,6 +136,11 @@ public class MinecraftUtils {
         return (Enum) clazz.getEnumConstants()[number];
     }
 
+    public static Message minecraftToGraniteMessage(MCChatComponent deathComponent) {
+        String json = (String) Mappings.invokeStatic("IChatComponent$Serializer", "componentToJson", deathComponent);
+        return Granite.getInstance().getGson().fromJson(json, GraniteMessage.class);
+    }
+
     public static class WrapFunction<T extends Composite> implements Function<MCInterface, T> {
         @Nullable
         @Override

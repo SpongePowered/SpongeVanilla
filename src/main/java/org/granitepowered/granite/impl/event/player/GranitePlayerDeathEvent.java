@@ -34,19 +34,21 @@ import org.spongepowered.api.event.player.PlayerDeathEvent;
 import org.spongepowered.api.text.message.Message;
 
 public class GranitePlayerDeathEvent extends GranitePlayerEvent implements PlayerDeathEvent {
-
     Message deathMessage;
 
     Optional<Cause> deathCause;
 
-    public GranitePlayerDeathEvent(GranitePlayer player, MCDamageSource playerDeathCause) {
+    public GranitePlayerDeathEvent(GranitePlayer player, MCDamageSource playerDeathCause, Message deathMessage) {
         super(player);
         GraniteEntity source = MinecraftUtils.wrap(playerDeathCause.getSourceOfDamage());
-        if ( source == null ){
-            this.deathCause = Optional.of(new Cause(new Cause(null,playerDeathCause.getDamageType(), null), player, null ));
-        }else{
-            this.deathCause = Optional.of(new Cause(new Cause(null,playerDeathCause.getDamageType(), null), source, null ));
+        // TODO: Cause stuff
+        if (source == null) {
+            this.deathCause = Optional.of(new Cause(new Cause(null, playerDeathCause.getDamageType(), null), player, null));
+        } else {
+            this.deathCause = Optional.of(new Cause(new Cause(null, playerDeathCause.getDamageType(), null), source, null));
         }
+
+        this.deathMessage = deathMessage;
     }
 
     @Override
@@ -56,6 +58,7 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
 
     @Override
     public void setDeathMessage(Message message) {
+        checkModify();
         deathMessage = message;
     }
 
@@ -63,5 +66,4 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     public Optional<Cause> getCause() {
         return deathCause;
     }
-
 }

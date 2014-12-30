@@ -23,21 +23,27 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EntityLiving")
-public interface MCEntityLiving extends MCEntityLivingBase {
-    boolean fieldGet$isLeashed();
+@Implement(name = "EntityLivingBase")
+public interface MCEntityLivingBase extends MCEntity {
+    MCEntityLivingBase fieldGet$lastAttacker();
 
-    void fieldSet$isLeashed(boolean leashed);
+    void fieldSet$lastAttacker(MCEntityLivingBase living);
 
-    MCEntity fieldGet$leashedToEntity();
+    float fieldGet$lastDamage();
 
-    boolean fieldGet$canPickUpLoot();
+    void fieldSet$lastDamage(float damage);
 
-    void fieldSet$canPickUpLoot(boolean value);
+    int fieldGet$maxHurtResistantTime();
 
-    MCItemStack[] fieldGet$equipment();
+    void fieldSet$maxHurtResistantTime(int halfTicks);
 
-    boolean fieldGet$persistenceRequired();
+    MCCombatTracker fieldGet$_combatTracker();
 
-    void fieldSet$persistenceRequired(boolean persistence);
+    void damageEntity(MCDamageSource source, float amount);
+
+    float getHealth();
+
+    void setHealth(float health);
+
+    float getMaxHealth();
 }
