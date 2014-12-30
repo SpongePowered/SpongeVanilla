@@ -49,18 +49,9 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
     public ServerConfigurationManagerClass() {
         super("ServerConfigurationManager");
 
-        final Field[] loginMessageField = new Field[1];
-        injectField(Mappings.getCtClass("IChatComponent"), "loginMessage", new BytecodeClass.PostCallback() {
-            @Override
-            public void callback() {
-                try {
-                    loginMessageField[0] = Mappings.getClass("ServerConfigurationManager").getDeclaredField("loginMessage");
-                    loginMessageField[0].setAccessible(true);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        final int param = addParameter("initializeConnectionToPlayer", Mappings.getCtClass("IChatComponent"));
+
+        addArgumentsVariable("initializeConnectionToPlayer");
 
         instrumentMethod("initializeConnectionToPlayer", new ExprEditor() {
             @Override
@@ -68,7 +59,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
                 CtMethod method = Mappings.getCtMethod("ServerConfigurationManager", "sendChatMsg");
                 try {
                     if (m.getMethod().equals(method)) {
-                        m.replace("$_ = $proceed(loginMessage);");
+                        m.replace("$_ = $proceed((" + Mappings.getCtClass("IChatComponent").getName() + ") $mArgs[" + param + "]);");
                     }
                 } catch (NotFoundException e) {
                     e.printStackTrace();
@@ -96,9 +87,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
                 GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GranitePlayer) wrap(player), joinMessage);
                 Granite.getInstance().getServer().getEventManager().post(event);
 
-                loginMessageField[0].set(null, MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
-
-                return callback.invokeParent(args);
+                return callback.invokeParent(args[0], args[1], MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
             }
         });
 

@@ -292,6 +292,17 @@ public class BytecodeClass {
         }
     }
 
+    public void addArgumentsVariable(String methodName) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+
+        try {
+            method.addLocalVariable("$mArgs", ClassPool.getDefault().get("java.lang.Object[]"));
+            method.insertBefore("$mArgs = $args;");
+        } catch (CannotCompileException | NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void instrumentMethod(String methodName, ExprEditor editor) {
         CtMethod method = Mappings.getCtMethod(clazz, methodName);
         try {
@@ -324,6 +335,23 @@ public class BytecodeClass {
         } catch (CannotCompileException e) {
             e.printStackTrace();
         }
+    }
+
+    public int addParameter(String methodName, CtClass type) {
+        CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            CtMethod other = new CtMethod(method.getReturnType(), method.getName(), method.getParameterTypes(), method.getDeclaringClass());
+
+            method.addParameter(type);
+
+            other.setBody("return " + method.getName() + "($$, (" + type.getName() + ") null);");
+            method.getDeclaringClass().addMethod(other);
+
+            return method.getParameterTypes().length - 1;
+        } catch (CannotCompileException | NotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override

@@ -149,11 +149,11 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
         // TODO: add the other 2 types
 
         if (src.getHoverAction().isPresent()) {
-            out.add("hoverEvent", context.serialize(src.getHoverAction().get()));
+            out.add("hoverEvent", context.serialize(src.getHoverAction().get(), GraniteTextAction.class));
         }
 
         if (src.getClickAction().isPresent()) {
-            out.add("clickEvent", context.serialize(src.getClickAction().get()));
+            out.add("clickEvent", context.serialize(src.getClickAction().get(), GraniteTextAction.class));
         }
 
         if (src.getShiftClickAction().isPresent()) {

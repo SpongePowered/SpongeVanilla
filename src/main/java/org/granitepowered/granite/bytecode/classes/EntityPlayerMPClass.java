@@ -46,25 +46,16 @@ public class EntityPlayerMPClass extends BytecodeClass {
     public EntityPlayerMPClass() {
         super("EntityPlayerMP");
 
-        final Field[] deathMessageField = new Field[1];
-        injectField(Mappings.getCtClass("IChatComponent"), "deathMessage", new BytecodeClass.PostCallback() {
-            @Override
-            public void callback() {
-                try {
-                    deathMessageField[0] = Mappings.getClass("EntityPlayerMP").getDeclaredField("deathMessage");
-                    deathMessageField[0].setAccessible(true);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        final int param = addParameter("onDeath", Mappings.getCtClass("IChatComponent"));
+
+        addArgumentsVariable("onDeath");
 
         instrumentMethod("onDeath", new ExprEditor() {
             @Override
             public void edit(MethodCall m) throws CannotCompileException {
                 try {
                     if (m.getMethod().equals(Mappings.getCtMethod("CombatTracker", "func_151521_b"))) {
-                        m.replace("$_ = this.deathMessage;");
+                        m.replace("$_ = $mArgs[" + param + "];");
                     }
                 } catch (NotFoundException e) {
                     e.printStackTrace();
@@ -84,9 +75,9 @@ public class EntityPlayerMPClass extends BytecodeClass {
                 GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source, deathMessage);
                 Granite.getInstance().getEventManager().post(deathEvent);
 
-                deathMessageField[0].set(null, MinecraftUtils.graniteToMinecraftChatComponent(deathEvent.getDeathMessage()));
+                deathComponent = MinecraftUtils.graniteToMinecraftChatComponent(deathEvent.getDeathMessage());
 
-                return callback.invokeParent(args);
+                return callback.invokeParent(source, deathComponent);
             }
         });
     }

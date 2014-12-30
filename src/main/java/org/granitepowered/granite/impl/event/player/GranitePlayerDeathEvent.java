@@ -48,7 +48,7 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
             this.deathCause = Optional.of(new Cause(new Cause(null, playerDeathCause.getDamageType(), null), source, null));
         }
 
-        this.deathMessage = deathMessage;
+         this.deathMessage = deathMessage;
     }
 
     @Override

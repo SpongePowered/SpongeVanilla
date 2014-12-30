@@ -80,7 +80,19 @@ public class TextActionJson implements JsonSerializer<GraniteTextAction<?>>, Jso
     public JsonElement serialize(GraniteTextAction<?> src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject out = new JsonObject();
         out.add("action", context.serialize(src.getId()));
-        out.add("value", context.serialize(src.getResult()));
+
+        Type t = null;
+        Object result = src.getResult();
+        if (result instanceof GraniteEntity) {
+            // t must be GraniteEntity, can't be GraniteLiving or another subclass
+            t = GraniteEntity.class;
+        } else if (result instanceof GraniteMessage) {
+            t = GraniteMessage.class;
+        } else {
+            t = result.getClass();
+        }
+
+        out.add("value", context.serialize(src.getResult(), t));
         return out;
     }
 }
