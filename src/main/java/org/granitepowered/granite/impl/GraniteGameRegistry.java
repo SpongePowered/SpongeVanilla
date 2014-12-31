@@ -30,6 +30,9 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseColor;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseStyle;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseVariant;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteOcelotType;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteRabbitType;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteSkeletonType;
@@ -56,8 +59,11 @@ import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.living.meta.DyeColor;
 import org.spongepowered.api.entity.living.meta.HorseColor;
+import org.spongepowered.api.entity.living.meta.HorseColors;
 import org.spongepowered.api.entity.living.meta.HorseStyle;
+import org.spongepowered.api.entity.living.meta.HorseStyles;
 import org.spongepowered.api.entity.living.meta.HorseVariant;
+import org.spongepowered.api.entity.living.meta.HorseVariants;
 import org.spongepowered.api.entity.living.meta.OcelotType;
 import org.spongepowered.api.entity.living.meta.OcelotTypes;
 import org.spongepowered.api.entity.living.meta.RabbitType;
@@ -96,6 +102,9 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, Career> careers = Maps.newHashMap();
     Map<String, Enchantment> enchantments = Maps.newHashMap();
     Map<String, Environment> environments = Maps.newHashMap();
+    Map<String, HorseColor> horseColors = Maps.newHashMap();
+    Map<String, HorseStyle> horseStyles = Maps.newHashMap();
+    Map<String, HorseVariant> horseVariants = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
     Map<String, Profession> professions = Maps.newHashMap();
     Map<String, OcelotType> ocelots = Maps.newHashMap();
@@ -115,6 +124,9 @@ public class GraniteGameRegistry implements GameRegistry {
         registerEnchantments();
         registerEnvironments();
         registerGameRules();
+        registerHorseColors();
+        registerHorseStyles();
+        registerHorseVariants();
         registerItems();
         registerOcelots();
         registerProfessionsAndCareers();
@@ -221,6 +233,66 @@ public class GraniteGameRegistry implements GameRegistry {
             defaultGameRules.add(rule);
             if (Main.debugLog) {
                 Granite.getInstance().getLogger().info("Registered default GameRule minecraft:" + rule);
+            }
+        }
+    }
+
+    private void registerHorseColors() {
+        Granite.instance.getLogger().info("Registering Horse Colors");
+
+        for (Field field : HorseColors.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                HorseColor horseColor = new GraniteHorseColor(name);
+                field.set(null, horseColor);
+                horseColors.put("minecraft:" + name, horseColor);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Horse Color minecraft:" + horseColor.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerHorseStyles() {
+        Granite.instance.getLogger().info("Registering Horse Styles");
+
+        for (Field field : HorseStyles.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                HorseStyle horseStyle = new GraniteHorseStyle(name);
+                field.set(null, horseStyle);
+                horseStyles.put("minecraft:" + name, horseStyle);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Horse Style minecraft:" + horseStyle.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerHorseVariants() {
+        Granite.instance.getLogger().info("Registering Horse Variants");
+
+        for (Field field : HorseVariants.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                HorseVariant horseVariant = new GraniteHorseVariant(name);
+                field.set(null, horseVariant);
+                horseVariants.put("minecraft:" + name, horseVariant);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Horse Variant minecraft:" + horseVariant.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -515,38 +587,32 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<HorseColor> getHorseColor(String id) {
-        // TODO: Horse API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(horseColors.get(id));
     }
 
     @Override
     public List<HorseColor> getHorseColors() {
-        // TODO: Horse API
-        throw new NotImplementedException("");
+        return (List<HorseColor>) horseColors.values();
     }
 
     @Override
     public Optional<HorseStyle> getHorseStyle(String id) {
-        // TODO: Horse API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(horseStyles.get(id));
     }
 
     @Override
     public List<HorseStyle> getHorseStyles() {
-        // TODO: Horse API
-        throw new NotImplementedException("");
+        return (List<HorseStyle>) horseStyles.values();
     }
 
     @Override
     public Optional<HorseVariant> getHorseVariant(String id) {
-        // TODO: Horse API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(horseVariants.get(id));
     }
 
     @Override
     public List<HorseVariant> getHorseVariants() {
-        // TODO: Horse API
-        throw new NotImplementedException("");
+        return (List<HorseVariant>) horseVariants.values();
     }
 
     @Override
