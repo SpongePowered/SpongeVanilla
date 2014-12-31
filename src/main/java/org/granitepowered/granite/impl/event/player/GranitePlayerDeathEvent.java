@@ -25,13 +25,17 @@
 package org.granitepowered.granite.impl.event.player;
 
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.utils.MinecraftUtils;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.player.PlayerDeathEvent;
 import org.spongepowered.api.text.message.Message;
+
+import java.util.Collection;
 
 public class GranitePlayerDeathEvent extends GranitePlayerEvent implements PlayerDeathEvent {
     Message deathMessage;
@@ -65,5 +69,10 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     @Override
     public Optional<Cause> getCause() {
         return deathCause;
+    }
+
+    @Override
+    public Collection<Item> getDroppedItems() {
+        throw new NotImplementedException("");
     }
 }

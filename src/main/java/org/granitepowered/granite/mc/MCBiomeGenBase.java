@@ -23,15 +23,11 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "WorldInfo")
-public interface MCWorldInfo extends MCInterface {
-    String fieldGet$levelName();
+@Implement(name = "BiomeGenBase")
+public interface MCBiomeGenBase extends MCInterface {
+    float fieldGet$temperature();
 
-    MCGameRules fieldGet$gameRules();
+    float fieldGet$minHeight();
 
-    long fieldGet$randomSeed();
-
-    void fieldSet$randomSeed(long seed);
-
-    int fieldGet$dimension();
+    float fieldGet$maxHeight();
 }

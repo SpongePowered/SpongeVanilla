@@ -27,17 +27,23 @@ import org.spongepowered.api.world.Environment;
 
 public class GraniteEnvironment implements Environment {
 
-    int dimensionId;
     String name;
 
-    public GraniteEnvironment(int dimensionId, String name) {
-        this.dimensionId = dimensionId;
+    public GraniteEnvironment(String name) {
         this.name = name;
     }
 
     @Override
     public int getDimensionId() {
-        return dimensionId;
+        switch (name) {
+            case "overworld":
+                return 0;
+            case "nether":
+                return 1;
+            case "end":
+                return -1;
+        }
+        return 0;
     }
 
     @Override

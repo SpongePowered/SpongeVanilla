@@ -28,8 +28,11 @@ import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.player.PlayerBreakBlockEvent;
+
+import java.util.Collection;
 
 public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements PlayerBreakBlockEvent {
     Player player;
@@ -64,5 +67,10 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
     @Override
     public Entity getEntity() {
         return player;
+    }
+
+    @Override
+    public Collection<Item> getDroppedItems() {
+        throw new NotImplementedException("");
     }
 }

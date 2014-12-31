@@ -36,7 +36,9 @@ import org.granitepowered.granite.impl.world.GraniteEnvironment;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCEnchantment;
+import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
@@ -72,30 +74,51 @@ import java.util.Map;
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteGameRegistry implements GameRegistry {
+    Map<String, BiomeType> biomes = Maps.newHashMap();
     Map<String, BlockType> blockTypes = Maps.newHashMap();
+    Map<String, Environment> environments = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
     Map<String, Enchantment> enchantments = Maps.newHashMap();
 
+    Collection<String> defaultGameRules = new ArrayList<>();
+
     GraniteItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
     GranitePotionBuilder potionBuilder = new GranitePotionBuilder();
-
-    List<Environment> environments;
 
     public void register() {
         registerBiomes();
         registerBlocks();
         registerEnchantments();
         registerEnvironments();
+        registerGameRules();
         registerItems();
         registerRotations();
     }
 
     private void registerBiomes() {
+        // TODO: Do this later when we see how sponge/mixin goes about doing this :P
+        /*Granite.instance.getLogger().info("Registering Biomes");
 
+        try {
+            Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
+            Field biomeList = Mappings.getField(biomeGenBaseClass, "biomeList");
+            MCBiomeGenBase[] biomesGenBase = (MCBiomeGenBase[]) biomeList.get(biomeGenBaseClass);
+
+            Field[] fields = BiomeTypes.class.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                String name = "minecraft:" + fields[i].getName().toLowerCase();
+                BiomeType biomeType = new GraniteBiomeType(biomesGenBase[i]);
+                fields[i].set(null, biomeType);
+                biomes.put(name, biomeType);
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome" + name);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }*/
     }
 
     private void registerBlocks() {
-        Granite.instance.getLogger().info("Registering blocks");
+        Granite.instance.getLogger().info("Registering Blocks");
 
         for (Field field : BlockTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -106,13 +129,14 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 BlockType block = wrap(mcBlock);
                 field.set(null, block);
-                blockTypes.put("minecraft:" + name, block);
+                blockTypes.put(name, block);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered block minecraft:" + block.getId());
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Block minecraft:" + block.getId());
 
-                if (name.equals("redstone_wire")) {
+                // TODO: remove if not effecting anything (30/12/14)
+                /*if (name.equals("redstone_wire")) {
                     block.getDefaultState().cycleProperty(block.getDefaultState().getPropertyByName("power").get());
-                }
+                }*/
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -120,7 +144,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerEnchantments() {
-        Granite.instance.getLogger().info("Registering enchantments");
+        Granite.instance.getLogger().info("Registering Enchantments");
 
         for (Field field : Enchantments.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -133,7 +157,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, enchantment);
                 enchantments.put("minecraft:" + name, enchantment);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered enchantment minecraft:" + name);
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Enchantment minecraft:" + enchantment.getId());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -142,24 +166,35 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerEnvironments() {
-        Granite.instance.getLogger().info("Registering environments");
+        Granite.instance.getLogger().info("Registering Environments");
 
         for (Field field : Environments.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                Environment environment = new GraniteEnvironment(0, "minecraft:" + name);
+                Environment environment = new GraniteEnvironment(name);
                 field.set(null, environment);
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered environment " + environment.getName());
+                environments.put("minecraft:" + environment.getName(), environment);
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Environment " + environment.getName() + " dimId: " + environment.getDimensionId());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private void registerGameRules() {
+        Granite.instance.getLogger().info("Registering default GameRules");
+        MCGameRules gameRules = MinecraftUtils.instantiate(Mappings.getClass("GameRules"), new Class[]{});
+        String[] rules = gameRules.getRules();
+        for (String rule : rules) {
+            defaultGameRules.add(rule);
+            if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered default GameRule " + rule);
+        }
+    }
+
     private void registerItems() {
-        Granite.instance.getLogger().info("Registering items");
+        Granite.instance.getLogger().info("Registering Items");
 
         for (Field field : ItemTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -172,7 +207,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, item);
                 itemTypes.put("minecraft:" + name, item);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered item minecraft:" + item.getId());
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Item minecraft:" + item.getId());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -180,7 +215,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerRotations() {
-        Granite.instance.getLogger().info("Registering rotations");
+        Granite.instance.getLogger().info("Registering Rotations");
 
         int angle = 0;
         List<Rotation> rotations = new ArrayList<>();
@@ -194,7 +229,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, rotation);
                 rotations.add(rotation);
                 angle += 45;
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered rotation angle:" + rotation.getAngle());
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Rotation angle:" + rotation.getAngle());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -223,14 +258,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<BiomeType> getBiome(String id) {
-        // TODO: Biome API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(biomes.get(id));
     }
 
     @Override
     public List<BiomeType> getBiomes() {
-        // TODO: Biome API
-        throw new NotImplementedException("");
+        return (List<BiomeType>) biomes.values();
     }
 
     @Override
@@ -419,7 +452,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Enchantment> getEnchantment(String id) {
-        return (Optional<Enchantment>) enchantments.get(id);
+        return Optional.fromNullable(enchantments.get(id));
     }
 
     @Override
@@ -429,25 +462,19 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Collection<String> getDefaultGameRules() {
-        // TODO: Game Rules API
-        throw new NotImplementedException("");
+        return defaultGameRules;
     }
 
     @Override
-    public Optional<Environment> getEnvironment(String name) {
-        for (Environment environment : environments) {
-            if (environment.getName().equals(name)) {
-                return (Optional<Environment>) environment;
-            }
-        }
-        return Optional.absent();
+    public Optional<Environment> getEnvironment(String id) {
+        return Optional.fromNullable(environments.get(id));
     }
 
     @Override
     public Optional<Environment> getEnvironment(int dimensionId) {
-        for (Environment environment : environments) {
+        for (Environment environment : environments.values()) {
             if (environment.getDimensionId() == dimensionId) {
-                return (Optional<Environment>) environment;
+                return Optional.fromNullable(environment);
             }
         }
         return Optional.absent();
@@ -455,6 +482,6 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<Environment> getEnvironments() {
-        return environments;
+        return (List<Environment>) environments.values();
     }
 }

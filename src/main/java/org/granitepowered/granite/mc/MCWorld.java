@@ -46,4 +46,6 @@ public interface MCWorld extends MCInterface {
     boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing);
 
     int isIndirectlyPowered(MCBlockPos blockPos);
+
+    MCBiomeGenBase getBiome(MCBlockPos blockPos);
 }

@@ -41,6 +41,7 @@ import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.impl.world.GraniteWorldBorder;
+import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
 import org.granitepowered.granite.mc.MCBlockPos;
@@ -59,19 +60,20 @@ import java.util.Objects;
 
 public class MinecraftUtils {
     public static ImmutableMap<Class<?>, Class<? extends Composite>> composites = ImmutableMap.<Class<?>, Class<? extends Composite>>builder()
+            .put(Mappings.getClass("BiomeGenBase"), GraniteBiomeType.class)
+            .put(Mappings.getClass("Block"), GraniteBlockType.class)
+            .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
+            .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
+            .put(Mappings.getClass("Enchantment"), GraniteServer.class)
             .put(Mappings.getClass("Entity"), GraniteEntity.class)
             .put(Mappings.getClass("EntityLiving"), GraniteLiving.class)
             .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
-            .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
-            .put(Mappings.getClass("Block"), GraniteBlockType.class)
-            .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
-            .put(Mappings.getClass("Enchantment"), GraniteServer.class)
+            .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
-            .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)
-            .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
             .put(Mappings.getClass("WorldBorder"), GraniteWorldBorder.class)
+            .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
             .build();
 
     @Nonnull

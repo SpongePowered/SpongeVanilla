@@ -21,17 +21,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.world.biome;
 
-@Implement(name = "WorldInfo")
-public interface MCWorldInfo extends MCInterface {
-    String fieldGet$levelName();
+import org.spongepowered.api.world.biome.Biome;
+import org.spongepowered.api.world.biome.BiomeType;
 
-    MCGameRules fieldGet$gameRules();
+public class GraniteBiome implements Biome {
 
-    long fieldGet$randomSeed();
+    BiomeType biomeType;
 
-    void fieldSet$randomSeed(long seed);
+    public GraniteBiome(BiomeType biomeType) {
+        this.biomeType = biomeType;
+    }
 
-    int fieldGet$dimension();
+    @Override
+    public BiomeType getType() {
+        return biomeType;
+    }
+
+    @Override
+    public void replaceWith(BiomeType biomeType) {
+        this.biomeType = biomeType;
+    }
 }

@@ -30,9 +30,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.impl.world.biome.GraniteBiome;
+import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
@@ -127,8 +130,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Environment getEnvironment() {
-        // TODO: Environment API
-        throw new NotImplementedException("");
+        return (Environment) Granite.instance.getGameRegistry().getEnvironment(getMCWorldInfo().fieldGet$dimension());
     }
 
     @Override
@@ -158,8 +160,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Biome getBiome(Vector3d position) {
-        // TODO: Biome API
-        throw new NotImplementedException("");
+        return new GraniteBiome(new GraniteBiomeType(obj.getBiome(MinecraftUtils.graniteToMinecraftBlockPos(position.toInt()))));
     }
 
     @Override

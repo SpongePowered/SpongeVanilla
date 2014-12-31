@@ -21,17 +21,46 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.world.biome;
 
-@Implement(name = "WorldInfo")
-public interface MCWorldInfo extends MCInterface {
-    String fieldGet$levelName();
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mc.MCBiomeGenBase;
+import org.spongepowered.api.world.biome.BiomeType;
+import org.spongepowered.api.world.gen.Populator;
 
-    MCGameRules fieldGet$gameRules();
+public class GraniteBiomeType extends Composite<MCBiomeGenBase> implements BiomeType {
+    public GraniteBiomeType(Object obj) {
+        super(obj);
+    }
 
-    long fieldGet$randomSeed();
+    @Override
+    public double getTemperature() {
+        return obj.fieldGet$temperature();
+    }
 
-    void fieldSet$randomSeed(long seed);
+    @Override
+    public double getHumidity() {
+        throw new NotImplementedException("");
+    }
 
-    int fieldGet$dimension();
+    @Override
+    public float getMinHeight() {
+        return obj.fieldGet$minHeight();
+    }
+
+    @Override
+    public float getMaxHeight() {
+        return obj.fieldGet$maxHeight();
+    }
+
+    @Override
+    public Iterable<Populator> getPopulators() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void insertPopulator(Populator populator, int i) {
+        throw new NotImplementedException("");
+    }
 }
