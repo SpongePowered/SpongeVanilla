@@ -92,6 +92,7 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, Environment> environments = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
     Map<String, Profession> professions = Maps.newHashMap();
+    Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
     Map<Integer, Rotation> rotations = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
@@ -257,6 +258,18 @@ public class GraniteGameRegistry implements GameRegistry {
 
         Granite.instance.getLogger().info("Registering Careers");
 
+        List<Career> farmers = new ArrayList<>();
+        List<Career> librarians = new ArrayList<>();
+        List<Career> priests = new ArrayList<>();
+        List<Career> blacksmiths = new ArrayList<>();
+        List<Career> butchers = new ArrayList<>();
+
+        Profession farmerProfession = professions.get("farmer");
+        Profession librarianProfession = professions.get("librarian");
+        Profession priestProfession = professions.get("priest");
+        Profession blacksmithProfession = professions.get("blacksmith");
+        Profession butcherProfession = professions.get("butcher");
+
         Field[] fields = Careers.class.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             ReflectionUtils.forceAccessible(fields[i]);
@@ -265,24 +278,29 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 boolean registered = false;
                 if (i < 4) {
-                    Career career = new GraniteCareer(professions.get("farmer"), name);
+                    Career career = new GraniteCareer(farmerProfession, name);
                     fields[i].set(null, career);
+                    farmers.add(career);
                     registered = true;
                 } else if (i == 4) {
-                    Career career = new GraniteCareer(professions.get("librarian"), name);
+                    Career career = new GraniteCareer(librarianProfession, name);
                     fields[i].set(null, career);
+                    librarians.add(career);
                     registered = true;
                 } else if (i == 5) {
-                    Career career = new GraniteCareer(professions.get("priest"), name);
+                    Career career = new GraniteCareer(priestProfession, name);
                     fields[i].set(null, career);
+                    priests.add(career);
                     registered = true;
                 } else if (i > 5 && i <= 7) {
-                    Career career = new GraniteCareer(professions.get("blacksmith"), name);
+                    Career career = new GraniteCareer(blacksmithProfession, name);
                     fields[i].set(null, career);
+                    blacksmiths.add(career);
                     registered = true;
                 } else if (i >= 8 && i <= 10) {
-                    Career career = new GraniteCareer(professions.get("butcher"), name);
+                    Career career = new GraniteCareer(butcherProfession, name);
                     fields[i].set(null, career);
+                    butchers.add(career);
                     registered = true;
                 }
                 if (Main.debugLog && registered) {
@@ -292,6 +310,12 @@ public class GraniteGameRegistry implements GameRegistry {
                 e.printStackTrace();
             }
         }
+
+        professionCareers.put(farmerProfession, farmers);
+        professionCareers.put(librarianProfession, librarians);
+        professionCareers.put(priestProfession, priests);
+        professionCareers.put(blacksmithProfession, blacksmiths);
+        professionCareers.put(butcherProfession, butchers);
     }
 
     private void registerRotations() {
@@ -501,8 +525,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<Career> getCareers(Profession profession) {
-        // TODO: Career API
-        throw new NotImplementedException("");
+        return professionCareers.get(profession);
     }
 
     @Override
