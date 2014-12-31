@@ -30,9 +30,18 @@ import javassist.ClassPool;
 import javassist.NotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.event.state.*;
+import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
+import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
+import org.granitepowered.granite.impl.event.state.GraniteLoadCompleteEvent;
+import org.granitepowered.granite.impl.event.state.GranitePostInitializationEvent;
+import org.granitepowered.granite.impl.event.state.GranitePreInitializationEvent;
 import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
@@ -65,9 +74,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -100,7 +112,8 @@ public class GraniteStartupThread extends Thread {
             }
         }
 
-        if (version == null) version = "UNKNOWN";
+        if (version == null)
+            version = "UNKNOWN";
 
         Injector injector = Guice.createInjector(new GraniteGuiceModule());
 
@@ -145,6 +158,32 @@ public class GraniteStartupThread extends Thread {
         Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
 
         Granite.instance.getLogger().info("Starting Granite version " + version);
+
+        Date date = new Date();
+        String day = new SimpleDateFormat("dd").format(date);
+        String month = new SimpleDateFormat("MM").format(date);
+        String year = new SimpleDateFormat("yyyy").format(date);
+        if (Objects.equals(day + month, "0101")) {
+            Granite.instance.getLogger().info("HAPPY NEW YEAR!");
+        }
+        if (Objects.equals(day + month, "2208")) {
+            Granite.instance.getLogger().info("Happy Birthday Voltasalt!");
+        }
+        if (Objects.equals(day + month, "2310")) {
+            Granite.instance.getLogger().info("Happy Birthday AzureusNation!");
+        }
+        if (Objects.equals(day + month, "3110")) {
+            Granite.instance.getLogger().info("Happy Halloween!");
+        }
+        if (Objects.equals(day + month, "2412")) {
+            Granite.instance.getLogger().info("Santa is getting ready!");
+        }
+        if (Objects.equals(day + month, "2512")) {
+            Granite.instance.getLogger().info("Merry Christmas/Happy Holidays!");
+        }
+        if (Objects.equals(day + month, "3112")) {
+            Granite.instance.getLogger().info("New Years Eve. Make way for " + year + "!");
+        }
     }
 
     private void loadClasses() {
