@@ -23,11 +23,15 @@
 
 package org.granitepowered.granite.impl;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.entity.living.villager.GraniteCareer;
+import org.granitepowered.granite.impl.entity.living.villager.GraniteProfession;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
@@ -47,9 +51,17 @@ import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
-import org.spongepowered.api.entity.living.meta.*;
+import org.spongepowered.api.entity.living.meta.DyeColor;
+import org.spongepowered.api.entity.living.meta.HorseColor;
+import org.spongepowered.api.entity.living.meta.HorseStyle;
+import org.spongepowered.api.entity.living.meta.HorseVariant;
+import org.spongepowered.api.entity.living.meta.OcelotType;
+import org.spongepowered.api.entity.living.meta.RabbitType;
+import org.spongepowered.api.entity.living.meta.SkeletonType;
 import org.spongepowered.api.entity.living.villager.Career;
+import org.spongepowered.api.entity.living.villager.Careers;
 import org.spongepowered.api.entity.living.villager.Profession;
+import org.spongepowered.api.entity.living.villager.Professions;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.Enchantments;
@@ -71,14 +83,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class GraniteGameRegistry implements GameRegistry {
+
     Map<String, BiomeType> biomes = Maps.newHashMap();
     Map<String, BlockType> blockTypes = Maps.newHashMap();
+    Map<String, Career> careers = Maps.newHashMap();
+    Map<String, Enchantment> enchantments = Maps.newHashMap();
     Map<String, Environment> environments = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
-    Map<String, Enchantment> enchantments = Maps.newHashMap();
+    Map<String, Profession> professions = Maps.newHashMap();
+    Map<Integer, Rotation> rotations = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -92,6 +106,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerEnvironments();
         registerGameRules();
         registerItems();
+        registerProfessionsAndCareers();
         registerRotations();
     }
 
@@ -131,12 +146,9 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, block);
                 blockTypes.put(name, block);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Block minecraft:" + block.getId());
-
-                // TODO: remove if not effecting anything (30/12/14)
-                /*if (name.equals("redstone_wire")) {
-                    block.getDefaultState().cycleProperty(block.getDefaultState().getPropertyByName("power").get());
-                }*/
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Block minecraft:" + block.getId());
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -157,7 +169,9 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, enchantment);
                 enchantments.put("minecraft:" + name, enchantment);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Enchantment minecraft:" + enchantment.getId());
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Enchantment " + enchantment.getId());
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -176,7 +190,10 @@ public class GraniteGameRegistry implements GameRegistry {
                 Environment environment = new GraniteEnvironment(name);
                 field.set(null, environment);
                 environments.put("minecraft:" + environment.getName(), environment);
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Environment " + environment.getName() + " dimId: " + environment.getDimensionId());
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger()
+                            .info("Registered Environment " + environment.getName() + " dimId: " + environment.getDimensionId());
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -189,7 +206,9 @@ public class GraniteGameRegistry implements GameRegistry {
         String[] rules = gameRules.getRules();
         for (String rule : rules) {
             defaultGameRules.add(rule);
-            if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered default GameRule " + rule);
+            if (Main.debugLog) {
+                Granite.getInstance().getLogger().info("Registered default GameRule " + rule);
+            }
         }
     }
 
@@ -207,7 +226,68 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, item);
                 itemTypes.put("minecraft:" + name, item);
 
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Item minecraft:" + item.getId());
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Item minecraft:" + item.getId());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // TODO: THIS IS BIG, FAT AND UGLY. And need redoing if possible.
+    private void registerProfessionsAndCareers() {
+        Granite.instance.getLogger().info("Registering Professions");
+
+        for (Field field : Professions.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                Profession profession = new GraniteProfession(name);
+                field.set(null, profession);
+                professions.put("minecraft:" + name, profession);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Profession minecraft:" + name);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Granite.instance.getLogger().info("Registering Careers");
+
+        Field[] fields = Careers.class.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            ReflectionUtils.forceAccessible(fields[i]);
+
+            String name = fields[i].getName().toLowerCase();
+            try {
+                boolean registered = false;
+                if (i < 4) {
+                    Career career = new GraniteCareer(professions.get("farmer"), name);
+                    fields[i].set(null, career);
+                    registered = true;
+                } else if (i == 4) {
+                    Career career = new GraniteCareer(professions.get("librarian"), name);
+                    fields[i].set(null, career);
+                    registered = true;
+                } else if (i == 5) {
+                    Career career = new GraniteCareer(professions.get("priest"), name);
+                    fields[i].set(null, career);
+                    registered = true;
+                } else if (i > 5 && i <= 7) {
+                    Career career = new GraniteCareer(professions.get("blacksmith"), name);
+                    fields[i].set(null, career);
+                    registered = true;
+                } else if (i >= 8 && i <= 10) {
+                    Career career = new GraniteCareer(professions.get("butcher"), name);
+                    fields[i].set(null, career);
+                    registered = true;
+                }
+                if (Main.debugLog && registered) {
+                    Granite.getInstance().getLogger().info("Registered Career minecraft:" + name);
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -218,7 +298,6 @@ public class GraniteGameRegistry implements GameRegistry {
         Granite.instance.getLogger().info("Registering Rotations");
 
         int angle = 0;
-        List<Rotation> rotations = new ArrayList<>();
         Field[] fields = Rotations.class.getDeclaredFields();
 
         for (Field field : fields) {
@@ -227,9 +306,11 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 Rotation rotation = new GraniteRotation(angle);
                 field.set(null, rotation);
-                rotations.add(rotation);
+                rotations.put(angle, rotation);
                 angle += 45;
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Rotation angle:" + rotation.getAngle());
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Rotation degrees:" + rotation.getAngle());
+                }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -410,14 +491,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Career> getCareer(String id) {
-        // TODO: Career API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(careers.get(id));
     }
 
     @Override
     public List<Career> getCareers() {
-        // TODO: Career API
-        throw new NotImplementedException("");
+        return (List<Career>) careers.values();
     }
 
     @Override
@@ -428,14 +507,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Profession> getProfession(String id) {
-        // TODO: Profession API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(professions.get(id));
     }
 
     @Override
     public List<Profession> getProfessions() {
-        // TODO: Profession API
-        throw new NotImplementedException("");
+        return (List<Profession>) professions.values();
     }
 
     @Override
