@@ -30,6 +30,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseStyle;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseVariant;
@@ -58,6 +59,7 @@ import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.living.meta.DyeColor;
+import org.spongepowered.api.entity.living.meta.DyeColors;
 import org.spongepowered.api.entity.living.meta.HorseColor;
 import org.spongepowered.api.entity.living.meta.HorseColors;
 import org.spongepowered.api.entity.living.meta.HorseStyle;
@@ -100,6 +102,7 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, BiomeType> biomes = Maps.newHashMap();
     Map<String, BlockType> blockTypes = Maps.newHashMap();
     Map<String, Career> careers = Maps.newHashMap();
+    Map<String, DyeColor> dyeColors = Maps.newHashMap();
     Map<String, Enchantment> enchantments = Maps.newHashMap();
     Map<String, Environment> environments = Maps.newHashMap();
     Map<String, HorseColor> horseColors = Maps.newHashMap();
@@ -121,6 +124,7 @@ public class GraniteGameRegistry implements GameRegistry {
     public void register() {
         registerBiomes();
         registerBlocks();
+        registerDyes();
         registerEnchantments();
         registerEnvironments();
         registerGameRules();
@@ -173,6 +177,26 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Block minecraft:" + block.getId());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerDyes() {
+        Granite.instance.getLogger().info("Registering Dyes");
+
+        for (Field field : DyeColors.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                DyeColor dyeColor = new GraniteDyeColor(name);
+                field.set(null, dyeColor);
+                dyeColors.put("minecraft:" + name, dyeColor);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Dye Color minecraft:" + dyeColor.getName());
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -575,14 +599,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<DyeColor> getDye(String id) {
-        // TODO: Dye API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(dyeColors.get(id));
     }
 
     @Override
     public List<DyeColor> getDyes() {
-        // TODO: Dye API
-        throw new NotImplementedException("");
+        return (List<DyeColor>) dyeColors.values();
     }
 
     @Override
