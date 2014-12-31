@@ -182,7 +182,7 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.getLogger().info("Merry Christmas/Happy Holidays!");
         }
         if (Objects.equals(day + month, "3112")) {
-            Granite.instance.getLogger().info("New Years Eve. Make way for " + year + "!");
+            Granite.instance.getLogger().info("New Years Eve. Make way for " + Integer.toString(Integer.parseInt(year) + 1) + "!");
         }
     }
 

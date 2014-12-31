@@ -30,6 +30,9 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteOcelotType;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteRabbitType;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteSkeletonType;
 import org.granitepowered.granite.impl.entity.living.villager.GraniteCareer;
 import org.granitepowered.granite.impl.entity.living.villager.GraniteProfession;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
@@ -56,8 +59,11 @@ import org.spongepowered.api.entity.living.meta.HorseColor;
 import org.spongepowered.api.entity.living.meta.HorseStyle;
 import org.spongepowered.api.entity.living.meta.HorseVariant;
 import org.spongepowered.api.entity.living.meta.OcelotType;
+import org.spongepowered.api.entity.living.meta.OcelotTypes;
 import org.spongepowered.api.entity.living.meta.RabbitType;
+import org.spongepowered.api.entity.living.meta.RabbitTypes;
 import org.spongepowered.api.entity.living.meta.SkeletonType;
+import org.spongepowered.api.entity.living.meta.SkeletonTypes;
 import org.spongepowered.api.entity.living.villager.Career;
 import org.spongepowered.api.entity.living.villager.Careers;
 import org.spongepowered.api.entity.living.villager.Profession;
@@ -92,8 +98,11 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, Environment> environments = Maps.newHashMap();
     Map<String, ItemType> itemTypes = Maps.newHashMap();
     Map<String, Profession> professions = Maps.newHashMap();
+    Map<String, OcelotType> ocelots = Maps.newHashMap();
     Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
+    Map<String, RabbitType> rabbits = Maps.newHashMap();
     Map<Integer, Rotation> rotations = Maps.newHashMap();
+    Map<String, SkeletonType> skeletons = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -107,8 +116,11 @@ public class GraniteGameRegistry implements GameRegistry {
         registerEnvironments();
         registerGameRules();
         registerItems();
+        registerOcelots();
         registerProfessionsAndCareers();
+        registerRabbits();
         registerRotations();
+        registerSkeletons();
     }
 
     private void registerBiomes() {
@@ -193,7 +205,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 environments.put("minecraft:" + environment.getName(), environment);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger()
-                            .info("Registered Environment " + environment.getName() + " dimId: " + environment.getDimensionId());
+                            .info("Registered Environment " + environment.getName());
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -208,7 +220,7 @@ public class GraniteGameRegistry implements GameRegistry {
         for (String rule : rules) {
             defaultGameRules.add(rule);
             if (Main.debugLog) {
-                Granite.getInstance().getLogger().info("Registered default GameRule " + rule);
+                Granite.getInstance().getLogger().info("Registered default GameRule minecraft:" + rule);
             }
         }
     }
@@ -236,6 +248,26 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerOcelots() {
+        Granite.instance.getLogger().info("Registering Ocelots");
+
+        for (Field field : OcelotTypes.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                OcelotType ocelotType = new GraniteOcelotType(name);
+                field.set(null, ocelotType);
+                ocelots.put("minecraft:" + name, ocelotType);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Ocelot minecraft:" + ocelotType.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     // TODO: THIS IS BIG, FAT AND UGLY. And need redoing if possible.
     private void registerProfessionsAndCareers() {
         Granite.instance.getLogger().info("Registering Professions");
@@ -249,7 +281,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 field.set(null, profession);
                 professions.put("minecraft:" + name, profession);
                 if (Main.debugLog) {
-                    Granite.getInstance().getLogger().info("Registered Profession minecraft:" + name);
+                    Granite.getInstance().getLogger().info("Registered Profession minecraft:" + profession.getName());
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -318,6 +350,26 @@ public class GraniteGameRegistry implements GameRegistry {
         professionCareers.put(butcherProfession, butchers);
     }
 
+    private void registerRabbits() {
+        Granite.instance.getLogger().info("Registering Rabbits");
+
+        for (Field field : RabbitTypes.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                RabbitType rabbitType = new GraniteRabbitType(name);
+                field.set(null, rabbitType);
+                rabbits.put("minecraft:" + name, rabbitType);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Rabbit minecraft:" + rabbitType.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void registerRotations() {
         Granite.instance.getLogger().info("Registering Rotations");
 
@@ -334,6 +386,26 @@ public class GraniteGameRegistry implements GameRegistry {
                 angle += 45;
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Rotation degrees:" + rotation.getAngle());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerSkeletons() {
+        Granite.instance.getLogger().info("Registering Skeletons");
+
+        for (Field field : SkeletonTypes.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                SkeletonType skeletonType = new GraniteSkeletonType(name);
+                field.set(null, skeletonType);
+                skeletons.put("minecraft:" + name, skeletonType);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Skeleton minecraft:" + skeletonType.getName());
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -479,38 +551,32 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<OcelotType> getOcelotType(String id) {
-        // TODO: Ocelot API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(ocelots.get(id));
     }
 
     @Override
     public List<OcelotType> getOcelotTypes() {
-        // TODO: Ocelot API
-        throw new NotImplementedException("");
+        return (List<OcelotType>) ocelots.values();
     }
 
     @Override
     public Optional<RabbitType> getRabbitType(String id) {
-        // TODO: Rabbit API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(rabbits.get(id));
     }
 
     @Override
     public List<RabbitType> getRabbitTypes() {
-        // TODO: Rabbit API
-        throw new NotImplementedException("");
+        return (List<RabbitType>) rabbits.values();
     }
 
     @Override
     public Optional<SkeletonType> getSkeletonType(String id) {
-        // TODO: Spooky Skary Skellingtons API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(skeletons.get(id));
     }
 
     @Override
     public List<SkeletonType> getSkeletonTypes() {
-        // TODO: Spooky Skary Skellingtons API
-        throw new NotImplementedException("");
+        return (List<SkeletonType>) skeletons.values();
     }
 
     @Override
