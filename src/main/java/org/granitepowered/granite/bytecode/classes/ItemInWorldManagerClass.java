@@ -1,7 +1,7 @@
 /*
  * License (MIT)
  *
- * Copyright (c) 2014-2015 Granite Team
+ * Copyright (c) 2014 Granite Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the
@@ -23,15 +23,15 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.block.GraniteBlockSnapshot;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
-import org.granitepowered.granite.impl.block.GraniteBlockType;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.granitepowered.granite.impl.event.player.GranitePlayerBreakBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
@@ -41,8 +41,6 @@ import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class ItemInWorldManagerClass extends BytecodeClass {
     public ItemInWorldManagerClass() {
@@ -56,7 +54,6 @@ public class ItemInWorldManagerClass extends BytecodeClass {
                 MCBlockPos mcBlockPos = (MCBlockPos) args[0];
                 Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
 
-                GraniteBlockType type = new GraniteBlockType()
                 GranitePlayer player = wrap(thisIiwm.fieldGet$thisPlayerMP());
 
                 GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos));

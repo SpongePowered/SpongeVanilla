@@ -1,7 +1,7 @@
 /*
  * License (MIT)
  *
- * Copyright (c) 2014-2015 Granite Team
+ * Copyright (c) 2014 Granite Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the
@@ -35,6 +35,7 @@ import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
 import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
 import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
 import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
 import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
@@ -85,6 +86,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class GraniteStartupThread extends Thread {
+
     String[] args;
     BytecodeModifier modifier;
 
@@ -112,8 +114,9 @@ public class GraniteStartupThread extends Thread {
             }
         }
 
-        if (version == null)
+        if (version == null) {
             version = "UNKNOWN";
+        }
 
         Injector injector = Guice.createInjector(new GraniteGuiceModule());
 
@@ -166,14 +169,19 @@ public class GraniteStartupThread extends Thread {
         if (Objects.equals(day + month, "0101")) {
             Granite.instance.getLogger().info("HAPPY NEW YEAR!");
         }
+        if (Objects.equals(day + month, "2704")) {
+            Granite.instance.getLogger().info("Happy Birthday matthijs2704!");
+        }
         if (Objects.equals(day + month, "2208")) {
             Granite.instance.getLogger().info("Happy Birthday Voltasalt!");
         }
+        if (Objects.equals(day + month, "0709")) {
+            String start = "2014";
+            Granite.instance.getLogger()
+                    .info("Happy Birthday Granite! Granite is " + Integer.toString(Integer.parseInt(year) - Integer.parseInt(start)) + " today!");
+        }
         if (Objects.equals(day + month, "2310")) {
             Granite.instance.getLogger().info("Happy Birthday AzureusNation!");
-        }
-        if (Objects.equals(day + month, "2704")) {
-            Granite.instance.getLogger().info("Happy Birthday matthijs2704!");
         }
         if (Objects.equals(day + month, "3110")) {
             Granite.instance.getLogger().info("Happy Halloween!");
@@ -215,7 +223,6 @@ public class GraniteStartupThread extends Thread {
         injectConstant(Titles.class, "factory", new GraniteTitleFactory());
 
         injectEnumConstants(TextColors.class, GraniteTextColor.class);
-
 
         Map<String, TextStyle.Base> styles = new HashMap<>();
         for (Map.Entry<String, TextStyle.Base> entry : GraniteTextFormatFactory.styles.entrySet()) {
@@ -277,8 +284,8 @@ public class GraniteStartupThread extends Thread {
         modifier.add(new EntityPlayerMPClass());
         modifier.add(new ItemInWorldManagerClass());
         modifier.add(new ItemStackClass());
-        modifier.add(new ServerConfigurationManagerClass());
         modifier.add(new NetHandlerPlayServerClass());
+        modifier.add(new ServerConfigurationManagerClass());
 
         modifier.modify();
     }
