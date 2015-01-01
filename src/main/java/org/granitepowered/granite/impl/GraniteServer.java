@@ -48,7 +48,6 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.service.scheduler.Scheduler;
-import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.World;
@@ -206,9 +205,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public void broadcastMessage(Message message) {
-        for (Player p : getOnlinePlayers()){
-            p.sendMessage(ChatTypes.CHAT, message);
-        }
+        getSCM().sendChatMsg(MinecraftUtils.graniteToMinecraftChatComponent(message));
     }
 
     @Override
