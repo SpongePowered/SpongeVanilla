@@ -23,33 +23,15 @@
 
 package org.granitepowered.granite.mc;
 
-import java.util.List;
+import java.util.Set;
 
-@Implement(name = "World")
-public interface MCWorld extends MCInterface {
-    MCWorldInfo fieldGet$worldInfo();
+@Implement(name = "ChunkProviderServer")
+public interface MCChunkProvider extends MCInterface {
+    MCChunk provideChunk(int x, int z);
 
-    MCWorldBorder fieldGet$worldBorder();
+    boolean chunkExists(int x, int z);
 
-    List<MCEntity> fieldGet$loadedEntityList();
+    void dropChunk(int x, int z);
 
-    MCChunkProvider fieldGet$chunkProvider();
-
-    MCWorldProvider fieldGet$provider();
-
-    boolean spawnEntityInWorld(MCEntity entity);
-
-    MCBlockState getBlockState(MCBlockPos blockPos);
-
-    boolean setBlockState(MCBlockPos blockPos, MCBlockState blockState);
-
-    int getLightFor(Enum source, MCBlockPos blockPos);
-
-    boolean isPowered(MCBlockPos blockPos);
-
-    boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing);
-
-    int isIndirectlyPowered(MCBlockPos blockPos);
-
-    MCBiomeGenBase getBiomeGenForCoords(MCBlockPos blockPos);
+    Set<MCChunk> fieldGet$droppedChunksSet();
 }

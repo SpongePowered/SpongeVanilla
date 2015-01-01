@@ -160,7 +160,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Biome getBiome(Vector3d position) {
-        return new GraniteBiome(new GraniteBiomeType(obj.getBiome(MinecraftUtils.graniteToMinecraftBlockPos(position.toInt()))));
+        return new GraniteBiome(new GraniteBiomeType(obj.getBiomeGenForCoords(MinecraftUtils.graniteToMinecraftBlockPos(position.toInt()))));
     }
 
     @Override

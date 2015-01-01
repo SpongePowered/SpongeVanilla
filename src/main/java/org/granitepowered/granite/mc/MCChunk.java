@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.mc;
 
+import java.util.Set;
+
 @Implement(name = "Chunk")
 public interface MCChunk extends MCInterface {
     boolean fieldGet$isChunkLoaded();
@@ -30,4 +32,8 @@ public interface MCChunk extends MCInterface {
     int fieldGet$xPosition();
 
     int fieldGet$zPosition();
+
+    MCWorld fieldGet$worldObj();
+
+    Set[] fieldGet$entityLists();
 }
