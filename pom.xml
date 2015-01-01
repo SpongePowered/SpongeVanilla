@@ -24,7 +24,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.granitemc</groupId>
+    <groupId>org.granitepowered</groupId>
     <name>Granite</name>
     <version>1.8.1-A2-SNAPSHOT</version>
     <artifactId>granite</artifactId>
@@ -38,8 +38,8 @@
     </properties>
 
     <organization>
-        <name>Granite MC</name>
-        <url>http://www.granitemc.org/</url>
+        <name>Granite</name>
+        <url>http://www.granitepowered.org/</url>
     </organization>
 
     <scm>
