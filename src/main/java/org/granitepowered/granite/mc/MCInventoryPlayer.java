@@ -23,21 +23,9 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EntityPlayerMP")
-public interface MCEntityPlayerMP extends MCEntityLivingBase {
-    MCPlayerCapabilities fieldGet$capabilities();
+@Implement(name = "InventoryPlayer")
+public interface MCInventoryPlayer extends MCInterface {
+    MCItemStack[] fieldGet$mainInventory();
 
-    MCFoodStats fieldGet$foodStats();
-
-    MCGameProfile fieldGet$gameProfile();
-
-    MCContainer fieldGet$openContainer();
-
-    String fieldGet$translator();
-
-    MCInventoryPlayer fieldGet$inventory();
-
-    //void addChatComponentMessage(MCChatComponent component);
-
-    MCNetHandlerPlayServer fieldGet$playerNetServerHandler();
+    MCItemStack[] fieldGet$armorInventory();
 }

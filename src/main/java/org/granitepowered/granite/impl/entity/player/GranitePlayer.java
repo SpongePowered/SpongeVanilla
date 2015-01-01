@@ -23,28 +23,19 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.graniteToMinecraftChatComponent;
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.entity.living.GraniteLiving;
+import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCFoodStats;
-import org.granitepowered.granite.mc.MCGameProfile;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCPacket;
-import org.granitepowered.granite.mc.MCPlayerCapabilities;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
-import org.spongepowered.api.effect.Sound;
 import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -56,15 +47,11 @@ import org.spongepowered.api.text.title.Titles;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.*;
 
-public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Player {
-
+public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implements Player {
     private Optional<Message> displayName = Optional.absent();
 
     public GranitePlayer(MCEntityPlayerMP obj) {
@@ -162,53 +149,53 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
 
     @Override
     public Optional<ItemStack> getHelmet() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[4]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[4]));
     }
 
     @Override
     public void setHelmet(@Nullable ItemStack helmet) {
-        obj.fieldGet$equipment()[4] = helmet == null ? null : (MCItemStack) unwrap(helmet);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[4] = helmet == null ? null : (MCItemStack) unwrap(helmet);
     }
 
     @Override
     public Optional<ItemStack> getChestplate() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[3]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[3]));
     }
 
     @Override
     public void setChestplate(@Nullable ItemStack chestplate) {
-        obj.fieldGet$equipment()[3] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[3] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
     }
 
     @Override
     public Optional<ItemStack> getLeggings() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[2]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[2]));
     }
 
     @Override
     public void setLeggings(@Nullable ItemStack leggings) {
-        obj.fieldGet$equipment()[2] = leggings == null ? null : (MCItemStack) unwrap(leggings);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[2] = leggings == null ? null : (MCItemStack) unwrap(leggings);
     }
 
     @Override
     public Optional<ItemStack> getBoots() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[1]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[1]));
 
     }
 
     @Override
     public void setBoots(@Nullable ItemStack boots) {
-        obj.fieldGet$equipment()[1] = boots == null ? null : (MCItemStack) unwrap(boots);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[1] = boots == null ? null : (MCItemStack) unwrap(boots);
     }
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[0]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[0]));
     }
 
     @Override
     public void setItemInHand(@Nullable ItemStack itemInHand) {
-        obj.fieldGet$equipment()[0] = itemInHand == null ? null : (MCItemStack) unwrap(itemInHand);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[0] = itemInHand == null ? null : (MCItemStack) unwrap(itemInHand);
     }
 
     @Override
@@ -268,19 +255,19 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
     }
 
     @Override
-    public void playSound(Sound sound, Vector3d position, double volume) {
+    public void playSound(SoundType sound, Vector3d position, double volume) {
         // TODO: Sound API
         throw new NotImplementedException("");
     }
 
     @Override
-    public void playSound(Sound sound, Vector3d position, double volume, double pitch) {
+    public void playSound(SoundType sound, Vector3d position, double volume, double pitch) {
         // TODO: Sound API
         throw new NotImplementedException("");
     }
 
     @Override
-    public void playSound(Sound sound, Vector3d position, double volume, double pitch, double minVolume) {
+    public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
         // TODO: Sound API
         throw new NotImplementedException("");
     }
@@ -388,5 +375,38 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
 
     public void sendPacket(MCPacket packet) {
         obj.fieldGet$playerNetServerHandler().sendPacket(packet);
+    }
+
+    @Override
+    public boolean isLeashed() {
+        return false;
+    }
+
+    @Override
+    public void setLeashed(boolean leashed) {
+        // TODO: Figure out what to do if this is a player
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean getCanPickupItems() {
+        return true;
+    }
+
+    @Override
+    public void setCanPickupItems(boolean canPickupItems) {
+        // TODO: Figure out what to do if this is a player
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isPersistent() {
+        return true;
+    }
+
+    @Override
+    public void setPersistent(boolean persistent) {
+        // TODO: Figure out what to do if this is a player
+        throw new NotImplementedException("");
     }
 }
