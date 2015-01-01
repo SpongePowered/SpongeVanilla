@@ -26,4 +26,6 @@ package org.granitepowered.granite.mc;
 @Implement(name = "NBTTagCompound")
 public interface MCNBTTagCompound extends MCInterface {
 
+    boolean hasKey(String key, int type);
+
 }

@@ -47,8 +47,8 @@ import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.mc.MCWorldInfo;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.effect.Sound;
 import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
@@ -250,19 +250,19 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public void playSound(Sound sound, Vector3d position, double volume) {
+    public void playSound(SoundType sound, Vector3d position, double volume) {
         // TODO: Sound API
         throw new NotImplementedException("");
     }
 
     @Override
-    public void playSound(Sound sound, Vector3d position, double volume, double pitch) {
+    public void playSound(SoundType sound, Vector3d position, double volume, double pitch) {
         // TODO: Sound API
         throw new NotImplementedException("");
     }
 
     @Override
-    public void playSound(Sound sound, Vector3d position, double volume, double pitch, double minVolume) {
+    public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
         // TODO: Sound API
         throw new NotImplementedException("");
     }
