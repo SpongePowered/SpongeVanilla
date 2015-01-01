@@ -1,7 +1,7 @@
 /*
  * License (MIT)
  *
- * Copyright (c) 2014 Granite Team
+ * Copyright (c) 2014-2015 Granite Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the
@@ -171,6 +171,9 @@ public class GraniteStartupThread extends Thread {
         }
         if (Objects.equals(day + month, "2310")) {
             Granite.instance.getLogger().info("Happy Birthday AzureusNation!");
+        }
+        if (Objects.equals(day + month, "2704")) {
+            Granite.instance.getLogger().info("Happy Birthday matthijs2704!");
         }
         if (Objects.equals(day + month, "3110")) {
             Granite.instance.getLogger().info("Happy Halloween!");
