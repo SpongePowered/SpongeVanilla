@@ -354,7 +354,11 @@ public class Mappings {
         try {
             return getMethod(getCtClass(clazz), methodName).invokeWithArguments(args);
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            if (!(throwable instanceof RuntimeException)) {
+                throw new RuntimeException(throwable);
+            } else {
+                throw (RuntimeException) throwable;
+            }
         }
     }
 

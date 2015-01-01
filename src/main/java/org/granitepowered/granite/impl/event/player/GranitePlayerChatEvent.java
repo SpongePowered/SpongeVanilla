@@ -21,28 +21,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.event.player;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.spongepowered.api.event.player.PlayerChatEvent;
+import org.spongepowered.api.util.command.CommandSource;
 
-    MCServerConfigurationManager fieldGet$serverConfigManager();
+public class GranitePlayerChatEvent extends GranitePlayerEvent implements PlayerChatEvent {
+    String message;
 
-    boolean fieldGet$onlineMode();
+    public GranitePlayerChatEvent(GranitePlayer player, String message) {
+        super(player);
+        this.message = message;
+    }
 
-    MCPlayerProfileCache fieldGet$playerCache();
+    @Override
+    public CommandSource getSource() {
+        return player;
+    }
 
-    void startServerThread();
-
-    String fieldGet$hostname();
-
-    int fieldGet$serverPort();
-
-    String fieldGet$motd();
-
-    Thread fieldGet$serverThread();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

@@ -392,7 +392,7 @@ public class BytecodeClass {
     }
 
     public static abstract class ProxyHandler {
-        public Object preHandle(final Object caller, Object[] args, final Method method) {
+        public Object preHandle(final Object caller, Object[] args, final Method method) throws Throwable {
             ProxyHandlerCallback callback = new ProxyHandlerCallback() {
                 @Override
                 public Object invokeParent(Object... args) throws Throwable {
@@ -405,9 +405,11 @@ public class BytecodeClass {
             try {
                 return handle(caller, args, callback);
             } catch (Throwable t) {
-                t.printStackTrace();
+                if (!Mappings.getClass("ThreadQuickExitException").isInstance(t)) {
+                    t.printStackTrace();
+                }
                 // Checked exceptions are literally Hitler
-                throw new RuntimeException(t);
+                throw t;
             }
         }
 

@@ -23,26 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="DedicatedServer")
-public interface MCServer extends MCInterface {
-    MCWorld[] fieldGet$worldServers();
-
-    MCServerConfigurationManager fieldGet$serverConfigManager();
-
-    boolean fieldGet$onlineMode();
-
-    MCPlayerProfileCache fieldGet$playerCache();
-
-    void startServerThread();
-
-    String fieldGet$hostname();
-
-    int fieldGet$serverPort();
-
-    String fieldGet$motd();
-
-    Thread fieldGet$serverThread();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
+@Implement(name = "C01PacketChatMessage")
+public interface MCPacketChatMessage extends MCPacket {
+    String fieldGet$message();
 }

@@ -275,6 +275,7 @@ public class GraniteStartupThread extends Thread {
         modifier.add(new ItemInWorldManagerClass());
         modifier.add(new ItemStackClass());
         modifier.add(new ServerConfigurationManagerClass());
+        modifier.add(new NetHandlerPlayServerClass());
 
         modifier.modify();
     }
