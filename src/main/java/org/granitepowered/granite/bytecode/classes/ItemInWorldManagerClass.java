@@ -1,7 +1,7 @@
 /*
  * License (MIT)
  *
- * Copyright (c) 2014 Granite Team
+ * Copyright (c) 2014-2015 Granite Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the
@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -41,6 +39,8 @@ import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class ItemInWorldManagerClass extends BytecodeClass {
     public ItemInWorldManagerClass() {
