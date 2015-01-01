@@ -205,8 +205,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public void broadcastMessage(Message message) {
-        // TODO
-        throw new NotImplementedException("");
+        getSCM().sendChatMsg(MinecraftUtils.graniteToMinecraftChatComponent(message));
     }
 
     @Override

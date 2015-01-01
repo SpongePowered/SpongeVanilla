@@ -54,6 +54,7 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +62,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Nullable;
 
 public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Player {
 
@@ -88,9 +88,10 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
 
     @Override
     public Locale getLocale() {
-        // TODO: Find out if this is stored server side
-        // See EntityPlayerMP.translator
-        throw new NotImplementedException("");
+        // Client sends locale to server on connect (it's in the C15PacketClientSettings packet)
+        
+        String f = this.obj.fieldGet$translator().replace("_", "-");
+        return Locale.forLanguageTag(f);
     }
 
     @Override
