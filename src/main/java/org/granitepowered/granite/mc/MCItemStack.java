@@ -39,4 +39,6 @@ public interface MCItemStack extends MCInterface {
     MCNBTTagCompound writeToNBT(MCNBTTagCompound nbt);
 
     boolean canHarvestBlock(MCBlock block);
+
+    MCNBTTagCompound fieldGet$tagCompound();
 }
