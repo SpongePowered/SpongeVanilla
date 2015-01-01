@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -33,9 +35,8 @@ import org.spongepowered.api.util.command.CommandSource;
 
 import java.util.Arrays;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class CommandHandlerClass extends BytecodeClass {
+
     public CommandHandlerClass() {
         super("CommandHandler");
 
@@ -44,8 +45,7 @@ public class CommandHandlerClass extends BytecodeClass {
             protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
                 String fullCommand = (String) args[1];
 
-                if (fullCommand.startsWith("/"))
-                {
+                if (fullCommand.startsWith("/")) {
                     fullCommand = fullCommand.substring(1);
                 }
 

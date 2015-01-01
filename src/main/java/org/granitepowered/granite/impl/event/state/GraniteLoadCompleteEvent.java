@@ -26,4 +26,5 @@ package org.granitepowered.granite.impl.event.state;
 import org.spongepowered.api.event.state.LoadCompleteEvent;
 
 public class GraniteLoadCompleteEvent extends GraniteStateEvent implements LoadCompleteEvent {
+
 }

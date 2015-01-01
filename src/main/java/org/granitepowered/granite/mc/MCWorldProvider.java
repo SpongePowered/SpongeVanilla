@@ -25,5 +25,6 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "WorldProvider")
 public interface MCWorldProvider extends MCInterface {
+
     MCWorldChunkManager fieldGet$worldChunkMgr();
 }

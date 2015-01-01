@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Composite<T extends MCInterface> {
+
     public static Map<Class<? extends Composite>, Map<Object, Composite>> instanceMap = new HashMap<>();
     public T obj;
 
@@ -121,8 +122,12 @@ public abstract class Composite<T extends MCInterface> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Composite composite = (Composite) o;
 

@@ -25,5 +25,6 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "CombatTracker")
 public interface MCCombatTracker extends MCEntityLiving {
+
     MCChatComponent func_151521_b();
 }

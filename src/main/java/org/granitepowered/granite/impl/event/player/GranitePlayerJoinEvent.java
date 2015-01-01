@@ -28,6 +28,7 @@ import org.spongepowered.api.event.player.PlayerJoinEvent;
 import org.spongepowered.api.text.message.Message;
 
 public class GranitePlayerJoinEvent extends GranitePlayerEvent implements PlayerJoinEvent {
+
     Message joinMessage;
 
     public GranitePlayerJoinEvent(GranitePlayer player, Message joinMessage) {

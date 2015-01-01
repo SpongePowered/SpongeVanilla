@@ -27,6 +27,7 @@ import org.granitepowered.granite.mc.MCEntityXPOrb;
 import org.spongepowered.api.entity.ExperienceOrb;
 
 public class GraniteExperienceOrb extends GraniteEntity<MCEntityXPOrb> implements ExperienceOrb {
+
     public GraniteExperienceOrb(MCEntityXPOrb obj) {
         super(obj);
     }

@@ -27,6 +27,7 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 
 public class GraniteBlockSnapshot implements BlockSnapshot {
+
     GraniteBlockState state;
 
     public GraniteBlockSnapshot(GraniteBlockState state) {
@@ -40,12 +41,18 @@ public class GraniteBlockSnapshot implements BlockSnapshot {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GraniteBlockSnapshot that = (GraniteBlockSnapshot) o;
 
-        if (!state.equals(that.state)) return false;
+        if (!state.equals(that.state)) {
+            return false;
+        }
 
         return true;
     }

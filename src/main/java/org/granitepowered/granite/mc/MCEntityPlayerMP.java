@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityPlayerMP")
 public interface MCEntityPlayerMP extends MCEntityLiving {
+
     MCPlayerCapabilities fieldGet$capabilities();
 
     MCFoodStats fieldGet$foodStats();

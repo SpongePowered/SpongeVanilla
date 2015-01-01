@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite.impl.entity;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
@@ -37,10 +40,8 @@ import org.spongepowered.api.world.World;
 
 import java.util.UUID;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class GraniteEntity<T extends MCEntity> extends Composite<T> implements Entity {
+
     public GraniteEntity(T obj) {
         super(obj);
     }

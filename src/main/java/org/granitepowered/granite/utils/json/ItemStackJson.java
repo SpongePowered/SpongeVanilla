@@ -23,7 +23,15 @@
 
 package org.granitepowered.granite.utils.json;
 
-import com.google.gson.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCItemStack;
@@ -31,9 +39,8 @@ import org.granitepowered.granite.mc.MCNBTTagCompound;
 
 import java.lang.reflect.Type;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class ItemStackJson implements JsonSerializer<GraniteItemStack>, JsonDeserializer<GraniteItemStack> {
+
     @Override
     public GraniteItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String nbtString = json.getAsString();

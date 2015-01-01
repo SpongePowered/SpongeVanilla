@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.world;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -42,13 +44,10 @@ import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.biome.Biome;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class GraniteChunk extends Composite<MCChunk> implements Chunk {
+
     boolean loaded;
     int x;
     int z;

@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "BiomeGenBase")
 public interface MCBiomeGenBase extends MCInterface {
+
     float fieldGet$temperature();
 
     float fieldGet$minHeight();

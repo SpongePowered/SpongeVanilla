@@ -116,12 +116,16 @@ public class GranitePluginManager implements PluginManager {
                 String[] dependencies = ((GranitePluginContainer) plugin).getDependencies().split(";");
                 for (String s : dependencies) {
                     String[] args = s.split(":");
-                    if (args.length != 2) continue;
+                    if (args.length != 2) {
+                        continue;
+                    }
 
                     boolean required = false;
                     String pluginName = args[1];
 
-                    if (args[0].startsWith("required-")) required = true;
+                    if (args[0].startsWith("required-")) {
+                        required = true;
+                    }
 
                     for (PluginContainer p : pluginContainers) {
                         if (!p.getId().equals(pluginName) && required) {
@@ -136,7 +140,8 @@ public class GranitePluginManager implements PluginManager {
                     bootstrapPlugin(plugin);
                     Granite.instance.getLogger().info("Loaded {} ({})!", plugin.getName(), plugin.getVersion());
                 } else {
-                    Granite.instance.getLogger().info("Could not load {} ({})! Missing dependencies: {}", plugin.getName(), plugin.getVersion(), missingDependencies.toString());
+                    Granite.instance.getLogger().info("Could not load {} ({})! Missing dependencies: {}", plugin.getName(), plugin.getVersion(),
+                                                      missingDependencies.toString());
                 }
             }
         }
@@ -160,7 +165,9 @@ public class GranitePluginManager implements PluginManager {
     @Override
     public Optional<PluginContainer> fromInstance(Object instance) {
         for (PluginContainer pluginContainer : plugins) {
-            if (pluginContainer.getInstance().equals(instance)) return Optional.of(pluginContainer);
+            if (pluginContainer.getInstance().equals(instance)) {
+                return Optional.of(pluginContainer);
+            }
         }
         return Optional.absent();
     }
@@ -168,7 +175,9 @@ public class GranitePluginManager implements PluginManager {
     @Override
     public Optional<PluginContainer> getPlugin(String id) {
         for (PluginContainer pluginContainer : plugins) {
-            if (pluginContainer.getId().equals(id)) return Optional.of(pluginContainer);
+            if (pluginContainer.getId().equals(id)) {
+                return Optional.of(pluginContainer);
+            }
         }
         return Optional.absent();
     }

@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GraniteChatTypeFactory implements ChatTypeFactory {
+
     @Override
     public Optional<ChatType> getTypeFromName(String name) {
         try {

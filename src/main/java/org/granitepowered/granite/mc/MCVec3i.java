@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "Vec3i")
 public interface MCVec3i extends MCInterface {
+
     int fieldGet$x();
 
     int fieldGet$y();

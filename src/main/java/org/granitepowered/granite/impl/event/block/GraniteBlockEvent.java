@@ -30,6 +30,7 @@ import org.spongepowered.api.event.block.BlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 
 public class GraniteBlockEvent extends GraniteEvent implements BlockEvent {
+
     BlockLoc loc;
     Optional<Cause> cause;
 

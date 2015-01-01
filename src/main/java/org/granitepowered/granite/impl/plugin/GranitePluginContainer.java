@@ -29,6 +29,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 public class GranitePluginContainer implements PluginContainer {
+
     String id;
     String name;
     String version;

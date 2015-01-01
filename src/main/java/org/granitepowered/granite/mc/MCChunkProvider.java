@@ -27,6 +27,7 @@ import java.util.Set;
 
 @Implement(name = "ChunkProviderServer")
 public interface MCChunkProvider extends MCInterface {
+
     MCChunk provideChunk(int x, int z);
 
     boolean chunkExists(int x, int z);

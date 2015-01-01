@@ -29,6 +29,7 @@ import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.player.PlayerEvent;
 
 public class GranitePlayerEvent extends GraniteEntityEvent implements PlayerEvent {
+
     GranitePlayer player;
 
     public GranitePlayerEvent(GranitePlayer player) {

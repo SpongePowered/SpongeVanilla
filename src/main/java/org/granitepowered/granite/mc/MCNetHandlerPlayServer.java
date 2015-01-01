@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "NetHandlerPlayServer")
 public interface MCNetHandlerPlayServer extends MCInterface {
+
     void sendPacket(MCPacket packet);
 
     MCEntityPlayerMP fieldGet$playerEntity();

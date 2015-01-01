@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GraniteTextFormatFactory implements TextFormatFactory {
+
     public static ImmutableMap<String, TextStyle.Base> styles = ImmutableMap.<String, TextStyle.Base>builder()
             .put("obfuscated", new TextStyle.Base("obfuscated", 'k'))
             .put("bold", new TextStyle.Base("bold", 'l'))

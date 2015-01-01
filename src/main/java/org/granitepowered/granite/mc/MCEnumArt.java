@@ -21,38 +21,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
-import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.player.PlayerPlaceBlockEvent;
+@Implement(name = "EnumArt")
+public interface MCEnumArt extends MCInterface {
 
-public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements PlayerPlaceBlockEvent {
+    int fieldGet$width();
 
-    Player player;
-    BlockSnapshot previous;
+    int fieldGet$height();
 
-    public GranitePlayerPlaceBlockEvent(BlockLoc loc, Player player, BlockSnapshot previous) {
-        super(loc);
-        this.player = player;
-        this.previous = previous;
-    }
+    String fieldGet$name();
 
-    @Override
-    public BlockSnapshot getReplacementBlock() {
-        return previous;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
-
-    @Override
-    public Entity getEntity() {
-        return player;
-    }
 }

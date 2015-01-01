@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import javassist.CannotCompileException;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -41,11 +43,8 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.text.translation.Translations;
 
-import java.lang.reflect.Field;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class ServerConfigurationManagerClass extends BytecodeClass {
+
     public ServerConfigurationManagerClass() {
         super("ServerConfigurationManager");
 
@@ -79,9 +78,13 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
 
                 Message.Translatable joinMessage;
                 if (!newProfile.fieldGet$name().equals(oldName)) {
-                    joinMessage = Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), newProfile.fieldGet$name(), oldName).color(TextColors.YELLOW).build();
+                    joinMessage =
+                            Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), newProfile.fieldGet$name(), oldName)
+                                    .color(TextColors.YELLOW).build();
                 } else {
-                    joinMessage = Messages.builder(Translations.of("multiplayer.player.joined").get(), newProfile.fieldGet$name()).color(TextColors.YELLOW).build();
+                    joinMessage =
+                            Messages.builder(Translations.of("multiplayer.player.joined").get(), newProfile.fieldGet$name()).color(TextColors.YELLOW)
+                                    .build();
                 }
 
                 GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GranitePlayer) wrap(player), joinMessage);

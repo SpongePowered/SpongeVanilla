@@ -30,6 +30,7 @@ import org.spongepowered.api.util.event.Order;
 import java.lang.reflect.Method;
 
 public class GraniteEventHandler {
+
     private Object instance;
     private Class<? extends Event> eventType;
     private PluginContainer pluginContainer;
@@ -37,7 +38,8 @@ public class GraniteEventHandler {
     private boolean ignoreCancelled;
     private Method method;
 
-    public GraniteEventHandler(Object instance, Class<? extends Event> eventType, PluginContainer pluginContainer, Order order, boolean ignoreCancelled, Method method) {
+    public GraniteEventHandler(Object instance, Class<? extends Event> eventType, PluginContainer pluginContainer, Order order,
+                               boolean ignoreCancelled, Method method) {
         this.instance = instance;
         this.eventType = eventType;
         this.pluginContainer = pluginContainer;

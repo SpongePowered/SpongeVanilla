@@ -25,5 +25,6 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EnumFacing")
 public interface MCEnumFacing extends MCInterface {
+
     MCVec3i fieldGet$directionVec();
 }

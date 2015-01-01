@@ -27,6 +27,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.spongepowered.api.text.translation.Translation;
 
 public class GraniteTranslation implements Translation {
+
     String id;
 
     public GraniteTranslation(String id) {

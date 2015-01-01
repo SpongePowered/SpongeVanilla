@@ -26,4 +26,5 @@ package org.granitepowered.granite.impl.text.action;
 import org.spongepowered.api.text.action.TextAction;
 
 public abstract class GraniteTextAction<R> implements TextAction<R> {
+
 }

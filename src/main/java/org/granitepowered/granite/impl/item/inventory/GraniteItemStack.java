@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite.impl.item.inventory;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
@@ -36,10 +39,8 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Map;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class GraniteItemStack extends Composite<MCItemStack> implements ItemStack {
+
     public GraniteItemStack(MCItemStack obj) {
         super(obj);
     }
@@ -47,6 +48,7 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     public GraniteItemStack(ItemType type, int amount) {
         this((MCItem) unwrap(type), amount);
     }
+
     public GraniteItemStack(ItemType type, int amount, int damage) {
         this((MCItem) unwrap(type), amount, damage);
     }
@@ -97,7 +99,9 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
 
     @Override
     public void setQuantity(int quantity) throws IllegalArgumentException {
-        if (quantity > getMaxStackQuantity()) quantity = getMaxStackQuantity();
+        if (quantity > getMaxStackQuantity()) {
+            quantity = getMaxStackQuantity();
+        }
         obj.fieldSet$stackSize(quantity);
     }
 

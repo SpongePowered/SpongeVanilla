@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
@@ -40,10 +43,8 @@ import org.spongepowered.api.world.Location;
 import java.util.Collection;
 import java.util.List;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class GraniteLiving<T extends MCEntityLiving> extends GraniteEntity<T> implements Living {
+
     public GraniteLiving(T obj) {
         super(obj);
     }

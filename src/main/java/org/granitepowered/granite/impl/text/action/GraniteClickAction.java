@@ -28,7 +28,9 @@ import org.spongepowered.api.text.action.ClickAction;
 import java.net.URL;
 
 public abstract class GraniteClickAction<R> extends GraniteTextAction<R> implements ClickAction<R> {
+
     public static class GraniteOpenUrl extends GraniteClickAction<URL> implements OpenUrl {
+
         URL url;
 
         public GraniteOpenUrl(URL url) {
@@ -47,6 +49,7 @@ public abstract class GraniteClickAction<R> extends GraniteTextAction<R> impleme
     }
 
     public static class GraniteRunCommand extends GraniteClickAction<String> implements RunCommand {
+
         String command;
 
         public GraniteRunCommand(String command) {
@@ -65,6 +68,7 @@ public abstract class GraniteClickAction<R> extends GraniteTextAction<R> impleme
     }
 
     public static class GraniteChangePage extends GraniteClickAction<Integer> implements ChangePage {
+
         int page;
 
         public GraniteChangePage(int page) {
@@ -83,6 +87,7 @@ public abstract class GraniteClickAction<R> extends GraniteTextAction<R> impleme
     }
 
     public static class GraniteSuggestCommand extends GraniteClickAction<String> implements SuggestCommand {
+
         String command;
 
         public GraniteSuggestCommand(String command) {

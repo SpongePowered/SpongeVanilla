@@ -26,8 +26,17 @@ package org.granitepowered.granite.mappings;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.typesafe.config.*;
-import javassist.*;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigObject;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.ConfigSyntax;
+import com.typesafe.config.ConfigValue;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.utils.ReflectionUtils;
@@ -44,6 +53,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Mappings {
+
     static Config file;
 
     // Human -> Obfuscated Class

@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.guice;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.collect.Maps;
 import com.google.inject.Key;
 import com.google.inject.OutOfScopeException;
@@ -31,8 +33,6 @@ import com.google.inject.Scope;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkState;
 
 public class PluginScope implements Scope {
 
@@ -51,7 +51,8 @@ public class PluginScope implements Scope {
 
     public <T> void seed(Key<T> key, T value) {
         Map<Key<?>, Object> scopedObjects = getScopedObjectMap(key);
-        checkState(!scopedObjects.containsKey(key), "A value for the key %s was already seeded in this scope. Old value: %s New value: %s", key, scopedObjects.get(key), value);
+        checkState(!scopedObjects.containsKey(key), "A value for the key %s was already seeded in this scope. Old value: %s New value: %s", key,
+                   scopedObjects.get(key), value);
         scopedObjects.put(key, value);
     }
 

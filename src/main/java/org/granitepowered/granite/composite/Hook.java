@@ -27,6 +27,7 @@ package org.granitepowered.granite.composite;
 import java.lang.invoke.MethodHandle;
 
 public class Hook {
+
     HookListener listener;
     MethodHandle method;
 

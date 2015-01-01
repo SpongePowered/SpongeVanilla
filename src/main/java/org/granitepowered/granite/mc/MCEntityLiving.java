@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityLiving")
 public interface MCEntityLiving extends MCEntityLivingBase {
+
     boolean fieldGet$isLeashed();
 
     void fieldSet$isLeashed(boolean leashed);

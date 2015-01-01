@@ -23,13 +23,14 @@
 
 package org.granitepowered.granite.impl.item;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.granitepowered.granite.mc.MCItemBlock;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemBlock;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class GraniteItemBlock extends GraniteItemType<MCItemBlock> implements ItemBlock {
+
     public GraniteItemBlock(MCItemBlock obj) {
         super(obj);
     }

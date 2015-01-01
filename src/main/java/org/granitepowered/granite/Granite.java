@@ -47,10 +47,12 @@ import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.event.EventManager;
 
-import javax.inject.Inject;
 import java.io.File;
 
+import javax.inject.Inject;
+
 public class Granite {
+
     public static Granite instance;
 
     // Not injected directly; initialization is done after classes are rewritten

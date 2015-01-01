@@ -30,6 +30,7 @@ import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public class GraniteEntityItem extends GraniteEntity<MCEntityItem> implements Item {
+
     public GraniteEntityItem(MCEntityItem obj) {
         super(obj);
     }

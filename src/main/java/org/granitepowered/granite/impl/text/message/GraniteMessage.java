@@ -42,6 +42,7 @@ import org.spongepowered.api.text.translation.Translation;
 import java.util.List;
 
 public abstract class GraniteMessage<T> implements Message {
+
     T content;
     ImmutableList<Message> children;
     TextColor color;
@@ -59,7 +60,8 @@ public abstract class GraniteMessage<T> implements Message {
         shiftClickAction = Optional.absent();
     }
 
-    GraniteMessage(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
+    GraniteMessage(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction,
+                   Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
         this.children = children;
         this.color = color;
         this.style = style;
@@ -104,7 +106,9 @@ public abstract class GraniteMessage<T> implements Message {
     }
 
     public static class GraniteText extends GraniteMessage<String> implements Message.Text {
-        public GraniteText(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, String text) {
+
+        public GraniteText(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction,
+                           Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, String text) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
             this.content = text;
         }
@@ -117,7 +121,8 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public MessageBuilder.Text builder() {
-            return new GraniteMessageBuilder.GraniteTextMessageBuilder(getContent(), children, color, style, clickAction, hoverAction, shiftClickAction);
+            return new GraniteMessageBuilder.GraniteTextMessageBuilder(getContent(), children, color, style, clickAction, hoverAction,
+                                                                       shiftClickAction);
         }
 
         @Override
@@ -132,9 +137,12 @@ public abstract class GraniteMessage<T> implements Message {
     }
 
     public static class GraniteTranslatable extends GraniteMessage<Translation> implements Message.Translatable {
+
         List<Object> arguments;
 
-        public GraniteTranslatable(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, List<Object> arguments) {
+        public GraniteTranslatable(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction,
+                                   Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, Translation translation,
+                                   List<Object> arguments) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
             this.content = translation;
             this.arguments = arguments;
@@ -153,7 +161,8 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public MessageBuilder.Translatable builder() {
-            return new GraniteMessageBuilder.GraniteTranslatableMessageBuilder(children, color, style, clickAction, hoverAction, shiftClickAction, content, arguments.toArray(new Object[arguments.size()]));
+            return new GraniteMessageBuilder.GraniteTranslatableMessageBuilder(children, color, style, clickAction, hoverAction, shiftClickAction,
+                                                                               content, arguments.toArray(new Object[arguments.size()]));
         }
 
         @Override

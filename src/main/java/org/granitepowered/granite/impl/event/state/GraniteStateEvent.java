@@ -27,4 +27,5 @@ import org.granitepowered.granite.impl.event.GraniteEvent;
 import org.spongepowered.api.event.state.StateEvent;
 
 public class GraniteStateEvent extends GraniteEvent implements StateEvent {
+
 }

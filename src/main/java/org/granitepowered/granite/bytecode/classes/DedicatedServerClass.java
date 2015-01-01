@@ -25,9 +25,14 @@ package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.impl.event.state.*;
+import org.granitepowered.granite.impl.event.state.GraniteServerAboutToStartEvent;
+import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
+import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
+import org.granitepowered.granite.impl.event.state.GraniteServerStoppedEvent;
+import org.granitepowered.granite.impl.event.state.GraniteServerStoppingEvent;
 
 public class DedicatedServerClass extends BytecodeClass {
+
     public DedicatedServerClass() {
         super("DedicatedServer");
 

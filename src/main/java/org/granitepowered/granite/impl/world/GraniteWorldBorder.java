@@ -30,6 +30,7 @@ import org.granitepowered.granite.mc.MCWorldBorder;
 import org.spongepowered.api.world.WorldBorder;
 
 public class GraniteWorldBorder extends Composite<MCWorldBorder> implements WorldBorder {
+
     public GraniteWorldBorder(Object obj) {
         super(obj);
     }

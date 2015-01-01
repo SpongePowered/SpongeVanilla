@@ -21,38 +21,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.entity.living.meta;
 
-import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
-import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.player.PlayerPlaceBlockEvent;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mc.MCEnumArt;
+import org.spongepowered.api.entity.hanging.art.Art;
 
-public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements PlayerPlaceBlockEvent {
+public class GraniteArt extends Composite<MCEnumArt> implements Art {
 
-    Player player;
-    BlockSnapshot previous;
-
-    public GranitePlayerPlaceBlockEvent(BlockLoc loc, Player player, BlockSnapshot previous) {
-        super(loc);
-        this.player = player;
-        this.previous = previous;
+    public GraniteArt(Object obj) {
+        super(obj);
     }
 
     @Override
-    public BlockSnapshot getReplacementBlock() {
-        return previous;
+    public int getHeight() {
+        return obj.fieldGet$height();
     }
 
     @Override
-    public Player getPlayer() {
-        return player;
+    public int getWidth() {
+        return obj.fieldGet$width();
     }
 
     @Override
-    public Entity getEntity() {
-        return player;
+    public String getName() {
+        return obj.fieldGet$name();
     }
 }

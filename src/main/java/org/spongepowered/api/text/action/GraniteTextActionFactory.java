@@ -33,6 +33,7 @@ import org.spongepowered.api.text.message.Message;
 import java.net.URL;
 
 public class GraniteTextActionFactory implements TextActionFactory {
+
     @Override
     public ClickAction.OpenUrl createOpenUrl(URL url) {
         return new GraniteClickAction.GraniteOpenUrl(url);

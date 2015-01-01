@@ -23,7 +23,14 @@
 
 package org.granitepowered.granite.bytecode;
 
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CodeConverter;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.MethodInfo;
@@ -38,9 +45,16 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BytecodeClass {
+
     CtClass clazz;
 
     List<PostCallback> callbacks;
@@ -147,15 +161,24 @@ public class BytecodeClass {
     public static Class getFromCt(CtClass clazz) {
         if (clazz.isPrimitive()) {
             switch (clazz.getName()) {
-                case "float": return float.class;
-                case "double": return double.class;
-                case "byte": return byte.class;
-                case "int": return int.class;
-                case "boolean": return boolean.class;
-                case "char": return char.class;
-                case "short": return short.class;
-                case "long": return long.class;
-                case "void": return void.class;
+                case "float":
+                    return float.class;
+                case "double":
+                    return double.class;
+                case "byte":
+                    return byte.class;
+                case "int":
+                    return int.class;
+                case "boolean":
+                    return boolean.class;
+                case "char":
+                    return char.class;
+                case "short":
+                    return short.class;
+                case "long":
+                    return long.class;
+                case "void":
+                    return void.class;
             }
         }
 
@@ -190,7 +213,8 @@ public class BytecodeClass {
 
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
-                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast", "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast",
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -205,7 +229,9 @@ public class BytecodeClass {
 
                         classesToLoad.add(mcField.getDeclaringClass().getName());
 
-                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
+                        CtMethod
+                                newMethod =
+                                new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
                         newMethod.setModifiers(Modifier.PUBLIC);
 
                         MethodInfo mi = newMethod.getMethodInfo();
@@ -215,7 +241,8 @@ public class BytecodeClass {
 
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
-                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast", "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast",
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -233,7 +260,9 @@ public class BytecodeClass {
                             throw new RuntimeException(interfaceMethod.getName() + " not found in mappings");
                         }
 
-                        CtMethod newMethod = new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
+                        CtMethod
+                                newMethod =
+                                new CtMethod(interfaceMethod.getReturnType(), interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
 
                         String methodSig;
                         if (newMethod.getParameterTypes().length > 0) {
@@ -356,8 +385,12 @@ public class BytecodeClass {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BytecodeClass that = (BytecodeClass) o;
 
@@ -388,10 +421,12 @@ public class BytecodeClass {
     }
 
     public static interface ProxyHandlerCallback {
+
         Object invokeParent(Object... args) throws Throwable;
     }
 
     public static abstract class ProxyHandler {
+
         public Object preHandle(final Object caller, Object[] args, final Method method) throws Throwable {
             ProxyHandlerCallback callback = new ProxyHandlerCallback() {
                 @Override
@@ -417,6 +452,7 @@ public class BytecodeClass {
     }
 
     public static interface PostCallback {
+
         void callback();
     }
 }

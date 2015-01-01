@@ -26,9 +26,11 @@ package org.granitepowered.granite;
 import java.util.Arrays;
 
 public class Main {
+
     public static Boolean debugLog = false;
+
     public static void main(String args[]) {
-        if (Arrays.asList(args).contains("debug")){
+        if (Arrays.asList(args).contains("debug")) {
             debugLog = true;
         }
         new GraniteStartupThread(args).start();

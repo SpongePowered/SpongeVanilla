@@ -26,6 +26,7 @@ package org.spongepowered.api.text.title;
 import org.granitepowered.granite.impl.text.title.GraniteTitleBuilder;
 
 public class GraniteTitleFactory implements TitleFactory {
+
     @Override
     public TitleBuilder createTitleBuilder() {
         return new GraniteTitleBuilder();

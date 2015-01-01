@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "ItemStack")
 public interface MCItemStack extends MCInterface {
+
     int fieldGet$stackSize();
 
     void fieldSet$stackSize(int size);

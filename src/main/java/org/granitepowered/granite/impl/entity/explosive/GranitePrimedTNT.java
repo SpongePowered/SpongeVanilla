@@ -30,6 +30,7 @@ import org.spongepowered.api.entity.explosive.PrimedTNT;
 import org.spongepowered.api.entity.living.Living;
 
 public class GranitePrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
+
     public GranitePrimedTNT(MCPrimedTNT obj) {
         super(obj);
     }

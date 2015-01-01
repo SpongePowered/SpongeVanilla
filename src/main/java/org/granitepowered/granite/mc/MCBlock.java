@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "Block")
 public interface MCBlock extends MCInterface {
+
     MCBlockState fieldGet$defaultBlockState();
 
     boolean fieldGet$needsRandomTick();

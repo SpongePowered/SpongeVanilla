@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class SignatureParser {
+
     public static MethodSignature parseHuman(String signature) {
         String returnType = null;
         String preSig = signature.split("\\(")[0];
@@ -81,6 +82,7 @@ public class SignatureParser {
     }
 
     public static class MethodSignature {
+
         private String name;
         private CtClass returnType;
         private CtClass[] paramTypes;
@@ -118,14 +120,24 @@ public class SignatureParser {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             MethodSignature that = (MethodSignature) o;
 
-            if (!name.equals(that.name)) return false;
-            if (!Arrays.equals(paramTypes, that.paramTypes)) return false;
-            if (returnType != null ? !returnType.equals(that.returnType) : that.returnType != null) return false;
+            if (!name.equals(that.name)) {
+                return false;
+            }
+            if (!Arrays.equals(paramTypes, that.paramTypes)) {
+                return false;
+            }
+            if (returnType != null ? !returnType.equals(that.returnType) : that.returnType != null) {
+                return false;
+            }
 
             return true;
         }
@@ -156,7 +168,8 @@ public class SignatureParser {
             for (int i = 0; i < paramClassTypes.length; i++) {
                 paramClassTypes[i] = new SignatureAttribute.ClassType(paramTypes[i].getName());
             }
-            return new SignatureAttribute.MethodSignature(null, paramClassTypes, new SignatureAttribute.ClassType(returnType.getName()), null).encode();
+            return new SignatureAttribute.MethodSignature(null, paramClassTypes, new SignatureAttribute.ClassType(returnType.getName()), null)
+                    .encode();
         }
     }
 }

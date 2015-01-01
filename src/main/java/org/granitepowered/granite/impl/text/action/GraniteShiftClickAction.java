@@ -26,7 +26,9 @@ package org.granitepowered.granite.impl.text.action;
 import org.spongepowered.api.text.action.ShiftClickAction;
 
 public abstract class GraniteShiftClickAction<R> extends GraniteTextAction<R> implements ShiftClickAction<R> {
+
     public static class GraniteInsertText extends GraniteShiftClickAction<String> implements InsertText {
+
         String insertion;
 
         public GraniteInsertText(String insertion) {

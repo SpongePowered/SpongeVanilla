@@ -31,6 +31,7 @@ import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
 
 public class GranitePotionEffect extends Composite<MCPotionEffect> implements PotionEffect {
+
     public GranitePotionEffect(Object obj) {
         super(obj);
     }

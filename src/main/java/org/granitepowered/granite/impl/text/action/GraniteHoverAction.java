@@ -29,7 +29,9 @@ import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.message.Message;
 
 public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> implements HoverAction<R> {
+
     public static class GraniteShowText extends GraniteHoverAction<Message> implements ShowText {
+
         Message message;
 
         public GraniteShowText(Message message) {
@@ -48,6 +50,7 @@ public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> impleme
     }
 
     public static class GraniteShowAchievement extends GraniteHoverAction<Object> implements ShowAchievement {
+
         Object object;
 
         public GraniteShowAchievement(Object object) {
@@ -66,6 +69,7 @@ public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> impleme
     }
 
     public static class GraniteShowItem extends GraniteHoverAction<ItemStack> implements ShowItem {
+
         ItemStack itemStack;
 
         public GraniteShowItem(ItemStack itemStack) {
@@ -84,6 +88,7 @@ public abstract class GraniteHoverAction<R> extends GraniteTextAction<R> impleme
     }
 
     public static class GraniteShowEntity extends GraniteHoverAction<Entity> implements ShowEntity {
+
         Entity entity;
 
         public GraniteShowEntity(Entity entity) {

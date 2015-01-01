@@ -23,25 +23,27 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import com.flowpowered.math.vector.Vector3d;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerPlaceBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCEnumFacing;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.world.Location;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class ItemStackClass extends BytecodeClass {
+
     public ItemStackClass() {
         super("ItemStack");
 
@@ -80,14 +82,14 @@ public class ItemStackClass extends BytecodeClass {
                         loc.replaceWith(oldSnapshot);
 
                         MCPacket clickedUpdate = MinecraftUtils.instantiate(Mappings.getClass("S23PacketBlockChange"),
-                                new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
-                                mcPlayer.fieldGet$worldObj(), posClicked
+                                                                            new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
+                                                                            mcPlayer.fieldGet$worldObj(), posClicked
                         );
                         player.sendPacket(clickedUpdate);
 
                         MCPacket placedUpdate = MinecraftUtils.instantiate(Mappings.getClass("S23PacketBlockChange"),
-                                new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
-                                mcPlayer.fieldGet$worldObj(), posPlaced
+                                                                           new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
+                                                                           mcPlayer.fieldGet$worldObj(), posPlaced
                         );
                         player.sendPacket(placedUpdate);
                     }

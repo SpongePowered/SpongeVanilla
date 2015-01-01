@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 
 @Implement(name = "BlockState")
 public interface MCBlockState extends MCInterface {
+
     MCBlock fieldGet$block();
 
     ImmutableMap<MCProperty, Comparable> fieldGet$properties();

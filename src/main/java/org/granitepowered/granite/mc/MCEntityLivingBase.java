@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityLivingBase")
 public interface MCEntityLivingBase extends MCEntity {
+
     MCEntityLivingBase fieldGet$lastAttacker();
 
     void fieldSet$lastAttacker(MCEntityLivingBase living);

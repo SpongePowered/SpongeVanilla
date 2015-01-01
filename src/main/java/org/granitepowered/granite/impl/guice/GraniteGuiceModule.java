@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Scopes;
-
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;

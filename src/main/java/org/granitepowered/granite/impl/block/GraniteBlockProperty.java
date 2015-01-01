@@ -32,6 +32,7 @@ import org.spongepowered.api.block.BlockProperty;
 import java.util.Collection;
 
 public class GraniteBlockProperty<T extends Comparable<T>> extends Composite<MCProperty> implements BlockProperty<T> {
+
     public GraniteBlockProperty(MCProperty obj) {
         super(obj);
     }

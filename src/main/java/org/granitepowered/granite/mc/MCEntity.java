@@ -27,6 +27,7 @@ import java.util.UUID;
 
 @Implement(name = "Entity")
 public interface MCEntity extends MCInterface {
+
     boolean fieldGet$onGround();
 
     double fieldGet$posX();

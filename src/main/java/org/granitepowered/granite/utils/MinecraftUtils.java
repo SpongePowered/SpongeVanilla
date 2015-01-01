@@ -49,8 +49,6 @@ import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCInterface;
 import org.spongepowered.api.text.message.Message;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -58,7 +56,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class MinecraftUtils {
+
     public static ImmutableMap<Class<?>, Class<? extends Composite>> composites = ImmutableMap.<Class<?>, Class<? extends Composite>>builder()
             .put(Mappings.getClass("BiomeGenBase"), GraniteBiomeType.class)
             .put(Mappings.getClass("Block"), GraniteBlockType.class)
@@ -78,7 +80,9 @@ public class MinecraftUtils {
 
     @Nonnull
     public static <T extends Composite> T wrap(MCInterface obj) {
-        if (obj == null) return null;
+        if (obj == null) {
+            return null;
+        }
 
         Class<?> clazz = obj.getClass();
         while (!composites.containsKey(clazz)) {
@@ -110,7 +114,8 @@ public class MinecraftUtils {
 
     public static MCBlockPos graniteToMinecraftBlockPos(Vector3i vector) {
         try {
-            return (MCBlockPos) Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class).newInstance(vector.getX(), vector.getY(), vector.getZ());
+            return (MCBlockPos) Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class)
+                    .newInstance(vector.getX(), vector.getY(), vector.getZ());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -144,6 +149,7 @@ public class MinecraftUtils {
     }
 
     public static class WrapFunction<T extends Composite> implements Function<MCInterface, T> {
+
         @Nullable
         @Override
         public T apply(@Nullable MCInterface input) {

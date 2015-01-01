@@ -28,6 +28,7 @@ import org.spongepowered.api.event.player.PlayerChatEvent;
 import org.spongepowered.api.util.command.CommandSource;
 
 public class GranitePlayerChatEvent extends GranitePlayerEvent implements PlayerChatEvent {
+
     String message;
 
     public GranitePlayerChatEvent(GranitePlayer player, String message) {

@@ -27,6 +27,7 @@ import java.util.List;
 
 @Implement(name = "ServerConfigurationManager")
 public interface MCServerConfigurationManager extends MCInterface {
+
     boolean fieldGet$whitelistEnforced();
 
     void fieldSet$whitelistEnforced(boolean value);

@@ -24,10 +24,14 @@
 package org.granitepowered.granite.utils.json;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.*;
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.text.action.GraniteClickAction;
-import org.granitepowered.granite.impl.text.action.GraniteHoverAction;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import org.granitepowered.granite.impl.text.action.GraniteShiftClickAction;
 import org.granitepowered.granite.impl.text.action.GraniteTextAction;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
@@ -49,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeserializer<GraniteMessage<?>> {
+
     @Override
     public GraniteMessage<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
@@ -162,11 +167,21 @@ public class MessageJson implements JsonSerializer<GraniteMessage<?>>, JsonDeser
 
         TextStyle style = src.getStyle();
 
-        if (style.applied(TextStyles.BOLD).toBoolean().isPresent()) out.add("bold", context.serialize(style.applied(TextStyles.BOLD).toBoolean().get()));
-        if (style.applied(TextStyles.ITALIC).toBoolean().isPresent()) out.add("italic", context.serialize(style.applied(TextStyles.ITALIC).toBoolean().get()));
-        if (style.applied(TextStyles.UNDERLINE).toBoolean().isPresent()) out.add("underlined", context.serialize(style.applied(TextStyles.UNDERLINE).toBoolean().get()));
-        if (style.applied(TextStyles.STRIKETHROUGH).toBoolean().isPresent()) out.add("strikethrough", context.serialize(style.applied(TextStyles.STRIKETHROUGH).toBoolean().get()));
-        if (style.applied(TextStyles.OBFUSCATED).toBoolean().isPresent()) out.add("obfuscated", context.serialize(style.applied(TextStyles.OBFUSCATED).toBoolean().get()));
+        if (style.applied(TextStyles.BOLD).toBoolean().isPresent()) {
+            out.add("bold", context.serialize(style.applied(TextStyles.BOLD).toBoolean().get()));
+        }
+        if (style.applied(TextStyles.ITALIC).toBoolean().isPresent()) {
+            out.add("italic", context.serialize(style.applied(TextStyles.ITALIC).toBoolean().get()));
+        }
+        if (style.applied(TextStyles.UNDERLINE).toBoolean().isPresent()) {
+            out.add("underlined", context.serialize(style.applied(TextStyles.UNDERLINE).toBoolean().get()));
+        }
+        if (style.applied(TextStyles.STRIKETHROUGH).toBoolean().isPresent()) {
+            out.add("strikethrough", context.serialize(style.applied(TextStyles.STRIKETHROUGH).toBoolean().get()));
+        }
+        if (style.applied(TextStyles.OBFUSCATED).toBoolean().isPresent()) {
+            out.add("obfuscated", context.serialize(style.applied(TextStyles.OBFUSCATED).toBoolean().get()));
+        }
 
         out.add("color", context.serialize(((TextColor.Base) src.getColor()).getName().toLowerCase()));
 

@@ -23,7 +23,13 @@
 
 package org.granitepowered.granite.utils.json;
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
@@ -41,6 +47,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class TextActionJson implements JsonSerializer<GraniteTextAction<?>>, JsonDeserializer<GraniteTextAction<?>> {
+
     @Override
     public GraniteTextAction<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonElement val = json.getAsJsonObject().get("value");

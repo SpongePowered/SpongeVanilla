@@ -23,6 +23,10 @@
 
 package org.granitepowered.granite.impl.block;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.graniteToMinecraftBlockPos;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -30,7 +34,13 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBlock;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCBlockState;
+import org.granitepowered.granite.mc.MCEnumFacing;
+import org.granitepowered.granite.mc.MCItem;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCMaterial;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -41,13 +51,13 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import javax.annotation.Nullable;
 
 public class GraniteBlockLoc implements BlockLoc {
+
     Location location;
 
     public GraniteBlockLoc(Location location) {
@@ -130,10 +140,15 @@ public class GraniteBlockLoc implements BlockLoc {
         Collection<Direction> directions = new ArrayList<>();
         MCEnumFacing[] enums = (MCEnumFacing[]) ReflectionUtils.getClassByName("EnumFacing").getEnumConstants();
         for (MCEnumFacing enumFacing : enums) {
-            Vector3d vector3d = new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(), enumFacing.fieldGet$directionVec().fieldGet$z());
+            Vector3d
+                    vector3d =
+                    new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(),
+                                 enumFacing.fieldGet$directionVec().fieldGet$z());
             if (getWorld().isFacePowered(getMCBlockPos(), enumFacing)) {
                 for (Direction direction : Direction.values()) {
-                    if (vector3d.equals(direction.toVector3d())) directions.add(direction);
+                    if (vector3d.equals(direction.toVector3d())) {
+                        directions.add(direction);
+                    }
                 }
             }
         }
@@ -146,10 +161,15 @@ public class GraniteBlockLoc implements BlockLoc {
         Collection<Direction> directions = new ArrayList<>();
         MCEnumFacing[] enumFacings = (MCEnumFacing[]) ReflectionUtils.getClassByName("EnumFacing").getEnumConstants();
         for (MCEnumFacing enumFacing : enumFacings) {
-            Vector3d vector3d = new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(), enumFacing.fieldGet$directionVec().fieldGet$z());
+            Vector3d
+                    vector3d =
+                    new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(),
+                                 enumFacing.fieldGet$directionVec().fieldGet$z());
             if (getWorld().isFacePowered(getMCBlockPos().offset(enumFacing, 1), enumFacing)) {
                 for (Direction direction : Direction.values()) {
-                    if (vector3d.equals(direction.toVector3d())) directions.add(direction);
+                    if (vector3d.equals(direction.toVector3d())) {
+                        directions.add(direction);
+                    }
                 }
             }
         }
@@ -192,7 +212,9 @@ public class GraniteBlockLoc implements BlockLoc {
     public int getDigTimeWith(@Nullable ItemStack itemStack) {
         float hardness = getMCBlock().fieldGet$blockHardness();
         MCMaterial material = getMCBlock().fieldGet$blockMaterial();
-        boolean canHarvest = material.fieldGet$requiresNoTool() || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCBlock());
+        boolean
+                canHarvest =
+                material.fieldGet$requiresNoTool() || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCBlock());
 
         float strength = 1.0F;
         if (itemStack != null) {

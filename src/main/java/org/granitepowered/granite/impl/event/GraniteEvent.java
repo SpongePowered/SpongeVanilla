@@ -30,6 +30,7 @@ import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.callback.CallbackList;
 
 public class GraniteEvent implements Event {
+
     public boolean isModifiable;
     public boolean isCancellable;
 

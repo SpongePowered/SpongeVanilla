@@ -23,6 +23,10 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.graniteToMinecraftChatComponent;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -32,7 +36,12 @@ import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCFoodStats;
+import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPlayerCapabilities;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.Sound;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -45,13 +54,17 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import javax.annotation.Nullable;
 
 public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Player {
+
     private Optional<Message> displayName = Optional.absent();
 
     public GranitePlayer(MCEntityPlayerMP obj) {
@@ -96,8 +109,8 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
             Enum type = MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
 
             MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
-                    new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
-                    type, null);
+                                                         new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
+                                                         type, null);
 
             sendPacket(packet);
         }
@@ -108,8 +121,8 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
             int fadeOut = title.getFadeIn().or(-1);
 
             MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
-                    new Class[]{int.class, int.class, int.class},
-                    fadeIn, stay, fadeOut);
+                                                         new Class[]{int.class, int.class, int.class},
+                                                         fadeIn, stay, fadeOut);
 
             sendPacket(packet);
         }
@@ -118,8 +131,8 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
             Enum type = MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 0);
 
             MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
-                    new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
-                    type, MinecraftUtils.graniteToMinecraftChatComponent(title.getTitle().get()));
+                                                         new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
+                                                         type, MinecraftUtils.graniteToMinecraftChatComponent(title.getTitle().get()));
 
             sendPacket(packet);
         }
@@ -128,8 +141,8 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
             Enum type = MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 1);
 
             MCPacket packet = MinecraftUtils.instantiate(Mappings.getClass("S45PacketTitle"),
-                    new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
-                    type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
+                                                         new Class[]{Mappings.getClass("S45PacketTitle$Type"), Mappings.getClass("IChatComponent")},
+                                                         type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
 
             sendPacket(packet);
         }
@@ -348,10 +361,12 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
                 message = new GraniteMessageBuilder.GraniteTextMessageBuilder("").content("").append(messages).build();
             }
 
-            MCPacket packet = (MCPacket) Mappings.getClass("S02PacketChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
-                    graniteToMinecraftChatComponent(message),
-                    (byte) ((GraniteChatType) type).getId()
-            );
+            MCPacket
+                    packet =
+                    (MCPacket) Mappings.getClass("S02PacketChat").getConstructor(Mappings.getClass("IChatComponent"), byte.class).newInstance(
+                            graniteToMinecraftChatComponent(message),
+                            (byte) ((GraniteChatType) type).getId()
+                    );
             sendPacket(packet);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();

@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -53,11 +55,14 @@ import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.util.*;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class GraniteServer extends Composite<MCServer> implements Game, Server {
+
     public static String version;
 
     public GraniteServer() {
@@ -155,7 +160,8 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     @Override
     public Collection<World> getWorlds() {
         // See MinecraftServer.worldServers, and for expansion, see MinecraftServer line 270 (this.worldServers = new WorldServer[3];)
-        return ImmutableList.<World>copyOf(Iterables.transform(Arrays.asList(obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
+        return ImmutableList
+                .<World>copyOf(Iterables.transform(Arrays.asList(obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
     }
 
     @Override

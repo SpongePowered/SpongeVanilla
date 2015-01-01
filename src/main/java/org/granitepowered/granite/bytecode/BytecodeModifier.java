@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BytecodeModifier {
+
     List<BytecodeClass> bcs;
 
     public BytecodeModifier() {
@@ -49,7 +50,8 @@ public class BytecodeModifier {
 
     public void modify() {
         try {
-            for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader()).getTopLevelClassesRecursive("org.granitepowered.granite.mc")) {
+            for (ClassPath.ClassInfo classInfo : ClassPath.from(ClassLoader.getSystemClassLoader())
+                    .getTopLevelClassesRecursive("org.granitepowered.granite.mc")) {
                 CtClass ctClass = ClassPool.getDefault().get(classInfo.getName());
 
                 if (ctClass.hasAnnotation(Implement.class)) {
@@ -59,7 +61,9 @@ public class BytecodeModifier {
                         throw new RuntimeException(((Implement) ctClass.getAnnotation(Implement.class)).name() + " not in mappings");
                     }
 
-                    if ( Main.debugLog ) Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
+                    if (Main.debugLog) {
+                        Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
+                    }
 
                     BytecodeClass bc = new BytecodeClass(((Implement) ctClass.getAnnotation(Implement.class)).name());
                     bcs.add(bc);

@@ -25,6 +25,8 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "DamageSource")
 public interface MCDamageSource extends MCInterface {
+
     MCEntity getSourceOfDamage();
+
     String getDamageType();
 }

@@ -28,6 +28,7 @@ import org.spongepowered.api.event.message.CommandEvent;
 import org.spongepowered.api.util.command.CommandSource;
 
 public class GraniteCommandEvent extends GraniteEvent implements CommandEvent {
+
     String command;
     String arguments;
     CommandSource source;

@@ -39,8 +39,6 @@ import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.text.message.Message;
 
-import java.lang.reflect.Field;
-
 public class EntityPlayerMPClass extends BytecodeClass {
 
     public EntityPlayerMPClass() {

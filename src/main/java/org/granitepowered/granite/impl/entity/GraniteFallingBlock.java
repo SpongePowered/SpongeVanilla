@@ -29,6 +29,7 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.FallingBlock;
 
 public class GraniteFallingBlock extends GraniteEntity<MCEntityFallingBlock> implements FallingBlock {
+
     public GraniteFallingBlock(MCEntityFallingBlock obj) {
         super(obj);
     }

@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
@@ -31,15 +33,11 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
 import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.mc.MCPacketChatMessage;
-import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.utils.MinecraftUtils;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class NetHandlerPlayServerClass extends BytecodeClass {
+
     Constructor quickExitExceptionConstructor;
 
     public NetHandlerPlayServerClass() {

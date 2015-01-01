@@ -23,8 +23,9 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name="DedicatedServer")
+@Implement(name = "DedicatedServer")
 public interface MCServer extends MCInterface {
+
     MCWorld[] fieldGet$worldServers();
 
     MCServerConfigurationManager fieldGet$serverConfigManager();

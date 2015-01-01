@@ -38,6 +38,7 @@ import org.spongepowered.api.text.message.Message;
 import java.util.Collection;
 
 public class GranitePlayerDeathEvent extends GranitePlayerEvent implements PlayerDeathEvent {
+
     Message deathMessage;
 
     Optional<Cause> deathCause;
@@ -52,7 +53,7 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
             this.deathCause = Optional.of(new Cause(new Cause(null, playerDeathCause.getDamageType(), null), source, null));
         }
 
-         this.deathMessage = deathMessage;
+        this.deathMessage = deathMessage;
     }
 
     @Override

@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityFallingBlock")
 public interface MCEntityFallingBlock extends MCInterface, MCEntity {
+
     float fieldGet$fallHurtAmount();
 
     void fieldSet$fallHurtAmount(float amount);

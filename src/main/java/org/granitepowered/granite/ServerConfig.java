@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 public class ServerConfig {
+
     public Config config;
     public File configLocation;
 

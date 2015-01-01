@@ -33,10 +33,15 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 public class ReflectionUtils {
+
     private static BiMap<Class<?>, Class<?>> primitives = new ImmutableBiMap.Builder<Class<?>, Class<?>>()
             .put(byte.class, Byte.class)
             .put(short.class, Short.class)
@@ -81,7 +86,9 @@ public class ReflectionUtils {
     }
 
     public static boolean areTypesCompatible(Class<?> actual, Class<?> expected) {
-        if (actual == null || expected == null) return false;
+        if (actual == null || expected == null) {
+            return false;
+        }
         if (expected.isAssignableFrom(actual)) {
             return true;
         } else {
@@ -101,9 +108,13 @@ public class ReflectionUtils {
     }
 
     public static boolean isMethodCompatible(Method m, Class<?>... args) {
-        if (m.getParameterTypes().length != args.length) return false;
+        if (m.getParameterTypes().length != args.length) {
+            return false;
+        }
         for (int i = 0; i < m.getParameterTypes().length; i++) {
-            if (!areTypesCompatible(args[i], m.getParameterTypes()[i])) return false;
+            if (!areTypesCompatible(args[i], m.getParameterTypes()[i])) {
+                return false;
+            }
         }
         return true;
     }

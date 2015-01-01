@@ -31,6 +31,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.text.translation.Translation;
 
 public class GraniteItemType<T extends MCItem> extends Composite<T> implements ItemType {
+
     public GraniteItemType(T obj) {
         super(obj);
     }

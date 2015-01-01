@@ -25,4 +25,5 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "WorldChunkManager")
 public interface MCWorldChunkManager extends MCInterface {
+
 }

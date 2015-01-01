@@ -30,6 +30,7 @@ import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.gen.Populator;
 
 public class GraniteBiomeType extends Composite<MCBiomeGenBase> implements BiomeType {
+
     public GraniteBiomeType(Object obj) {
         super(obj);
     }

@@ -26,4 +26,5 @@ package org.granitepowered.granite.impl.event.state;
 import org.spongepowered.api.event.state.PostInitializationEvent;
 
 public class GranitePostInitializationEvent extends GraniteStateEvent implements PostInitializationEvent {
+
 }

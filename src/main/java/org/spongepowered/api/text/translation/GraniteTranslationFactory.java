@@ -29,6 +29,7 @@ import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import java.util.Objects;
 
 public class GraniteTranslationFactory implements TranslationFactory {
+
     @Override
     public Optional<Translation> getTranslationFromId(String id) {
         GraniteTranslation translation = new GraniteTranslation(id);

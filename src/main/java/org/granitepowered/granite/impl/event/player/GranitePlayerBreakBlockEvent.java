@@ -35,6 +35,7 @@ import org.spongepowered.api.event.player.PlayerBreakBlockEvent;
 import java.util.Collection;
 
 public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements PlayerBreakBlockEvent {
+
     Player player;
     BlockSnapshot nextBlock;
 

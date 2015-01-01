@@ -27,6 +27,7 @@ import java.util.UUID;
 
 @Implement(name = "GameProfile")
 public interface MCGameProfile extends MCInterface {
+
     String fieldGet$name();
 
     UUID fieldGet$id();

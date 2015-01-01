@@ -29,6 +29,7 @@ import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.TitleBuilder;
 
 public class GraniteTitle implements Title {
+
     Optional<Message> title;
     Optional<Message> subtitle;
     Optional<Integer> fadeIn;
@@ -37,7 +38,8 @@ public class GraniteTitle implements Title {
     boolean clear;
     boolean reset;
 
-    public GraniteTitle(Optional<Message> title, Optional<Message> subtitle, Optional<Integer> fadeIn, Optional<Integer> stay, Optional<Integer> fadeOut, boolean clear, boolean reset) {
+    public GraniteTitle(Optional<Message> title, Optional<Message> subtitle, Optional<Integer> fadeIn, Optional<Integer> stay,
+                        Optional<Integer> fadeOut, boolean clear, boolean reset) {
         this.title = title;
         this.subtitle = subtitle;
         this.fadeIn = fadeIn;

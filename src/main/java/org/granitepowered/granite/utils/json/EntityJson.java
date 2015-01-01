@@ -23,7 +23,16 @@
 
 package org.granitepowered.granite.utils.json;
 
-import com.google.gson.*;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
@@ -33,10 +42,8 @@ import org.granitepowered.granite.mc.MCWorld;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializer<GraniteEntity> {
+
     // Can't be bothered to wrap the proper methods so doing string manipulation
     @Override
     public GraniteEntity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

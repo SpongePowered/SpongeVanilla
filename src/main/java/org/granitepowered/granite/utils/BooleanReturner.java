@@ -24,5 +24,6 @@
 package org.granitepowered.granite.utils;
 
 public interface BooleanReturner {
+
     boolean apply();
 }

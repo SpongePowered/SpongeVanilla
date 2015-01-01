@@ -30,6 +30,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.entity.living.meta.GraniteArt;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseStyle;
@@ -47,6 +48,7 @@ import org.granitepowered.granite.impl.world.GraniteEnvironment;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCEnchantment;
+import org.granitepowered.granite.mc.MCEnumArt;
 import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.utils.MinecraftUtils;
@@ -58,6 +60,7 @@ import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
+import org.spongepowered.api.entity.hanging.art.Arts;
 import org.spongepowered.api.entity.living.meta.DyeColor;
 import org.spongepowered.api.entity.living.meta.DyeColors;
 import org.spongepowered.api.entity.living.meta.HorseColor;
@@ -93,12 +96,14 @@ import org.spongepowered.api.world.biome.BiomeType;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class GraniteGameRegistry implements GameRegistry {
 
+    Map<String, Art> arts = Maps.newHashMap();
     Map<String, BiomeType> biomes = Maps.newHashMap();
     Map<String, BlockType> blockTypes = Maps.newHashMap();
     Map<String, Career> careers = Maps.newHashMap();
@@ -122,6 +127,7 @@ public class GraniteGameRegistry implements GameRegistry {
     GranitePotionBuilder potionBuilder = new GranitePotionBuilder();
 
     public void register() {
+        registerArts();
         registerBiomes();
         registerBlocks();
         registerDyes();
@@ -137,6 +143,31 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
+    }
+
+    private void registerArts() {
+        Granite.instance.getLogger().info("Registering Arts");
+
+        List<MCEnumArt> mcEnumArts = Arrays.asList((MCEnumArt[]) Mappings.getClass("EnumArt").getEnumConstants());
+        for (Field field : Arts.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase().replace("_", "");
+            for (MCEnumArt mcEnumArt : mcEnumArts) {
+                if (name.equals(mcEnumArt.fieldGet$name().toLowerCase())) {
+                    try {
+                        Art art = new GraniteArt(mcEnumArt);
+                        field.set(null, art);
+                        arts.put("minecraft:" + name, art);
+                        if (Main.debugLog) {
+                            Granite.getInstance().getLogger().info("Registered Art minecraft:" + art.getName());
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     private void registerBiomes() {
@@ -587,14 +618,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<Art> getArt(String id) {
-        // TODO: Art API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(arts.get(id));
     }
 
     @Override
     public List<Art> getArts() {
-        // TODO: Art API
-        throw new NotImplementedException("");
+        return (List<Art>) arts.values();
     }
 
     @Override

@@ -37,12 +37,14 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.MessageBuilder;
 import org.spongepowered.api.text.translation.Translation;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public abstract class GraniteMessageBuilder<T extends Message> implements MessageBuilder {
+
     List<Message> children;
     TextColor color;
     TextStyle style;
@@ -50,7 +52,8 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
     Optional<HoverAction<?>> hoverAction;
     Optional<ShiftClickAction<?>> shiftClickAction;
 
-    public GraniteMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
+    public GraniteMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction,
+                                 Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
         this.children = children;
         this.color = color;
         this.style = style;
@@ -69,9 +72,12 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
     }
 
     public static class GraniteTextMessageBuilder extends GraniteMessageBuilder<Message.Text> implements Text {
+
         String content;
 
-        public GraniteTextMessageBuilder(String content, ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
+        public GraniteTextMessageBuilder(String content, ImmutableList<Message> children, TextColor color, TextStyle style,
+                                         Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction,
+                                         Optional<ShiftClickAction<?>> shiftClickAction) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
             this.content = content;
         }
@@ -134,6 +140,7 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
     }
 
     public static class GraniteTranslatableMessageBuilder extends GraniteMessageBuilder<Message.Translatable> implements Translatable {
+
         Translation translation;
         Object[] objects;
 
@@ -142,7 +149,9 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
             this.objects = objects;
         }
 
-        public GraniteTranslatableMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, Object[] objects) {
+        public GraniteTranslatableMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style,
+                                                 Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction,
+                                                 Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, Object[] objects) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
             this.translation = translation;
             this.objects = objects;
@@ -203,7 +212,8 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
 
         @Override
         public Message.Translatable build() {
-            return new GraniteMessage.GraniteTranslatable(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction, translation, ImmutableList.copyOf(objects));
+            return new GraniteMessage.GraniteTranslatable(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction,
+                                                          translation, ImmutableList.copyOf(objects));
         }
     }
 

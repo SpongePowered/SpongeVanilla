@@ -27,6 +27,7 @@ import java.util.List;
 
 @Implement(name = "World")
 public interface MCWorld extends MCInterface {
+
     MCWorldInfo fieldGet$worldInfo();
 
     MCWorldBorder fieldGet$worldBorder();

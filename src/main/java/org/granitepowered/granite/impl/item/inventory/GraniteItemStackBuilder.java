@@ -49,15 +49,21 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
 
     @Override
     public ItemStackBuilder damage(int damage) {
-        if (damage < 0) damage = 0;
+        if (damage < 0) {
+            damage = 0;
+        }
         this.damage = damage;
         return this;
     }
 
     @Override
     public ItemStackBuilder quantity(int quantity) throws IllegalArgumentException {
-        if (quantity < 0) quantity = 0;
-        if (quantity > 64) quantity = 64;
+        if (quantity < 0) {
+            quantity = 0;
+        }
+        if (quantity > 64) {
+            quantity = 64;
+        }
         this.quantity = quantity;
         return this;
     }

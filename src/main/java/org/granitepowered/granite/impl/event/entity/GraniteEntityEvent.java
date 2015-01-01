@@ -29,6 +29,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.entity.EntityEvent;
 
 public class GraniteEntityEvent extends GraniteEvent implements EntityEvent {
+
     GraniteEntity entity;
 
     public GraniteEntityEvent(GraniteEntity entity) {
