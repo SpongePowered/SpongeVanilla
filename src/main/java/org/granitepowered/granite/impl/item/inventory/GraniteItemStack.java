@@ -32,6 +32,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCNBTTagCompound;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
@@ -124,8 +125,10 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
 
     @Override
     public boolean isEnchanted() {
-        // TODO: Enchantment API
-        throw new NotImplementedException("");
+
+        MCNBTTagCompound tagCompound = this.obj.fieldGet$tagCompound();
+        return tagCompound != null && tagCompound.hasKey("ench", 9);
+        
     }
 
     @Override

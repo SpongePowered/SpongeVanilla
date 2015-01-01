@@ -203,7 +203,7 @@ public class GranitePlayer extends GraniteLiving<MCEntityPlayerMP> implements Pl
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$equipment()[0]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().getCurrentItem()));
     }
 
     @Override
