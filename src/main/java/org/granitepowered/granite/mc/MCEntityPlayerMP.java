@@ -34,6 +34,8 @@ public interface MCEntityPlayerMP extends MCEntityLiving {
 
     MCContainer fieldGet$openContainer();
 
+    String fieldGet$translator();
+
     //void addChatComponentMessage(MCChatComponent component);
 
     MCNetHandlerPlayServer fieldGet$playerNetServerHandler();
