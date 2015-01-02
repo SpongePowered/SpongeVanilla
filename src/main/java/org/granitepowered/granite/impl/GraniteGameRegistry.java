@@ -40,6 +40,7 @@ import org.granitepowered.granite.impl.entity.living.meta.GraniteRabbitType;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteSkeletonType;
 import org.granitepowered.granite.impl.entity.living.villager.GraniteCareer;
 import org.granitepowered.granite.impl.entity.living.villager.GraniteProfession;
+import org.granitepowered.granite.impl.entity.player.gamemode.GraniteGameMode;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
@@ -82,6 +83,7 @@ import org.spongepowered.api.entity.living.villager.Careers;
 import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.living.villager.Professions;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
+import org.spongepowered.api.entity.player.gamemode.GameModes;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
@@ -120,6 +122,7 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, ItemType> itemTypes = Maps.newHashMap();
     Map<String, Profession> professions = Maps.newHashMap();
     Map<String, OcelotType> ocelots = Maps.newHashMap();
+    Map<String, GameMode> gamemodes = Maps.newHashMap();
     Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
     Map<String, RabbitType> rabbits = Maps.newHashMap();
     Map<Integer, Rotation> rotations = Maps.newHashMap();
@@ -147,6 +150,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
+        registerGamemodes();
     }
 
     private void registerArts() {
@@ -398,6 +402,29 @@ public class GraniteGameRegistry implements GameRegistry {
                 ocelots.put("minecraft:" + name, ocelotType);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Ocelot minecraft:" + ocelotType.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerGamemodes(){
+
+        Object[] gamemodeEnum = Mappings.getClass("GameType").getEnumConstants();
+
+        Field[] fields = GameModes.class.getDeclaredFields();
+
+            for (int i = 0; i < fields.length; i++) {
+            ReflectionUtils.forceAccessible(fields[i]);
+
+            String name = fields[i].getName().toLowerCase();
+            try {
+                GameMode gameMode = new GraniteGameMode();
+                fields[i].set(null, gameMode);
+                gamemodes.put("minecraft:" + name, gameMode);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Gamemode:" + gamemodeEnum[i]);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -733,8 +760,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<GameMode> getGameModes() {
-        // TODO: GameMode API
-        throw new NotImplementedException("");
+        return new ArrayList<>(gamemodes.values());
     }
 
     @Override
