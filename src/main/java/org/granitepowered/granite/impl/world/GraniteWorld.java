@@ -53,7 +53,8 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.Environment;
+import org.spongepowered.api.world.Dimension;
+import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.WorldBorder;
@@ -139,8 +140,8 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public Environment getEnvironment() {
-        return (Environment) Granite.instance.getGameRegistry().getEnvironment(getMCWorldInfo().fieldGet$dimension());
+    public Dimension getDimension() {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -165,6 +166,16 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public BiomeManager getBiomeManager() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean doesKeepSpawnLoaded() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setKeepSpawnLoaded(boolean b) {
         throw new NotImplementedException("");
     }
 

@@ -86,10 +86,8 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public Locale getLocale() {
-        // Client sends locale to server on connect (it's in the C15PacketClientSettings packet)
-        
-        String f = this.obj.fieldGet$translator().replace("_", "-");
-        return Locale.forLanguageTag(f);
+        String translator = this.obj.fieldGet$translator().replace("_", "-");
+        return Locale.forLanguageTag(translator);
     }
 
     @Override

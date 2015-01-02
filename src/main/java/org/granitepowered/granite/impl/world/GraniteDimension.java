@@ -23,31 +23,53 @@
 
 package org.granitepowered.granite.impl.world;
 
-import org.spongepowered.api.world.Environment;
+import org.spongepowered.api.world.Dimension;
+import org.spongepowered.api.world.DimensionType;
 
-public class GraniteEnvironment implements Environment {
-
-    String name;
-
-    public GraniteEnvironment(String name) {
-        this.name = name;
-    }
+public class GraniteDimension implements Dimension {
 
     @Override
     public int getDimensionId() {
-        switch (name) {
-            case "overworld":
-                return 0;
-            case "nether":
-                return 1;
-            case "end":
-                return -1;
-        }
         return 0;
     }
 
     @Override
     public String getName() {
-        return name;
+        return "";
+    }
+
+    @Override
+    public boolean allowsPlayerRespawns() {
+        return false;
+    }
+
+    @Override
+    public void setAllowsPlayerRespawns(boolean b) {
+
+    }
+
+    @Override
+    public int getMinimumSpawnHeight() {
+        return 0;
+    }
+
+    @Override
+    public boolean doesWaterEvaporate() {
+        return false;
+    }
+
+    @Override
+    public void setWaterEvaporates(boolean b) {
+
+    }
+
+    @Override
+    public boolean hasSky() {
+        return false;
+    }
+
+    @Override
+    public DimensionType getType() {
+        return null;
     }
 }
