@@ -89,15 +89,25 @@ public class Mappings {
         try {
             File mappingsFile = new File(Granite.instance.getServerConfig().getMappingsFile().getAbsolutePath());
             String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.1.json";
-            HttpRequest req = HttpRequest.get(url);
-            if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
-                Granite.instance.getLogger().info("Querying Granite for updates");
+            try {
+                HttpRequest req = HttpRequest.get(url);
+
+                if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
+                    Granite.instance.getLogger().info("Querying Granite for updates");
+                    if (!mappingsFile.exists()) {
+                        Granite.instance.getLogger().warn("Could not find mappings.json");
+                        downloadMappings(mappingsFile, url, req);
+                    } else if (!Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
+                        Granite.instance.getLogger().info("Update found");
+                        downloadMappings(mappingsFile, url, req);
+                    }
+                }
+            } catch (HttpRequest.HttpRequestException e) {
+                Granite.instance.getLogger().warn("Could not reach Granite mappings, falling back to local");
+
                 if (!mappingsFile.exists()) {
-                    Granite.instance.getLogger().warn("Could not find mappings.json");
-                    downloadMappings(mappingsFile, url, req);
-                } else if (!Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
-                    Granite.instance.getLogger().info("Update found");
-                    downloadMappings(mappingsFile, url, req);
+                    Granite.instance.getLogger().warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
+                    System.exit(1);
                 }
             }
             file = ConfigFactory.parseReader(
