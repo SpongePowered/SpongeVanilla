@@ -23,6 +23,10 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.graniteToMinecraftChatComponent;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -32,7 +36,12 @@ import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCFoodStats;
+import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPlayerCapabilities;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.sound.SoundType;
@@ -47,9 +56,11 @@ import org.spongepowered.api.text.title.Titles;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implements Player {
     private Optional<Message> displayName = Optional.absent();
@@ -190,7 +201,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[0]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().getCurrentItem()));
     }
 
     @Override
