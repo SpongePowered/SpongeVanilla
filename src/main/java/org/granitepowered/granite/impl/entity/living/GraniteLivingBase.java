@@ -116,7 +116,7 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public void setLastAttacker(Living lastAttacker) {
-        obj.fieldSet$lastAttacker((MCEntityLiving) unwrap(lastAttacker));
+        obj.fieldSet$lastAttacker((MCEntityLivingBase) unwrap(lastAttacker));
     }
 
     @Override

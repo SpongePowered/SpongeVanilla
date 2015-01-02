@@ -240,7 +240,7 @@ public class BytecodeClass {
                         bytecode.addLoad(1, mcField.getType());
 
                         if (!mcField.getType().isPrimitive()) {
-                            bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
+                            bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast",
                                                      "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
