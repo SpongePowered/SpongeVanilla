@@ -251,19 +251,18 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume) {
-        // TODO: Sound API
-        throw new NotImplementedException("");
+        this.playSound(sound, position, volume, 1.0f);
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch) {
-        // TODO: Sound API
-        throw new NotImplementedException("");
+        this.obj.playSoundEffect(position.getX(), position.getY(), position.getZ(), sound.getName(), (float) volume, (float) pitch);
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
-        // TODO: Sound API
+        // Can't find method to set minVolume?
+
         throw new NotImplementedException("");
     }
 
