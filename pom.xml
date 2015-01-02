@@ -189,6 +189,9 @@
                         <manifest>
                             <mainClass>${main.class}</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Build-Number>${build.number}</Build-Number>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
