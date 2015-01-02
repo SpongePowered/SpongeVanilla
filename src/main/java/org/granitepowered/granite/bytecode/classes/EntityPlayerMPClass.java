@@ -24,6 +24,7 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import com.google.common.base.Throwables;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import javassist.expr.ExprEditor;
@@ -56,7 +57,7 @@ public class EntityPlayerMPClass extends BytecodeClass {
                         m.replace("$_ = $mArgs[" + param + "];");
                     }
                 } catch (NotFoundException e) {
-                    e.printStackTrace();
+                    Throwables.propagate(e);
                 }
             }
         });

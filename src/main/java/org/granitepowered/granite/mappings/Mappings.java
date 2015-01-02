@@ -24,6 +24,7 @@
 package org.granitepowered.granite.mappings;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.base.Throwables;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.typesafe.config.Config;
@@ -106,7 +107,7 @@ public class Mappings {
                     ConfigParseOptions.defaults().setSyntax(ConfigSyntax.JSON)
             );
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
 
         classes = HashBiMap.create();
@@ -159,7 +160,7 @@ public class Mappings {
                 }
             }
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -171,12 +172,14 @@ public class Mappings {
         try {
             return pool.get((clazz.getName().contains("$$") ? clazz.getSuperclass() : clazz).getName());
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            throw new MappingNotFoundException("Could not find CtClass " + clazz.getName());
         }
-        return null;
     }
 
     public static String getClassName(CtClass ctClass) {
+        if (!ctClasses.inverse().containsKey(ctClass)) {
+            throw new MappingNotFoundException("Could not find CtClass " + ctClass.getName());
+        }
         return ctClasses.inverse().get(ctClass);
     }
 
@@ -187,10 +190,9 @@ public class Mappings {
             try {
                 return getClassName(pool.get(clazz.getName()));
             } catch (NotFoundException e) {
-                e.printStackTrace();
+                throw new MappingNotFoundException("Could not find CtClass " + clazz.getName());
             }
         }
-        return null;
     }
 
     public static Class<?> getClass(String humanClassName) {
@@ -198,14 +200,16 @@ public class Mappings {
             return classes.get(humanClassName);
         } else {
             try {
+                if (!ctClasses.containsKey(humanClassName)) {
+                    throw new MappingNotFoundException("Could not find CtClass " + humanClassName);
+                }
                 Class<?> clazz = Class.forName(ctClasses.get(humanClassName).getName());
                 classes.put(humanClassName, clazz);
                 return clazz;
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new MappingNotFoundException("Could not find class " + humanClassName);
             }
         }
-        return null;
     }
 
     public static Field getField(CtClass clazz, String humanFieldName) {
@@ -223,14 +227,14 @@ public class Mappings {
                     field.setAccessible(true);
                     return field;
                 } catch (NoSuchFieldException | NotFoundException e) {
-                    e.printStackTrace();
+                    throw new MappingNotFoundException("Could not find field " + clazz.getName() + "." + humanFieldName);
                 }
             }
         } else if (!clazz.getName().equals("java.lang.Object")) {
             try {
                 return getField(clazz.getSuperclass(), humanFieldName);
             } catch (NotFoundException e) {
-                e.printStackTrace();
+                throw new MappingNotFoundException("Could not find superclass");
             }
         }
         return null;
@@ -264,7 +268,7 @@ public class Mappings {
                         methods.get(clazz).put(methodName, handle);
                         return handle;
                     } catch (NotFoundException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-                        e.printStackTrace();
+                        throw new MappingNotFoundException("Could not find method " + clazz.getName() + "." + methodName);
                     }
                 }
             }
@@ -314,7 +318,7 @@ public class Mappings {
                 }
             }
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            throw new MappingNotFoundException("Could not find method " + clazz.getName() + "." + methodName);
         }
         return null;
     }
@@ -333,9 +337,8 @@ public class Mappings {
 
             return ctField;
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            throw new MappingNotFoundException("Could not find field " + clazz.getName() + "." + humanFieldName);
         }
-        return null;
     }
 
     public static CtField getCtField(String clazz, String humanCtfieldName) {
@@ -355,7 +358,7 @@ public class Mappings {
         try {
             return handle.invokeWithArguments(ArrayUtils.add(args, 0, object));
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            Throwables.propagate(throwable);
         }
         return null;
     }
@@ -374,5 +377,11 @@ public class Mappings {
 
     public static Object invokeStatic(String className, String methodName, Object... args) {
         return invokeStatic(getClass(className), methodName, args);
+    }
+
+    private static class MappingNotFoundException extends RuntimeException {
+        public MappingNotFoundException(String s) {
+            super(s);
+        }
     }
 }

@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.composite;
 
+import com.google.common.base.Throwables;
 import org.granitepowered.granite.mc.MCInterface;
 
 import java.lang.reflect.Constructor;
@@ -47,7 +48,7 @@ public abstract class Composite<T extends MCInterface> {
         try {
             this.obj = (T) clazz.getConstructor(constructorArgTypes).newInstance(constructorArgs);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -75,7 +76,7 @@ public abstract class Composite<T extends MCInterface> {
         try {
             return Mappings.getField(instance.getClass(), fieldName).get(instance);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }
@@ -89,7 +90,7 @@ public abstract class Composite<T extends MCInterface> {
         try {
             Mappings.getField(instance.getClass(), fieldName).set(instance, value);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -113,7 +114,7 @@ public abstract class Composite<T extends MCInterface> {
                     }
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
             instanceMap.get(compositeType).put(parent, composite);
             return composite;

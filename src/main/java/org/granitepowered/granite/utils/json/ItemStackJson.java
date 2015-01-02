@@ -25,6 +25,7 @@ package org.granitepowered.granite.utils.json;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
+import com.google.common.base.Throwables;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -55,7 +56,7 @@ public class ItemStackJson implements JsonSerializer<GraniteItemStack>, JsonDese
             Object nbt = Mappings.invoke(src.obj, "writeToNBT", Mappings.getClass("NBTTagCompound").newInstance());
             return new JsonPrimitive(nbt.toString());
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }

@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl;
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
@@ -163,7 +164,7 @@ public class GraniteGameRegistry implements GameRegistry {
                             Granite.getInstance().getLogger().info("Registered Art minecraft:" + art.getName());
                         }
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        Throwables.propagate(e);
                     }
                 }
             }
@@ -188,7 +189,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome" + name);
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }*/
     }
 
@@ -210,7 +211,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Block minecraft:" + block.getId());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -230,7 +231,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Dye Color minecraft:" + dyeColor.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -253,7 +254,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Enchantment " + enchantment.getId());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
 
         }
@@ -275,7 +276,7 @@ public class GraniteGameRegistry implements GameRegistry {
                             .info("Registered Environment " + environment.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -307,7 +308,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Horse Color minecraft:" + horseColor.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -327,7 +328,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Horse Style minecraft:" + horseStyle.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -347,7 +348,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Horse Variant minecraft:" + horseVariant.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -370,7 +371,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Item minecraft:" + item.getId());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -390,7 +391,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Ocelot minecraft:" + ocelotType.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -411,7 +412,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Profession minecraft:" + profession.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
 
@@ -466,7 +467,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Career minecraft:" + name);
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
 
@@ -492,7 +493,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Rabbit minecraft:" + rabbitType.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -515,7 +516,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Rotation degrees:" + rotation.getAngle());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }
@@ -535,7 +536,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Skeleton minecraft:" + skeletonType.getName());
                 }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }

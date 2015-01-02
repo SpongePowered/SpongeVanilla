@@ -24,6 +24,7 @@
 package org.granitepowered.granite;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javassist.ClassPool;
@@ -132,7 +133,7 @@ public class GraniteStartupThread extends Thread {
         try {
             Granite.instance.classesDir = Files.createTempDirectory("graniteClasses").toFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
 
         Granite.instance.createGson();
@@ -208,7 +209,7 @@ public class GraniteStartupThread extends Thread {
 
             Granite.instance.getClassesDir().deleteOnExit();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -252,7 +253,7 @@ public class GraniteStartupThread extends Thread {
 
             f.set(null, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -274,7 +275,7 @@ public class GraniteStartupThread extends Thread {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
 
         modifier = new BytecodeModifier();
@@ -315,7 +316,7 @@ public class GraniteStartupThread extends Thread {
         try {
             Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 }

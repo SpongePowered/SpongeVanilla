@@ -26,6 +26,7 @@ package org.granitepowered.granite.utils.json;
 import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
+import com.google.common.base.Throwables;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -91,7 +92,7 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
 
             return new JsonPrimitive("{name:\"" + name + "\",id:\"" + id + "\n,type:\"" + type + "\n}");
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }

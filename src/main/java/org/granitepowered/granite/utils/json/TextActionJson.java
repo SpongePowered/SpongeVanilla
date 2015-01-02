@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.utils.json;
 
+import com.google.common.base.Throwables;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -57,7 +58,7 @@ public class TextActionJson implements JsonSerializer<GraniteTextAction<?>>, Jso
                 try {
                     return new GraniteClickAction.GraniteOpenUrl(new URL(val.getAsString()));
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    Throwables.propagate(e);
                 }
                 break;
             case "run_command":

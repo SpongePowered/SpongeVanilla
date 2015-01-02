@@ -25,6 +25,7 @@ package org.granitepowered.granite.utils;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Function;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
@@ -117,7 +118,7 @@ public class MinecraftUtils {
             return (MCBlockPos) Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class)
                     .newInstance(vector.getX(), vector.getY(), vector.getZ());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }
@@ -134,7 +135,7 @@ public class MinecraftUtils {
             MethodHandle constructor = MethodHandles.lookup().findConstructor(mcClass, MethodType.methodType(void.class, types));
             return (T) constructor.invokeWithArguments(Arrays.asList(args));
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            Throwables.propagate(throwable);
         }
         return null;
     }
