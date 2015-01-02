@@ -160,43 +160,43 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public Optional<ItemStack> getHelmet() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[4]));
-    }
-
-    @Override
-    public void setHelmet(@Nullable ItemStack helmet) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[4] = helmet == null ? null : (MCItemStack) unwrap(helmet);
-    }
-
-    @Override
-    public Optional<ItemStack> getChestplate() {
         return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[3]));
     }
 
     @Override
-    public void setChestplate(@Nullable ItemStack chestplate) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[3] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
+    public void setHelmet(@Nullable ItemStack helmet) {
+        obj.fieldGet$inventory().fieldGet$armorInventory()[3] = helmet == null ? null : (MCItemStack) unwrap(helmet);
     }
 
     @Override
-    public Optional<ItemStack> getLeggings() {
+    public Optional<ItemStack> getChestplate() {
         return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[2]));
     }
 
     @Override
+    public void setChestplate(@Nullable ItemStack chestplate) {
+        obj.fieldGet$inventory().fieldGet$armorInventory()[2] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
+    }
+
+    @Override
+    public Optional<ItemStack> getLeggings() {
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[1]));
+    }
+
+    @Override
     public void setLeggings(@Nullable ItemStack leggings) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[2] = leggings == null ? null : (MCItemStack) unwrap(leggings);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[1] = leggings == null ? null : (MCItemStack) unwrap(leggings);
     }
 
     @Override
     public Optional<ItemStack> getBoots() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[1]));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[0]));
 
     }
 
     @Override
     public void setBoots(@Nullable ItemStack boots) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[1] = boots == null ? null : (MCItemStack) unwrap(boots);
+        obj.fieldGet$inventory().fieldGet$armorInventory()[0] = boots == null ? null : (MCItemStack) unwrap(boots);
     }
 
     @Override
