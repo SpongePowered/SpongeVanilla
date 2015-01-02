@@ -1,15 +1,11 @@
 Granite
 ======
 
-Granite - A different interface for Minecraft 1.8+.
+Granite - A direct implementation of SpongeAPI on the vanilla Minecraft Server.
 
 The purpose of this project is to take a "hands off" approach to vanilla code.
 That is, we _describe_ the code to our composite layer, without actually including any of it.
 Access is gained by composite classes, reflection, proxy classes, interfaces, and classloaders.
-
-**NOTE: These APIs may or may not be completely broken. They shouldn't be, but there's always a chance. Take care.**
-
-Most development happens in the branch `indev`, so don't think the project is inactive just because the last commit to `master` is a week old.
 
 Goals
 ------
@@ -48,8 +44,6 @@ Granite is very easy to setup, assuming you have Git and Maven installed:
 
    `./test.sh`
 
-Windows users will have to do step 4 manually by obtaining a vanilla minecraft_server.jar, and launching the Granite jar from the command line.
-
 You could also use one of our pre-built jars from [Jenkins](http://ci.flaten.it/view/Granite/).
 
 To-do list
@@ -60,14 +54,14 @@ Want to Help?
 ------
 Join us on IRC: irc.esper.net **#granite**
 
-If you'd like to contribute, make a pull request- we read and consider them all very carefully.
+If you'd like to contribute, make a pull request - we read and consider them all very carefully.
 Should you decide to contribute to the project, please read our [contribution guidelines](https://github.com/GraniteTeam/Granite/blob/master/CONTRIBUTING.md).
 
-You can also visit our website at http://www.granitemc.org/ .
+You can also visit our website at http://www.granitepowered.org/ .
 
 License (MIT)
 -------
-Copyright (c) 2014 Granite Team
+Copyright (c) 2014-2015 Granite Team
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

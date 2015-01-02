@@ -24,8 +24,7 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityPlayerMP")
-public interface MCEntityPlayerMP extends MCEntityLiving {
-
+public interface MCEntityPlayerMP extends MCEntityLivingBase {
     MCPlayerCapabilities fieldGet$capabilities();
 
     MCFoodStats fieldGet$foodStats();
@@ -35,6 +34,8 @@ public interface MCEntityPlayerMP extends MCEntityLiving {
     MCContainer fieldGet$openContainer();
 
     String fieldGet$translator();
+
+    MCInventoryPlayer fieldGet$inventory();
 
     //void addChatComponentMessage(MCChatComponent component);
 
