@@ -146,7 +146,8 @@ public class GraniteGameRegistry implements GameRegistry {
         registerHorseVariants();
         registerItems();
         registerOcelots();
-        registerProfessionsAndCareers();
+        registerProfessions();
+        registerCareers();
         registerRabbits();
         registerRotations();
         registerSkeletons();
@@ -433,7 +434,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     // TODO: THIS IS BIG, FAT AND UGLY. And need redoing if possible.
-    private void registerProfessionsAndCareers() {
+    private void registerProfessions() {
         Granite.instance.getLogger().info("Registering Professions");
 
         for (Field field : Professions.class.getDeclaredFields()) {
@@ -451,7 +452,9 @@ public class GraniteGameRegistry implements GameRegistry {
                 e.printStackTrace();
             }
         }
+    }
 
+    private void registerCareers(){
         Granite.instance.getLogger().info("Registering Careers");
 
         List<Career> farmers = new ArrayList<>();
