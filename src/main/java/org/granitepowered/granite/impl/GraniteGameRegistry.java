@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl;
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
@@ -762,8 +763,8 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public List<GameMode> getGameModes() {
-        return new ArrayList<>(gamemodes.values());
+    public ImmutableList<GameMode> getGameModes() {
+        return (ImmutableList)gamemodes.values();
     }
 
     @Override
