@@ -764,7 +764,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public ImmutableList<GameMode> getGameModes() {
-        return (ImmutableList)gamemodes.values();
+        return ImmutableList.copyOf(gamemodes.values());
     }
 
     @Override
