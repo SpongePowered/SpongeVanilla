@@ -25,6 +25,7 @@ package org.granitepowered.granite.bytecode.classes;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
+import com.google.common.base.Throwables;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
 import javassist.NotFoundException;
@@ -61,7 +62,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
                         m.replace("$_ = $proceed((" + Mappings.getCtClass("IChatComponent").getName() + ") $mArgs[" + param + "]);");
                     }
                 } catch (NotFoundException e) {
-                    e.printStackTrace();
+                    Throwables.propagate(e);
                 }
             }
         });

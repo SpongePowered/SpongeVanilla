@@ -38,7 +38,7 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     public GraniteItemStackBuilder() {
         this.itemType = ItemTypes.STONE;
         this.damage = 0;
-        this.quantity = 0;
+        this.quantity = 1;
     }
 
     @Override

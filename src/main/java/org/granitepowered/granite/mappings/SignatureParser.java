@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.mappings;
 
+import com.google.common.base.Throwables;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.bytecode.BadBytecode;
@@ -60,7 +61,7 @@ public class SignatureParser {
         try {
             sig = SignatureAttribute.toMethodSignature("(" + signature.split("\\(")[1]);
         } catch (BadBytecode badBytecode) {
-            badBytecode.printStackTrace();
+            Throwables.propagate(badBytecode);
         }
 
         CtClass[] paramClassTypes = new CtClass[sig.getParameterTypes().length];
@@ -103,7 +104,7 @@ public class SignatureParser {
                 try {
                     arr[i] = paramTypes[i].toClass();
                 } catch (CannotCompileException e) {
-                    e.printStackTrace();
+                    Throwables.propagate(e);
                 }
             }
             return arr;
@@ -113,7 +114,7 @@ public class SignatureParser {
             try {
                 return returnType.toClass();
             } catch (CannotCompileException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
             return null;
         }

@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.bytecode;
 
+import com.google.common.base.Throwables;
 import com.google.common.reflect.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -76,7 +77,7 @@ public class BytecodeModifier {
                 bc.writeClass();
             }
         } catch (IOException | NotFoundException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 

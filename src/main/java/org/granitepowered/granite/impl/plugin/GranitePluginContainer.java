@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.plugin;
 
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
@@ -54,7 +55,7 @@ public class GranitePluginContainer implements PluginContainer {
         try {
             instance = clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 

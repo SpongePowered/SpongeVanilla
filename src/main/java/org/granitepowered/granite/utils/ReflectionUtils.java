@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.utils;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import javassist.CtClass;
@@ -81,7 +82,7 @@ public class ReflectionUtils {
             modifiersField.setAccessible(true);
             modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -132,7 +133,7 @@ public class ReflectionUtils {
         try {
             return m.invoke(instance, args);
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            Throwables.propagate(throwable);
         }
         return null;
     }
@@ -148,6 +149,7 @@ public class ReflectionUtils {
      * @param args            The objects to pass to the constructor as arguments
      * @return A new instance of the source object, with a proxy on top
      */
+    @Deprecated
     public static Object createProxy(Object source, MethodHandler handler, boolean createIdentical, Class<?>[] paramTypes, Object... args) {
         ProxyFactory pf = new ProxyFactory();
         pf.setSuperclass(ReflectionUtils.extractClass(source));
@@ -163,7 +165,7 @@ public class ReflectionUtils {
 
             return proxy;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }
@@ -281,7 +283,7 @@ public class ReflectionUtils {
 
                 return out;
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
         return input;

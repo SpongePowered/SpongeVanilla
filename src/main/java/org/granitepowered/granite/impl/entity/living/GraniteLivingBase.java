@@ -25,6 +25,7 @@ package org.granitepowered.granite.impl.entity.living;
 
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
@@ -116,7 +117,7 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public void setLastAttacker(Living lastAttacker) {
-        obj.fieldSet$lastAttacker((MCEntityLiving) unwrap(lastAttacker));
+        obj.fieldSet$lastAttacker((MCEntityLivingBase) unwrap(lastAttacker));
     }
 
     @Override

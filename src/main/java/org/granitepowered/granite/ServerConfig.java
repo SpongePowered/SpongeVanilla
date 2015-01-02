@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite;
 
+import com.google.common.base.Throwables;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigRenderOptions;
@@ -46,7 +47,7 @@ public class ServerConfig {
         try (Reader confReader = new InputStreamReader(getClass().getResourceAsStream("/granite.conf"))) {
             config = config.withFallback(ConfigFactory.parseReader(confReader));
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
 
         save();
@@ -62,7 +63,7 @@ public class ServerConfig {
         try {
             FileUtils.write(configLocation, saved);
         } catch (IOException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 

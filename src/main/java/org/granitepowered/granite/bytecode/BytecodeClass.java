@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.bytecode;
 
+import com.google.common.base.Throwables;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CodeConverter;
@@ -105,7 +106,7 @@ public class BytecodeClass {
                         f.setAccessible(true);
                         f.set(null, m);
                     } catch (NoSuchFieldException | NoSuchMethodException | NotFoundException | IllegalAccessException e) {
-                        e.printStackTrace();
+                        Throwables.propagate(e);
                     }
                 }
             });
@@ -119,7 +120,7 @@ public class BytecodeClass {
 
             classesToLoad.add(method.getDeclaringClass().getName());
         } catch (NotFoundException | CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -137,7 +138,7 @@ public class BytecodeClass {
             f.setModifiers(0x0008); // static
             clazz.addField(f);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
 
         callbacks.add(callback);
@@ -152,7 +153,7 @@ public class BytecodeClass {
                     f.setAccessible(true);
                     f.set(null, value);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    Throwables.propagate(e);
                 }
             }
         });
@@ -185,7 +186,7 @@ public class BytecodeClass {
         try {
             return Class.forName(clazz.getName());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return null;
     }
@@ -240,7 +241,7 @@ public class BytecodeClass {
                         bytecode.addLoad(1, mcField.getType());
 
                         if (!mcField.getType().isPrimitive()) {
-                            bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
+                            bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast",
                                                      "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
@@ -290,7 +291,7 @@ public class BytecodeClass {
                 classesToLoad.add(clazz.getName());
             }
         } catch (NotFoundException | CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -299,7 +300,7 @@ public class BytecodeClass {
         try {
             method.setBody(code);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -308,7 +309,7 @@ public class BytecodeClass {
         try {
             method.insertBefore(code);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -317,7 +318,7 @@ public class BytecodeClass {
         try {
             method.insertAfter(code);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -328,7 +329,7 @@ public class BytecodeClass {
             method.addLocalVariable("$mArgs", ClassPool.getDefault().get("java.lang.Object[]"));
             method.insertBefore("$mArgs = $args;");
         } catch (CannotCompileException | NotFoundException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -337,7 +338,7 @@ public class BytecodeClass {
         try {
             method.instrument(editor);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -345,7 +346,7 @@ public class BytecodeClass {
         try {
             clazz.instrument(editor);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -354,7 +355,7 @@ public class BytecodeClass {
         try {
             method.instrument(converter);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -362,7 +363,7 @@ public class BytecodeClass {
         try {
             clazz.instrument(converter);
         } catch (CannotCompileException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
@@ -378,7 +379,7 @@ public class BytecodeClass {
 
             return method.getParameterTypes().length - 1;
         } catch (CannotCompileException | NotFoundException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
         return 0;
     }
@@ -415,7 +416,7 @@ public class BytecodeClass {
                 CtClass ctClass = pool.get(className);
                 ctClass.writeFile(Granite.getInstance().getClassesDir().getAbsolutePath());
             } catch (IOException | NotFoundException | CannotCompileException e) {
-                e.printStackTrace();
+                Throwables.propagate(e);
             }
         }
     }

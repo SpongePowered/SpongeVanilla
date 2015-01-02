@@ -25,6 +25,7 @@ package org.granitepowered.granite.bytecode.classes;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
+import com.google.common.base.Throwables;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
@@ -68,7 +69,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
             quickExitExceptionConstructor = Mappings.getClass("ThreadQuickExitException").getDeclaredConstructor();
             quickExitExceptionConstructor.setAccessible(true);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            Throwables.propagate(e);
         }
     }
 
