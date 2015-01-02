@@ -588,7 +588,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<BlockType> getBlocks() {
-        return (List<BlockType>) blockTypes.values();
+        return ImmutableList.copyOf(blockTypes.values());
     }
 
     @Override
@@ -598,7 +598,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<ItemType> getItems() {
-        return (List<ItemType>) itemTypes.values();
+        return ImmutableList.copyOf(itemTypes.values());
     }
 
     @Override
@@ -608,7 +608,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<BiomeType> getBiomes() {
-        return (List<BiomeType>) biomes.values();
+        return ImmutableList.copyOf(biomes.values());
     }
 
     @Override
@@ -664,7 +664,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<Art> getArts() {
-        return (List<Art>) arts.values();
+        return ImmutableList.copyOf(arts.values());
     }
 
     @Override
@@ -674,7 +674,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<DyeColor> getDyes() {
-        return (List<DyeColor>) dyeColors.values();
+        return ImmutableList.copyOf(dyeColors.values());
     }
 
     @Override
@@ -684,7 +684,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<HorseColor> getHorseColors() {
-        return (List<HorseColor>) horseColors.values();
+        return ImmutableList.copyOf(horseColors.values());
     }
 
     @Override
@@ -694,7 +694,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<HorseStyle> getHorseStyles() {
-        return (List<HorseStyle>) horseStyles.values();
+        return ImmutableList.copyOf(horseStyles.values());
     }
 
     @Override
@@ -704,7 +704,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<HorseVariant> getHorseVariants() {
-        return (List<HorseVariant>) horseVariants.values();
+        return ImmutableList.copyOf(horseVariants.values());
     }
 
     @Override
@@ -714,7 +714,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<OcelotType> getOcelotTypes() {
-        return (List<OcelotType>) ocelots.values();
+        return ImmutableList.copyOf(ocelots.values());
     }
 
     @Override
@@ -724,7 +724,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<RabbitType> getRabbitTypes() {
-        return (List<RabbitType>) rabbits.values();
+        return ImmutableList.copyOf(rabbits.values());
     }
 
     @Override
@@ -734,7 +734,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<SkeletonType> getSkeletonTypes() {
-        return (List<SkeletonType>) skeletons.values();
+        return ImmutableList.copyOf(skeletons.values());
     }
 
     @Override
@@ -744,7 +744,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<Career> getCareers() {
-        return (List<Career>) careers.values();
+        return ImmutableList.copyOf(careers.values());
     }
 
     @Override
@@ -759,7 +759,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<Profession> getProfessions() {
-        return (List<Profession>) professions.values();
+        return ImmutableList.copyOf(professions.values());
     }
 
     @Override
