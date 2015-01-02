@@ -45,7 +45,9 @@ import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.util.GraniteRotation;
 import org.granitepowered.granite.impl.world.GraniteEnvironment;
+import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBiomeGenBase;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCEnchantment;
 import org.granitepowered.granite.mc.MCEnumArt;
@@ -93,8 +95,10 @@ import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.Environment;
 import org.spongepowered.api.world.Environments;
 import org.spongepowered.api.world.biome.BiomeType;
+import org.spongepowered.api.world.biome.BiomeTypes;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -171,8 +175,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerBiomes() {
-        // TODO: Do this later when we see how sponge/mixin goes about doing this :P
-        /*Granite.instance.getLogger().info("Registering Biomes");
+        Granite.instance.getLogger().info("Registering Biomes");
 
         try {
             Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
@@ -183,13 +186,20 @@ public class GraniteGameRegistry implements GameRegistry {
             for (int i = 0; i < fields.length; i++) {
                 String name = "minecraft:" + fields[i].getName().toLowerCase();
                 BiomeType biomeType = new GraniteBiomeType(biomesGenBase[i]);
+
+                fields[i].setAccessible(true);
+
+                Field modifiers = fields[i].getClass().getDeclaredField("modifiers");
+                modifiers.setAccessible(true);
+                modifiers.setInt(fields[i], fields[i].getModifiers() & ~Modifier.FINAL);
+
                 fields[i].set(null, biomeType);
                 biomes.put(name, biomeType);
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome" + name);
+                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome " + name);
             }
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void registerBlocks() {
