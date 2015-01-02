@@ -267,20 +267,17 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume) {
-        // TODO: Sound API
-        throw new NotImplementedException("");
+        this.getWorld().playSound(sound, position, volume, 1.0F);
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch) {
-        // TODO: Sound API
-        throw new NotImplementedException("");
+        this.getWorld().playSound(sound, position, volume, pitch);
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
-        // TODO: Sound API
-        throw new NotImplementedException("");
+        this.getWorld().playSound(sound, position, volume, pitch, minVolume);
     }
 
     @Override

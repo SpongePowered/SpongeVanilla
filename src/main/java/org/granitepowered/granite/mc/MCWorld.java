@@ -53,4 +53,6 @@ public interface MCWorld extends MCInterface {
     int isIndirectlyPowered(MCBlockPos blockPos);
 
     MCBiomeGenBase getBiomeGenForCoords(MCBlockPos blockPos);
+
+    void playSoundEffect(double x, double y, double z, String soundName, float volume, float pitch);
 }
