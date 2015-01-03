@@ -46,6 +46,7 @@ import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.util.GraniteRotation;
+import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
@@ -234,20 +235,23 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 switch (name) {
                     case "overworld":
-                        dimensionType = new GraniteDimensionType();
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface")));
                         field.set(null, dimensionType);
+                        //name = dimensionType.getName().toLowerCase().replace(" ", "_");
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "nether":
-                        dimensionType = new GraniteDimensionType();
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell")));
                         field.set(null, dimensionType);
+                        //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "end":
-                        dimensionType = new GraniteDimensionType();
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd")));
                         field.set(null, dimensionType);
+                        //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;

@@ -23,53 +23,60 @@
 
 package org.granitepowered.granite.impl.world;
 
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mc.MCWorldProvider;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.api.world.DimensionType;
 
-public class GraniteDimension implements Dimension {
+public class GraniteDimension extends Composite<MCWorldProvider> implements Dimension {
+
+    public GraniteDimension(Object obj) {
+        super(obj);
+    }
 
     @Override
     public int getDimensionId() {
-        return 0;
+        return obj.fieldGet$dimensionId();
     }
 
     @Override
     public String getName() {
-        return "";
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean allowsPlayerRespawns() {
-        return false;
+        throw new NotImplementedException("");
     }
 
     @Override
     public void setAllowsPlayerRespawns(boolean b) {
-
+        throw new NotImplementedException("");
     }
 
     @Override
     public int getMinimumSpawnHeight() {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
     public boolean doesWaterEvaporate() {
-        return false;
+        return obj.fieldGet$isHellWorld();
     }
 
     @Override
-    public void setWaterEvaporates(boolean b) {
-
+    public void setWaterEvaporates(boolean isHellWorld) {
+        obj.fieldSet$isHellWorld(isHellWorld);
     }
 
     @Override
     public boolean hasSky() {
-        return false;
+        return !obj.fieldGet$hasNoSky();
     }
 
     @Override
     public DimensionType getType() {
-        return null;
+        return new GraniteDimensionType(this);
     }
 }

@@ -5,18 +5,24 @@ import org.spongepowered.api.world.DimensionType;
 
 public class GraniteDimensionType implements DimensionType {
 
+    Dimension dimension;
+
+    public GraniteDimensionType(Dimension dimension) {
+        this.dimension = dimension;
+    }
+
     @Override
     public String getName() {
-        return null;
+        return dimension.getName();
     }
 
     @Override
     public boolean doesKeepSpawnLoaded() {
-        return false;
+        return dimension.getName().equals("Overworld");
     }
 
     @Override
     public Class<? extends Dimension> getDimensionClass() {
-        return null;
+        return dimension.getClass();
     }
 }

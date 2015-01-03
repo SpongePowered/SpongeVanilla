@@ -141,7 +141,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Dimension getDimension() {
-        throw new NotImplementedException("");
+        return new GraniteDimension(obj.fieldGet$provider());
     }
 
     @Override

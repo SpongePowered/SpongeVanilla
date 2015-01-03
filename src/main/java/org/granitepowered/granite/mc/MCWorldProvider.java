@@ -26,5 +26,11 @@ package org.granitepowered.granite.mc;
 @Implement(name = "WorldProvider")
 public interface MCWorldProvider extends MCInterface {
 
-    MCWorldChunkManager fieldGet$worldChunkMgr();
+    int fieldGet$dimensionId();
+
+    boolean fieldGet$isHellWorld();
+
+    void fieldSet$isHellWorld(boolean isHellWorld);
+
+    boolean fieldGet$hasNoSky();
 }
