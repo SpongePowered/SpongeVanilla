@@ -36,8 +36,6 @@ public class DedicatedServerClass extends BytecodeClass {
     public DedicatedServerClass() {
         super("DedicatedServer");
 
-        replaceMethod("getServerModName", "return \"granite\";");
-
         proxy("startServer", new BytecodeClass.ProxyHandler() {
             @Override
             protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {

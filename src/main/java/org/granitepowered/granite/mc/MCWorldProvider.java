@@ -33,4 +33,10 @@ public interface MCWorldProvider extends MCInterface {
     void fieldSet$isHellWorld(boolean isHellWorld);
 
     boolean fieldGet$hasNoSky();
+
+    String getDimensionName();
+
+    int getAverageGroundLevel();
+
+    boolean canRespawnHere();
 }

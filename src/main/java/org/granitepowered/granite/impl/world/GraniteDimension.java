@@ -25,11 +25,17 @@ package org.granitepowered.granite.impl.world;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCWorldProvider;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.api.world.DimensionType;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
+
 public class GraniteDimension extends Composite<MCWorldProvider> implements Dimension {
+
+    boolean allowPlayerRespawns;
 
     public GraniteDimension(Object obj) {
         super(obj);
@@ -42,12 +48,12 @@ public class GraniteDimension extends Composite<MCWorldProvider> implements Dime
 
     @Override
     public String getName() {
-        throw new NotImplementedException("");
+        return obj.getDimensionName();
     }
 
     @Override
     public boolean allowsPlayerRespawns() {
-        throw new NotImplementedException("");
+        return obj.canRespawnHere();
     }
 
     @Override
@@ -57,7 +63,7 @@ public class GraniteDimension extends Composite<MCWorldProvider> implements Dime
 
     @Override
     public int getMinimumSpawnHeight() {
-        throw new NotImplementedException("");
+        return obj.getAverageGroundLevel();
     }
 
     @Override
