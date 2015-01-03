@@ -235,21 +235,21 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 switch (name) {
                     case "overworld":
-                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface")));
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface").newInstance()));
                         field.set(null, dimensionType);
                         //name = dimensionType.getName().toLowerCase().replace(" ", "_");
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "nether":
-                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell")));
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell").newInstance()));
                         field.set(null, dimensionType);
                         //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "end":
-                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd")));
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd").newInstance()));
                         field.set(null, dimensionType);
                         //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
@@ -259,7 +259,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 if (Main.debugLog && registered) {
                     Granite.getInstance().getLogger().info("Registered Dimension minecraft:" + name);
                 }
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
