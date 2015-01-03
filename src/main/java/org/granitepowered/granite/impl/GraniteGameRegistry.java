@@ -237,21 +237,18 @@ public class GraniteGameRegistry implements GameRegistry {
                     case "overworld":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface").newInstance()));
                         field.set(null, dimensionType);
-                        //name = dimensionType.getName().toLowerCase().replace(" ", "_");
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "nether":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell").newInstance()));
                         field.set(null, dimensionType);
-                        //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "end":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd").newInstance()));
                         field.set(null, dimensionType);
-                        //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;

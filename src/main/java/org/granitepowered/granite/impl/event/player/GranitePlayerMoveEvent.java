@@ -24,12 +24,11 @@
 package org.granitepowered.granite.impl.event.player;
 
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.event.player.PlayerJoinEvent;
 import org.spongepowered.api.event.player.PlayerMoveEvent;
-import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.world.Location;
 
 public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
+
     Location old;
     Location new_;
 

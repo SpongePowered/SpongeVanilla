@@ -106,7 +106,8 @@ public class Mappings {
                 Granite.instance.getLogger().warn("Could not reach Granite mappings, falling back to local");
 
                 if (!mappingsFile.exists()) {
-                    Granite.instance.getLogger().warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
+                    Granite.instance.getLogger()
+                            .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
                     System.exit(1);
                 }
             }
@@ -390,6 +391,7 @@ public class Mappings {
     }
 
     private static class MappingNotFoundException extends RuntimeException {
+
         public MappingNotFoundException(String s) {
             super(s);
         }

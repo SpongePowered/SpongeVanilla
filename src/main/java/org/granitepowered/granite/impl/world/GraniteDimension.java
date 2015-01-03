@@ -23,21 +23,19 @@
 
 package org.granitepowered.granite.impl.world;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCWorldProvider;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.api.world.DimensionType;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Method;
-
 public class GraniteDimension extends Composite<MCWorldProvider> implements Dimension {
+
     boolean allowPlayerRespawns;
 
     public GraniteDimension(Object obj) {
         super(obj);
+        allowPlayerRespawns = obj.getClass().isAssignableFrom(Mappings.getClass("WorldProviderSurface"));
     }
 
     @Override
@@ -56,8 +54,8 @@ public class GraniteDimension extends Composite<MCWorldProvider> implements Dime
     }
 
     @Override
-    public void setAllowsPlayerRespawns(boolean b) {
-        throw new NotImplementedException("");
+    public void setAllowsPlayerRespawns(boolean canRespawn) {
+        allowPlayerRespawns = canRespawn;
     }
 
     @Override

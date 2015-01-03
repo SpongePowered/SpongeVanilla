@@ -32,7 +32,14 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
@@ -70,7 +77,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -82,6 +88,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class GraniteStartupThread extends Thread {
+
     String[] args;
     BytecodeModifier modifier;
 
@@ -95,7 +102,9 @@ public class GraniteStartupThread extends Thread {
 
     public void run() {
         Properties mavenProp = new Properties();
-        InputStream mavenIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
+        InputStream
+                mavenIn =
+                java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
         if (mavenIn != null) {
             try {
                 mavenProp.load(mavenIn);
@@ -115,7 +124,9 @@ public class GraniteStartupThread extends Thread {
         }
 
         Properties manifestProp = new Properties();
-        InputStream manifestIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
+        InputStream
+                manifestIn =
+                java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
         if (manifestIn != null) {
             try {
                 manifestProp.load(manifestIn);

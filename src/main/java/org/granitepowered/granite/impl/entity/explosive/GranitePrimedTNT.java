@@ -23,13 +23,13 @@
 
 package org.granitepowered.granite.impl.entity.explosive;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mc.MCPrimedTNT;
 import org.spongepowered.api.entity.explosive.PrimedTNT;
 import org.spongepowered.api.entity.living.Living;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GranitePrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
 

@@ -23,13 +23,14 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.mc.MCInterface;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 public class WorldProviderClass extends BytecodeClass {
+
     public WorldProviderClass() {
         super("WorldProvider");
 

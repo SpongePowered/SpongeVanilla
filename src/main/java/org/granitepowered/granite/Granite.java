@@ -54,16 +54,13 @@ import javax.inject.Inject;
 public class Granite {
 
     public static Granite instance;
-
-    // Not injected directly; initialization is done after classes are rewritten
-    GraniteServer server;
-
     final GranitePluginManager pluginManager;
     final GraniteGameRegistry gameRegistry;
     final GraniteEventManager eventManager;
     final CommandService commandService;
     final ServiceManager serviceManager;
-
+    // Not injected directly; initialization is done after classes are rewritten
+    GraniteServer server;
     String version;
     ServerConfig serverConfig;
     ClassPool classPool;
@@ -83,6 +80,10 @@ public class Granite {
         version = "UNKNOWN";
     }
 
+    public static Granite getInstance() {
+        return instance;
+    }
+
     public void createGson() {
         GsonBuilder builder = new GsonBuilder();
 
@@ -91,10 +92,6 @@ public class Granite {
         builder.registerTypeAdapter(GraniteEntity.class, new EntityJson());
         builder.registerTypeAdapter(GraniteItemStack.class, new ItemStackJson());
         gson = builder.create();
-    }
-
-    public static Granite getInstance() {
-        return instance;
     }
 
     public String getVersion() {

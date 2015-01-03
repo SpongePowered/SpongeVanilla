@@ -23,14 +23,13 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import org.apache.commons.lang3.NotImplementedException;
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 import org.granitepowered.granite.mc.MCBlockState;
 import org.granitepowered.granite.mc.MCEntityFallingBlock;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.FallingBlock;
-
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteFallingBlock extends GraniteEntity<MCEntityFallingBlock> implements FallingBlock {
 

@@ -25,11 +25,18 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "C03PacketPlayer")
 public interface MCPacketPlayer extends MCPacket {
+
     double fieldGet$x();
+
     double fieldGet$y();
+
     double fieldGet$z();
+
     float fieldGet$yaw();
+
     float fieldGet$pitch();
+
     boolean fieldGet$field_149480_h();
+
     boolean fieldGet$rotating();
 }

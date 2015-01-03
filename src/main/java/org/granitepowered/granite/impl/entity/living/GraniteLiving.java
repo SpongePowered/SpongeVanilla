@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl.entity.living;
 import org.granitepowered.granite.mc.MCEntityLiving;
 
 public class GraniteLiving extends GraniteLivingBase<MCEntityLiving> {
+
     public GraniteLiving(MCEntityLiving obj) {
         super(obj);
     }

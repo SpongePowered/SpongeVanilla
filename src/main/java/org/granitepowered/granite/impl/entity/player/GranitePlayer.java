@@ -54,7 +54,6 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +61,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implements Player {
+
     private Optional<Message> displayName = Optional.absent();
 
     public GranitePlayer(MCEntityPlayerMP obj) {
