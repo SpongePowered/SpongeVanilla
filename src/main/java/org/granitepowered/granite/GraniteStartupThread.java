@@ -126,7 +126,7 @@ public class GraniteStartupThread extends Thread {
             try {
                 manifestProp.load(manifestIn);
 
-                if (manifestProp.getProperty("Build-Number").equals("NA")) {
+                if (manifestProp.getProperty("Build-Number") == null || manifestProp.getProperty("Build-Number").equals("NA")) {
                     buildNumber = -1;
                 } else {
                     buildNumber = Integer.parseInt(manifestProp.getProperty("Build-Number"));
@@ -304,7 +304,9 @@ public class GraniteStartupThread extends Thread {
                         if (entry.isDirectory()) {
                             f.mkdirs();
                         } else {
-                            IOUtils.copy(file.getInputStream(entry), new FileOutputStream(f));
+                            FileOutputStream os = new FileOutputStream(f);
+                            IOUtils.copy(file.getInputStream(entry), os);
+                            os.close();
                         }
                     }
 
