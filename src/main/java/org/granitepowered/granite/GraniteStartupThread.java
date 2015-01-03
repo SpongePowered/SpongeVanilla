@@ -92,8 +92,9 @@ public class GraniteStartupThread extends Thread {
     String[] args;
     BytecodeModifier modifier;
 
-    int buildNumber = -1;
-    String version;
+    String serverVersion = "UNKNOWN";
+    String apiVersion = "UNKNOWN";
+    String buildNumber = "UNKNOWN";
 
     public GraniteStartupThread(String args[]) {
         this.args = args;
@@ -101,45 +102,30 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void run() {
-        Properties mavenProp = new Properties();
-        InputStream
-                mavenIn =
-                java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
-        if (mavenIn != null) {
+        Properties versionProp = new Properties();
+        InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("version.properties");
+        if (versionIn != null) {
             try {
-                mavenProp.load(mavenIn);
+                versionProp.load(versionIn);
 
-                version = mavenProp.getProperty("version");
-            } catch (IOException ignored) {
-            } finally {
-                try {
-                    mavenIn.close();
-                } catch (IOException ignored) {
+                String server = versionProp.getProperty("server");
+                if (server != null) {
+                    serverVersion = server;
                 }
-            }
-        }
 
-        if (version == null) {
-            version = "UNKNOWN";
-        }
+                String api = versionProp.getProperty("api");
+                if (api != null) {
+                    apiVersion = api;
+                }
 
-        Properties manifestProp = new Properties();
-        InputStream
-                manifestIn =
-                java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
-        if (manifestIn != null) {
-            try {
-                manifestProp.load(manifestIn);
-
-                if (manifestProp.getProperty("Build-Number") == null || manifestProp.getProperty("Build-Number").equals("NA")) {
-                    buildNumber = -1;
-                } else {
-                    buildNumber = Integer.parseInt(manifestProp.getProperty("Build-Number"));
+                String build = versionProp.getProperty("build");
+                if (build != null && !build.equals("NA")) {
+                    buildNumber = build;
                 }
             } catch (IOException ignored) {
             } finally {
                 try {
-                    manifestIn.close();
+                    versionIn.close();
                 } catch (IOException ignored) {
                 }
             }
@@ -148,7 +134,7 @@ public class GraniteStartupThread extends Thread {
         Injector injector = Guice.createInjector(new GraniteGuiceModule());
 
         Granite.instance = injector.getInstance(Granite.class);
-        Granite.instance.version = version;
+        Granite.instance.version = serverVersion;
         Granite.instance.logger = LoggerFactory.getLogger("Granite");
 
         Granite.instance.serverConfig = new ServerConfig();
@@ -184,7 +170,7 @@ public class GraniteStartupThread extends Thread {
 
         Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
 
-        Granite.instance.getLogger().info("Starting Granite version " + version + " build " + (buildNumber <= 0 ? "UNKNOWN" : buildNumber));
+        Granite.instance.getLogger().info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
 
         Date date = new Date();
         String day = new SimpleDateFormat("dd").format(date);
@@ -294,7 +280,7 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new ServerConfigurationManagerClass());
             modifier.add(new WorldProviderClass());
 
-            if (buildNumber == -1 || !buildNumberFile.exists() || Integer.parseInt(FileUtils.readFileToString(buildNumberFile)) != buildNumber) {
+            if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || FileUtils.readFileToString(buildNumberFile) != buildNumber) {
                 Granite.instance.getLogger().info("Modifying bytecode");
 
                 FileUtils.deleteDirectory(Granite.instance.getClassesDir());
@@ -359,3 +345,4 @@ public class GraniteStartupThread extends Thread {
         }
     }
 }
+
