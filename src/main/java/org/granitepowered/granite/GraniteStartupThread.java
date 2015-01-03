@@ -29,6 +29,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javassist.ClassPool;
 import javassist.NotFoundException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
@@ -87,9 +88,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class GraniteStartupThread extends Thread {
-
     String[] args;
     BytecodeModifier modifier;
+
+    int buildNumber = -1;
+    String version;
 
     public GraniteStartupThread(String args[]) {
         this.args = args;
@@ -97,19 +100,17 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void run() {
-        String version = null;
-
         Properties mavenProp = new Properties();
-        InputStream in = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
-        if (in != null) {
+        InputStream mavenIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
+        if (mavenIn != null) {
             try {
-                mavenProp.load(in);
+                mavenProp.load(mavenIn);
 
                 version = mavenProp.getProperty("version");
             } catch (IOException ignored) {
             } finally {
                 try {
-                    in.close();
+                    mavenIn.close();
                 } catch (IOException ignored) {
                 }
             }
@@ -117,6 +118,26 @@ public class GraniteStartupThread extends Thread {
 
         if (version == null) {
             version = "UNKNOWN";
+        }
+
+        Properties manifestProp = new Properties();
+        InputStream manifestIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("META-INF/maven/org.granitepowered/granite/pom.properties");
+        if (manifestIn != null) {
+            try {
+                manifestProp.load(manifestIn);
+
+                if (manifestProp.getProperty("Build-Number").equals("NA")) {
+                    buildNumber = -1;
+                } else {
+                    buildNumber = Integer.parseInt(manifestProp.getProperty("Build-Number"));
+                }
+            } catch (IOException ignored) {
+            } finally {
+                try {
+                    manifestIn.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
 
         Injector injector = Guice.createInjector(new GraniteGuiceModule());
@@ -130,11 +151,8 @@ public class GraniteStartupThread extends Thread {
 
         Granite.instance.eventManager.post(new GraniteConstructionEvent());
 
-        try {
-            Granite.instance.classesDir = Files.createTempDirectory("graniteClasses").toFile();
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
+        Granite.instance.classesDir = new File("classes/");
+        Granite.instance.classesDir.mkdirs();
 
         Granite.instance.createGson();
 
@@ -161,7 +179,7 @@ public class GraniteStartupThread extends Thread {
 
         Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
 
-        Granite.instance.getLogger().info("Starting Granite version " + version);
+        Granite.instance.getLogger().info("Starting Granite version " + version + " build " + (buildNumber <= 0 ? "UNKNOWN" : buildNumber));
 
         Date date = new Date();
         String day = new SimpleDateFormat("dd").format(date);
@@ -258,37 +276,50 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void modifyBytecode() {
-        Granite.instance.getLogger().info("Modifying bytecode");
-
+        File buildNumberFile = new File(Granite.instance.getClassesDir(), "buildnumber.txt");
         try {
-            JarFile file = new JarFile(Granite.instance.getServerConfig().getMinecraftJar());
-            Enumeration<JarEntry> entries = file.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
+            modifier = new BytecodeModifier();
 
-                File f = new File(Granite.instance.getClassesDir() + java.io.File.separator + entry.getName());
+            modifier.add(new CommandHandlerClass());
+            modifier.add(new DedicatedServerClass());
+            modifier.add(new EntityPlayerMPClass());
+            modifier.add(new ItemInWorldManagerClass());
+            modifier.add(new ItemStackClass());
+            modifier.add(new NetHandlerPlayServerClass());
+            modifier.add(new ServerConfigurationManagerClass());
 
-                if (entry.isDirectory()) {
-                    f.mkdirs();
-                } else {
-                    IOUtils.copy(file.getInputStream(entry), new FileOutputStream(f));
+            if (buildNumber == -1 || !buildNumberFile.exists() || Integer.parseInt(FileUtils.readFileToString(buildNumberFile)) != buildNumber) {
+                Granite.instance.getLogger().info("Modifying bytecode");
+
+                FileUtils.deleteDirectory(Granite.instance.getClassesDir());
+
+                try {
+                    JarFile file = new JarFile(Granite.instance.getServerConfig().getMinecraftJar());
+                    Enumeration<JarEntry> entries = file.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+
+                        File f = new File(Granite.instance.getClassesDir() + java.io.File.separator + entry.getName());
+
+                        if (entry.isDirectory()) {
+                            f.mkdirs();
+                        } else {
+                            IOUtils.copy(file.getInputStream(entry), new FileOutputStream(f));
+                        }
+                    }
+
+                    modifier.modify();
+
+                    FileUtils.write(buildNumberFile, buildNumber + "");
+                } catch (IOException e) {
+                    Throwables.propagate(e);
                 }
+            } else {
+                Granite.instance.getLogger().info("Found pre-modified bytecode in classes/, loading that");
             }
         } catch (IOException e) {
             Throwables.propagate(e);
         }
-
-        modifier = new BytecodeModifier();
-
-        modifier.add(new CommandHandlerClass());
-        modifier.add(new DedicatedServerClass());
-        modifier.add(new EntityPlayerMPClass());
-        modifier.add(new ItemInWorldManagerClass());
-        modifier.add(new ItemStackClass());
-        modifier.add(new NetHandlerPlayServerClass());
-        modifier.add(new ServerConfigurationManagerClass());
-
-        modifier.modify();
     }
 
     private void bootstrap() {
