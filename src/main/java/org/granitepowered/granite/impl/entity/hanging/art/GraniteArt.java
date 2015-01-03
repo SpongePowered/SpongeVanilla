@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.meta;
+package org.granitepowered.granite.impl.entity.hanging.art;
 
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCEnumArt;

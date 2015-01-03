@@ -24,9 +24,13 @@
 package org.granitepowered.granite.impl.entity;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.mc.MCBlockState;
 import org.granitepowered.granite.mc.MCEntityFallingBlock;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.FallingBlock;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteFallingBlock extends GraniteEntity<MCEntityFallingBlock> implements FallingBlock {
 
@@ -56,12 +60,12 @@ public class GraniteFallingBlock extends GraniteEntity<MCEntityFallingBlock> imp
 
     @Override
     public BlockState getBlockState() {
-        throw new NotImplementedException("");
+        return wrap(obj.fieldGet$field_175132_d());
     }
 
     @Override
     public void setBlockState(BlockState blockState) {
-        throw new NotImplementedException("");
+        obj.fieldSet$field_175132_d((MCBlockState) unwrap(blockState));
     }
 
     @Override

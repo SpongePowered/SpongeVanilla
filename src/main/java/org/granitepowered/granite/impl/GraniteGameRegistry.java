@@ -32,7 +32,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteArt;
+import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseStyle;

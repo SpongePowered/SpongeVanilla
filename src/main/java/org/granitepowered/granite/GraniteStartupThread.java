@@ -32,13 +32,7 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
-import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
-import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
-import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
-import org.granitepowered.granite.bytecode.classes.ItemStackClass;
-import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
-import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.*;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
@@ -287,6 +281,7 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new ItemStackClass());
             modifier.add(new NetHandlerPlayServerClass());
             modifier.add(new ServerConfigurationManagerClass());
+            modifier.add(new WorldProviderClass());
 
             if (buildNumber == -1 || !buildNumberFile.exists() || Integer.parseInt(FileUtils.readFileToString(buildNumberFile)) != buildNumber) {
                 Granite.instance.getLogger().info("Modifying bytecode");

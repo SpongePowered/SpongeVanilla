@@ -34,7 +34,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 
 public class GraniteDimension extends Composite<MCWorldProvider> implements Dimension {
-
     boolean allowPlayerRespawns;
 
     public GraniteDimension(Object obj) {
@@ -53,7 +52,7 @@ public class GraniteDimension extends Composite<MCWorldProvider> implements Dime
 
     @Override
     public boolean allowsPlayerRespawns() {
-        return obj.canRespawnHere();
+        return allowPlayerRespawns;
     }
 
     @Override

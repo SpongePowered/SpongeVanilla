@@ -21,28 +21,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.bytecode.classes;
 
-@Implement(name = "EntityFallingBlock")
-public interface MCEntityFallingBlock extends MCInterface, MCEntity {
+import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.impl.world.GraniteDimension;
+import org.granitepowered.granite.mc.MCInterface;
 
-    float fieldGet$fallHurtAmount();
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
-    void fieldSet$fallHurtAmount(float amount);
+public class WorldProviderClass extends BytecodeClass {
+    public WorldProviderClass() {
+        super("WorldProvider");
 
-    int fieldGet$fallHurtMax();
-
-    void fieldSet$fallHurtMax(int amount);
-
-    boolean fieldGet$canPlaceAsBlock();
-
-    void fieldSet$canPlaceAsBlock(boolean canPlace);
-
-    boolean fieldGet$shouldDropItem();
-
-    void fieldSet$shouldDropItem(boolean drop);
-
-    MCBlockState fieldGet$field_175132_d();
-
-    void fieldSet$field_175132_d(MCBlockState state);
+        proxy("canRespawnHere", new ProxyHandler() {
+            @Override
+            protected Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+                return ((GraniteDimension) wrap((MCInterface) caller)).allowsPlayerRespawns();
+            }
+        });
+    }
 }

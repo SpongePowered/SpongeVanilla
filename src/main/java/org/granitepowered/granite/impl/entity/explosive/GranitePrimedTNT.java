@@ -29,6 +29,8 @@ import org.granitepowered.granite.mc.MCPrimedTNT;
 import org.spongepowered.api.entity.explosive.PrimedTNT;
 import org.spongepowered.api.entity.living.Living;
 
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+
 public class GranitePrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
 
     public GranitePrimedTNT(MCPrimedTNT obj) {
@@ -37,7 +39,7 @@ public class GranitePrimedTNT extends GraniteEntity<MCPrimedTNT> implements Prim
 
     @Override
     public Optional<Living> getDetonator() {
-        return (Optional<Living>) obj.fieldGet$tntTriggeredBy();
+        return Optional.fromNullable((Living) wrap(obj.fieldGet$tntTriggeredBy()));
     }
 
     @Override
