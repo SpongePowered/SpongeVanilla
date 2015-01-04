@@ -196,26 +196,26 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 // Run loop over all Minecraft biomes
                 for (MCBiomeGenBase biome : biomesGenBase) {
-                    String fieldName = f.getName();
+                    String fieldName = f.getName().toLowerCase();
 
                     // Some Sponge biome names aren't equal to the names defined in the Minecraft class, rename them to their correct name
-                    if (f.getName().equalsIgnoreCase("sky")) {
+                    if (fieldName.equals("sky")) {
                         fieldName = "the_end";
-                    } else if (f.getName().equalsIgnoreCase("extreme_hills_plus")) {
+                    } else if (fieldName.equals("extreme_hills_plus")) {
                         fieldName = "Extreme_Hills+";
-                    } else if (f.getName().equalsIgnoreCase("frozen_ocean") || f.getName().equalsIgnoreCase("frozen_river") || f.getName().equalsIgnoreCase("Mushroom_Island") || f.getName().equalsIgnoreCase("Mushroom_Island_shore") || f.getName().equalsIgnoreCase("desert_hills") || f.getName().equalsIgnoreCase("forest_hills") || f.getName().equalsIgnoreCase("taiga_hills") || f.getName().equalsIgnoreCase("Jungle_Hills") || f.getName().equalsIgnoreCase("Jungle_Edge")) {
+                    } else if (fieldName.equals("frozen_ocean") || f.getName().equalsIgnoreCase("frozen_river") || f.getName().equalsIgnoreCase("Mushroom_Island") || f.getName().equalsIgnoreCase("Mushroom_Island_shore") || f.getName().equalsIgnoreCase("desert_hills") || f.getName().equalsIgnoreCase("forest_hills") || f.getName().equalsIgnoreCase("taiga_hills") || f.getName().equalsIgnoreCase("Jungle_Hills") || f.getName().equalsIgnoreCase("Jungle_Edge")) {
                         fieldName = fieldName.replace("_", "");
-                    } else if (f.getName().equalsIgnoreCase("mesa_plateau_forest")) {
+                    } else if (fieldName.equals("mesa_plateau_forest")) {
                         fieldName = "Mesa_Plateau_F";
                     }
 
-                    String biomeName = biome.fieldGet$biomeName().replace(" ", "_");
+                    String biomeName = biome.fieldGet$biomeName().toLowerCase().replace(" ", "_");
 
                     /**
                      * Here the magic happens, if the sponge biome name is equal to the minecraft biome name, place that biome into their correct field
                      * The biome is found so break the loop and continue to find the next biome
                      */
-                    if (biomeName.equalsIgnoreCase(fieldName)) {
+                    if (biomeName.equals(fieldName)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
                         ReflectionUtils.forceAccessible(f);
                         f.set(null, biomeType);
