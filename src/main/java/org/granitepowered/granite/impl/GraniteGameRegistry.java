@@ -609,9 +609,9 @@ public class GraniteGameRegistry implements GameRegistry {
         Granite.instance.getLogger().info("Registering PotionEffects");
 
         try {
-            Class biomeGenBaseClass = Mappings.getClass("Potion");
-            Field biomeList = Mappings.getField(biomeGenBaseClass, "potionTypes");
-            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) biomeList.get(biomeGenBaseClass));
+            Class potionClass = Mappings.getClass("Potion");
+            Field potionTypes = Mappings.getField(potionClass, "potionTypes");
+            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
             mcPotions.removeAll(Collections.singleton(null));
 
             for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
