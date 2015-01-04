@@ -31,4 +31,6 @@ public interface MCBiomeGenBase extends MCInterface {
     float fieldGet$minHeight();
 
     float fieldGet$maxHeight();
+
+    String fieldGet$biomeName();
 }
