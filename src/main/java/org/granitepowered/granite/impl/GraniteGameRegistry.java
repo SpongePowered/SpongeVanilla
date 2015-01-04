@@ -620,14 +620,15 @@ public class GraniteGameRegistry implements GameRegistry {
                 String name = field.getName().toLowerCase();
 
                 for (MCPotion p : mcPotions) {
-                    HashMap<Object, MCPotion> field_180150_I = (HashMap) Mappings.getField(p.getClass(), "field_180150_I").get(p.getClass());
+                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "field_180150_I").get(p.getClass());
+
                     Object o = null;
-                    for (Map.Entry entry : field_180150_I.entrySet()) {
+                    for (Map.Entry entry : resourceToPotion.entrySet()) {
                         if (p.equals(entry.getValue())) {
                             o = entry.getKey();
-                            break;
                         }
                     }
+
                     String potionName = (String) Mappings.getField(o.getClass(), "resourcePath").get(o);
                     if (name.equals(potionName)) {
                         boolean isInstant = p.isInstant();
@@ -638,8 +639,6 @@ public class GraniteGameRegistry implements GameRegistry {
                         if (Main.debugLog) {
                             Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
                         }
-
-                        break;
                     }
 
                 }
