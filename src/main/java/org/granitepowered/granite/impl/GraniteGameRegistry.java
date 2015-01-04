@@ -620,7 +620,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 String name = field.getName().toLowerCase();
 
                 for (MCPotion p : mcPotions) {
-                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "field_180150_I").get(p.getClass());
+                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "resourceToPotion").get(p.getClass());
 
                     Object o = null;
                     for (Map.Entry entry : resourceToPotion.entrySet()) {
