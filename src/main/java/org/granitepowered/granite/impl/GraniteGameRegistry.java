@@ -46,6 +46,7 @@ import org.granitepowered.granite.impl.entity.living.villager.GraniteProfession;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
+import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.util.GraniteRotation;
 import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
@@ -57,6 +58,7 @@ import org.granitepowered.granite.mc.MCEnchantment;
 import org.granitepowered.granite.mc.MCEnumArt;
 import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
+import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
@@ -94,6 +96,7 @@ import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.potion.PotionEffectTypes;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.DimensionType;
@@ -106,6 +109,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,6 +132,7 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, RabbitType> rabbits = Maps.newHashMap();
     Map<Integer, Rotation> rotations = Maps.newHashMap();
     Map<String, SkeletonType> skeletons = Maps.newHashMap();
+    Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -151,6 +156,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
+        registerPotionEffects();
     }
 
     private void registerArts() {
@@ -599,6 +605,52 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerPotionEffects() {
+        Granite.instance.getLogger().info("Registering PotionEffects");
+
+        try {
+            Class biomeGenBaseClass = Mappings.getClass("Potion");
+            Field biomeList = Mappings.getField(biomeGenBaseClass, "potionTypes");
+            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) biomeList.get(biomeGenBaseClass));
+            mcPotions.removeAll(Collections.singleton(null));
+
+            for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
+                ReflectionUtils.forceAccessible(field);
+
+                String name = field.getName().toLowerCase();
+
+                for (MCPotion p : mcPotions) {
+                    HashMap<Object, MCPotion> field_180150_I = (HashMap) Mappings.getField(p.getClass(), "field_180150_I").get(p.getClass());
+                    Object o = null;
+                    for (Map.Entry entry : field_180150_I.entrySet()) {
+                        if (p.equals(entry.getValue())) {
+                            o = entry.getKey();
+                            break;
+                        }
+                    }
+                    String potionName = (String) Mappings.getField(o.getClass(), "resourcePath").get(o);
+                    if (name.equals(potionName)) {
+                        boolean isInstant = p.isInstant();
+
+                        PotionEffectType potionEffectType = new GranitePotionEffectType(isInstant);
+                        field.set(null, potionEffectType);
+                        potionEffects.put("minecraft:" + name, potionEffectType);
+                        if (Main.debugLog) {
+                            Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
+                        }
+
+                        break;
+                    }
+
+                }
+            }
+
+        }catch (IllegalAccessException e){
+            Throwables.propagate(e);
+        }
+
+    }
+
     @Override
     public Optional<BlockType> getBlock(String id) {
         return Optional.fromNullable(blockTypes.get(id));
@@ -788,8 +840,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<PotionEffectType> getPotionEffects() {
-        // TODO: Potion Effects API
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(potionEffects.values());
     }
 
     @Override
