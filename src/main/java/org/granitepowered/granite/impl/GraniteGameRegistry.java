@@ -151,7 +151,6 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
-        Granite.getInstance().getLogger().info("Registered everything!");
     }
 
     private void registerArts() {
@@ -218,7 +217,6 @@ public class GraniteGameRegistry implements GameRegistry {
                      */
                     if (biomeName.equalsIgnoreCase(fieldName)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
-                        f.setAccessible(true);
                         ReflectionUtils.forceAccessible(f);
                         f.set(null, biomeType);
                         biomes.put(name, biomeType);
