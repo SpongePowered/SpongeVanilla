@@ -203,7 +203,7 @@ public class GraniteGameRegistry implements GameRegistry {
                         fieldName = "the_end";
                     } else if (fieldName.equals("extreme_hills_plus")) {
                         fieldName = "Extreme_Hills+";
-                    } else if (fieldName.equals("frozen_ocean") || f.getName().equalsIgnoreCase("frozen_river") || f.getName().equalsIgnoreCase("Mushroom_Island") || f.getName().equalsIgnoreCase("Mushroom_Island_shore") || f.getName().equalsIgnoreCase("desert_hills") || f.getName().equalsIgnoreCase("forest_hills") || f.getName().equalsIgnoreCase("taiga_hills") || f.getName().equalsIgnoreCase("Jungle_Hills") || f.getName().equalsIgnoreCase("Jungle_Edge")) {
+                    } else if (fieldName.equals("frozen_ocean") || f.getName().equals("frozen_river") || f.getName().equals("Mushroom_Island") || f.getName().equals("Mushroom_Island_shore") || f.getName().equals("desert_hills") || f.getName().equals("forest_hills") || f.getName().equals("taiga_hills") || f.getName().equals("Jungle_Hills") || f.getName().equals("Jungle_Edge")) {
                         fieldName = fieldName.replace("_", "");
                     } else if (fieldName.equals("mesa_plateau_forest")) {
                         fieldName = "Mesa_Plateau_F";
