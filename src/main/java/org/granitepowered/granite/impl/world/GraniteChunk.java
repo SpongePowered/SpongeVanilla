@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mc.MCChunk;
 import org.granitepowered.granite.mc.MCChunkProvider;
 import org.granitepowered.granite.mc.MCEntity;
@@ -40,8 +41,9 @@ import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.biome.Biome;
+import org.spongepowered.api.world.biome.BiomeType;
 
 import java.util.Collection;
 import java.util.Set;
@@ -76,6 +78,11 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     }
 
     @Override
+    public boolean isPopulated() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public boolean loadChunk(boolean generate) {
         // TODO: Check if it's possible to load a chunk without generating it
         MCChunk ret = getChunkProvider().provideChunk(x, z);
@@ -95,8 +102,19 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     }
 
     @Override
-    public Biome getBiome(Vector3d vector3d) {
-        return getWorld().getBiome(toWorldCoordinates(vector3d));
+    public BiomeType getBiome(Vector3i vector3i) {
+        return getWorld().getBiome(toWorldCoordinates(vector3i.toDouble()).toInt());
+    }
+
+    @Override
+    public void setBiome(Vector3i vector3i, BiomeType biomeType) {
+        int x = vector3i.getX() % 16;
+        int z = vector3i.getZ() % 16;
+        int idx = z << 4 | x;
+
+        byte id = (byte) (((GraniteBiomeType) biomeType).obj.fieldGet$biomeID() % 256);
+
+        obj.fieldGet$blockBiomeArray()[idx] = id;
     }
 
     @Override
@@ -134,6 +152,12 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     @Override
     public Optional<Entity> createEntity(EntitySnapshot entitySnapshot, Vector3d vector3d) {
         // TODO: EntitySnapshot API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Entity> createEntity(DataContainer dataContainer) {
+        // TODO: Persistence API
         throw new NotImplementedException("");
     }
 

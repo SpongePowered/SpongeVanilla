@@ -36,23 +36,28 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
     }
 
     @Override
-    public double getNewRadius() {
+    public double getNewDiameter() {
         return obj.getDiameter() / 2;
     }
 
     @Override
-    public double getRadius() {
+    public double getDiameter() {
         return obj.fieldGet$startDiameter() / 2;
     }
 
     @Override
-    public void setRadius(double diameter) {
+    public void setDiameter(double diameter) {
         obj.setDiameter(diameter);
     }
 
     @Override
-    public void setRadius(double endDiameter, long time) {
+    public void setDiameter(double endDiameter, long time) {
         obj.setTargetAndTime((obj.fieldGet$startDiameter()), endDiameter, time);
+    }
+
+    @Override
+    public void setDiameter(double startDiameter, double endDiameter, long time) {
+        obj.setTargetAndTime(startDiameter, endDiameter, time);
     }
 
     @Override
@@ -91,13 +96,13 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
     }
 
     @Override
-    public int getBlockBuffer() {
-        return (int) obj.fieldGet$blockBuffer();
+    public double getDamageThreshold() {
+        return obj.fieldGet$blockBuffer();
     }
 
     @Override
-    public void setBlockBuffer(int buffer) {
-        obj.setBlockBuffer(buffer);
+    public void setDamageThreshold(double distance) {
+        obj.setBlockBuffer((int) distance);
     }
 
     @Override

@@ -62,7 +62,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class GraniteServer extends Composite<MCServer> implements Game, Server {
-
     public static String version;
 
     public GraniteServer() {
@@ -193,7 +192,20 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public Optional<World> createWorld(String s, WorldGenerator worldGenerator, long l) {
+    public World createWorld(String s, WorldGenerator worldGenerator, long l) {
+        // TODO: Multiworld
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public World createWorld(String worldName, WorldGenerator generator) {
+        // TODO: Multiworld
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public World createWorld(String worldName) {
+        // TODO: Multiworld
         throw new NotImplementedException("");
     }
 

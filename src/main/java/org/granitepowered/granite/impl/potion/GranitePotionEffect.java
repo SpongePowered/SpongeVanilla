@@ -29,6 +29,8 @@ import org.granitepowered.granite.mc.MCPotionEffect;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 
 public class GranitePotionEffect extends Composite<MCPotionEffect> implements PotionEffect {
 
@@ -86,5 +88,17 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
     @Override
     public void setShowParticles(boolean particles) {
         obj.fieldSet$showParticles(particles);
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void serialize(DataSource source) {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
     }
 }

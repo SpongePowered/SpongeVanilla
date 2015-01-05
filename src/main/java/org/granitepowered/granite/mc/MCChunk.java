@@ -27,9 +27,6 @@ import java.util.Set;
 
 @Implement(name = "Chunk")
 public interface MCChunk extends MCInterface {
-
-    boolean fieldGet$isChunkLoaded();
-
     int fieldGet$xPosition();
 
     int fieldGet$zPosition();
@@ -37,4 +34,6 @@ public interface MCChunk extends MCInterface {
     MCWorld fieldGet$worldObj();
 
     Set[] fieldGet$entityLists();
+
+    byte[] fieldGet$blockBiomeArray();
 }

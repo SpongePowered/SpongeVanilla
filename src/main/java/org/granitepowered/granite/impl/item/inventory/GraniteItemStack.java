@@ -36,6 +36,8 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 
 import java.util.Map;
 
@@ -148,5 +150,17 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
 
     public MCItem getMCItem() {
         return obj.fieldGet$item();
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void serialize(DataSource source) {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
     }
 }

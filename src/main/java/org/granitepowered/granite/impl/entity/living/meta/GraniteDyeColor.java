@@ -23,7 +23,10 @@
 
 package org.granitepowered.granite.impl.entity.living.meta;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.entity.living.meta.DyeColor;
+import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 
 public class GraniteDyeColor implements DyeColor {
 
@@ -36,5 +39,17 @@ public class GraniteDyeColor implements DyeColor {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void serialize(DataSource source) {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
     }
 }

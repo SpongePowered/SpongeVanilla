@@ -48,6 +48,8 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.message.Message;
@@ -413,6 +415,18 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public void setPersistent(boolean persistent) {
         // TODO: Figure out what to do if this is a player
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        // TODO: Persistence API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void serialize(DataSource source) {
+        // TODO: Persistence API
         throw new NotImplementedException("");
     }
 }

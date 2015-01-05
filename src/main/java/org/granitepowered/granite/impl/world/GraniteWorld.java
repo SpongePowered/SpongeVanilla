@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.impl.world;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -32,19 +30,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.world.biome.GraniteBiome;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCEnumFacing;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.mc.MCWorldInfo;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -52,21 +43,19 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.Dimension;
-import org.spongepowered.api.world.DimensionType;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.WorldBorder;
-import org.spongepowered.api.world.biome.Biome;
-import org.spongepowered.api.world.biome.BiomeManager;
+import org.spongepowered.api.service.persistence.data.DataContainer;
+import org.spongepowered.api.world.*;
+import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.gen.WorldGenerator;
+import org.spongepowered.api.world.storage.WorldStorage;
 import org.spongepowered.api.world.weather.Weather;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
 public class GraniteWorld extends Composite<MCWorld> implements World {
 
@@ -165,11 +154,6 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public BiomeManager getBiomeManager() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
     public boolean doesKeepSpawnLoaded() {
         throw new NotImplementedException("");
     }
@@ -180,8 +164,23 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public Biome getBiome(Vector3d position) {
-        return new GraniteBiome(new GraniteBiomeType(obj.getBiomeGenForCoords(MinecraftUtils.graniteToMinecraftBlockPos(position.toInt()))));
+    public WorldStorage getWorldStorage() {
+        /// TODO: Persistence API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public BiomeType getBiome(Vector3i position) {
+        return new GraniteBiomeType(obj.getBiomeGenForCoords(MinecraftUtils.graniteToMinecraftBlockPos(position.toInt())));
+    }
+
+    @Override
+    public void setBiome(Vector3i vector3i, BiomeType biomeType) {
+        Optional<Chunk> chunk = getChunk(vector3i);
+
+        if (chunk.isPresent()) {
+            chunk.get().setBiome(new Vector3i(vector3i.getX() % 16, 0, vector3i.getZ() % 16), biomeType);
+        }
     }
 
     @Override
@@ -216,6 +215,12 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     @Override
     public Optional<Entity> createEntity(EntitySnapshot snapshot, Vector3d position) {
         // TODO: Entity Snapshot API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Entity> createEntity(DataContainer entityContainer) {
+        /// TODO: Persistence API
         throw new NotImplementedException("");
     }
 
