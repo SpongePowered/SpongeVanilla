@@ -28,6 +28,7 @@ import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
@@ -45,15 +46,19 @@ import org.granitepowered.granite.impl.entity.living.villager.GraniteProfession;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
+import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.util.GraniteRotation;
 import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
+import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCBiomeGenBase;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCEnchantment;
 import org.granitepowered.granite.mc.MCEnumArt;
 import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
+import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.utils.MinecraftUtils;
 import org.granitepowered.granite.utils.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
@@ -91,16 +96,20 @@ import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.potion.PotionEffectTypes;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.biome.BiomeType;
+import org.spongepowered.api.world.biome.BiomeTypes;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -123,6 +132,7 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, RabbitType> rabbits = Maps.newHashMap();
     Map<Integer, Rotation> rotations = Maps.newHashMap();
     Map<String, SkeletonType> skeletons = Maps.newHashMap();
+    Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -146,6 +156,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
+        registerPotionEffects();
     }
 
     private void registerArts() {
@@ -174,30 +185,58 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerBiomes() {
-        // TODO: This needs some long thinking about how we are going to register these as
-
-        /*Granite.instance.getLogger().info("Registering Biomes");
+        Granite.instance.getLogger().info("Registering Biomes");
 
         try {
             Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
             Field biomeList = Mappings.getField(biomeGenBaseClass, "biomeList");
-            List<MCBiomeGenBase> biomesGenBase = (List<MCBiomeGenBase>) biomeList.get(biomeGenBaseClass);
+            ArrayList<MCBiomeGenBase> biomesGenBase = Lists.newArrayList((MCBiomeGenBase[]) biomeList.get(biomeGenBaseClass));
 
-            for (Field field : BiomeTypes.class.getDeclaredFields()) {
-                ReflectionUtils.forceAccessible(field);
+            // Minecraft mutated biomes are placed into the biomeList with an index equal to the original plus 128, so there are around 70 null biomes in the list... Lets remove all of these
+            biomesGenBase.removeAll(Collections.singleton(null));
 
-                String name = field.getName().toLowerCase();
-                for (MCBiomeGenBase mcBiomeGenBase : biomesGenBase) {
+            // Grab all fields from BiomeTypes
+            for (Field f : BiomeTypes.class.getDeclaredFields()) {
+
+                String name = "minecraft:" + f.getName().toLowerCase();
+
+                // Run loop over all Minecraft biomes
+                for (MCBiomeGenBase biome : biomesGenBase) {
+                    String fieldName = f.getName().toLowerCase();
+
+                    // Some Sponge biome names aren't equal to the names defined in the Minecraft class, rename them to their correct name
+                    if (fieldName.equals("sky")) {
+                        fieldName = "the_end";
+                    } else if (fieldName.equals("extreme_hills_plus")) {
+                        fieldName = "Extreme_Hills+";
+                    } else if (fieldName.equals("frozen_ocean") || f.getName().equals("frozen_river") || f.getName().equals("Mushroom_Island") || f.getName().equals("Mushroom_Island_shore") || f.getName().equals("desert_hills") || f.getName().equals("forest_hills") || f.getName().equals("taiga_hills") || f.getName().equals("Jungle_Hills") || f.getName().equals("Jungle_Edge")) {
+                        fieldName = fieldName.replace("_", "");
+                    } else if (fieldName.equals("mesa_plateau_forest")) {
+                        fieldName = "Mesa_Plateau_F";
+                    }
+
+                    String biomeName = biome.fieldGet$biomeName().toLowerCase().replace(" ", "_");
+
+                    /**
+                     * Here the magic happens, if the sponge biome name is equal to the minecraft biome name, place that biome into their correct field
+                     * The biome is found so break the loop and continue to find the next biome
+                     */
+                    if (biomeName.equals(fieldName)) {
+                        BiomeType biomeType = new GraniteBiomeType(biome);
+                        ReflectionUtils.forceAccessible(f);
+                        f.set(null, biomeType);
+                        biomes.put(name, biomeType);
+                        break;
+                    }
+
                 }
-                BiomeType biomeType = new GraniteBiomeType(biomesGenBase[i]);
 
-                field.set(null, biomeType);
-                biomes.put(name, biomeType);
                 if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome " + name);
             }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
-        }*/
+        }
+
     }
 
     private void registerBlocks() {
@@ -237,21 +276,18 @@ public class GraniteGameRegistry implements GameRegistry {
                     case "overworld":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface").newInstance()));
                         field.set(null, dimensionType);
-                        //name = dimensionType.getName().toLowerCase().replace(" ", "_");
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "nether":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell").newInstance()));
                         field.set(null, dimensionType);
-                        //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "end":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd").newInstance()));
                         field.set(null, dimensionType);
-                        //name = dimensionType.getName();
                         dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
@@ -569,6 +605,51 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerPotionEffects() {
+        Granite.instance.getLogger().info("Registering PotionEffects");
+
+        try {
+            Class potionClass = Mappings.getClass("Potion");
+            Field potionTypes = Mappings.getField(potionClass, "potionTypes");
+            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
+            mcPotions.removeAll(Collections.singleton(null));
+
+            for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
+                ReflectionUtils.forceAccessible(field);
+
+                String name = field.getName().toLowerCase();
+
+                for (MCPotion p : mcPotions) {
+                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "resourceToPotion").get(p.getClass());
+
+                    Object o = null;
+                    for (Map.Entry entry : resourceToPotion.entrySet()) {
+                        if (p.equals(entry.getValue())) {
+                            o = entry.getKey();
+                        }
+                    }
+
+                    String potionName = (String) Mappings.getField(o.getClass(), "resourcePath").get(o);
+                    if (name.equals(potionName)) {
+                        boolean isInstant = p.isInstant();
+
+                        PotionEffectType potionEffectType = new GranitePotionEffectType(isInstant);
+                        field.set(null, potionEffectType);
+                        potionEffects.put("minecraft:" + name, potionEffectType);
+                        if (Main.debugLog) {
+                            Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
+                        }
+                    }
+
+                }
+            }
+
+        }catch (IllegalAccessException e){
+            Throwables.propagate(e);
+        }
+
+    }
+
     @Override
     public Optional<BlockType> getBlock(String id) {
         return Optional.fromNullable(blockTypes.get(id));
@@ -758,8 +839,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<PotionEffectType> getPotionEffects() {
-        // TODO: Potion Effects API
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(potionEffects.values());
     }
 
     @Override

@@ -24,7 +24,6 @@
 package org.granitepowered.granite.impl.plugin;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.inject.Injector;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.guice.PluginScope;

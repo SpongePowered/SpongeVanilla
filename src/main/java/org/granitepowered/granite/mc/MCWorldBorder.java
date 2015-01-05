@@ -28,9 +28,9 @@ public interface MCWorldBorder extends MCInterface {
 
     double getDiameter();
 
-    double fieldGet$startDiameter();
-
     void setDiameter(double size);
+
+    double fieldGet$startDiameter();
 
     void setTargetAndTime(double newSize, double newEndSize, long time);
 

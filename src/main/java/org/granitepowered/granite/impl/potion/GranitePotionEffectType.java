@@ -21,17 +21,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.potion;
 
-@Implement(name = "BiomeGenBase")
-public interface MCBiomeGenBase extends MCInterface {
-    float fieldGet$temperature();
+import org.spongepowered.api.potion.PotionEffectType;
 
-    float fieldGet$minHeight();
+public class GranitePotionEffectType implements PotionEffectType {
+    private boolean isInstant;
 
-    float fieldGet$maxHeight();
+    public GranitePotionEffectType(boolean isInstant){
+        this.isInstant = isInstant;
+    }
 
-    int fieldGet$biomeID();
-
-    String fieldGet$biomeName();
+    @Override
+    public boolean isInstant() {
+        return isInstant;
+    }
 }

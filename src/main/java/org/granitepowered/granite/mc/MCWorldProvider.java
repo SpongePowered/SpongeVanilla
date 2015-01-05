@@ -37,6 +37,4 @@ public interface MCWorldProvider extends MCInterface {
     String getDimensionName();
 
     int getAverageGroundLevel();
-
-    boolean canRespawnHere();
 }

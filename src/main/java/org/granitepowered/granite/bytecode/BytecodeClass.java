@@ -56,12 +56,9 @@ import java.util.Set;
 
 public class BytecodeClass {
 
-    CtClass clazz;
-
-    List<PostCallback> callbacks;
-
     static Map<CtClass, Class<?>> classMap;
-
+    CtClass clazz;
+    List<PostCallback> callbacks;
     Set<String> classesToLoad;
 
     ClassPool pool;
@@ -80,6 +77,38 @@ public class BytecodeClass {
         classesToLoad = new HashSet<>();
 
         pool = Granite.getInstance().getClassPool();
+    }
+
+    public static Class getFromCt(CtClass clazz) {
+        if (clazz.isPrimitive()) {
+            switch (clazz.getName()) {
+                case "float":
+                    return float.class;
+                case "double":
+                    return double.class;
+                case "byte":
+                    return byte.class;
+                case "int":
+                    return int.class;
+                case "boolean":
+                    return boolean.class;
+                case "char":
+                    return char.class;
+                case "short":
+                    return short.class;
+                case "long":
+                    return long.class;
+                case "void":
+                    return void.class;
+            }
+        }
+
+        try {
+            return Class.forName(clazz.getName());
+        } catch (ClassNotFoundException e) {
+            Throwables.propagate(e);
+        }
+        return null;
     }
 
     public void proxy(final String methodName, ProxyHandler handler) {
@@ -157,38 +186,6 @@ public class BytecodeClass {
                 }
             }
         });
-    }
-
-    public static Class getFromCt(CtClass clazz) {
-        if (clazz.isPrimitive()) {
-            switch (clazz.getName()) {
-                case "float":
-                    return float.class;
-                case "double":
-                    return double.class;
-                case "byte":
-                    return byte.class;
-                case "int":
-                    return int.class;
-                case "boolean":
-                    return boolean.class;
-                case "char":
-                    return char.class;
-                case "short":
-                    return short.class;
-                case "long":
-                    return long.class;
-                case "void":
-                    return void.class;
-            }
-        }
-
-        try {
-            return Class.forName(clazz.getName());
-        } catch (ClassNotFoundException e) {
-            Throwables.propagate(e);
-        }
-        return null;
     }
 
     public void implement(Class<? extends MCInterface> mcInterface) {
@@ -426,6 +423,11 @@ public class BytecodeClass {
         Object invokeParent(Object... args) throws Throwable;
     }
 
+    public static interface PostCallback {
+
+        void callback();
+    }
+
     public static abstract class ProxyHandler {
 
         public Object preHandle(final Object caller, Object[] args, final Method method) throws Throwable {
@@ -450,10 +452,5 @@ public class BytecodeClass {
         }
 
         protected abstract Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable;
-    }
-
-    public static interface PostCallback {
-
-        void callback();
     }
 }
