@@ -79,6 +79,9 @@ public class GranitePluginManager implements PluginManager {
 
                 try {
                     URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()});
+                    ClassPool classPool = new ClassPool(true);
+                    classPool.appendClassPath(plugin.toURI().toURL().toString());
+
                     JarFile jarFile = new JarFile(plugin);
 
                     Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
@@ -90,17 +93,17 @@ public class GranitePluginManager implements PluginManager {
                             String className = jarEntry.getName().replaceAll("/", ".").substring(0, jarEntry.getName().length() - ".class".length());
 
                             try {
-                                CtClass ctClass = ClassPool.getDefault().get(className);
+                                CtClass ctClass = classPool.get(className);
 
-                                PluginContainer pluginContainer = null;
-
+                                boolean hasAnnotation = false;
                                 for (Annotation annotation : (Annotation[]) ctClass.getAnnotations()) {
                                     if (annotation.annotationType().equals(Plugin.class)) {
-                                        pluginContainer = new GranitePluginContainer(BytecodeClass.getFromCt(ctClass));
+                                        hasAnnotation = true;
                                     }
                                 }
 
-                                if (pluginContainer != null) {
+                                if (hasAnnotation) {
+                                    PluginContainer pluginContainer = new GranitePluginContainer(classLoader.loadClass(className));
                                     pluginContainers.add(pluginContainer);
                                 }
                             } catch (ClassNotFoundException | NotFoundException e) {
@@ -109,7 +112,7 @@ public class GranitePluginManager implements PluginManager {
 
                         }
                     }
-                } catch (IOException e) {
+                } catch (IOException | NotFoundException e) {
                     Granite.error(e);
                 }
             }
