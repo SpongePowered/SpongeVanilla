@@ -133,12 +133,9 @@ public class GraniteEventManager implements EventManager {
                 if (handler.getOrder() == order) {
                     if (!((GraniteEvent) event).cancelled || !handler.isIgnoreCancelled()) {
                         try {
-                            handler.getMethod().invoke(handler.getInstance(), event);
-                        } catch (IllegalAccessException e) {
-                            Granite.error(e);
-                        } catch (InvocationTargetException e) {
-                            // Eliminate the 8 lines of useless pre-error
-                            Granite.error(e.getCause());
+                            handler.getMethodHandle().invoke(handler.getInstance(), event);
+                        } catch (Throwable throwable) {
+                            Granite.error(throwable);
                         }
                     }
                 }

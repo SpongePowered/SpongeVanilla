@@ -27,6 +27,8 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Order;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
 public class GraniteEventHandler {
@@ -37,6 +39,7 @@ public class GraniteEventHandler {
     private Order order;
     private boolean ignoreCancelled;
     private Method method;
+    private MethodHandle methodHandle;
 
     public GraniteEventHandler(Object instance, Class<? extends Event> eventType, PluginContainer pluginContainer, Order order,
                                boolean ignoreCancelled, Method method) {
@@ -46,6 +49,11 @@ public class GraniteEventHandler {
         this.order = order;
         this.ignoreCancelled = ignoreCancelled;
         this.method = method;
+        try {
+            this.methodHandle = MethodHandles.lookup().unreflect(method);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public Object getInstance() {
@@ -90,6 +98,10 @@ public class GraniteEventHandler {
 
     public Method getMethod() {
         return method;
+    }
+
+    public MethodHandle getMethodHandle() {
+        return methodHandle;
     }
 
     public void setMethod(Method method) {
