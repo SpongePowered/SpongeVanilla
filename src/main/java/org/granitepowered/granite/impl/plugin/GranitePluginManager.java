@@ -80,7 +80,7 @@ public class GranitePluginManager implements PluginManager {
                 try {
                     URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{plugin.toURI().toURL()});
                     ClassPool classPool = new ClassPool(true);
-                    classPool.appendClassPath(plugin.toURI().toURL().toString());
+                    classPool.appendClassPath(plugin.getAbsolutePath());
 
                     JarFile jarFile = new JarFile(plugin);
 
@@ -96,8 +96,8 @@ public class GranitePluginManager implements PluginManager {
                                 CtClass ctClass = classPool.get(className);
 
                                 boolean hasAnnotation = false;
-                                for (Annotation annotation : (Annotation[]) ctClass.getAnnotations()) {
-                                    if (annotation.annotationType().equals(Plugin.class)) {
+                                for (Object annotation : ctClass.getAnnotations()) {
+                                    if (((Annotation) annotation).annotationType().equals(Plugin.class)) {
                                         hasAnnotation = true;
                                     }
                                 }
