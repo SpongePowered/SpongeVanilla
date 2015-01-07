@@ -219,8 +219,6 @@ public class GraniteStartupThread extends Thread {
             method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getClassesDir().toURI().toURL());
 
             modifier.post();
-
-            Granite.instance.getClassesDir().deleteOnExit();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
             Throwables.propagate(e);
         }
@@ -287,7 +285,12 @@ public class GraniteStartupThread extends Thread {
             if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || FileUtils.readFileToString(buildNumberFile) != buildNumber) {
                 Granite.instance.getLogger().info("Modifying bytecode");
 
-                FileUtils.deleteDirectory(Granite.instance.getClassesDir());
+                if (Granite.instance.classesDir.exists()) {
+                    File oldClassesDir = new File(Granite.instance.classesDir.getParentFile(), Granite.instance.classesDir.getName() + "_old");
+
+                    FileUtils.moveDirectory(Granite.instance.classesDir, oldClassesDir);
+                    FileUtils.deleteDirectory(oldClassesDir);
+                }
 
                 try {
                     JarFile file = new JarFile(Granite.instance.getServerConfig().getMinecraftJar());
