@@ -108,7 +108,9 @@ public class Mappings {
                 if (!mappingsFile.exists()) {
                     Granite.instance.getLogger()
                             .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
-                    System.exit(1);
+                    Throwables.propagate(e);
+                } else {
+                    e.printStackTrace();
                 }
             }
             file = ConfigFactory.parseReader(
@@ -340,6 +342,9 @@ public class Mappings {
 
     public static CtField getCtField(CtClass clazz, String humanFieldName) {
         try {
+            if (!ctFields.containsKey(clazz)) {
+                throw new MappingNotFoundException("Could not find class " + clazz.getName());
+            }
             CtField ctField = ctFields.get(clazz).get(humanFieldName);
 
             if (ctField == null && !clazz.getName().equals("java.lang.Object")) {
