@@ -135,7 +135,7 @@ public class GraniteEventManager implements EventManager {
                         try {
                             handler.getMethod().invoke(handler.getInstance(), event);
                         } catch (IllegalAccessException | InvocationTargetException e) {
-                            e.printStackTrace();
+                            Granite.error(e);
                         }
                     }
                 }

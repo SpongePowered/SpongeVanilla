@@ -29,6 +29,7 @@ import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
@@ -53,7 +54,7 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
         try {
             obj.damageEntity((MCDamageSource) Mappings.getField("DamageSource", "generic").get(null), (float) amount);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Granite.error(e);
         }
     }
 

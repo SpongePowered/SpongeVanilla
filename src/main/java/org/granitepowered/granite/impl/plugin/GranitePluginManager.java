@@ -100,13 +100,13 @@ public class GranitePluginManager implements PluginManager {
                                     pluginContainers.add(pluginContainer);
                                 }
                             } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
+                                Granite.error(e);
                             }
 
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Granite.error(e);
                 }
             }
 

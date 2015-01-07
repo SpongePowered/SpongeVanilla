@@ -234,7 +234,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome " + name);
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Granite.error(e);
         }
 
     }
@@ -296,7 +296,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     Granite.getInstance().getLogger().info("Registered Dimension minecraft:" + name);
                 }
             } catch (IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
+                Granite.error(e);
             }
         }
     }

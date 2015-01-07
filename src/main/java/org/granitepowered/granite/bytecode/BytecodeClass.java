@@ -444,7 +444,7 @@ public class BytecodeClass {
                 return handle(caller, args, callback);
             } catch (Throwable t) {
                 if (!Mappings.getClass("ThreadQuickExitException").isInstance(t)) {
-                    t.printStackTrace();
+                    Granite.error(t);
                 }
                 // Checked exceptions are literally Hitler
                 throw t;

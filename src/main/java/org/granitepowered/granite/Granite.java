@@ -141,4 +141,8 @@ public class Granite {
     public CommandService getCommandService() {
         return commandService;
     }
+
+    public static void error(Throwable t) {
+        instance.logger.error("We did a boo-boo :'(", t);
+    }
 }

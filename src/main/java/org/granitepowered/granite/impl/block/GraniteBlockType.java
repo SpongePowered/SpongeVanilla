@@ -25,6 +25,7 @@ package org.granitepowered.granite.impl.block;
 
 import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
@@ -47,7 +48,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
             Object resourceLocation = Mappings.invoke(registry, "getNameForObject", obj);
             return (String) Mappings.getField(resourceLocation.getClass(), "resourcePath").get(resourceLocation);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Granite.error(e);
         }
 
         return "error";

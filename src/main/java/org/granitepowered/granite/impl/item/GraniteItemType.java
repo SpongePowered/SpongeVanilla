@@ -24,6 +24,7 @@
 package org.granitepowered.granite.impl.item;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCItem;
@@ -44,7 +45,7 @@ public class GraniteItemType<T extends MCItem> extends Composite<T> implements I
 
             return (String) Mappings.getField(resourceLocation.getClass(), "resourcePath").get(resourceLocation);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Granite.error(e);
         }
         return "error";
     }

@@ -110,7 +110,7 @@ public class Mappings {
                             .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
                     Throwables.propagate(e);
                 } else {
-                    e.printStackTrace();
+                    Granite.error(e);
                 }
             }
             file = ConfigFactory.parseReader(

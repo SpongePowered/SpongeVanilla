@@ -31,6 +31,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
@@ -367,7 +368,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
                     );
             sendPacket(packet);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+            Granite.error(e);
         }
     }
 
