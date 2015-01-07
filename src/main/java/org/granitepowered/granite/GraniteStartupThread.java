@@ -165,12 +165,12 @@ public class GraniteStartupThread extends Thread {
 
             Granite.instance.pluginManager.loadPlugins();
 
+            Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
+
             Granite.instance.eventManager.post(new GranitePreInitializationEvent());
             Granite.instance.eventManager.post(new GraniteInitializationEvent());
             Granite.instance.eventManager.post(new GranitePostInitializationEvent());
             Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
-
-            Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
 
             Granite.instance.getLogger().info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
 
