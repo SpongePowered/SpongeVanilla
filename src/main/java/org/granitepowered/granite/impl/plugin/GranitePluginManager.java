@@ -25,7 +25,11 @@ package org.granitepowered.granite.impl.plugin;
 
 import com.google.common.base.Optional;
 import com.google.inject.Injector;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.guice.PluginScope;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
@@ -86,20 +90,20 @@ public class GranitePluginManager implements PluginManager {
                             String className = jarEntry.getName().replaceAll("/", ".").substring(0, jarEntry.getName().length() - ".class".length());
 
                             try {
-                                Class<?> clazz = classLoader.loadClass(className);
+                                CtClass ctClass = ClassPool.getDefault().get(className);
 
                                 PluginContainer pluginContainer = null;
 
-                                for (Annotation annotation : clazz.getAnnotations()) {
+                                for (Annotation annotation : (Annotation[]) ctClass.getAnnotations()) {
                                     if (annotation.annotationType().equals(Plugin.class)) {
-                                        pluginContainer = new GranitePluginContainer(clazz);
+                                        pluginContainer = new GranitePluginContainer(BytecodeClass.getFromCt(ctClass));
                                     }
                                 }
 
                                 if (pluginContainer != null) {
                                     pluginContainers.add(pluginContainer);
                                 }
-                            } catch (ClassNotFoundException e) {
+                            } catch (ClassNotFoundException | NotFoundException e) {
                                 Granite.error(e);
                             }
 
