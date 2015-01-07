@@ -142,7 +142,11 @@ public class Granite {
         return commandService;
     }
 
+    public static void error(String message, Throwable t) {
+        instance.logger.error(message, t);
+    }
+
     public static void error(Throwable t) {
-        instance.logger.error("We did a boo-boo :'(", t);
+        error("We did a boo-boo :'(", t);
     }
 }

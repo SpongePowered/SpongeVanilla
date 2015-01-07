@@ -102,108 +102,112 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void run() {
-        Properties versionProp = new Properties();
-        InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("version.properties");
-        if (versionIn != null) {
-            try {
-                versionProp.load(versionIn);
-
-                String server = versionProp.getProperty("server");
-                if (server != null) {
-                    serverVersion = server;
-                }
-
-                String api = versionProp.getProperty("api");
-                if (api != null) {
-                    apiVersion = api;
-                }
-
-                String build = versionProp.getProperty("build");
-                if (build != null && !build.equals("NA")) {
-                    buildNumber = build;
-                }
-            } catch (IOException ignored) {
-            } finally {
+        try {
+            Properties versionProp = new Properties();
+            InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("version.properties");
+            if (versionIn != null) {
                 try {
-                    versionIn.close();
+                    versionProp.load(versionIn);
+
+                    String server = versionProp.getProperty("server");
+                    if (server != null) {
+                        serverVersion = server;
+                    }
+
+                    String api = versionProp.getProperty("api");
+                    if (api != null) {
+                        apiVersion = api;
+                    }
+
+                    String build = versionProp.getProperty("build");
+                    if (build != null && !build.equals("NA")) {
+                        buildNumber = build;
+                    }
                 } catch (IOException ignored) {
+                } finally {
+                    try {
+                        versionIn.close();
+                    } catch (IOException ignored) {
+                    }
                 }
             }
-        }
 
-        Injector injector = Guice.createInjector(new GraniteGuiceModule());
+            Injector injector = Guice.createInjector(new GraniteGuiceModule());
 
-        Granite.instance = injector.getInstance(Granite.class);
-        Granite.instance.version = serverVersion;
-        Granite.instance.logger = LoggerFactory.getLogger("Granite");
+            Granite.instance = injector.getInstance(Granite.class);
+            Granite.instance.version = serverVersion;
+            Granite.instance.logger = LoggerFactory.getLogger("Granite");
 
-        Granite.instance.serverConfig = new ServerConfig();
-        Granite.instance.classPool = new ClassPool(true);
+            Granite.instance.serverConfig = new ServerConfig();
+            Granite.instance.classPool = new ClassPool(true);
 
-        Granite.instance.eventManager.post(new GraniteConstructionEvent());
+            Granite.instance.eventManager.post(new GraniteConstructionEvent());
 
-        Granite.instance.classesDir = new File("classes/");
-        Granite.instance.classesDir.mkdirs();
+            Granite.instance.classesDir = new File("classes/");
+            Granite.instance.classesDir.mkdirs();
 
-        Granite.instance.createGson();
+            Granite.instance.createGson();
 
-        loadMinecraftToClassPool();
+            loadMinecraftToClassPool();
 
-        Mappings.load();
+            Mappings.load();
 
-        modifyBytecode();
+            modifyBytecode();
 
-        loadClasses();
+            loadClasses();
 
-        bootstrap();
+            bootstrap();
 
-        Granite.instance.gameRegistry.register();
+            Granite.instance.gameRegistry.register();
 
-        injectSpongeFields();
+            injectSpongeFields();
 
-        Granite.instance.pluginManager.loadPlugins();
+            Granite.instance.pluginManager.loadPlugins();
 
-        Granite.instance.eventManager.post(new GranitePreInitializationEvent());
-        Granite.instance.eventManager.post(new GraniteInitializationEvent());
-        Granite.instance.eventManager.post(new GranitePostInitializationEvent());
-        Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
+            Granite.instance.eventManager.post(new GranitePreInitializationEvent());
+            Granite.instance.eventManager.post(new GraniteInitializationEvent());
+            Granite.instance.eventManager.post(new GranitePostInitializationEvent());
+            Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
-        Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
+            Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
 
-        Granite.instance.getLogger().info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
+            Granite.instance.getLogger().info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
 
-        Date date = new Date();
-        String day = new SimpleDateFormat("dd").format(date);
-        String month = new SimpleDateFormat("MM").format(date);
-        String year = new SimpleDateFormat("yyyy").format(date);
-        if (Objects.equals(day + month, "0101")) {
-            Granite.instance.getLogger().info("HAPPY NEW YEAR!");
-        }
-        if (Objects.equals(day + month, "2704")) {
-            Granite.instance.getLogger().info("Happy Birthday matthijs2704!");
-        }
-        if (Objects.equals(day + month, "2208")) {
-            Granite.instance.getLogger().info("Happy Birthday Voltasalt!");
-        }
-        if (Objects.equals(day + month, "0709")) {
-            String start = "2014";
-            Granite.instance.getLogger()
-                    .info("Happy Birthday Granite! Granite is " + Integer.toString(Integer.parseInt(year) - Integer.parseInt(start)) + " today!");
-        }
-        if (Objects.equals(day + month, "2310")) {
-            Granite.instance.getLogger().info("Happy Birthday AzureusNation!");
-        }
-        if (Objects.equals(day + month, "3110")) {
-            Granite.instance.getLogger().info("Happy Halloween!");
-        }
-        if (Objects.equals(day + month, "2412")) {
-            Granite.instance.getLogger().info("Santa is getting ready!");
-        }
-        if (Objects.equals(day + month, "2512")) {
-            Granite.instance.getLogger().info("Merry Christmas/Happy Holidays!");
-        }
-        if (Objects.equals(day + month, "3112")) {
-            Granite.instance.getLogger().info("New Years Eve. Make way for " + Integer.toString(Integer.parseInt(year) + 1) + "!");
+            Date date = new Date();
+            String day = new SimpleDateFormat("dd").format(date);
+            String month = new SimpleDateFormat("MM").format(date);
+            String year = new SimpleDateFormat("yyyy").format(date);
+            if (Objects.equals(day + month, "0101")) {
+                Granite.instance.getLogger().info("HAPPY NEW YEAR!");
+            }
+            if (Objects.equals(day + month, "2704")) {
+                Granite.instance.getLogger().info("Happy Birthday matthijs2704!");
+            }
+            if (Objects.equals(day + month, "2208")) {
+                Granite.instance.getLogger().info("Happy Birthday Voltasalt!");
+            }
+            if (Objects.equals(day + month, "0709")) {
+                String start = "2014";
+                Granite.instance.getLogger()
+                        .info("Happy Birthday Granite! Granite is " + Integer.toString(Integer.parseInt(year) - Integer.parseInt(start)) + " today!");
+            }
+            if (Objects.equals(day + month, "2310")) {
+                Granite.instance.getLogger().info("Happy Birthday AzureusNation!");
+            }
+            if (Objects.equals(day + month, "3110")) {
+                Granite.instance.getLogger().info("Happy Halloween!");
+            }
+            if (Objects.equals(day + month, "2412")) {
+                Granite.instance.getLogger().info("Santa is getting ready!");
+            }
+            if (Objects.equals(day + month, "2512")) {
+                Granite.instance.getLogger().info("Merry Christmas/Happy Holidays!");
+            }
+            if (Objects.equals(day + month, "3112")) {
+                Granite.instance.getLogger().info("New Years Eve. Make way for " + Integer.toString(Integer.parseInt(year) + 1) + "!");
+            }
+        } catch (Throwable t) {
+            Granite.error("We did a REALLY BIG boo-boo :'(", t);
         }
     }
 
