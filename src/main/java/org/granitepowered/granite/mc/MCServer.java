@@ -26,7 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "DedicatedServer")
 public interface MCServer extends MCInterface {
 
-    MCWorld[] fieldGet$worldServers();
+    MCWorldServer[] fieldGet$worldServers();
 
     MCServerConfigurationManager fieldGet$serverConfigManager();
 
@@ -41,9 +41,4 @@ public interface MCServer extends MCInterface {
     int fieldGet$serverPort();
 
     String fieldGet$motd();
-
-    Thread fieldGet$serverThread();
-
-    // This method will conflict, don't uncomment
-    // String getServerModName();
 }

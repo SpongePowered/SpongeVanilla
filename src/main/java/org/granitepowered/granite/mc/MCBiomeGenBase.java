@@ -34,4 +34,6 @@ public interface MCBiomeGenBase extends MCInterface {
     int fieldGet$biomeID();
 
     String fieldGet$biomeName();
+
+    float fieldGet$rainFall();
 }

@@ -70,7 +70,7 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
 
     @Override
     public ItemStackBuilder maxQuantity(int i) {
-        throw new NotImplementedException("I DON'T LIKE YOU SPONGE!!!");
+        throw new NotImplementedException("This is marked to be deleted in a newer snapshot/release of the SpongeAPI");
     }
 
     @Override

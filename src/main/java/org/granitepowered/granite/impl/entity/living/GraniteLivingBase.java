@@ -187,7 +187,6 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public int getMaxInvulnerabilityTicks() {
-        // Minecraft stores this as half-ticks for some reason (default is 20 = 0.5 seconds, wut?)
         return obj.fieldGet$maxHurtResistantTime() / 2;
     }
 
@@ -214,45 +213,5 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
     @Override
     public void setCustomNameVisible(boolean visible) {
         obj.setAlwaysRenderNameTag(visible);
-    }
-
-    @Override
-    public boolean setLocation(Location location) {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public Optional<Entity> getPassenger() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public Optional<Entity> getVehicle() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public Entity getBaseVehicle() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean setPassenger(Entity entity) {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean setVehicle(Entity entity) {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean isRemoved() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean isLoaded() {
-        throw new NotImplementedException("");
     }
 }

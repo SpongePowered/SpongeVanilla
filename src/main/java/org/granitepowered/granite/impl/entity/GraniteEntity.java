@@ -74,7 +74,6 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean setLocation(Location location) {
-        // TODO: set world
         obj.setPosition(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
         return true;
     }
@@ -146,7 +145,6 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public void setFireTicks(int ticks) {
-        // TODO: This might need to check enchantments first
         obj.fieldSet$fire(ticks);
     }
 

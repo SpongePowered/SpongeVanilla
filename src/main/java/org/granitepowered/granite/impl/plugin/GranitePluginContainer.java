@@ -90,8 +90,4 @@ public class GranitePluginContainer implements PluginContainer {
     public Plugin getAnnotation() {
         return annotation;
     }
-
-    public Class<?> getClazz() {
-        return clazz;
-    }
 }

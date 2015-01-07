@@ -136,6 +136,7 @@ public class GraniteStartupThread extends Thread {
 
             Granite.instance = injector.getInstance(Granite.class);
             Granite.instance.version = serverVersion;
+            Granite.instance.apiVersion = apiVersion;
             Granite.instance.logger = LoggerFactory.getLogger("Granite");
 
             Granite.instance.serverConfig = new ServerConfig();

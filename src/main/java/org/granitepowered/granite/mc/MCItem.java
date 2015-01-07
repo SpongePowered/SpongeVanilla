@@ -29,4 +29,6 @@ public interface MCItem extends MCInterface {
     float getStrVsBlock(MCItemStack itemStack, MCBlock block);
 
     int fieldGet$maxStackSize();
+
+    int fieldGet$maxDamage();
 }

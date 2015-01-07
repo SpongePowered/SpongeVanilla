@@ -46,7 +46,6 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     public GranitePlayerDeathEvent(GranitePlayer player, MCDamageSource playerDeathCause, Message deathMessage) {
         super(player);
         GraniteEntity source = MinecraftUtils.wrap(playerDeathCause.getSourceOfDamage());
-        // TODO: Cause stuff
         if (source == null) {
             this.deathCause = Optional.of(new Cause(new Cause(null, playerDeathCause.getDamageType(), null), player, null));
         } else {

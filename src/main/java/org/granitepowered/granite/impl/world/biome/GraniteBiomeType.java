@@ -42,7 +42,7 @@ public class GraniteBiomeType extends Composite<MCBiomeGenBase> implements Biome
 
     @Override
     public double getHumidity() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$rainFall();
     }
 
     @Override

@@ -23,9 +23,9 @@
 
 package org.granitepowered.granite.impl.item;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCItem;
 import org.spongepowered.api.item.ItemType;
@@ -57,12 +57,11 @@ public class GraniteItemType<T extends MCItem> extends Composite<T> implements I
 
     @Override
     public int getMaxDamage() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$maxDamage();
     }
 
     @Override
     public Translation getTranslation() {
-        // TODO: Wait for Message API
-        throw new NotImplementedException("");
+        return new GraniteTranslation(getId());
     }
 }

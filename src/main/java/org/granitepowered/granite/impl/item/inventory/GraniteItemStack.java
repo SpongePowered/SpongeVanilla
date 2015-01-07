@@ -115,36 +115,35 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     @Override
     public void setMaxStackQuantity(int quantity) {
         // TODO: Decision lies with Sponge on this as is impossible to change the max size of a stack
-        throw new UnsupportedOperationException("Decision lies with Sponge on this as is impossible to change the max size of a stack");
+        throw new UnsupportedOperationException("This is soon to be removed from the API");
     }
 
     @Override
     public Map<Enchantment, Integer> getEnchantments() {
-        // TODO: Enchantment API
+        // TODO: NBT API
         throw new NotImplementedException("");
     }
 
     @Override
     public boolean isEnchanted() {
-        // TODO: Enchantment API
-        throw new NotImplementedException("");
+        return obj.isItemEnchanted();
     }
 
     @Override
     public void setEnchantment(Enchantment enchant, int level) {
-        // TODO: Enchantment API
+        // TODO: NBT API
         throw new NotImplementedException("");
     }
 
     @Override
     public void removeEnchantment(Enchantment enchant) {
-        // TODO: Enchantment API
+        // TODO: NBT API
         throw new NotImplementedException("");
     }
 
     @Override
     public int getEnchantment(Enchantment enchant) {
-        // TODO: Enchantment API
+        // TODO: NBT API
         throw new NotImplementedException("");
     }
 

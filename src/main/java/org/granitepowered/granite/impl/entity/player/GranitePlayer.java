@@ -153,7 +153,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public void resetTitle() {
         sendTitle(Titles.update().reset().build());
-
     }
 
     @Override
@@ -194,7 +193,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public Optional<ItemStack> getBoots() {
         return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[0]));
-
     }
 
     @Override
@@ -258,14 +256,12 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        this.getWorld().spawnParticles(particleEffect, position);
     }
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        this.getWorld().spawnParticles(particleEffect, position, radius);
     }
 
     @Override

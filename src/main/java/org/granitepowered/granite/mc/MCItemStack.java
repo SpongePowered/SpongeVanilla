@@ -36,7 +36,7 @@ public interface MCItemStack extends MCInterface {
 
     MCItem fieldGet$item();
 
-    MCNBTTagCompound writeToNBT(MCNBTTagCompound nbt);
+    boolean isItemEnchanted();
 
     boolean canHarvestBlock(MCBlock block);
 }

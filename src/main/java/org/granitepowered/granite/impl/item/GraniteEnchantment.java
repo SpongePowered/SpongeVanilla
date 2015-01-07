@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.impl.item;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCEnchantment;
 import org.granitepowered.granite.mc.MCItemStack;
@@ -74,7 +73,7 @@ public class GraniteEnchantment extends Composite<MCEnchantment> implements Ench
 
     @Override
     public boolean canBeAppliedByTable(ItemStack itemStack) {
-        throw new NotImplementedException("");
+        return canBeAppliedToStack(itemStack);
     }
 
     @Override

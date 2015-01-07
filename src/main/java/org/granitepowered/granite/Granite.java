@@ -62,6 +62,7 @@ public class Granite {
     // Not injected directly; initialization is done after classes are rewritten
     GraniteServer server;
     String version;
+    String apiVersion;
     ServerConfig serverConfig;
     ClassPool classPool;
     Logger logger;
@@ -96,6 +97,10 @@ public class Granite {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     public PluginManager getPluginManager() {

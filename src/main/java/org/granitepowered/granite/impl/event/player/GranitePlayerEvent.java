@@ -34,7 +34,6 @@ public class GranitePlayerEvent extends GraniteEntityEvent implements PlayerEven
 
     public GranitePlayerEvent(GranitePlayer player) {
         super(player);
-
         this.player = player;
     }
 

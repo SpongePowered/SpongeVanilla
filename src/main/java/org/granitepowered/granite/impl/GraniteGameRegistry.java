@@ -192,27 +192,30 @@ public class GraniteGameRegistry implements GameRegistry {
             Field biomeList = Mappings.getField(biomeGenBaseClass, "biomeList");
             ArrayList<MCBiomeGenBase> biomesGenBase = Lists.newArrayList((MCBiomeGenBase[]) biomeList.get(biomeGenBaseClass));
 
-            // Minecraft mutated biomes are placed into the biomeList with an index equal to the original plus 128, so there are around 70 null biomes in the list... Lets remove all of these
+            /**
+             * Minecraft mutated biomes are placed into the biomeList with an index equal to the original plus 128.
+             * So there are around 70 null biomes in the list... Lets remove all of these
+             */
             biomesGenBase.removeAll(Collections.singleton(null));
 
-            // Grab all fields from BiomeTypes
-            for (Field f : BiomeTypes.class.getDeclaredFields()) {
+            for (Field field : BiomeTypes.class.getDeclaredFields()) {
+                ReflectionUtils.forceAccessible(field);
 
-                String name = "minecraft:" + f.getName().toLowerCase();
-
-                // Run loop over all Minecraft biomes
+                String name = field.getName().toLowerCase();
                 for (MCBiomeGenBase biome : biomesGenBase) {
-                    String fieldName = f.getName().toLowerCase();
 
                     // Some Sponge biome names aren't equal to the names defined in the Minecraft class, rename them to their correct name
-                    if (fieldName.equals("sky")) {
-                        fieldName = "the_end";
-                    } else if (fieldName.equals("extreme_hills_plus")) {
-                        fieldName = "Extreme_Hills+";
-                    } else if (fieldName.equals("frozen_ocean") || f.getName().equals("frozen_river") || f.getName().equals("Mushroom_Island") || f.getName().equals("Mushroom_Island_shore") || f.getName().equals("desert_hills") || f.getName().equals("forest_hills") || f.getName().equals("taiga_hills") || f.getName().equals("Jungle_Hills") || f.getName().equals("Jungle_Edge")) {
-                        fieldName = fieldName.replace("_", "");
-                    } else if (fieldName.equals("mesa_plateau_forest")) {
-                        fieldName = "Mesa_Plateau_F";
+                    if (name.equals("sky")) {
+                        name = "the_end";
+                    } else if (name.equals("extreme_hills_plus")) {
+                        name = "extreme_hills+";
+                    } else if (name.equals("frozen_ocean") || field.getName().equals("frozen_river") || field.getName().equals("mushroom_island")
+                               || field.getName().equals("mushroom_island_shore") || field.getName().equals("desert_hills") || field.getName()
+                            .equals("forest_hills") || field.getName().equals("taiga_hills") || field.getName().equals("jungle_hills") || field
+                                       .getName().equals("jungle_edge")) {
+                        name = name.replace("_", "");
+                    } else if (name.equals("mesa_plateau_forest")) {
+                        name = "mesa_plateau_f";
                     }
 
                     String biomeName = biome.fieldGet$biomeName().toLowerCase().replace(" ", "_");
@@ -221,22 +224,19 @@ public class GraniteGameRegistry implements GameRegistry {
                      * Here the magic happens, if the sponge biome name is equal to the minecraft biome name, place that biome into their correct field
                      * The biome is found so break the loop and continue to find the next biome
                      */
-                    if (biomeName.equals(fieldName)) {
+                    if (biomeName.equals(name)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
-                        ReflectionUtils.forceAccessible(f);
-                        f.set(null, biomeType);
-                        biomes.put(name, biomeType);
-                        break;
+                        field.set(null, biomeType);
+                        biomes.put("minecraft:" + name, biomeType);
+                        if (Main.debugLog) {
+                            Granite.getInstance().getLogger().info("Registered Biome minecarft:" + name);
+                        }
                     }
-
                 }
-
-                if ( Main.debugLog ) Granite.getInstance().getLogger().info("Registered Biome " + name);
             }
         } catch (IllegalAccessException e) {
             Granite.error(e);
         }
-
     }
 
     private void registerBlocks() {
