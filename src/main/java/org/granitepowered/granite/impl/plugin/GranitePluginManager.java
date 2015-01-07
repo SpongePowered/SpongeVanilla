@@ -95,14 +95,7 @@ public class GranitePluginManager implements PluginManager {
                             try {
                                 CtClass ctClass = classPool.get(className);
 
-                                boolean hasAnnotation = false;
-                                for (Object annotation : ctClass.getAvailableAnnotations()) {
-                                    if (((Annotation) annotation).annotationType().equals(Plugin.class)) {
-                                        hasAnnotation = true;
-                                    }
-                                }
-
-                                if (hasAnnotation) {
+                                if (ctClass.hasAnnotation(Plugin.class)) {
                                     PluginContainer pluginContainer = new GranitePluginContainer(classLoader.loadClass(className));
                                     pluginContainers.add(pluginContainer);
                                 }
