@@ -124,7 +124,7 @@ public class GraniteEventManager implements EventManager {
         return !(event instanceof Cancellable) || ((Cancellable) event).isCancelled();
     }
 
-    public boolean postEventWithOrder(Set<GraniteEventHandler> unfilteredHandlers, Event event, Order order) {
+    public void postEventWithOrder(Set<GraniteEventHandler> unfilteredHandlers, Event event, Order order) {
         for (GraniteEventHandler handler : unfilteredHandlers) {
             try {
                 pluginScope.enter(handler.getPluginContainer());
@@ -142,7 +142,5 @@ public class GraniteEventManager implements EventManager {
                 pluginScope.exit();
             }
         }
-
-        return ((GraniteEvent) event).cancelled;
     }
 }
