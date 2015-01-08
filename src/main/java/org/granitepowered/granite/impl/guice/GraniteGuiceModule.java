@@ -31,6 +31,7 @@ import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.service.event.GraniteEventManager;
+import org.granitepowered.granite.impl.service.scheduler.GraniteScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
@@ -40,6 +41,7 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.util.config.ConfigFile;
 
 import java.io.File;
@@ -67,6 +69,7 @@ public class GraniteGuiceModule extends AbstractModule {
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);
         bind(GameRegistry.class).to(GraniteGameRegistry.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(GraniteEventManager.class).in(Scopes.SINGLETON);
+        bind(Scheduler.class).to(GraniteScheduler.class).in(Scopes.SINGLETON);
         bind(File.class).annotatedWith(sharedConfigDir).toProvider(GlobalPluginDataDirProvider.class).in(Scopes.SINGLETON);
 
         bind(PluginContainer.class).toProvider(PluginContainerProvider.class).in(PluginScoped.class);

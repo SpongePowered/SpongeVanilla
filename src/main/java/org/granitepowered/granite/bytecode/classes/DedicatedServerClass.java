@@ -69,5 +69,13 @@ public class DedicatedServerClass extends BytecodeClass {
                 return null;
             }
         });
+
+        proxy("tick", new ProxyHandler() {
+            @Override
+            protected Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+                Granite.getInstance().getScheduler().tick();
+                return callback.invokeParent(args);
+            }
+        });
     }
 }

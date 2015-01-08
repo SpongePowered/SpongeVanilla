@@ -32,6 +32,7 @@ import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.service.event.GraniteEventManager;
+import org.granitepowered.granite.impl.service.scheduler.GraniteScheduler;
 import org.granitepowered.granite.impl.text.action.GraniteTextAction;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.utils.json.EntityJson;
@@ -59,6 +60,7 @@ public class Granite {
     final GraniteEventManager eventManager;
     final CommandService commandService;
     final ServiceManager serviceManager;
+    final GraniteScheduler scheduler;
     // Not injected directly; initialization is done after classes are rewritten
     GraniteServer server;
     String version;
@@ -72,10 +74,11 @@ public class Granite {
     @Inject
     public Granite(GranitePluginManager pluginManager,
                    GraniteGameRegistry gameRegistry,
-                   GraniteEventManager eventManager) {
+                   GraniteEventManager eventManager, GraniteScheduler scheduler) {
         this.pluginManager = pluginManager;
         this.gameRegistry = gameRegistry;
         this.eventManager = eventManager;
+        this.scheduler = scheduler;
         this.serviceManager = new SimpleServiceManager(pluginManager);
         this.commandService = new SimpleCommandService(pluginManager);
         version = "UNKNOWN";
@@ -153,5 +156,9 @@ public class Granite {
 
     public static void error(Throwable t) {
         error("We did a boo-boo :'(", t);
+    }
+
+    public GraniteScheduler getScheduler() {
+        return scheduler;
     }
 }

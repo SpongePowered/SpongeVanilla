@@ -106,8 +106,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public Scheduler getScheduler() {
-        // TODO
-        throw new NotImplementedException("");
+        return Granite.instance.getScheduler();
     }
 
     @Override
@@ -203,13 +202,13 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public World createWorld(String worldName, WorldGenerator generator) {
+    public World createWorld(String s, WorldGenerator worldGenerator) {
         // TODO: Multiworld
         throw new NotImplementedException("");
     }
 
     @Override
-    public World createWorld(String worldName) {
+    public World createWorld(String s) {
         // TODO: Multiworld
         throw new NotImplementedException("");
     }
