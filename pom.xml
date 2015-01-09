@@ -82,9 +82,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.7</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.1</version>
         </dependency>
 
         <dependency>
@@ -115,6 +115,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.1</version>
         </dependency>
     </dependencies>
 
@@ -181,7 +187,9 @@
                                     <include>commons-io:commons-io</include>
                                     <include>com.flowpowered:flow-math</include>
                                     <include>com.github.kevinsawicki:http-request</include>
-                                    <include>org.slf4j:*</include>
+                                    <include>org.slf4j:slf4j-api</include>
+                                    <include>org.apache.logging.log4j:log4j-core</include>
+                                    <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
                                     <include>com.google.code.gson:gson</include>
                                     <include>com.google.inject:guice</include>
                                     <include>javax.inject:javax.inject</include>
