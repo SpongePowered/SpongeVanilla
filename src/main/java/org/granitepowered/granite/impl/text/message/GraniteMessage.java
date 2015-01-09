@@ -42,7 +42,6 @@ import org.spongepowered.api.text.translation.Translation;
 import java.util.List;
 
 public abstract class GraniteMessage<T> implements Message {
-
     T content;
     ImmutableList<Message> children;
     TextColor color;
@@ -127,12 +126,31 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public String toLegacy() {
-            throw new NotImplementedException("");
+            return toLegacy('\u00A7');
         }
 
         @Override
         public String toLegacy(char c) {
-            throw new NotImplementedException("");
+            // TODO: Test and add support for negative styles (whyyyyyy)
+            String s = "";
+
+            s += c + ((TextColor.Base) color).getCode();
+
+            for (TextStyle base : TextStyles.getValues()) {
+                TextStyle.TextStyleComponent component = style.applied((TextStyle.Base) base);
+
+                if (component.toInteger() > 0) {
+                    s += c + ((TextStyle.Base) base).getCode();
+                }
+            }
+
+            s += content;
+
+            for (Message message : children) {
+                s += message.toLegacy(c);
+            }
+
+            return s;
         }
     }
 
@@ -167,12 +185,32 @@ public abstract class GraniteMessage<T> implements Message {
 
         @Override
         public String toLegacy() {
-            throw new NotImplementedException("");
+            // TODO: I don't like this copy paste stuff, is there a way to make it prettier?
+            return toLegacy('\u00A7');
         }
 
         @Override
         public String toLegacy(char c) {
-            throw new NotImplementedException("");
+            // TODO: Test and add support for negative styles (whyyyyyy)
+            String s = "";
+
+            s += c + ((TextColor.Base) color).getCode();
+
+            for (TextStyle base : TextStyles.getValues()) {
+                TextStyle.TextStyleComponent component = style.applied((TextStyle.Base) base);
+
+                if (component.toInteger() > 0) {
+                    s += c + ((TextStyle.Base) base).getCode();
+                }
+            }
+
+            s += content.get();
+
+            for (Message message : children) {
+                s += message.toLegacy(c);
+            }
+
+            return s;
         }
     }
 
