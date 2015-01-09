@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.service.scheduler;
 
+import com.google.common.base.Optional;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.scheduler.Task;
 
@@ -30,8 +31,8 @@ import java.util.UUID;
 
 public class GraniteTask implements Task {
     private final PluginContainer owner;
-    private final long delay;
-    private final long interval;
+    private final Optional<Long> delay;
+    private final Optional<Long> interval;
     private final long timeCreated;
     boolean cancelled;
     private boolean hasRan;
@@ -39,7 +40,7 @@ public class GraniteTask implements Task {
     private final Runnable runnable;
     private final Runnable wrapperRunnable;
 
-    public GraniteTask(PluginContainer owner, long delay, long interval, long timeCreated, final Runnable runnable) {
+    public GraniteTask(PluginContainer owner, Optional<Long> delay, Optional<Long> interval, long timeCreated, final Runnable runnable) {
         this.owner = owner;
         this.delay = delay;
         this.interval = interval;
@@ -58,17 +59,22 @@ public class GraniteTask implements Task {
     }
 
     @Override
+    public Optional<String> getName() {
+        return null;
+    }
+
+    @Override
     public PluginContainer getOwner() {
         return owner;
     }
 
     @Override
-    public long getDelay() {
+    public Optional<Long> getDelay() {
         return delay;
     }
 
     @Override
-    public long getInterval() {
+    public Optional<Long> getInterval() {
         return interval;
     }
 

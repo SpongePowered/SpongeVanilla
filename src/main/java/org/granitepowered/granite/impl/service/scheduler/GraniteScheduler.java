@@ -53,14 +53,14 @@ public class GraniteScheduler implements Scheduler {
 
             long delta = tickCount - gt.getTimeCreated();
 
-            if (gt.getInterval() > 0) {
-                if (delta % gt.getInterval() == 0) {
+            if (gt.getInterval().isPresent()) {
+                if (delta % gt.getInterval().or(1L) == 0) {
                     gt.getWrapperRunnable().run();
                 }
             } else {
                 if (gt.hasRan()) {
                     tasks.remove(t);
-                } else if (delta >= gt.getDelay()) {
+                } else if (delta >= gt.getDelay().or(0L)) {
                     gt.getWrapperRunnable().run();
                 }
             }
@@ -79,7 +79,7 @@ public class GraniteScheduler implements Scheduler {
         Optional<PluginContainer> container = Granite.getInstance().getPluginManager().fromInstance(plugin);
 
         if (container.isPresent()) {
-            return Optional.<Task>of(new GraniteTask(container.get(), delay, 0, tickCount, task));
+            return Optional.<Task>of(new GraniteTask(container.get(), Optional.of(delay), Optional.<Long>absent(), tickCount, task));
         } else {
             return Optional.absent();
         }
@@ -95,7 +95,7 @@ public class GraniteScheduler implements Scheduler {
         Optional<PluginContainer> container = Granite.getInstance().getPluginManager().fromInstance(plugin);
 
         if (container.isPresent()) {
-            return Optional.<Task>of(new GraniteTask(container.get(), delay, tickCount, interval, task));
+            return Optional.<Task>of(new GraniteTask(container.get(), Optional.of(delay), Optional.fromNullable(tickCount == 0 ? null : tickCount), interval, task));
         } else {
             return Optional.absent();
         }
