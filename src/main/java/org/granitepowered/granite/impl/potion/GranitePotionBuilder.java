@@ -26,11 +26,10 @@ package org.granitepowered.granite.impl.potion;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCPotion;
-import org.granitepowered.granite.utils.MinecraftUtils;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
-import org.spongepowered.api.potion.PotionEffectTypes;
 
 public class GranitePotionBuilder implements PotionEffectBuilder {
 
