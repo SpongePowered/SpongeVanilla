@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Throwables;
 import javassist.CannotCompileException;
@@ -38,7 +38,7 @@ import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCGameProfile;
-import org.granitepowered.granite.utils.MinecraftUtils;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;

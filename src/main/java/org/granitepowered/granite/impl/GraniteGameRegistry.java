@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
@@ -59,8 +59,8 @@ import org.granitepowered.granite.mc.MCEnumArt;
 import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCPotion;
-import org.granitepowered.granite.utils.MinecraftUtils;
-import org.granitepowered.granite.utils.ReflectionUtils;
+import org.granitepowered.granite.util.MinecraftUtils;
+import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;

@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.utils;
+package org.granitepowered.granite.util;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Function;

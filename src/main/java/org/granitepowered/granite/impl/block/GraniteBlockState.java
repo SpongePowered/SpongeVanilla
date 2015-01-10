@@ -23,15 +23,15 @@
 
 package org.granitepowered.granite.impl.block;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCBlockState;
 import org.granitepowered.granite.mc.MCProperty;
-import org.granitepowered.granite.utils.MinecraftUtils;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockProperty;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.world;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;

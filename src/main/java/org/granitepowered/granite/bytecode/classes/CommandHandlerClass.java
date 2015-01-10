@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.granitepowered.granite.Granite;

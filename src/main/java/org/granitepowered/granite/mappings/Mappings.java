@@ -40,7 +40,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.utils.ReflectionUtils;
+import org.granitepowered.granite.util.ReflectionUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

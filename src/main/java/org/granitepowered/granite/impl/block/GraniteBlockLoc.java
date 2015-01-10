@@ -23,9 +23,9 @@
 
 package org.granitepowered.granite.impl.block;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.graniteToMinecraftBlockPos;
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.graniteToMinecraftBlockPos;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -41,7 +41,7 @@ import org.granitepowered.granite.mc.MCEnumFacing;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCMaterial;
-import org.granitepowered.granite.utils.ReflectionUtils;
+import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;

@@ -23,9 +23,9 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.graniteToMinecraftChatComponent;
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.graniteToMinecraftChatComponent;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
@@ -43,7 +43,7 @@ import org.granitepowered.granite.mc.MCGameProfile;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.mc.MCPlayerCapabilities;
-import org.granitepowered.granite.utils.MinecraftUtils;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;

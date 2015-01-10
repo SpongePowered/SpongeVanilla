@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.utils;
+package org.granitepowered.granite.util;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.BiMap;

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.block;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;

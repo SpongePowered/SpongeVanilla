@@ -29,7 +29,7 @@ import javassist.CtClass;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
 import org.apache.commons.lang3.StringUtils;
-import org.granitepowered.granite.utils.ReflectionUtils;
+import org.granitepowered.granite.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

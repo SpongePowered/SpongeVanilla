@@ -43,7 +43,7 @@ import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.utils.ReflectionUtils;
+import org.granitepowered.granite.util.ReflectionUtils;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;

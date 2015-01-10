@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.utils.json;
+package org.granitepowered.granite.util.json;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;

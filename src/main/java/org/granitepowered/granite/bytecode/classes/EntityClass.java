@@ -32,7 +32,7 @@ import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.spongepowered.api.world.Location;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class EntityClass extends BytecodeClass {
     public EntityClass() {

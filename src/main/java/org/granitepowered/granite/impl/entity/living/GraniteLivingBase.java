@@ -23,8 +23,8 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -38,7 +38,6 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
-import org.spongepowered.api.world.Location;
 
 import java.util.Collection;
 import java.util.List;

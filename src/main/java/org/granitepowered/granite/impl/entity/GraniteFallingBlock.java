@@ -23,8 +23,8 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import org.granitepowered.granite.mc.MCBlockState;
 import org.granitepowered.granite.mc.MCEntityFallingBlock;

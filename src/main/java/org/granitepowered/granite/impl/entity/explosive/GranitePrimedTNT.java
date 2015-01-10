@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.explosive;
 
-import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.impl.entity.GraniteEntity;

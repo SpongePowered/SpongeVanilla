@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.item;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCEnchantment;
 import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.utils.MinecraftUtils;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStack;
 
