@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.service.event;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
 import org.granitepowered.granite.impl.guice.PluginScope;
@@ -37,13 +36,11 @@ import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Order;
 import org.spongepowered.api.util.event.Subscribe;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.inject.Inject;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 public class GraniteEventManager implements EventManager {
 
@@ -88,7 +85,25 @@ public class GraniteEventManager implements EventManager {
 
     @Override
     public void unregister(Object obj) {
-        throw new NotImplementedException("");
+
+        Class<?> objClass = obj.getClass();
+
+        for (Method m : objClass.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Subscribe.class)) {
+                Subscribe annotation = m.getAnnotation(Subscribe.class);
+
+                if (m.getParameterTypes().length != 1) {
+                    throw new IllegalArgumentException("A handler method should only have one parameter");
+                }
+
+                Class<? extends Event> type = (Class<? extends Event>) m.getParameterTypes()[0];
+                if (type.getName().startsWith("Granite")) {
+                    type = (Class<? extends Event>) type.getInterfaces()[0];
+                }
+                GraniteEventHandler handler = (GraniteEventHandler) handlers.get(type).toArray()[0];
+                handlers.remove(type, handler);
+            }
+        }
     }
 
     @Override
