@@ -28,6 +28,7 @@ import static org.granitepowered.granite.utils.MinecraftUtils.wrap;
 import org.apache.commons.lang3.StringUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.command.GraniteReloadCommand;
 import org.granitepowered.granite.impl.event.message.GraniteCommandEvent;
 import org.granitepowered.granite.mc.MCInterface;
 import org.spongepowered.api.service.command.SimpleCommandService;
@@ -58,6 +59,10 @@ public class CommandHandlerClass extends BytecodeClass {
                 GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
                 Granite.getInstance().getEventManager().post(event);
 
+                if (commandName.equalsIgnoreCase("reload")){
+                    GraniteReloadCommand.onCommand();
+                    return 1;
+                }
                 // DO NOT MERGE AS THIS CAUSES ISSUES!!!
                 if (!event.isCancelled()) {
                     SimpleCommandService dispatcher = (SimpleCommandService) Granite.getInstance().getCommandService();

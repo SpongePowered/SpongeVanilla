@@ -29,17 +29,16 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.guice.PluginScope;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -47,8 +46,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import javax.inject.Inject;
 
 public class GranitePluginManager implements PluginManager {
 
@@ -147,6 +144,16 @@ public class GranitePluginManager implements PluginManager {
         }
     }
 
+    public void unloadPlugins(){
+        for (PluginContainer p : plugins){
+
+            Granite.instance.getLogger().info("Unloaded {} ({})!", p.getName(), p.getVersion());
+
+        }
+
+        plugins.clear();
+
+    }
     /**
      * Bootstraps a plugin container.
      *
