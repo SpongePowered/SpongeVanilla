@@ -97,7 +97,7 @@ public class GraniteStartupThread extends Thread {
     public void run() {
         try {
             Properties versionProp = new Properties();
-            InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("version.properties");
+            InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("granite.version");
             if (versionIn != null) {
                 try {
                     versionProp.load(versionIn);

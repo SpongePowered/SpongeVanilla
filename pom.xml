@@ -119,6 +119,12 @@
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.1</version>
         </dependency>
@@ -188,8 +194,7 @@
                                     <include>com.flowpowered:flow-math</include>
                                     <include>com.github.kevinsawicki:http-request</include>
                                     <include>org.slf4j:slf4j-api</include>
-                                    <include>org.apache.logging.log4j:log4j-core</include>
-                                    <include>org.apache.logging.log4j:log4j-slf4j-impl</include>
+                                    <include>org.apache.logging.log4j:log4j-*</include>Ω
                                     <include>com.google.code.gson:gson</include>
                                     <include>com.google.inject:guice</include>
                                     <include>javax.inject:javax.inject</include>
