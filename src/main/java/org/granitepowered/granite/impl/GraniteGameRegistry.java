@@ -128,11 +128,11 @@ public class GraniteGameRegistry implements GameRegistry {
     Map<String, ItemType> itemTypes = Maps.newHashMap();
     Map<String, Profession> professions = Maps.newHashMap();
     Map<String, OcelotType> ocelots = Maps.newHashMap();
+    Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
     Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
     Map<String, RabbitType> rabbits = Maps.newHashMap();
     Map<Integer, Rotation> rotations = Maps.newHashMap();
     Map<String, SkeletonType> skeletons = Maps.newHashMap();
-    Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -152,11 +152,11 @@ public class GraniteGameRegistry implements GameRegistry {
         registerHorseVariants();
         registerItems();
         registerOcelots();
+        registerPotionEffects();
         registerProfessionsAndCareers();
         registerRabbits();
         registerRotations();
         registerSkeletons();
-        registerPotionEffects();
     }
 
     private void registerArts() {
@@ -460,6 +460,51 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerPotionEffects() {
+        Granite.instance.getLogger().info("Registering PotionEffects");
+
+        try {
+            Class potionClass = Mappings.getClass("Potion");
+            Field potionTypes = Mappings.getField(potionClass, "potionTypes");
+            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
+            mcPotions.removeAll(Collections.singleton(null));
+
+            for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
+                ReflectionUtils.forceAccessible(field);
+
+                String name = field.getName().toLowerCase();
+
+                for (MCPotion p : mcPotions) {
+                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "resourceToPotion").get(p.getClass());
+
+                    Object o = null;
+                    for (Map.Entry entry : resourceToPotion.entrySet()) {
+                        if (p.equals(entry.getValue())) {
+                            o = entry.getKey();
+                        }
+                    }
+
+                    String potionName = (String) Mappings.getField(o.getClass(), "resourcePath").get(o);
+                    if (name.equals(potionName)) {
+                        boolean isInstant = p.isInstant();
+
+                        PotionEffectType potionEffectType = new GranitePotionEffectType(isInstant);
+                        field.set(null, potionEffectType);
+                        potionEffects.put("minecraft:" + name, potionEffectType);
+                        if (Main.debugLog) {
+                            Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
+                        }
+                    }
+
+                }
+            }
+
+        }catch (IllegalAccessException e){
+            Throwables.propagate(e);
+        }
+
+    }
+
     // TODO: THIS IS BIG, FAT AND UGLY. And need redoing if possible.
     private void registerProfessionsAndCareers() {
         Granite.instance.getLogger().info("Registering Professions");
@@ -603,51 +648,6 @@ public class GraniteGameRegistry implements GameRegistry {
                 Throwables.propagate(e);
             }
         }
-    }
-
-    private void registerPotionEffects() {
-        Granite.instance.getLogger().info("Registering PotionEffects");
-
-        try {
-            Class potionClass = Mappings.getClass("Potion");
-            Field potionTypes = Mappings.getField(potionClass, "potionTypes");
-            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
-            mcPotions.removeAll(Collections.singleton(null));
-
-            for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
-                ReflectionUtils.forceAccessible(field);
-
-                String name = field.getName().toLowerCase();
-
-                for (MCPotion p : mcPotions) {
-                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "resourceToPotion").get(p.getClass());
-
-                    Object o = null;
-                    for (Map.Entry entry : resourceToPotion.entrySet()) {
-                        if (p.equals(entry.getValue())) {
-                            o = entry.getKey();
-                        }
-                    }
-
-                    String potionName = (String) Mappings.getField(o.getClass(), "resourcePath").get(o);
-                    if (name.equals(potionName)) {
-                        boolean isInstant = p.isInstant();
-
-                        PotionEffectType potionEffectType = new GranitePotionEffectType(isInstant);
-                        field.set(null, potionEffectType);
-                        potionEffects.put("minecraft:" + name, potionEffectType);
-                        if (Main.debugLog) {
-                            Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
-                        }
-                    }
-
-                }
-            }
-
-        }catch (IllegalAccessException e){
-            Throwables.propagate(e);
-        }
-
     }
 
     @Override

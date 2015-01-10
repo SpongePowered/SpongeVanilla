@@ -41,5 +41,4 @@ public interface MCPotionEffect extends MCInterface {
     boolean fieldGet$showParticles();
 
     void fieldSet$showParticles(boolean particles);
-
 }

@@ -23,7 +23,10 @@
 
 package org.granitepowered.granite.impl.potion;
 
-import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCPotion;
+import org.granitepowered.granite.utils.MinecraftUtils;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
@@ -38,11 +41,7 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
     boolean particles;
 
     public GranitePotionBuilder() {
-        this.potionEffectType = PotionEffectTypes.HASTE;
-        this.duration = 1;
-        this.amplifier = 1;
-        this.ambience = false;
-        this.particles = true;
+        reset();
     }
 
     @Override
@@ -53,6 +52,7 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
 
     @Override
     public PotionEffectBuilder duration(int duration) {
+        if (duration <= 0) Granite.instance.getLogger().error("Duration must be greater than 0");
         this.duration = duration;
         return this;
     }
@@ -77,9 +77,9 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
 
     @Override
     public PotionEffectBuilder reset() {
-        this.potionEffectType = PotionEffectTypes.HASTE;
-        this.duration = 1;
-        this.amplifier = 1;
+        this.potionEffectType = null;
+        this.duration = 0;
+        this.amplifier = 0;
         this.ambience = false;
         this.particles = true;
         return this;
@@ -87,6 +87,9 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
 
     @Override
     public PotionEffect build() throws IllegalStateException {
-        throw new NotImplementedException("");
+        return new GranitePotionEffect(MinecraftUtils.instantiate(Mappings.getClass("PotionEffect"),
+                                                                  new Class[]{int.class, int.class, int.class, boolean.class, boolean.class},
+                                                                  ((MCPotion) MinecraftUtils.unwrap(potionEffectType)).fieldGet$id(), duration,
+                                                                  amplifier, ambience, particles));
     }
 }
