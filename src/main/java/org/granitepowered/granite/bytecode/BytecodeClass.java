@@ -60,8 +60,8 @@ import java.util.Set;
 public class BytecodeClass {
 
     static Map<CtClass, Class<?>> classMap;
-    CtClass clazz;
-    List<PostCallback> callbacks;
+    protected CtClass clazz;
+    protected List<PostCallback> callbacks;
     Set<String> classesToLoad;
 
     ClassPool pool;

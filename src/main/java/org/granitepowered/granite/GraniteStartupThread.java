@@ -133,7 +133,7 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.logger = LoggerFactory.getLogger("Granite");
 
             Granite.instance.serverConfig = new ServerConfig();
-            Granite.instance.classPool = new ClassPool(true);
+            Granite.instance.classPool = ClassPool.getDefault();
 
             Granite.instance.eventManager.post(new GraniteConstructionEvent());
 
@@ -277,7 +277,9 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new ServerConfigurationManagerClass());
             modifier.add(new WorldProviderClass());
 
-            if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || FileUtils.readFileToString(buildNumberFile) != buildNumber) {
+            modifier.add(new InstantiatorClass());
+
+            if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || !Objects.equals(FileUtils.readFileToString(buildNumberFile), buildNumber)) {
                 Granite.instance.getLogger().info("Modifying bytecode");
 
                 if (Granite.instance.classesDir.exists()) {

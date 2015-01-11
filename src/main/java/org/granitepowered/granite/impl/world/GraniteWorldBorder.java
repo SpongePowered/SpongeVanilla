@@ -97,12 +97,12 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public double getDamageThreshold() {
-        return obj.fieldGet$blockBuffer();
+        return obj.fieldGet$damageBuffer();
     }
 
     @Override
     public void setDamageThreshold(double distance) {
-        obj.setBlockBuffer((int) distance);
+        obj.setDamageBuffer((int) distance);
     }
 
     @Override

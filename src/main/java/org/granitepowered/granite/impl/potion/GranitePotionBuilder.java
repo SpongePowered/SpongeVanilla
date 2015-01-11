@@ -24,7 +24,6 @@
 package org.granitepowered.granite.impl.potion;
 
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
