@@ -32,7 +32,6 @@ import org.granitepowered.granite.impl.event.GraniteEvent;
 import org.granitepowered.granite.impl.guice.PluginScope;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.util.event.Cancellable;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Order;
 import org.spongepowered.api.util.event.Subscribe;
@@ -92,6 +91,8 @@ public class GraniteEventManager implements EventManager {
 
     @Override
     public boolean post(Event event) {
+        GraniteEvent graniteEvent = (GraniteEvent) event;
+
         Set<GraniteEventHandler> unfilteredHandlers = new HashSet<>();
 
         for (Map.Entry<Class<? extends Event>, GraniteEventHandler> entry : handlers.entries()) {
@@ -100,42 +101,30 @@ public class GraniteEventManager implements EventManager {
             }
         }
 
-        if (event instanceof GraniteEvent) {
-            ((GraniteEvent) event).isModifiable = false;
-        }
-        if (event instanceof GraniteEvent) {
-            ((GraniteEvent) event).isCancellable = false;
-        }
-        postEventWithOrder(unfilteredHandlers, event, Order.PRE);
-        postEventWithOrder(unfilteredHandlers, event, Order.AFTER_PRE);
+        graniteEvent.isModifiable = false;
+        graniteEvent.isCancellable = false;
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.PRE);
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.AFTER_PRE);
 
-        if (event instanceof GraniteEvent) {
-            ((GraniteEvent) event).isCancellable = true;
-        }
-        postEventWithOrder(unfilteredHandlers, event, Order.FIRST);
+        graniteEvent.isCancellable = true;
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.FIRST);
 
-        if (event instanceof GraniteEvent) {
-            ((GraniteEvent) event).isModifiable = true;
-        }
-        postEventWithOrder(unfilteredHandlers, event, Order.EARLY);
-        postEventWithOrder(unfilteredHandlers, event, Order.DEFAULT);
-        postEventWithOrder(unfilteredHandlers, event, Order.LATE);
+        graniteEvent.isModifiable = true;
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.EARLY);
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.DEFAULT);
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.LATE);
 
-        if (event instanceof GraniteEvent) {
-            ((GraniteEvent) event).isModifiable = false;
-        }
-        postEventWithOrder(unfilteredHandlers, event, Order.LAST);
+        graniteEvent.isModifiable = false;
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.LAST);
 
-        if (event instanceof GraniteEvent) {
-            ((GraniteEvent) event).isCancellable = false;
-        }
-        postEventWithOrder(unfilteredHandlers, event, Order.BEFORE_POST);
-        postEventWithOrder(unfilteredHandlers, event, Order.POST);
+        graniteEvent.isCancellable = false;
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.BEFORE_POST);
+        postEventWithOrder(unfilteredHandlers, graniteEvent, Order.POST);
 
-        return !(event instanceof Cancellable) || ((Cancellable) event).isCancelled();
+        return graniteEvent.cancelled;
     }
 
-    public void postEventWithOrder(Set<GraniteEventHandler> unfilteredHandlers, Event event, Order order) {
+    public boolean postEventWithOrder(Set<GraniteEventHandler> unfilteredHandlers, Event event, Order order) {
         for (GraniteEventHandler handler : unfilteredHandlers) {
             try {
                 pluginScope.enter(handler.getPluginContainer());
@@ -153,5 +142,7 @@ public class GraniteEventManager implements EventManager {
                 pluginScope.exit();
             }
         }
+
+        return ((GraniteEvent) event).cancelled;
     }
 }

@@ -21,11 +21,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.hanging;
 
-import org.spongepowered.api.world.World;
+import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
+import org.granitepowered.granite.mc.MCEntityPainting;
+import org.granitepowered.granite.mc.MCEnumArt;
+import org.granitepowered.granite.util.MinecraftUtils;
+import org.spongepowered.api.entity.hanging.Painting;
+import org.spongepowered.api.entity.hanging.art.Art;
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+public class GranitePainting extends GraniteHanging<MCEntityPainting> implements Painting {
 
+    public GranitePainting(MCEntityPainting obj) {
+        super(obj);
+    }
+
+    @Override
+    public Art getArt() {
+        return new GraniteArt(obj.fieldGet$art());
+    }
+
+    @Override
+    public void setArt(Art art) {
+        obj.fieldSet$art((MCEnumArt) MinecraftUtils.unwrap(art));
+    }
 }

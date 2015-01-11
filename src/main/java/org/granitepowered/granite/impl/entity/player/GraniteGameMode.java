@@ -21,11 +21,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.player;
 
-import org.spongepowered.api.world.World;
+import org.spongepowered.api.entity.player.gamemode.GameMode;
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+public class GraniteGameMode implements GameMode {
 
 }

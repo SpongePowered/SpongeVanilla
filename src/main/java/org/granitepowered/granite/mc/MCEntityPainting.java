@@ -23,9 +23,10 @@
 
 package org.granitepowered.granite.mc;
 
-import org.spongepowered.api.world.World;
+@Implement(name = "EntityPainting")
+public interface MCEntityPainting extends MCEntityHanging {
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+    MCEnumArt fieldGet$art();
 
+    void fieldSet$art(MCEnumArt art);
 }

@@ -23,9 +23,14 @@
 
 package org.granitepowered.granite.mc;
 
-import org.spongepowered.api.world.World;
+@Implement(name = "EntityItemFrame")
+public interface MCEntityItemFrame extends MCEntityHanging {
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+    MCItemStack getDisplayedItem();
 
+    void setDisplayedItem(MCItemStack itemStack);
+
+    int getRotation();
+
+    void setItemRotation(int angle);
 }

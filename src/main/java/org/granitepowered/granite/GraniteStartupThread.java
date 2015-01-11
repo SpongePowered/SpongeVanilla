@@ -32,7 +32,16 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
@@ -280,7 +289,8 @@ public class GraniteStartupThread extends Thread {
 
             modifier.add(new InstantiatorClass());
 
-            if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || !Objects.equals(FileUtils.readFileToString(buildNumberFile), buildNumber)) {
+            if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || !Objects
+                    .equals(FileUtils.readFileToString(buildNumberFile), buildNumber)) {
                 Granite.instance.getLogger().info("Modifying bytecode");
 
                 if (Granite.instance.classesDir.exists()) {

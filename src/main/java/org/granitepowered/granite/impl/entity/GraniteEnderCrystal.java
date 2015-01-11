@@ -21,11 +21,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity;
 
-import org.spongepowered.api.world.World;
+import org.granitepowered.granite.mc.MCEntity;
+import org.spongepowered.api.entity.EnderCrystal;
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+public class GraniteEnderCrystal extends GraniteEntity implements EnderCrystal {
 
+    public GraniteEnderCrystal(MCEntity obj) {
+        super(obj);
+    }
 }

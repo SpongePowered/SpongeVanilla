@@ -21,11 +21,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.weather;
 
-import org.spongepowered.api.world.World;
+import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.mc.MCEntityLightningBolt;
+import org.spongepowered.api.entity.weather.Lightning;
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+public class GraniteLightning extends GraniteEntity<MCEntityLightningBolt> implements Lightning {
 
+    public GraniteLightning(MCEntityLightningBolt obj) {
+        super(obj);
+    }
+
+    @Override
+    public boolean isEffect() {
+        return true;
+    }
 }

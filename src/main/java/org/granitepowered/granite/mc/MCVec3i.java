@@ -28,7 +28,13 @@ public interface MCVec3i extends MCInterface {
 
     int fieldGet$x();
 
+    void fieldSet$x(int x);
+
     int fieldGet$y();
 
+    void fieldSet$y(int y);
+
     int fieldGet$z();
+
+    void fieldSet$z(int z);
 }

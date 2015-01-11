@@ -33,6 +33,7 @@ import org.granitepowered.granite.util.ReflectionUtils;
 import java.lang.reflect.Field;
 
 public class InstantiatorClass extends BytecodeClass {
+
     public InstantiatorClass() {
         super(ClassPool.getDefault().makeClass("InstantiatorImpl"));
 

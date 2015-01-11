@@ -23,9 +23,10 @@
 
 package org.granitepowered.granite.mc;
 
-import org.spongepowered.api.world.World;
+@Implement(name = "EntityHanging")
+public interface MCEntityHanging extends MCEntity {
 
-@Implement(name = "WorldServer")
-public interface MCWorldServer extends World {
+    MCEnumFacing fieldGet$facing();
 
+    void setFacing(MCEnumFacing facing);
 }
