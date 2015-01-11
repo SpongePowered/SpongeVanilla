@@ -32,11 +32,11 @@ public interface MCEntityLiving extends MCEntityLivingBase {
 
     MCEntity fieldGet$leashedToEntity();
 
+    void setLeashedToEntity(MCEntity entityIn, boolean sendAttachNotification);
+
     boolean fieldGet$canPickUpLoot();
 
     void fieldSet$canPickUpLoot(boolean value);
-
-    MCItemStack[] fieldGet$equipment();
 
     boolean fieldGet$persistenceRequired();
 

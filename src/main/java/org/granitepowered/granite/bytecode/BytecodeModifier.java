@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BytecodeModifier {
+
     List<BytecodeClass> bcs;
     CtClass ctInstantiator;
 
@@ -76,7 +77,6 @@ public class BytecodeModifier {
                     bc.implement(BytecodeClass.getFromCt(ctClass));
                 }
             }
-
 
             // Instantiator doesn't sound like a word any more...
             ctInstantiator = ClassPool.getDefault().makeClass("InstantiatorImpl");

@@ -26,23 +26,33 @@ package org.granitepowered.granite.impl.entity.living;
 import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.impl.potion.GranitePotionEffect;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEntityLiving;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.granitepowered.granite.mc.MCPotion;
+import org.granitepowered.granite.mc.MCPotionEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
+
+    int maxAir = 300;
 
     public GraniteLivingBase(T obj) {
         super(obj);
@@ -74,38 +84,48 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public void setMaxHealth(double maxHealth) {
-        // TODO: Check if possible
+        // TODO: need to look at accessing getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth);
         throw new NotImplementedException("");
     }
 
     @Override
     public void addPotionEffect(PotionEffect potionEffect, boolean force) {
-        // TODO: Potion effects, see EntityLivingBase.activePotionsMap (xo.g)
-        throw new NotImplementedException("");
+        if (hasPotionEffect(potionEffect.getType())) {
+            if (!force) {
+                return;
+            }
+            removePotionEffect(potionEffect.getType());
+        }
+        GranitePotionEffect granitePotionEffect = (GranitePotionEffect) potionEffect;
+        MCPotionEffect mcPotionEffect = unwrap(granitePotionEffect);
+        obj.addPotionEffect(mcPotionEffect);
     }
 
     @Override
     public void addPotionEffects(Collection<PotionEffect> potionEffects, boolean force) {
-        // TODO: Potion effects, see EntityLivingBase.activePotionsMap (xo.g)
-        throw new NotImplementedException("");
+        for (PotionEffect potionEffect : potionEffects) {
+            addPotionEffect(potionEffect, force);
+        }
     }
 
     @Override
     public void removePotionEffect(PotionEffectType potionEffectType) {
-        // TODO: Potion effects, see EntityLivingBase.activePotionsMap (xo.g)
-        throw new NotImplementedException("");
+        obj.removePotionEffect(((MCPotion) unwrap(potionEffectType)).fieldGet$id());
     }
 
     @Override
     public boolean hasPotionEffect(PotionEffectType potionEffectType) {
-        // TODO: Potion effects, see EntityLivingBase.activePotionsMap (xo.g)
-        throw new NotImplementedException("");
+        return getPotionEffects().contains(potionEffectType);
     }
 
     @Override
     public List<PotionEffect> getPotionEffects() {
-        // TODO: Potion effects, see EntityLivingBase.activePotionsMap (xo.g)
-        throw new NotImplementedException("");
+        Map potions = obj.fieldGet$activePotions();
+        List<PotionEffect> potionEffects = new ArrayList<>();
+        for (Object object : potions.values()) {
+            potionEffects.add(new GranitePotionEffect(object));
+        }
+        return potionEffects;
     }
 
     @Override
@@ -121,14 +141,17 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public Optional<Entity> getLeashHolder() {
-        // TODO: Not sure what the field "leashedToEntity" in EntityLiving refers to, leaving this unimplemented for now
-        throw new NotImplementedException("");
+        if (obj instanceof MCEntityLiving) {
+            return Optional.fromNullable((Entity) wrap(((MCEntityLiving) obj).fieldGet$leashedToEntity()));
+        }
+        return Optional.absent();
     }
 
     @Override
     public void setLeashHolder(Entity entity) {
-        // TODO: Not sure what the field "leashedToEntity" in EntityLiving refers to, leaving this unimplemented for now
-        throw new NotImplementedException("");
+        if (obj instanceof MCEntityLiving) {
+            ((MCEntityLiving) obj).setLeashedToEntity((MCEntity) unwrap(entity), true);
+        }
     }
 
     @Override
@@ -138,8 +161,8 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public Vector3f getEyeLocation() {
-        // TODO: Wait for location/position shiz
-        throw new NotImplementedException("");
+        Vector3d pos = getLocation().getPosition();
+        return new Vector3f(pos.getX(), pos.getY() + getEyeHeight(), pos.getZ());
     }
 
     @Override
@@ -154,14 +177,12 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
 
     @Override
     public int getMaxAir() {
-        // TODO: I don't think Minecraft has a concept of maximum air
-        throw new NotImplementedException("");
+        return this.maxAir;
     }
 
     @Override
     public void setMaxAir(int air) {
-        // TODO: I don't think Minecraft has a concept of maximum air
-        throw new NotImplementedException("");
+        this.maxAir = air;
     }
 
     @Override

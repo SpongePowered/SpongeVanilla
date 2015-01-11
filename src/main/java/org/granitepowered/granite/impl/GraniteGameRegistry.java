@@ -60,7 +60,6 @@ import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
-import org.granitepowered.granite.util.MinecraftUtils;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
@@ -474,22 +473,21 @@ public class GraniteGameRegistry implements GameRegistry {
                 ReflectionUtils.forceAccessible(field);
 
                 String name = field.getName().toLowerCase();
+                for (MCPotion potion : mcPotions) {
+                    HashMap<Object, MCPotion>
+                            resourceToPotion =
+                            (HashMap) Mappings.getField(potion.getClass(), "resourceToPotion").get(potion.getClass());
 
-                for (MCPotion p : mcPotions) {
-                    HashMap<Object, MCPotion> resourceToPotion = (HashMap) Mappings.getField(p.getClass(), "resourceToPotion").get(p.getClass());
-
-                    Object o = null;
+                    Object resourceLocation = null;
                     for (Map.Entry entry : resourceToPotion.entrySet()) {
-                        if (p.equals(entry.getValue())) {
-                            o = entry.getKey();
+                        if (potion.equals(entry.getValue())) {
+                            resourceLocation = entry.getKey();
                         }
                     }
 
-                    String potionName = (String) Mappings.getField(o.getClass(), "resourcePath").get(o);
+                    String potionName = (String) Mappings.getField(resourceLocation.getClass(), "resourcePath").get(resourceLocation);
                     if (name.equals(potionName)) {
-                        boolean isInstant = p.isInstant();
-
-                        PotionEffectType potionEffectType = new GranitePotionEffectType(isInstant);
+                        PotionEffectType potionEffectType = new GranitePotionEffectType(potion);
                         field.set(null, potionEffectType);
                         potionEffects.put("minecraft:" + name, potionEffectType);
                         if (Main.debugLog) {
@@ -500,7 +498,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 }
             }
 
-        }catch (IllegalAccessException e){
+        } catch (IllegalAccessException e) {
             Throwables.propagate(e);
         }
 

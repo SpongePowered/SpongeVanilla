@@ -25,4 +25,5 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "S23PacketBlockChange")
 public interface MCPacketBlockChange extends MCPacket {
+
 }

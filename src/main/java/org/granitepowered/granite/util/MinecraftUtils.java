@@ -25,7 +25,6 @@ package org.granitepowered.granite.util;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
@@ -46,6 +45,7 @@ import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.potion.GranitePotionEffect;
+import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteChunk;
 import org.granitepowered.granite.impl.world.GraniteDimension;
@@ -53,17 +53,11 @@ import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.impl.world.GraniteWorldBorder;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.Implement;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCInterface;
 import org.spongepowered.api.text.message.Message;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -72,8 +66,10 @@ import javax.annotation.Nullable;
 public class MinecraftUtils {
 
     public static ImmutableMap<Class<?>, Class<? extends Composite>> composites = ImmutableMap.<Class<?>, Class<? extends Composite>>builder()
+            .put(Mappings.getClass("BiomeGenBase"), GraniteBiomeType.class)
             .put(Mappings.getClass("Block"), GraniteBlockType.class)
             .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
+            .put(Mappings.getClass("Chunk"), GraniteChunk.class)
             .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
             .put(Mappings.getClass("Enchantment"), GraniteServer.class)
             .put(Mappings.getClass("Entity"), GraniteEntity.class)
@@ -84,16 +80,16 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityLiving"), GraniteLiving.class)
             .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
             .put(Mappings.getClass("EntityTNTPrimed"), GranitePrimedTNT.class)
+            .put(Mappings.getClass("EnumArt"), GraniteArt.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
+            .put(Mappings.getClass("Potion"), GranitePotionEffectType.class)
+            .put(Mappings.getClass("PotionEffect"), GranitePotionEffect.class)
             .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)
             .put(Mappings.getClass("WorldBorder"), GraniteWorldBorder.class)
             .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
             .put(Mappings.getClass("WorldProvider"), GraniteDimension.class)
-            .put(Mappings.getClass("EnumArt"), GraniteArt.class)
-            .put(Mappings.getClass("PotionEffect"), GranitePotionEffect.class).put(Mappings.getClass("BiomeGenBase"), GraniteBiomeType.class)
-            .put(Mappings.getClass("Chunk"), GraniteChunk.class)
             .build();
 
     @Nonnull

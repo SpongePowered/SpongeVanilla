@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.world;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -35,7 +37,12 @@ import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEnumFacing;
+import org.granitepowered.granite.mc.MCGameRules;
+import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.mc.MCWorldInfo;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -44,7 +51,11 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.service.persistence.data.DataContainer;
-import org.spongepowered.api.world.*;
+import org.spongepowered.api.world.Chunk;
+import org.spongepowered.api.world.Dimension;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.WorldBorder;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.gen.WorldGenerator;
 import org.spongepowered.api.world.storage.WorldStorage;
@@ -54,8 +65,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteWorld extends Composite<MCWorld> implements World {
 

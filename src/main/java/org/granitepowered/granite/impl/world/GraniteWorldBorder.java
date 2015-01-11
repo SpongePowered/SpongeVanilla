@@ -37,12 +37,12 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public double getNewDiameter() {
-        return obj.getDiameter() / 2;
+        return obj.getDiameter();
     }
 
     @Override
     public double getDiameter() {
-        return obj.fieldGet$startDiameter() / 2;
+        return obj.fieldGet$startDiameter();
     }
 
     @Override
@@ -97,12 +97,12 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public double getDamageThreshold() {
-        return obj.fieldGet$blockBuffer();
+        return obj.fieldGet$damageThreshold();
     }
 
     @Override
     public void setDamageThreshold(double distance) {
-        obj.setBlockBuffer((int) distance);
+        obj.setDamageThreshold(distance);
     }
 
     @Override

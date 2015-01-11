@@ -27,7 +27,6 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
-import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.action.ShiftClickAction;
@@ -42,6 +41,7 @@ import org.spongepowered.api.text.translation.Translation;
 import java.util.List;
 
 public abstract class GraniteMessage<T> implements Message {
+
     T content;
     ImmutableList<Message> children;
     TextColor color;

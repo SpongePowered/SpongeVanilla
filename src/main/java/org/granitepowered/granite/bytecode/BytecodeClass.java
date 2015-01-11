@@ -215,7 +215,7 @@ public class BytecodeClass {
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -243,7 +243,7 @@ public class BytecodeClass {
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -309,7 +309,9 @@ public class BytecodeClass {
                 newMethod.setModifiers(Modifier.PUBLIC);
 
                 MethodInfo mi = newMethod.getMethodInfo();
-                Bytecode bytecode = new Bytecode(mi.getConstPool(), newMethod.getParameterTypes().length + 1, newMethod.getParameterTypes().length + 1);
+                Bytecode
+                        bytecode =
+                        new Bytecode(mi.getConstPool(), newMethod.getParameterTypes().length + 1, newMethod.getParameterTypes().length + 1);
                 bytecode.addNew(mcActualRet);
                 bytecode.addOpcode(Opcode.DUP);
 

@@ -161,7 +161,8 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     public Collection<World> getWorlds() {
 
         return ImmutableList
-                .<World>copyOf(Iterables.transform(Arrays.asList((MCWorld[]) obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
+                .<World>copyOf(
+                        Iterables.transform(Arrays.asList((MCWorld[]) obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
     }
 
     @Override

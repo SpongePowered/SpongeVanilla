@@ -32,7 +32,15 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
@@ -165,7 +173,8 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.eventManager.post(new GranitePostInitializationEvent());
             Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
-            Granite.instance.getLogger().info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
+            Granite.instance.getLogger()
+                    .info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
 
             Date date = new Date();
             String day = new SimpleDateFormat("dd").format(date);

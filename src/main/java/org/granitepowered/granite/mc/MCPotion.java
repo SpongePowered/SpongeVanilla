@@ -24,7 +24,7 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Potion")
-public interface MCPotion extends MCInterface{
+public interface MCPotion extends MCInterface {
 
     int fieldGet$id();
 

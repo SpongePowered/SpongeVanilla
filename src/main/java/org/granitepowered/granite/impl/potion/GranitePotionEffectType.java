@@ -23,17 +23,18 @@
 
 package org.granitepowered.granite.impl.potion;
 
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mc.MCPotion;
 import org.spongepowered.api.potion.PotionEffectType;
 
-public class GranitePotionEffectType implements PotionEffectType {
-    private boolean isInstant;
+public class GranitePotionEffectType extends Composite<MCPotion> implements PotionEffectType {
 
-    public GranitePotionEffectType(boolean isInstant){
-        this.isInstant = isInstant;
+    public GranitePotionEffectType(Object obj) {
+        super(obj);
     }
 
     @Override
     public boolean isInstant() {
-        return isInstant;
+        return obj.isInstant();
     }
 }

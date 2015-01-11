@@ -50,12 +50,11 @@ public interface MCWorldBorder extends MCInterface {
 
     void setWarningDistance(int blocks);
 
-    double fieldGet$blockBuffer();
+    double fieldGet$damageThreshold();
 
-    void setBlockBuffer(int buffer);
+    void setDamageThreshold(double buffer);
 
     double fieldGet$damageAmount();
 
     void setDamageAmount(int damage);
-
 }
