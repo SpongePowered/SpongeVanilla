@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.player;
+package org.granitepowered.granite.impl.entity.player.gamemode;
 
 import org.spongepowered.api.entity.player.gamemode.GameMode;
 
