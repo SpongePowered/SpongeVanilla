@@ -35,11 +35,14 @@ import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Opcode;
 import javassist.expr.ExprEditor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.Implement;
 import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.util.ReflectionUtils;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -211,8 +214,8 @@ public class BytecodeClass {
 
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
-                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast",
-                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                            bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
+                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -239,8 +242,8 @@ public class BytecodeClass {
 
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
-                            bytecode.addInvokestatic("org.granitepowered.granite.utils.ReflectionUtils", "cast",
-                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                            bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
+                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -288,6 +291,52 @@ public class BytecodeClass {
                 classesToLoad.add(clazz.getName());
             }
         } catch (NotFoundException | CannotCompileException e) {
+            Throwables.propagate(e);
+        }
+    }
+
+    public void instantiator(Class<?> instantiatorInterface) {
+        try {
+            CtClass ctMcInterface = pool.get(instantiatorInterface.getName());
+
+            for (CtMethod interfaceMethod : ctMcInterface.getDeclaredMethods()) {
+                CtClass mcInterfaceRet = interfaceMethod.getReturnType();
+
+                CtClass mcActualRet = Mappings.getCtClass(((Implement) mcInterfaceRet.getAnnotation(Implement.class)).name());
+
+                CtMethod newMethod = new CtMethod(mcInterfaceRet, interfaceMethod.getName(), interfaceMethod.getParameterTypes(), clazz);
+
+                newMethod.setModifiers(Modifier.PUBLIC);
+
+                MethodInfo mi = newMethod.getMethodInfo();
+                Bytecode bytecode = new Bytecode(mi.getConstPool(), newMethod.getParameterTypes().length + 1, newMethod.getParameterTypes().length + 1);
+                bytecode.addNew(mcActualRet);
+                bytecode.addOpcode(Opcode.DUP);
+
+                CtClass[] parameterTypes = newMethod.getParameterTypes();
+
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    bytecode.addLoad(i + 1, parameterTypes[i]);
+
+                    if (parameterTypes[i].hasAnnotation(Implement.class)) {
+                        parameterTypes[i] = Mappings.getCtClass(((Implement) parameterTypes[i].getAnnotation(Implement.class)).name());
+                    }
+
+                    if (!parameterTypes[i].isPrimitive()) {
+                        bytecode.addCheckcast(parameterTypes[i]);
+                    }
+                }
+
+                bytecode.addInvokespecial(mcActualRet, "<init>", CtClass.voidType, parameterTypes);
+                bytecode.addReturn(mcInterfaceRet);
+
+                mi.setCodeAttribute(bytecode.toCodeAttribute());
+
+                clazz.addMethod(newMethod);
+
+                classesToLoad.add(clazz.getName());
+            }
+        } catch (NotFoundException | ClassNotFoundException | CannotCompileException e) {
             Throwables.propagate(e);
         }
     }

@@ -38,6 +38,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCItemInWorldManager;
 import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
@@ -66,10 +67,7 @@ public class ItemInWorldManagerClass extends BytecodeClass {
                 if (!event.isCancelled()) {
                     return callback.invokeParent(args);
                 } else {
-                    MCPacket p = MinecraftUtils.instantiate(Mappings.getClass("S23PacketBlockChange"),
-                                                            new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
-                                                            thisIiwm.fieldGet$theWorld(), mcBlockPos
-                    );
+                    MCPacket p = Instantiator.get().newPacketBlockChange(thisIiwm.fieldGet$theWorld(), mcBlockPos);
                     player.sendPacket(p);
                     return false;
                 }

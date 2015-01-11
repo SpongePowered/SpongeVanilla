@@ -38,6 +38,7 @@ import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCEnumFacing;
 import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -81,16 +82,12 @@ public class ItemStackClass extends BytecodeClass {
                     if (event.isCancelled()) {
                         loc.replaceWith(oldSnapshot);
 
-                        MCPacket clickedUpdate = MinecraftUtils.instantiate(Mappings.getClass("S23PacketBlockChange"),
-                                                                            new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
-                                                                            mcPlayer.fieldGet$worldObj(), posClicked
-                        );
+                        MCPacket clickedUpdate = Instantiator.get().newPacketBlockChange(mcPlayer.fieldGet$worldObj(), posClicked);
+
                         player.sendPacket(clickedUpdate);
 
-                        MCPacket placedUpdate = MinecraftUtils.instantiate(Mappings.getClass("S23PacketBlockChange"),
-                                                                           new Class[]{Mappings.getClass("World"), Mappings.getClass("BlockPos")},
-                                                                           mcPlayer.fieldGet$worldObj(), posPlaced
-                        );
+                        MCPacket placedUpdate = Instantiator.get().newPacketBlockChange(mcPlayer.fieldGet$worldObj(), posPlaced);
+
                         player.sendPacket(placedUpdate);
                     }
                     return !event.isCancelled();

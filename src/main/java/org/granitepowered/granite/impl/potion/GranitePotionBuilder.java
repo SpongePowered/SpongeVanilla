@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl.potion;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCPotion;
+import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectBuilder;
@@ -86,9 +87,9 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
 
     @Override
     public PotionEffect build() throws IllegalStateException {
-        return new GranitePotionEffect(MinecraftUtils.instantiate(Mappings.getClass("PotionEffect"),
-                                                                  new Class[]{int.class, int.class, int.class, boolean.class, boolean.class},
-                                                                  ((MCPotion) MinecraftUtils.unwrap(potionEffectType)).fieldGet$id(), duration,
-                                                                  amplifier, ambience, particles));
+        return new GranitePotionEffect(Instantiator.get().newPotionEffect(
+                ((MCPotion) MinecraftUtils.unwrap(potionEffectType)).fieldGet$id(),
+                duration, amplifier, ambience, particles
+        ));
     }
 }

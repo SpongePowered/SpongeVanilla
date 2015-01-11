@@ -25,6 +25,7 @@ package org.granitepowered.granite.bytecode;
 
 import com.google.common.base.Throwables;
 import com.google.common.reflect.ClassPath;
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -32,14 +33,17 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
+import org.granitepowered.granite.util.Instantiator;
+import org.granitepowered.granite.util.ReflectionUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BytecodeModifier {
-
     List<BytecodeClass> bcs;
+    CtClass ctInstantiator;
 
     public BytecodeModifier() {
         bcs = new ArrayList<>();
@@ -73,6 +77,14 @@ public class BytecodeModifier {
                 }
             }
 
+
+            // Instantiator doesn't sound like a word any more...
+            ctInstantiator = ClassPool.getDefault().makeClass("InstantiatorImpl");
+            BytecodeClass instantiator = new BytecodeClass(ctInstantiator);
+            instantiator.instantiator(Instantiator.InstantiatorInterface.class);
+            ctInstantiator.addInterface(ClassPool.getDefault().get(Instantiator.InstantiatorInterface.class.getName()));
+            // Deliberately not adding it here, as there's no need to write it, it can be loaded from memory after post
+
             for (BytecodeClass bc : bcs) {
                 bc.writeClass();
             }
@@ -82,6 +94,15 @@ public class BytecodeModifier {
     }
 
     public void post() {
+        try {
+            Field instantiatorField = Instantiator.class.getDeclaredField("instance");
+
+            ReflectionUtils.forceAccessible(instantiatorField);
+            instantiatorField.set(null, ctInstantiator.toClass().newInstance());
+        } catch (NoSuchFieldException | InstantiationException | IllegalAccessException | CannotCompileException e) {
+            e.printStackTrace();
+        }
+
         for (BytecodeClass bc : bcs) {
             bc.post();
         }

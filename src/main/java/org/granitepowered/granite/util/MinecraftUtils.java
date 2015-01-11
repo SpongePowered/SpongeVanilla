@@ -131,30 +131,7 @@ public class MinecraftUtils {
     }
 
     public static MCBlockPos graniteToMinecraftBlockPos(Vector3i vector) {
-        try {
-            return (MCBlockPos) Mappings.getClass("BlockPos").getConstructor(int.class, int.class, int.class)
-                    .newInstance(vector.getX(), vector.getY(), vector.getZ());
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            Throwables.propagate(e);
-        }
-        return null;
-    }
-
-    public static <T> T instantiate(Class<?> clazz, Class<?>[] types, Object... args) {
-        Class<?> mcClass;
-        if (clazz.isAnnotationPresent(Implement.class)) {
-            mcClass = Mappings.getClass(clazz.getAnnotation(Implement.class).name());
-        } else {
-            mcClass = clazz;
-        }
-
-        try {
-            MethodHandle constructor = MethodHandles.lookup().findConstructor(mcClass, MethodType.methodType(void.class, types));
-            return (T) constructor.invokeWithArguments(Arrays.asList(args));
-        } catch (Throwable throwable) {
-            Throwables.propagate(throwable);
-        }
-        return null;
+        return Instantiator.get().newBlockPos(vector.getX(), vector.getY(), vector.getZ());
     }
 
     public static Enum enumValue(Class<?> clazz, int number) {

@@ -59,6 +59,7 @@ import org.granitepowered.granite.mc.MCEnumArt;
 import org.granitepowered.granite.mc.MCGameRules;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCPotion;
+import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
@@ -347,7 +348,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     private void registerGameRules() {
         Granite.instance.getLogger().info("Registering default GameRules");
-        MCGameRules gameRules = MinecraftUtils.instantiate(Mappings.getClass("GameRules"), new Class[]{});
+        MCGameRules gameRules = Instantiator.get().newGameRules();
         String[] rules = gameRules.getRules();
         for (String rule : rules) {
             defaultGameRules.add(rule);
