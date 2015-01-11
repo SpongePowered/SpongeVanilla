@@ -70,6 +70,8 @@ public class EntityClass extends BytecodeClass {
                             entity.setLocation(entity.getLocation().setPosition(new Vector3d(oldX, oldY, oldZ)));
                         }
                     }
+                } else {
+                    callback.invokeParent(args);
                 }
                 return null;
             }
