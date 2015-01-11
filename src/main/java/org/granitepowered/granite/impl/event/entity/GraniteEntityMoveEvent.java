@@ -28,6 +28,7 @@ import org.spongepowered.api.event.entity.EntityMoveEvent;
 import org.spongepowered.api.world.Location;
 
 public class GraniteEntityMoveEvent extends GraniteEntityEvent implements EntityMoveEvent {
+
     private final Location old;
     private final Location new_;
 

@@ -27,6 +27,7 @@ import java.util.Set;
 
 @Implement(name = "Chunk")
 public interface MCChunk extends MCInterface {
+
     int fieldGet$xPosition();
 
     int fieldGet$zPosition();

@@ -31,13 +31,18 @@ import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCFoodStats;
+import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPacketTitle$Type;
+import org.granitepowered.granite.mc.MCPlayerCapabilities;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -53,7 +58,6 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -104,7 +108,9 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public void sendTitle(Title title) {
         if (title.isReset() || title.isClear()) {
-            MCPacketTitle$Type type = (MCPacketTitle$Type) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
+            MCPacketTitle$Type
+                    type =
+                    (MCPacketTitle$Type) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, null);
             sendPacket(packet);

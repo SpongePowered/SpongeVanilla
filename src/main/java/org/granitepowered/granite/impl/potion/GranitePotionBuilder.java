@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.impl.potion;
 
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
@@ -51,7 +50,6 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
 
     @Override
     public PotionEffectBuilder duration(int duration) {
-        if (duration <= 0) Granite.instance.getLogger().error("Duration must be greater than 0");
         this.duration = duration;
         return this;
     }

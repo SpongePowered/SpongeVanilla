@@ -32,14 +32,12 @@ import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerPlaceBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
-import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCEnumFacing;
 import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.util.Instantiator;
-import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 

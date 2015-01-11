@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class GraniteScheduler implements Scheduler {
+
     private Set<Task> tasks;
     private long tickCount;
 
@@ -95,7 +96,8 @@ public class GraniteScheduler implements Scheduler {
         Optional<PluginContainer> container = Granite.getInstance().getPluginManager().fromInstance(plugin);
 
         if (container.isPresent()) {
-            return Optional.<Task>of(new GraniteTask(container.get(), Optional.of(delay), Optional.fromNullable(tickCount == 0 ? null : tickCount), interval, task));
+            return Optional.<Task>of(
+                    new GraniteTask(container.get(), Optional.of(delay), Optional.fromNullable(tickCount == 0 ? null : tickCount), interval, task));
         } else {
             return Optional.absent();
         }
@@ -104,7 +106,9 @@ public class GraniteScheduler implements Scheduler {
     @Override
     public Optional<Task> getTaskById(UUID id) {
         for (Task t : tasks) {
-            if (t.getUniqueId().equals(id)) return Optional.of(t);
+            if (t.getUniqueId().equals(id)) {
+                return Optional.of(t);
+            }
         }
         return Optional.absent();
     }

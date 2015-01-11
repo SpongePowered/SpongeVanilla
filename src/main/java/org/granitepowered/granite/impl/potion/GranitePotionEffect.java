@@ -25,12 +25,16 @@ package org.granitepowered.granite.impl.potion;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.mc.MCPotionEffect;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.service.persistence.DataSource;
 import org.spongepowered.api.service.persistence.data.DataContainer;
+
+import java.lang.reflect.Field;
 
 public class GranitePotionEffect extends Composite<MCPotionEffect> implements PotionEffect {
 
@@ -40,14 +44,20 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
 
     @Override
     public PotionEffectType getType() {
-        // TODO: Wait for Potion API to be finished
-        throw new NotImplementedException("");
+        Class potionClass = Mappings.getClass("Potion");
+        Field potionTypes = Mappings.getField(potionClass, "potionTypes");
+        MCPotion[] mcPotions = null;
+        try {
+            mcPotions = (MCPotion[]) potionTypes.get(potionClass);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return new GranitePotionEffectType(mcPotions[obj.fieldGet$potionId()]);
     }
 
     @Override
     public void apply(Living living) {
-        // TODO: Wait for Potion API to be finished
-        throw new NotImplementedException("");
+        living.addPotionEffect(this, true);
     }
 
     @Override

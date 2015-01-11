@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -32,9 +34,8 @@ import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.spongepowered.api.world.Location;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 public class EntityClass extends BytecodeClass {
+
     public EntityClass() {
         super("Entity");
 

@@ -37,7 +37,6 @@ import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Order;
 import org.spongepowered.api.util.event.Subscribe;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
@@ -101,23 +100,35 @@ public class GraniteEventManager implements EventManager {
             }
         }
 
-        if (event instanceof GraniteEvent) ((GraniteEvent) event).isModifiable = false;
-        if (event instanceof GraniteEvent) ((GraniteEvent) event).isCancellable = false;
+        if (event instanceof GraniteEvent) {
+            ((GraniteEvent) event).isModifiable = false;
+        }
+        if (event instanceof GraniteEvent) {
+            ((GraniteEvent) event).isCancellable = false;
+        }
         postEventWithOrder(unfilteredHandlers, event, Order.PRE);
         postEventWithOrder(unfilteredHandlers, event, Order.AFTER_PRE);
 
-        if (event instanceof GraniteEvent) ((GraniteEvent) event).isCancellable = true;
+        if (event instanceof GraniteEvent) {
+            ((GraniteEvent) event).isCancellable = true;
+        }
         postEventWithOrder(unfilteredHandlers, event, Order.FIRST);
 
-        if (event instanceof GraniteEvent) ((GraniteEvent) event).isModifiable = true;
+        if (event instanceof GraniteEvent) {
+            ((GraniteEvent) event).isModifiable = true;
+        }
         postEventWithOrder(unfilteredHandlers, event, Order.EARLY);
         postEventWithOrder(unfilteredHandlers, event, Order.DEFAULT);
         postEventWithOrder(unfilteredHandlers, event, Order.LATE);
 
-        if (event instanceof GraniteEvent) ((GraniteEvent) event).isModifiable = false;
+        if (event instanceof GraniteEvent) {
+            ((GraniteEvent) event).isModifiable = false;
+        }
         postEventWithOrder(unfilteredHandlers, event, Order.LAST);
 
-        if (event instanceof GraniteEvent) ((GraniteEvent) event).isCancellable = false;
+        if (event instanceof GraniteEvent) {
+            ((GraniteEvent) event).isCancellable = false;
+        }
         postEventWithOrder(unfilteredHandlers, event, Order.BEFORE_POST);
         postEventWithOrder(unfilteredHandlers, event, Order.POST);
 

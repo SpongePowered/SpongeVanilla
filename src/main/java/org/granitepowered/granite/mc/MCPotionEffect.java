@@ -26,6 +26,8 @@ package org.granitepowered.granite.mc;
 @Implement(name = "PotionEffect")
 public interface MCPotionEffect extends MCInterface {
 
+    int fieldGet$potionId();
+
     int fieldGet$duration();
 
     void fieldSet$duration(int duration);

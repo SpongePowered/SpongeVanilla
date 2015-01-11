@@ -25,7 +25,6 @@ package org.granitepowered.granite.bytecode;
 
 import com.google.common.base.Throwables;
 import com.google.common.reflect.ClassPath;
-import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -33,15 +32,13 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
-import org.granitepowered.granite.util.Instantiator;
-import org.granitepowered.granite.util.ReflectionUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BytecodeModifier {
+
     List<BytecodeClass> bcs;
 
     public BytecodeModifier() {

@@ -30,6 +30,7 @@ import org.spongepowered.api.service.scheduler.Task;
 import java.util.UUID;
 
 public class GraniteTask implements Task {
+
     private final PluginContainer owner;
     private final Optional<Long> delay;
     private final Optional<Long> interval;

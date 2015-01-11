@@ -57,5 +57,4 @@ public interface MCWorldBorder extends MCInterface {
     double fieldGet$damageAmount();
 
     void setDamageAmount(int damage);
-
 }

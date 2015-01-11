@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.mc;
 
+import java.util.Map;
+
 @Implement(name = "EntityLivingBase")
 public interface MCEntityLivingBase extends MCEntity {
 
@@ -47,4 +49,10 @@ public interface MCEntityLivingBase extends MCEntity {
     void setHealth(float health);
 
     float getMaxHealth();
+
+    void addPotionEffect(MCPotionEffect potionEffect);
+
+    void removePotionEffect(int potionId);
+
+    Map fieldGet$activePotions();
 }
