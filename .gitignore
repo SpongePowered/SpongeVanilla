@@ -56,7 +56,7 @@ bin/
 
 logs/
 /world/
-*.properties
+server.properties
 run/*.json
 eula.txt
 run/
