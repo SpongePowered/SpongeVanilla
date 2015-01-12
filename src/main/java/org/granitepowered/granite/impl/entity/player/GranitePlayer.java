@@ -317,16 +317,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     }
 
     @Override
-    public boolean isAiEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setAiEnabled(boolean aiEnabled) {
-        throw new UnsupportedOperationException("Player doesn't have AI");
-    }
-
-    @Override
     public void sendMessage(Message... messages) {
         sendMessage(ChatTypes.CHAT, messages);
     }
@@ -363,39 +353,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     public void sendPacket(MCPacket packet) {
         obj.fieldGet$playerNetServerHandler().sendPacket(packet);
-    }
-
-    @Override
-    public boolean isLeashed() {
-        return false;
-    }
-
-    @Override
-    public void setLeashed(boolean leashed) {
-        // TODO: Figure out what to do if this is a player
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean getCanPickupItems() {
-        return true;
-    }
-
-    @Override
-    public void setCanPickupItems(boolean canPickupItems) {
-        // TODO: Figure out what to do if this is a player
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean isPersistent() {
-        return true;
-    }
-
-    @Override
-    public void setPersistent(boolean persistent) {
-        // TODO: Figure out what to do if this is a player
-        throw new NotImplementedException("");
     }
 
     @Override

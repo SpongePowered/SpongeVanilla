@@ -35,12 +35,10 @@ import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.potion.GranitePotionEffect;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCEntityLiving;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.mc.MCPotionEffect;
-import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
@@ -96,9 +94,7 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
             }
             removePotionEffect(potionEffect.getType());
         }
-        GranitePotionEffect granitePotionEffect = (GranitePotionEffect) potionEffect;
-        MCPotionEffect mcPotionEffect = unwrap(granitePotionEffect);
-        obj.addPotionEffect(mcPotionEffect);
+        obj.addPotionEffect(unwrap((GranitePotionEffect) potionEffect));
     }
 
     @Override
@@ -137,21 +133,6 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
     @Override
     public void setLastAttacker(Living lastAttacker) {
         obj.fieldSet$lastAttacker((MCEntityLivingBase) unwrap(lastAttacker));
-    }
-
-    @Override
-    public Optional<Entity> getLeashHolder() {
-        if (obj instanceof MCEntityLiving) {
-            return Optional.fromNullable((Entity) wrap(((MCEntityLiving) obj).fieldGet$leashedToEntity()));
-        }
-        return Optional.absent();
-    }
-
-    @Override
-    public void setLeashHolder(Entity entity) {
-        if (obj instanceof MCEntityLiving) {
-            ((MCEntityLiving) obj).setLeashedToEntity((MCEntity) unwrap(entity), true);
-        }
     }
 
     @Override
