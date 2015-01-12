@@ -38,6 +38,7 @@ import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCServer;
 import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.mc.MCWorldServer;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
@@ -56,6 +57,7 @@ import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -159,7 +161,6 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public Collection<World> getWorlds() {
-
         return ImmutableList
                 .<World>copyOf(
                         Iterables.transform(Arrays.asList((MCWorld[]) obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
