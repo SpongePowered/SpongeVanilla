@@ -8,6 +8,8 @@
 5. Commit your changes with a descriptive message.
 6. Create a pull request on GitHub, cleary describing what your code does.
 
+Please squash your pull request to a single commit, unless the changes need to be separated for clarity.
+
 ## The code
 * No tabs. Indent with 4 spaces.
 * No trailing whitespace.
