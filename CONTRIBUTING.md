@@ -42,7 +42,7 @@ You're now ready to create a pull request.
 ### Resolving pull request merge conflicts.
 The first step is to add our repository so that changes can be pulled from it:
 
-`git remote add upstream https://github.com/GraniteTeam/Granite.git`
+`git remote add upstream https://github.com/GranitePowered/Granite.git`
 
 Then make sure you are in the local master branch:
 

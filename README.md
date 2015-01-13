@@ -1,36 +1,16 @@
 Granite
 ======
 
-Granite - A direct implementation of SpongeAPI on the vanilla Minecraft Server.
+An implementation of SpongeAPI directly on top of the vanilla Minecraft server.
 
-The purpose of this project is to take a "hands off" approach to vanilla code.
-That is, we _describe_ the code to our composite layer, without actually including any of it.
-Access is gained by composite classes, reflection, proxy classes, interfaces, and classloaders.
-
-Goals
+Download and usage
 ------
-The primary objective of the Granite project is simple: provide an open-source plugin interface for Minecraft that does not
-contain or distribute any proprietary source code or other assets that belong to Mojang AB.  All access to server
-internals is obtained via Java reflection and similar techniques.
-
-The secondary objective is to provide a plugin system and API that uses the underlying interface to allow server
-administrators to extend their server in any fashion they see fit.  The API will be as versatile and capable as we can
-manage.  The topic of Bukkit compatibility comes up frequently - we are not established enough to make formal statements
-as to the viability of Bukkit compatibility.  It is not a top priority at this stage of development.
-
-This project is licensed under MIT, and takes a very different approach from present API and implementation options. As
-such, it is slower to develop as there is very little reference material to base our work off of.  However, we have
-already made good progress, and at this pace, will continue to do so.  We have implemented a unique model and mapping
-system in order to minimize the amount of work to implement updates; so once the project reaches a more finished state,
-maintenance should be a relatively simple affair.  Our hope is that this approach is a valid "future-proofed" option.
-
-Usage
-------
-Granite is very easy to setup, assuming you have Git and Maven installed:
+We provide pre-built jars on [our website](http://www.granitepowered.org/), so no experience with compiling is necessary,
+but you can also compile it yourself assuming you have Git and Maven installed:
 
 1. Clone our repository:
 
-   `git clone https://github.com/GraniteTeam/Granite.git`
+   `git clone https://github.com/GranitePowered/Granite.git`
 
 2. Change directory to your local copy of Granite:
 
@@ -43,8 +23,6 @@ Granite is very easy to setup, assuming you have Git and Maven installed:
 4. Run the test script:
 
    `./test.sh`
-
-You could also use one of our pre-built jars from [Jenkins](http://ci.flaten.it/view/Granite/).
 
 To-do list
 -----
