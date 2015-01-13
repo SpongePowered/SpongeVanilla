@@ -3,6 +3,13 @@ Granite
 
 An implementation of SpongeAPI directly on top of the vanilla Minecraft server.
 
+Granite uses bytecode manipulation to make Minecraft's internal classes implement interfaces that describe those classes.
+This lets us construct composites that stitch together functionality from multiple Minecraft classes without having
+to depend on Mojang's code. The relations between Granite's interfaces and Minecraft's classes are defined in a configuration
+file outside the code. This lets us potentially maintain compatibility with multiple Minecraft versions without having to
+alter our code. Having no references to anyone else's code in Granite also means that there are no legal gray areas that could
+lead to the project being taken down.
+
 Download and usage
 ------
 We provide pre-built jars on [our website](http://www.granitepowered.org/), so no experience with compiling is necessary,
