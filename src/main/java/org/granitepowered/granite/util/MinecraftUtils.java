@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.util;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -38,6 +40,8 @@ import org.granitepowered.granite.impl.entity.GraniteExperienceOrb;
 import org.granitepowered.granite.impl.entity.GraniteFallingBlock;
 import org.granitepowered.granite.impl.entity.explosive.GranitePrimedTNT;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
+import org.granitepowered.granite.impl.entity.living.GraniteArmorStand;
+import org.granitepowered.granite.impl.entity.living.GraniteBat;
 import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
@@ -56,6 +60,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MCRotations;
 import org.spongepowered.api.text.message.Message;
 
 import java.util.Objects;
@@ -73,6 +78,8 @@ public class MinecraftUtils {
             .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
             .put(Mappings.getClass("Enchantment"), GraniteServer.class)
             .put(Mappings.getClass("Entity"), GraniteEntity.class)
+            .put(Mappings.getClass("EntityArmorStand"), GraniteArmorStand.class)
+            .put(Mappings.getClass("EntityBat"), GraniteBat.class)
             .put(Mappings.getClass("EntityItem"), GraniteEntityItem.class)
             .put(Mappings.getClass("EntityXPOrb"), GraniteExperienceOrb.class)
             .put(Mappings.getClass("EntityFallingBlock"), GraniteFallingBlock.class)
@@ -137,6 +144,14 @@ public class MinecraftUtils {
     public static Message minecraftToGraniteMessage(MCChatComponent deathComponent) {
         String json = (String) Mappings.invokeStatic("IChatComponent$Serializer", "componentToJson", deathComponent);
         return Granite.getInstance().getGson().fromJson(json, GraniteMessage.class);
+    }
+
+    public static Vector3f minecraftToGraniteRotations(MCRotations mcRotations) {
+        return new Vector3f(mcRotations.fieldGet$x(), mcRotations.fieldGet$y(), mcRotations.fieldGet$z());
+    }
+
+    public static MCRotations graniteToMinecraftRotations(Vector3f vector3f) {
+        return Instantiator.get().newRotations(vector3f.getX(), vector3f.getY(), vector3f.getZ());
     }
 
     public static class WrapFunction<T extends Composite> implements Function<MCInterface, T> {

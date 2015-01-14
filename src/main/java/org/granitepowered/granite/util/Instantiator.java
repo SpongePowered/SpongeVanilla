@@ -31,6 +31,7 @@ import org.granitepowered.granite.mc.MCPacketChatMessage;
 import org.granitepowered.granite.mc.MCPacketTitle;
 import org.granitepowered.granite.mc.MCPacketTitle$Type;
 import org.granitepowered.granite.mc.MCPotionEffect;
+import org.granitepowered.granite.mc.MCRotations;
 import org.granitepowered.granite.mc.MCWorld;
 
 public class Instantiator {
@@ -43,18 +44,20 @@ public class Instantiator {
 
     public interface InstantiatorInterface {
 
-        MCPacketChatMessage newPacketChatMessage(MCChatComponent chatComponent, byte type);
-
         MCBlockPos newBlockPos(int x, int y, int z);
 
         MCGameRules newGameRules();
+
+        MCPacketChatMessage newPacketChatMessage(MCChatComponent chatComponent, byte type);
 
         MCPacketTitle newPacketTitle(MCPacketTitle$Type type, MCChatComponent component);
 
         MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
 
+        MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
+
         MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
 
-        MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
+        MCRotations newRotations(float x, float y, float z);
     }
 }
