@@ -23,15 +23,7 @@
 
 package org.granitepowered.granite.util;
 
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCChatComponent;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCPacketBlockChange;
-import org.granitepowered.granite.mc.MCPacketChatMessage;
-import org.granitepowered.granite.mc.MCPacketTitle;
-import org.granitepowered.granite.mc.MCPacketTitle$Type;
-import org.granitepowered.granite.mc.MCPotionEffect;
-import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.mc.*;
 
 public class Instantiator {
 
@@ -43,18 +35,20 @@ public class Instantiator {
 
     public interface InstantiatorInterface {
 
-        MCPacketChatMessage newPacketChatMessage(MCChatComponent chatComponent, byte type);
+        MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
 
         MCBlockPos newBlockPos(int x, int y, int z);
 
         MCGameRules newGameRules();
 
-        MCPacketTitle newPacketTitle(MCPacketTitle$Type type, MCChatComponent component);
+        MCPacketTitle newPacketTitle(MCPacketTitleType type, MCChatComponent component);
 
         MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
 
         MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
 
         MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
+
+        MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_, int ...i2);
     }
 }

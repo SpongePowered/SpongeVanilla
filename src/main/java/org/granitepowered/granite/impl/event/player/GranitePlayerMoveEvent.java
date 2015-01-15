@@ -23,12 +23,21 @@
 
 package org.granitepowered.granite.impl.event.player;
 
+import com.flowpowered.math.vector.Vector3d;
+import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuilder;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.event.player.PlayerMoveEvent;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.world.Location;
 
-public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
+import java.awt.*;
 
+public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
     Location old;
     Location new_;
 
@@ -36,6 +45,11 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
         super(player);
         this.old = old;
         this.new_ = new_;
+
+        player.spawnParticles(
+                ((ParticleEffectBuilder.Material) Granite.getInstance().getGameRegistry().getParticleEffectBuilder(ParticleTypes.BLOCK_CRACK)).itemType(ItemTypes.DIAMOND_BLOCK).count(1).build(),
+                new Vector3d(-138, 65.5, 323)
+        );
     }
 
     @Override

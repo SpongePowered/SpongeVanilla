@@ -24,18 +24,12 @@
 package org.granitepowered.granite.bytecode;
 
 import com.google.common.base.Throwables;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CodeConverter;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
+import javassist.bytecode.analysis.Type;
 import javassist.expr.ExprEditor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
@@ -317,19 +311,45 @@ public class BytecodeClass {
 
                 CtClass[] parameterTypes = newMethod.getParameterTypes();
 
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    bytecode.addLoad(i + 1, parameterTypes[i]);
+                CtConstructor constructor = null;
+                for (CtConstructor loopConstructor : mcActualRet.getDeclaredConstructors()) {
+                    if (loopConstructor.getParameterTypes().length == parameterTypes.length) {
+                        boolean works = true;
+                        for (int i = 0; i < loopConstructor.getParameterTypes().length; i++) {
+                            CtClass constructorParameterType = loopConstructor.getParameterTypes()[i];
+                            CtClass instantiatorParameterType = parameterTypes[i];
 
-                    if (parameterTypes[i].hasAnnotation(Implement.class)) {
-                        parameterTypes[i] = Mappings.getCtClass(((Implement) parameterTypes[i].getAnnotation(Implement.class)).name());
-                    }
+                            if (instantiatorParameterType.subtypeOf(ClassPool.getDefault().get(MCInterface.class.getName()))) {
+                                instantiatorParameterType = Mappings.getCtClass(((Implement) instantiatorParameterType.getAnnotation(Implement.class)).name());
+                            }
 
-                    if (!parameterTypes[i].isPrimitive()) {
-                        bytecode.addCheckcast(parameterTypes[i]);
+                            // This may be somewhat broken and/or confusing
+                            if (!(Type.get(constructorParameterType).isAssignableFrom(Type.get(instantiatorParameterType)) || Type.get(instantiatorParameterType).isAssignableFrom(Type.get(constructorParameterType)))) {
+                                works = false;
+                            }
+                        }
+                        if (!works) continue;
+                        constructor = loopConstructor;
+                        break;
                     }
                 }
 
-                bytecode.addInvokespecial(mcActualRet, "<init>", CtClass.voidType, parameterTypes);
+                if (constructor == null) {
+                    throw Throwables.propagate(new NotFoundException("no such constructor"));
+                }
+
+                //bytecode.addLoadParameters(constructor.getParameterTypes(), 1);
+
+                for (int i = 0; i < constructor.getParameterTypes().length; i++) {
+                    CtClass parameterType = constructor.getParameterTypes()[i];
+
+                    bytecode.addLoad(i + 1, parameterType);
+                    if (!parameterType.isPrimitive()) {
+                        bytecode.addCheckcast(parameterType);
+                    }
+                }
+
+                bytecode.addInvokespecial(mcActualRet, "<init>", CtClass.voidType, constructor.getParameterTypes());
                 bytecode.addReturn(mcInterfaceRet);
 
                 mi.setCodeAttribute(bytecode.toCodeAttribute());

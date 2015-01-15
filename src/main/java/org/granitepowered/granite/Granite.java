@@ -114,7 +114,7 @@ public class Granite {
         return serverConfig;
     }
 
-    public GameRegistry getGameRegistry() {
+    public GraniteGameRegistry getGameRegistry() {
         return gameRegistry;
     }
 

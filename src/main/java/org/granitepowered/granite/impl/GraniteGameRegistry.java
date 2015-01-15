@@ -33,6 +33,8 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuilder;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseColor;
@@ -64,6 +66,7 @@ import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.entity.EntityType;
@@ -104,6 +107,7 @@ import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.biome.BiomeTypes;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,25 +118,25 @@ import java.util.List;
 import java.util.Map;
 
 public class GraniteGameRegistry implements GameRegistry {
-
-    Map<String, Art> arts = Maps.newHashMap();
-    Map<String, BiomeType> biomes = Maps.newHashMap();
-    Map<String, BlockType> blockTypes = Maps.newHashMap();
-    Map<String, Career> careers = Maps.newHashMap();
-    Map<String, DimensionType> dimensions = Maps.newHashMap();
-    Map<String, DyeColor> dyeColors = Maps.newHashMap();
-    Map<String, Enchantment> enchantments = Maps.newHashMap();
-    Map<String, HorseColor> horseColors = Maps.newHashMap();
-    Map<String, HorseStyle> horseStyles = Maps.newHashMap();
-    Map<String, HorseVariant> horseVariants = Maps.newHashMap();
-    Map<String, ItemType> itemTypes = Maps.newHashMap();
-    Map<String, Profession> professions = Maps.newHashMap();
-    Map<String, OcelotType> ocelots = Maps.newHashMap();
-    Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
-    Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
-    Map<String, RabbitType> rabbits = Maps.newHashMap();
-    Map<Integer, Rotation> rotations = Maps.newHashMap();
-    Map<String, SkeletonType> skeletons = Maps.newHashMap();
+    public Map<String, Art> arts = Maps.newHashMap();
+    public Map<String, BiomeType> biomes = Maps.newHashMap();
+    public Map<String, BlockType> blockTypes = Maps.newHashMap();
+    public Map<String, Career> careers = Maps.newHashMap();
+    public Map<String, DimensionType> dimensions = Maps.newHashMap();
+    public Map<String, DyeColor> dyeColors = Maps.newHashMap();
+    public Map<String, Enchantment> enchantments = Maps.newHashMap();
+    public Map<String, HorseColor> horseColors = Maps.newHashMap();
+    public Map<String, HorseStyle> horseStyles = Maps.newHashMap();
+    public Map<String, HorseVariant> horseVariants = Maps.newHashMap();
+    public Map<String, ItemType> itemTypes = Maps.newHashMap();
+    public Map<String, Profession> professions = Maps.newHashMap();
+    public Map<String, OcelotType> ocelots = Maps.newHashMap();
+    public Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
+    public Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
+    public Map<String, RabbitType> rabbits = Maps.newHashMap();
+    public Map<Integer, Rotation> rotations = Maps.newHashMap();
+    public Map<String, SkeletonType> skeletons = Maps.newHashMap();
+    public Map<String, ParticleType> particles = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -152,6 +156,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerHorseVariants();
         registerItems();
         registerOcelots();
+        registerParticleTypes();
         registerPotionEffects();
         registerProfessionsAndCareers();
         registerRabbits();
@@ -649,6 +654,63 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerParticleTypes() {
+        Granite.instance.getLogger().info("Registering ParticleTypes");
+
+        List<GraniteParticleType> types = new ArrayList<>();
+
+        // Code mostly stolen from Seppe Volkaerts (Cybermaxke)'s Sponge PR, thanks and please don't sue!
+        types.add(new GraniteParticleType("EXPLOSION_NORMAL", true));
+        types.add(new GraniteParticleType.GraniteResizable("EXPLOSION_LARGE", 1f));
+        types.add(new GraniteParticleType("EXPLOSION_HUGE", false));
+        types.add(new GraniteParticleType("FIREWORKS_SPARK", true));
+        types.add(new GraniteParticleType("WATER_BUBBLE", true));
+        types.add(new GraniteParticleType("WATER_SPLASH", true));
+        types.add(new GraniteParticleType("WATER_WAKE", true));
+        types.add(new GraniteParticleType("SUSPENDED", false));
+        types.add(new GraniteParticleType("SUSPENDED_DEPTH", false));
+        types.add(new GraniteParticleType("CRIT", true));
+        types.add(new GraniteParticleType("CRIT_MAGIC", true));
+        types.add(new GraniteParticleType("SMOKE_NORMAL", true));
+        types.add(new GraniteParticleType("SMOKE_LARGE", true));
+        types.add(new GraniteParticleType("SPELL", false));
+        types.add(new GraniteParticleType("SPELL_INSTANT", false));
+        types.add(new GraniteParticleType.GraniteColorable("SPELL_MOB", Color.BLACK));
+        types.add(new GraniteParticleType.GraniteColorable("SPELL_MOB_AMBIENT", Color.BLACK));
+        types.add(new GraniteParticleType("SPELL_WITCH", false));
+        types.add(new GraniteParticleType("DRIP_WATER", false));
+        types.add(new GraniteParticleType("DRIP_LAVA", false));
+        types.add(new GraniteParticleType("VILLAGER_ANGRY", false));
+        types.add(new GraniteParticleType("VILLAGER_HAPPY", true));
+        types.add(new GraniteParticleType("TOWN_AURA", true));
+        types.add(new GraniteParticleType.GraniteNote("NOTE", 0f));
+        types.add(new GraniteParticleType("PORTAL", true));
+        types.add(new GraniteParticleType("ENCHANTMENT_TABLE", true));
+        types.add(new GraniteParticleType("FLAME", true));
+        types.add(new GraniteParticleType("LAVA", false));
+        types.add(new GraniteParticleType("FOOTSTEP", false));
+        types.add(new GraniteParticleType("CLOUD", true));
+        types.add(new GraniteParticleType.GraniteColorable("REDSTONE", Color.RED));
+        types.add(new GraniteParticleType("SNOWBALL", false));
+        types.add(new GraniteParticleType("SNOW_SHOVEL", true));
+        types.add(new GraniteParticleType("SLIME", false));
+        types.add(new GraniteParticleType("HEART", false));
+        types.add(new GraniteParticleType("BARRIER", false));
+        types.add(new GraniteParticleType.GraniteMaterial("ITEM_CRACK", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
+        types.add(new GraniteParticleType.GraniteMaterial("BLOCK_CRACK", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
+        types.add(new GraniteParticleType.GraniteMaterial("BLOCK_DUST", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
+        types.add(new GraniteParticleType("WATER_DROP", false));
+        // Is this particle available to be spawned? It's not registered on the client though
+        types.add(new GraniteParticleType("ITEM_TAKE", false));
+        types.add(new GraniteParticleType("MOB_APPEARANCE", false));
+
+        for (int i = 0; i < types.size(); i++) {
+            GraniteParticleType type = types.get(i);
+            type.setId(i);
+            particles.put(type.getName(), type);
+        }
+    }
+
     @Override
     public Optional<BlockType> getBlock(String id) {
         return Optional.fromNullable(blockTypes.get(id));
@@ -697,20 +759,29 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<ParticleType> getParticleType(String name) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        return Optional.fromNullable(particles.get(name));
     }
 
     @Override
     public List<ParticleType> getParticleTypes() {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(particles.values());
     }
 
     @Override
     public ParticleEffectBuilder getParticleEffectBuilder(ParticleType particle) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        if (particle instanceof ParticleType.Resizable) {
+            return new GraniteParticleEffectBuilder.GraniteResizable((GraniteParticleType.GraniteResizable) particle);
+        }
+        if (particle instanceof ParticleType.Colorable) {
+            return new GraniteParticleEffectBuilder.GraniteColorable((GraniteParticleType.GraniteColorable) particle);
+        }
+        if (particle instanceof ParticleType.Note) {
+            return new GraniteParticleEffectBuilder.GraniteNote((GraniteParticleType.GraniteNote) particle);
+        }
+        if (particle instanceof ParticleType.Material) {
+            return new GraniteParticleEffectBuilder.GraniteMaterial((GraniteParticleType.GraniteMaterial) particle);
+        }
+        return new GraniteParticleEffectBuilder((GraniteParticleType) particle);
     }
 
     @Override

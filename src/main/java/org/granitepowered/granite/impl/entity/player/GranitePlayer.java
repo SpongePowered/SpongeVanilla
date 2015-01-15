@@ -30,25 +30,27 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
+import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
+import org.granitepowered.granite.impl.item.GraniteItemBlock;
+import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCFoodStats;
-import org.granitepowered.granite.mc.MCGameProfile;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCPacket;
-import org.granitepowered.granite.mc.MCPacketTitle$Type;
-import org.granitepowered.granite.mc.MCPlayerCapabilities;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.projectile.Projectile;
+import org.spongepowered.api.item.ItemBlock;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.persistence.DataSource;
 import org.spongepowered.api.service.persistence.data.DataContainer;
@@ -58,11 +60,9 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -108,9 +108,9 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public void sendTitle(Title title) {
         if (title.isReset() || title.isClear()) {
-            MCPacketTitle$Type
+            MCPacketTitleType
                     type =
-                    (MCPacketTitle$Type) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
+                    (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, null);
             sendPacket(packet);
@@ -126,14 +126,14 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
         }
 
         if (title.getTitle().isPresent()) {
-            MCPacketTitle$Type type = (MCPacketTitle$Type) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 0);
+            MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 0);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getTitle().get()));
             sendPacket(packet);
         }
 
         if (title.getTitle().isPresent()) {
-            MCPacketTitle$Type type = (MCPacketTitle$Type) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 1);
+            MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 1);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
             sendPacket(packet);
@@ -246,26 +246,181 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position) {
-        this.getWorld().spawnParticles(particleEffect, position);
+        spawnParticles(particleEffect, position, 255);
     }
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
-        this.getWorld().spawnParticles(particleEffect, position, radius);
+        // TODO: Radius is currently ignored, fix this
+
+        // Code mostly stolen from Seppe Volkaerts (Cybermaxke)'s Sponge PR, thanks and please don't sue!
+        GraniteParticleType type = (GraniteParticleType) particleEffect.getType();
+
+        Vector3f offset = particleEffect.getOffset();
+
+        Enum internal = (Enum) Mappings.getClass("EnumParticleTypes").getEnumConstants()[type.getId()];
+
+        int count = particleEffect.getCount();
+        int[] extra = new int[0];
+
+        float px = (float) position.getX();
+        float py = (float) position.getY();
+        float pz = (float) position.getZ();
+
+        float ox = offset.getX();
+        float oy = offset.getY();
+        float oz = offset.getZ();
+
+        // The extra values, normal behavior offsetX, offsetY, offsetZ
+        float f0 = 0f;
+        float f1 = 0f;
+        float f2 = 0f;
+
+        // Depends on behavior
+        // Note: If the count > 0 -> speed = 0f else if count = 0 -> speed = 1f
+
+        if (particleEffect instanceof GraniteParticleEffect.GraniteMaterial) {
+            ItemStack item = ((GraniteParticleEffect.GraniteMaterial) particleEffect).getItem();
+            ItemType itemType = item.getItem();
+
+            int id = 0;
+            int data = 0;
+
+            if (type.getId() == ((GraniteParticleType) ParticleTypes.ITEM_CRACK).getId()) {
+                try {
+                    id = ((MCRegistryNamespaced) Mappings.getField("Item", "itemRegistry").get(null)).getIDForObject(((GraniteItemType) itemType).obj);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                data = item.getDamage();
+            } else if (type.getId() ==  ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId() || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
+                // Only block types are allowed
+                if (itemType instanceof ItemBlock) {
+                    try {
+                        id = ((MCRegistryNamespaced) Mappings.getField("Block", "blockRegistry").get(null)).getIDForObject(((GraniteItemBlock) itemType).obj.fieldGet$block());
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    data = item.getDamage();
+                }
+            }
+
+            if (id == 0) {
+                return;
+            }
+
+            extra = new int[] { id, data };
+        }
+
+        if (particleEffect instanceof GraniteParticleEffect.GraniteResizable) {
+            float size = ((GraniteParticleEffect.Resizable) particleEffect).getSize();
+
+            // The formula of the large explosion acts strange [business as usual, then.]
+            // Client formula: sizeClient = 1 - sizeServer * 0.5
+            // The particle effect returns the client value so
+            // Server formula: sizeServer = (-sizeClient * 2) + 2
+            if (type.getId() == ((GraniteParticleType) ParticleTypes.EXPLOSION_LARGE).getId()) {
+                size = (-size * 2f) + 2f;
+            }
+
+            if (size == 0f) {
+                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                return;
+            }
+
+            f0 = size;
+        } else if (particleEffect instanceof GraniteParticleEffect.GraniteColorable) {
+            Color color0 = ((GraniteParticleEffect.Colorable) particleEffect).getColor();
+            Color color1 = ((GraniteParticleType.Colorable) type).getDefaultColor();
+
+            if (color0.equals(color1)) {
+                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                return;
+            }
+
+            f0 = color0.getRed() / 255f;
+            f1 = color0.getGreen() / 255f;
+            f2 = color0.getBlue() / 255f;
+
+            // If the f0 value 0 is, the redstone will set it automatically to red 255
+            if (f0 == 0f && type.getId() == ((GraniteParticleType) ParticleTypes.REDSTONE).getId()) {
+                f0 = 0.00001f;
+            }
+        } else if (particleEffect instanceof GraniteParticleEffect.Note) {
+            float note = ((GraniteParticleEffect.Note) particleEffect).getNote();
+
+            if (note == 0f) {
+                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                return;
+            }
+
+            f0 = note / 24f;
+        } else if (type.hasMotion()) {
+            Vector3f motion = particleEffect.getMotion();
+
+            float mx = motion.getX();
+            float my = motion.getY();
+            float mz = motion.getZ();
+
+            // The y value won't work for this effect, if the value isn't 0 the motion won't work
+            if (type.getId() == ((GraniteParticleType) ParticleTypes.WATER_SPLASH).getId()) {
+                my = 0f;
+            }
+
+            if (mx == 0f && my == 0f && mz == 0f) {
+                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                return;
+            } else {
+                f0 = mx;
+                f1 = my;
+                f2 = mz;
+            }
+        }
+
+        // Is this check necessary?
+        if (f0 == 0f && f1 == 0f && f2 == 0f) {
+            sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+            return;
+        }
+
+        List<MCPacket> packets = Lists.newArrayList();
+
+        if (ox == 0f && oy == 0f && oz == 0f){
+            for (int i = 0; i < count; i++) {
+                packets.add(Instantiator.get().newPacketParticles(internal, true, px, py, pz, f0, f1, f2, 1f, 0, extra));
+            }
+        } else {
+            Random random = new Random();
+
+            for (int i = 0; i < count; i++) {
+                float px0 = px + (random.nextFloat() * 2f - 1f) * ox;
+                float py0 = py + (random.nextFloat() * 2f - 1f) * oy;
+                float pz0 = pz + (random.nextFloat() * 2f - 1f) * oz;
+
+                packets.add(Instantiator.get().newPacketParticles(internal, true, px0, py0, pz0, f0, f1, f2, 1f, 0, extra));
+            }
+        }
+
+        for (MCPacket packet : packets) {
+            sendPacket(packet);
+        }
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume) {
+        // TODO: Make World call Player and not the reverse, so you can send a sound to an individual player
         this.getWorld().playSound(sound, position, volume, 1.0F);
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch) {
+        // TODO: Make World call Player and not the reverse, so you can send a sound to an individual player
         this.getWorld().playSound(sound, position, volume, pitch);
     }
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
+        // TODO: Make World call Player and not the reverse, so you can send a sound to an individual player
         this.getWorld().playSound(sound, position, volume, pitch, minVolume);
     }
 
@@ -317,16 +472,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     }
 
     @Override
-    public boolean isAiEnabled() {
-        return false;
-    }
-
-    @Override
-    public void setAiEnabled(boolean aiEnabled) {
-        throw new UnsupportedOperationException("Player doesn't have AI");
-    }
-
-    @Override
     public void sendMessage(Message... messages) {
         sendMessage(ChatTypes.CHAT, messages);
     }
@@ -345,7 +490,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
             message = new GraniteMessageBuilder.GraniteTextMessageBuilder("").content("").append(messages).build();
         }
 
-        MCPacket packet = Instantiator.get().newPacketChatMessage(graniteToMinecraftChatComponent(message), (byte) ((GraniteChatType) type).getId());
+        MCPacket packet = Instantiator.get().newPacketChat(graniteToMinecraftChatComponent(message), (byte) ((GraniteChatType) type).getId());
         sendPacket(packet);
     }
 
@@ -366,36 +511,13 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     }
 
     @Override
-    public boolean isLeashed() {
-        return false;
-    }
-
-    @Override
-    public void setLeashed(boolean leashed) {
-        // TODO: Figure out what to do if this is a player
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public boolean getCanPickupItems() {
-        return true;
-    }
-
-    @Override
-    public void setCanPickupItems(boolean canPickupItems) {
-        // TODO: Figure out what to do if this is a player
-        throw new NotImplementedException("");
-    }
-
-    @Override
     public boolean isPersistent() {
         return true;
     }
 
     @Override
     public void setPersistent(boolean persistent) {
-        // TODO: Figure out what to do if this is a player
-        throw new NotImplementedException("");
+        // Do nothing
     }
 
     @Override

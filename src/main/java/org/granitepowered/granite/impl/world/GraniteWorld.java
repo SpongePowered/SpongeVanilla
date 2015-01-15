@@ -50,6 +50,7 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Dimension;
@@ -264,14 +265,22 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        for (Entity entity : getEntities()) {
+            if (entity instanceof Player) {
+                ((Player) entity).spawnParticles(particleEffect, position);
+            }
+        }
     }
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
-        // TODO: Particles API
-        throw new NotImplementedException("");
+        for (Entity entity : getEntities()) {
+            if (entity instanceof Player) {
+                if (entity.getLocation().getPosition().distanceSquared(position) < radius * radius) {
+                    ((Player) entity).spawnParticles(particleEffect, position);
+                }
+            }
+        }
     }
 
     @Override

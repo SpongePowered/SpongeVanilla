@@ -154,6 +154,16 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     }
 
     @Override
+    public boolean isPersistent() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setPersistent(boolean persistent) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public <T> Optional<T> getData(Class<T> dataClass) {
         // TODO: Wait for data API
         throw new NotImplementedException("");

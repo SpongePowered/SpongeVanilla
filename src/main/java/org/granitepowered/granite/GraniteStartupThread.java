@@ -55,6 +55,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
@@ -247,6 +248,8 @@ public class GraniteStartupThread extends Thread {
 
         injectConstants(TextStyles.class, styles);
         injectEnumConstants(ChatTypes.class, GraniteChatType.class);
+
+        injectConstants(ParticleTypes.class, Granite.getInstance().getGameRegistry().particles);
     }
 
     private void injectEnumConstants(Class<?> destination, Class<? extends Enum> source) {

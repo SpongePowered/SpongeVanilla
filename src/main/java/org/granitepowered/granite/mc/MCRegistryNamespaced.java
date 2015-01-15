@@ -21,43 +21,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.mc.MCEntityLiving;
-
-public class GraniteLiving extends GraniteLivingBase<MCEntityLiving> {
-
-    public GraniteLiving(MCEntityLiving obj) {
-        super(obj);
-    }
-
-    @Override
-    public boolean isPersistent() {
-        return obj.fieldGet$persistenceRequired();
-    }
-
-    @Override
-    public void setPersistent(boolean b) {
-        obj.fieldSet$persistenceRequired(b);
-    }
-
-    /*@Override
-    public boolean getCanPickupItems() {
-        return obj.fieldGet$canPickUpLoot();
-    }
-
-    @Override
-    public void setCanPickupItems(boolean canPickupItems) {
-        obj.fieldSet$canPickUpLoot(canPickupItems);
-    }
-
-    @Override
-    public boolean isLeashed() {
-        return obj.fieldGet$isLeashed();
-    }
-
-    @Override
-    public void setLeashed(boolean leashed) {
-        obj.fieldSet$isLeashed(leashed);
-    }*/
+@Implement(name = "RegistryNamespaced")
+public interface MCRegistryNamespaced extends MCVec3i {
+    int getIDForObject(Object obj);
 }

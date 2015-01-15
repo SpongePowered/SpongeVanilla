@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "S45PacketTitle$Type")
-public interface MCPacketTitle$Type extends MCPacket {
-
+@Implement(name = "S2APacketParticles")
+public interface MCPacketParticles extends MCPacket {
 }

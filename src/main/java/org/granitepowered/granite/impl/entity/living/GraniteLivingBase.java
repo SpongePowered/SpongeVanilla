@@ -139,7 +139,7 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
         obj.fieldSet$lastAttacker((MCEntityLivingBase) unwrap(lastAttacker));
     }
 
-    @Override
+    /*@Override
     public Optional<Entity> getLeashHolder() {
         if (obj instanceof MCEntityLiving) {
             return Optional.fromNullable((Entity) wrap(((MCEntityLiving) obj).fieldGet$leashedToEntity()));
@@ -152,7 +152,7 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
         if (obj instanceof MCEntityLiving) {
             ((MCEntityLiving) obj).setLeashedToEntity((MCEntity) unwrap(entity), true);
         }
-    }
+    }*/
 
     @Override
     public double getEyeHeight() {
