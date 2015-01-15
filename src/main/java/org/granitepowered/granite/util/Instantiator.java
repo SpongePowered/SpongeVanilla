@@ -34,7 +34,6 @@ public class Instantiator {
     }
 
     public interface InstantiatorInterface {
-
         MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
 
         MCBlockPos newBlockPos(int x, int y, int z);
@@ -45,10 +44,13 @@ public class Instantiator {
 
         MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
 
-        MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
-
         MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
 
+        MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
+
         MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_, int ...i2);
+
+        MCRotations newRotations(float x, float y, float z);
+
     }
 }

@@ -31,10 +31,13 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEntityLiving;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -155,12 +158,14 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean isPersistent() {
-        throw new NotImplementedException("");
+        MCEntityLiving entityLiving = (MCEntityLiving) unwrap(this);
+        return !entityLiving.fieldGet$persistenceRequired();
     }
 
     @Override
     public void setPersistent(boolean persistent) {
-        throw new NotImplementedException("");
+        MCEntityLiving entityLiving = (MCEntityLiving) unwrap(this);
+        entityLiving.fieldSet$persistenceRequired(!persistent);
     }
 
     @Override

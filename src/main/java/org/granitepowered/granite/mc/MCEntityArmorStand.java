@@ -23,26 +23,52 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EntityLiving")
-public interface MCEntityLiving extends MCEntityLivingBase {
+@Implement(name = "EntityArmorStand")
+public interface MCEntityArmorStand extends MCEntityLivingBase {
 
-    boolean fieldGet$isLeashed();
+    MCRotations fieldGet$headRotation();
 
-    void fieldSet$isLeashed(boolean leashed);
+    void setHeadRotation(MCRotations mcRotations);
 
-    MCEntity fieldGet$leashedToEntity();
+    MCRotations fieldGet$bodyRotation();
 
-    void setLeashedToEntity(MCEntity entityIn, boolean sendAttachNotification);
+    void setBodyRotation(MCRotations mcRotations);
 
-    boolean fieldGet$canPickUpLoot();
+    MCRotations fieldGet$leftArmRotation();
 
-    void fieldSet$canPickUpLoot(boolean value);
+    void setLeftArmRotation(MCRotations mcRotations);
 
-    boolean fieldGet$persistenceRequired();
+    MCRotations fieldGet$rightArmRotation();
 
-    void fieldSet$persistenceRequired(boolean persistence);
+    void setRightArmRotation(MCRotations mcRotations);
 
-    boolean isAIDisabled();
+    MCRotations fieldGet$leftLegRotation();
 
-    void setNoAI(boolean noAI);
+    void setLeftLegRotation(MCRotations mcRotations);
+
+    MCRotations fieldGet$rightLegRotation();
+
+    void setRightLegRotation(MCRotations mcRotations);
+
+    MCItemStack getEquipmentInSlot(int slot);
+
+    void setCurrentItemOrArmor(int slot, MCItemStack itemStack);
+
+    void setInvisible(boolean invisible);
+
+    boolean isSmall();
+
+    void setSmall(boolean small);
+
+    boolean hasNoGravity();
+
+    void setNoGravity(boolean gravity);
+
+    boolean getShowArms();
+
+    void setShowArms(boolean showArms);
+
+    boolean hasNoBasePlate();
+
+    void setNoBasePlate(boolean noBasePlate);
 }

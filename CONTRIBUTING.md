@@ -8,6 +8,8 @@
 5. Commit your changes with a descriptive message.
 6. Create a pull request on GitHub, cleary describing what your code does.
 
+Please squash your pull request to a single commit, unless the changes need to be separated for clarity.
+
 ## The code
 * No tabs. Indent with 4 spaces.
 * No trailing whitespace.
@@ -42,7 +44,7 @@ You're now ready to create a pull request.
 ### Resolving pull request merge conflicts.
 The first step is to add our repository so that changes can be pulled from it:
 
-`git remote add upstream https://github.com/GraniteTeam/Granite.git`
+`git remote add upstream https://github.com/GranitePowered/Granite.git`
 
 Then make sure you are in the local master branch:
 

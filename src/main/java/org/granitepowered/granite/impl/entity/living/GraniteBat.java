@@ -21,28 +21,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.living;
 
-@Implement(name = "EntityLiving")
-public interface MCEntityLiving extends MCEntityLivingBase {
+import org.granitepowered.granite.impl.entity.living.GraniteLiving;
+import org.granitepowered.granite.mc.MCEntityBat;
+import org.spongepowered.api.entity.living.Bat;
 
-    boolean fieldGet$isLeashed();
+public class GraniteBat extends GraniteLiving<MCEntityBat> implements Bat {
 
-    void fieldSet$isLeashed(boolean leashed);
+    public GraniteBat(MCEntityBat obj) {
+        super(obj);
+    }
 
-    MCEntity fieldGet$leashedToEntity();
+    @Override
+    public boolean isAwake() {
+        return !obj.getIsBatHanging();
+    }
 
-    void setLeashedToEntity(MCEntity entityIn, boolean sendAttachNotification);
-
-    boolean fieldGet$canPickUpLoot();
-
-    void fieldSet$canPickUpLoot(boolean value);
-
-    boolean fieldGet$persistenceRequired();
-
-    void fieldSet$persistenceRequired(boolean persistence);
-
-    boolean isAIDisabled();
-
-    void setNoAI(boolean noAI);
+    @Override
+    public void setAwake(boolean awake) {
+        obj.setIsBatHanging(!awake);
+    }
 }

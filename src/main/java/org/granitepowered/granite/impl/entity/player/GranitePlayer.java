@@ -510,17 +510,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
         obj.fieldGet$playerNetServerHandler().sendPacket(packet);
     }
 
-    @Override
-    public boolean isPersistent() {
-        return true;
-    }
-
-    @Override
-    public void setPersistent(boolean persistent) {
-        // Do nothing
-    }
-
-    @Override
     public DataContainer toContainer() {
         // TODO: Persistence API
         throw new NotImplementedException("");

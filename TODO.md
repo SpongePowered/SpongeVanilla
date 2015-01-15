@@ -3,7 +3,7 @@ To-do list
 
 Granite
 -----
-- [] Get SpongeAPI implemented
+- [ ] Get SpongeAPI implemented
 
 Website
 -----

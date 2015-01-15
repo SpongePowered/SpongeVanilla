@@ -23,26 +23,10 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EntityLiving")
-public interface MCEntityLiving extends MCEntityLivingBase {
+@Implement(name = "EntityBat")
+public interface MCEntityBat extends MCEntityLiving {
 
-    boolean fieldGet$isLeashed();
+    boolean getIsBatHanging();
 
-    void fieldSet$isLeashed(boolean leashed);
-
-    MCEntity fieldGet$leashedToEntity();
-
-    void setLeashedToEntity(MCEntity entityIn, boolean sendAttachNotification);
-
-    boolean fieldGet$canPickUpLoot();
-
-    void fieldSet$canPickUpLoot(boolean value);
-
-    boolean fieldGet$persistenceRequired();
-
-    void fieldSet$persistenceRequired(boolean persistence);
-
-    boolean isAIDisabled();
-
-    void setNoAI(boolean noAI);
+    void setIsBatHanging(boolean awake);
 }
