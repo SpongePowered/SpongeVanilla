@@ -95,8 +95,8 @@ public class GraniteStartupThread extends Thread {
     String[] args;
     BytecodeModifier modifier;
 
-    String serverVersion = "UNKNOWN";
-    String apiVersion = "UNKNOWN";
+    String serverVersion;
+    String apiVersion;
     String buildNumber = "UNKNOWN";
 
     public GraniteStartupThread(String args[]) {
@@ -107,20 +107,16 @@ public class GraniteStartupThread extends Thread {
     public void run() {
         try {
             Properties versionProp = new Properties();
-            InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("version.properties");
+            InputStream versionIn = ClassLoader.getSystemResourceAsStream("version.properties");
             if (versionIn != null) {
                 try {
                     versionProp.load(versionIn);
 
-                    String server = versionProp.getProperty("server");
-                    if (server != null) {
-                        serverVersion = server;
-                    }
+                    String server = versionProp.getProperty("server", "UNKNOWN");
+                    serverVersion = server;
 
-                    String api = versionProp.getProperty("api");
-                    if (api != null) {
-                        apiVersion = api;
-                    }
+                    String api = versionProp.getProperty("api", "UNKNOWN");
+                    apiVersion = api;
 
                     String build = versionProp.getProperty("build");
                     if (build != null && !build.equals("NA")) {
