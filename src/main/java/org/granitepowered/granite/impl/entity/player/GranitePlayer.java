@@ -32,6 +32,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.GraniteGameProfile;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
@@ -44,6 +45,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
+import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
@@ -201,8 +203,13 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     }
 
     @Override
+    public GameProfile getProfile() {
+        return new GraniteGameProfile(wrap(obj.fieldGet$gameProfile()));
+    }
+
+    @Override
     public String getName() {
-        return getGameProfile().fieldGet$name();
+        return getProfile().getName();
     }
 
     @Override
@@ -236,7 +243,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public boolean isOnline() {
-        return true;
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -492,10 +499,6 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
         MCPacket packet = Instantiator.get().newPacketChat(graniteToMinecraftChatComponent(message), (byte) ((GraniteChatType) type).getId());
         sendPacket(packet);
-    }
-
-    public MCGameProfile getGameProfile() {
-        return obj.fieldGet$gameProfile();
     }
 
     public MCPlayerCapabilities getPlayerCapabilities() {

@@ -49,6 +49,7 @@ import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
+import org.granitepowered.granite.impl.status.GraniteFavicon;
 import org.granitepowered.granite.impl.util.GraniteRotation;
 import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
@@ -63,6 +64,7 @@ import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
+import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -100,6 +102,7 @@ import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.potion.PotionEffectTypes;
+import org.spongepowered.api.status.Favicon;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.DimensionType;
@@ -108,7 +111,12 @@ import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.biome.BiomeTypes;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,8 +124,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class GraniteGameRegistry implements GameRegistry {
+
     public Map<String, Art> arts = Maps.newHashMap();
     public Map<String, BiomeType> biomes = Maps.newHashMap();
     public Map<String, BlockType> blockTypes = Maps.newHashMap();
@@ -935,5 +945,35 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public List<DimensionType> getDimensionTypes() {
         return ImmutableList.copyOf(dimensions.values());
+    }
+
+    @Override
+    public GameProfile createGameProfile(UUID uuid, String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Favicon loadFavicon(String image) throws IOException {
+        return new GraniteFavicon(image);
+    }
+
+    @Override
+    public Favicon loadFavicon(File file) throws IOException {
+        return new GraniteFavicon(file);
+    }
+
+    @Override
+    public Favicon loadFavicon(URL url) throws IOException {
+        return new GraniteFavicon(url);
+    }
+
+    @Override
+    public Favicon loadFavicon(InputStream inputStream) throws IOException {
+        return new GraniteFavicon(inputStream);
+    }
+
+    @Override
+    public Favicon loadFavicon(BufferedImage bufferedImage) throws IOException {
+        return new GraniteFavicon(bufferedImage);
     }
 }

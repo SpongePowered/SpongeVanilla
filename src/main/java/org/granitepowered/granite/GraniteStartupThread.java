@@ -354,7 +354,10 @@ public class GraniteStartupThread extends Thread {
             }
         }
 
-        Granite.instance.getLogger().info("Loading " + minecraftJar.getName());
+        String minecraftVersion = minecraftJar.getName().replace("minecraft_server.", "Minecraft ").replace(".jar", "");
+        Granite.instance.minecraftVersion = new GraniteGameVersion(minecraftVersion);
+
+        Granite.instance.getLogger().info("Loading " + minecraftVersion);
 
         try {
             Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());

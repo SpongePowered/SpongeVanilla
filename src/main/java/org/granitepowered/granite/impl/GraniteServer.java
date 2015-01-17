@@ -38,10 +38,10 @@ import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCServer;
 import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.mc.MCWorldServer;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.GameVersion;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
@@ -121,6 +121,11 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     @Override
     public String getImplementationVersion() {
         return "Granite " + Granite.instance.getVersion();
+    }
+
+    @Override
+    public GameVersion getVersion() {
+        return Granite.instance.getMinecraftVersion();
     }
 
     @Override
@@ -244,7 +249,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public Message.Text getMOTD() {
+    public Message getMotd() {
         return Messages.of(obj.fieldGet$motd());
     }
 

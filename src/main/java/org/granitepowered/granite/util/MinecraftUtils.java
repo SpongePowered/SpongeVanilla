@@ -29,6 +29,7 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.GraniteGameProfile;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.block.GraniteBlockProperty;
@@ -63,6 +64,7 @@ import org.granitepowered.granite.mc.MCInterface;
 import org.granitepowered.granite.mc.MCRotations;
 import org.spongepowered.api.text.message.Message;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -88,6 +90,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
             .put(Mappings.getClass("EntityTNTPrimed"), GranitePrimedTNT.class)
             .put(Mappings.getClass("EnumArt"), GraniteArt.class)
+            .put(Mappings.getClass("GameProfile"), GraniteGameProfile.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
