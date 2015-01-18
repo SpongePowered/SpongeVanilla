@@ -68,9 +68,12 @@ import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.block.meta.BannerPatternShape;
+import org.spongepowered.api.block.meta.NotePitch;
+import org.spongepowered.api.block.meta.SkullType;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.hanging.art.Arts;
@@ -778,6 +781,16 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
+    public Optional<SoundType> getSound(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<SoundType> getSounds() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Optional<EntityType> getEntity(String id) {
         // TODO: EntityType API
         throw new NotImplementedException("");
@@ -931,6 +944,16 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
+    public Optional<Rotation> getRotationFromDegree(int degrees) {
+        return Optional.fromNullable(rotations.get(degrees));
+    }
+
+    @Override
+    public List<Rotation> getRotations() {
+        return ImmutableList.copyOf(rotations.values());
+    }
+
+    @Override
     public GameProfile createGameProfile(UUID uuid, String name) {
         return new GraniteGameProfile(Instantiator.get().newGameProfile(uuid, name));
     }
@@ -958,5 +981,40 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public Favicon loadFavicon(BufferedImage bufferedImage) throws IOException {
         return new GraniteFavicon(bufferedImage);
+    }
+
+    @Override
+    public Optional<NotePitch> getNotePitch(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<NotePitch> getNotePitches() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<SkullType> getSkullType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<SkullType> getSkullTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<BannerPatternShape> getBannerPatternShape(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<BannerPatternShape> getBannerPatternShapeById(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<BannerPatternShape> getBannerPatternShapes() {
+        throw new NotImplementedException("");
     }
 }

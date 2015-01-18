@@ -21,26 +21,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.weather;
+package org.granitepowered.granite.mc;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityLightningBolt;
-import org.spongepowered.api.entity.weather.Lightning;
+@Implement(name = "EntityAgeable")
+public interface MCEntityAgeable extends MCEntityLiving {
 
-public class GraniteLightning extends GraniteEntity<MCEntityLightningBolt> implements Lightning {
-
-    public GraniteLightning(MCEntityLightningBolt obj) {
-        super(obj);
-    }
-
-    @Override
-    public boolean isEffect() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void setEffect(boolean b) {
-        throw new NotImplementedException("");
-    }
 }

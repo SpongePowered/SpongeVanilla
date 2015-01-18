@@ -25,7 +25,6 @@ package org.granitepowered.granite.impl.entity.living;
 
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntityArmorStand;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.util.MinecraftUtils;
@@ -109,8 +108,13 @@ public class GraniteArmorStand extends GraniteLivingBase<MCEntityArmorStand> imp
     }
 
     @Override
-    public boolean isInvisible() {
-        throw new NotImplementedException("");
+    public boolean hasGravity() {
+        return !obj.hasNoGravity();
+    }
+
+    @Override
+    public void setGravity(boolean gravity) {
+        obj.setNoGravity(!gravity);
     }
 
     @Override

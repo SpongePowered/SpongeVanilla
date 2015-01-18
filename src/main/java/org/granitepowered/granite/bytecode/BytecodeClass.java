@@ -24,7 +24,15 @@
 package org.granitepowered.granite.bytecode;
 
 import com.google.common.base.Throwables;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CodeConverter;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.MethodInfo;

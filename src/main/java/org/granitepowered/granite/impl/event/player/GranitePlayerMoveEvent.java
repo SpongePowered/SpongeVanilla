@@ -25,17 +25,12 @@ package org.granitepowered.granite.impl.event.player;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
-import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuilder;
-import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.event.player.PlayerMoveEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.world.Location;
-
-import java.awt.*;
 
 public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
     Location old;

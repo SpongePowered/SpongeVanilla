@@ -40,7 +40,6 @@ import org.granitepowered.granite.util.json.ItemStackJson;
 import org.granitepowered.granite.util.json.MessageJson;
 import org.granitepowered.granite.util.json.TextActionJson;
 import org.slf4j.Logger;
-import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.GameVersion;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;

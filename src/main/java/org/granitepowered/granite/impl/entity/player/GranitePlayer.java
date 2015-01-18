@@ -42,7 +42,13 @@ import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCFoodStats;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPacketTitleType;
+import org.granitepowered.granite.mc.MCPlayerCapabilities;
+import org.granitepowered.granite.mc.MCRegistryNamespaced;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.GameProfile;
@@ -50,6 +56,7 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
@@ -63,8 +70,12 @@ import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -150,6 +161,16 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public void clearTitle() {
         sendTitle(Titles.update().clear().build());
+    }
+
+    @Override
+    public GameMode getGameMode() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setGameMode(GameMode gameMode) {
+        throw new NotImplementedException("");
     }
 
     @Override
