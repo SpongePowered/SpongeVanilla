@@ -25,6 +25,8 @@ package org.granitepowered.granite.util;
 
 import org.granitepowered.granite.mc.*;
 
+import java.util.UUID;
+
 public class Instantiator {
 
     private static final InstantiatorInterface instance = null;
@@ -34,6 +36,7 @@ public class Instantiator {
     }
 
     public interface InstantiatorInterface {
+
         MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
 
         MCBlockPos newBlockPos(int x, int y, int z);
@@ -53,5 +56,7 @@ public class Instantiator {
         MCRotations newRotations(float x, float y, float z);
 
         MCEntityArrow newEntityArrow(MCWorld world, MCEntityLivingBase shooter, float something);
+
+        MCGameProfile newGameProfile(UUID uuid, String name);
     }
 }

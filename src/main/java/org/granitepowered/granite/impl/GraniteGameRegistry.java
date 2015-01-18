@@ -49,6 +49,7 @@ import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
+import org.granitepowered.granite.impl.status.GraniteFavicon;
 import org.granitepowered.granite.impl.util.GraniteRotation;
 import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
@@ -63,12 +64,16 @@ import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
+import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.effect.particle.ParticleEffect;
+import org.spongepowered.api.block.meta.BannerPatternShape;
+import org.spongepowered.api.block.meta.NotePitch;
+import org.spongepowered.api.block.meta.SkullType;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.hanging.art.Arts;
@@ -100,6 +105,7 @@ import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.potion.PotionEffectTypes;
+import org.spongepowered.api.status.Favicon;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.DimensionType;
@@ -108,7 +114,12 @@ import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.biome.BiomeTypes;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,8 +127,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class GraniteGameRegistry implements GameRegistry {
+
     public Map<String, Art> arts = Maps.newHashMap();
     public Map<String, BiomeType> biomes = Maps.newHashMap();
     public Map<String, BlockType> blockTypes = Maps.newHashMap();
@@ -196,11 +209,6 @@ public class GraniteGameRegistry implements GameRegistry {
             Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
             Field biomeList = Mappings.getField(biomeGenBaseClass, "biomeList");
             ArrayList<MCBiomeGenBase> biomesGenBase = Lists.newArrayList((MCBiomeGenBase[]) biomeList.get(biomeGenBaseClass));
-
-            /**
-             * Minecraft mutated biomes are placed into the biomeList with an index equal to the original plus 128.
-             * So there are around 70 null biomes in the list... Lets remove all of these
-             */
             biomesGenBase.removeAll(Collections.singleton(null));
 
             for (Field field : BiomeTypes.class.getDeclaredFields()) {
@@ -209,7 +217,6 @@ public class GraniteGameRegistry implements GameRegistry {
                 String name = field.getName().toLowerCase();
                 for (MCBiomeGenBase biome : biomesGenBase) {
 
-                    // Some Sponge biome names aren't equal to the names defined in the Minecraft class, rename them to their correct name
                     if (name.equals("sky")) {
                         name = "the_end";
                     } else if (name.equals("extreme_hills_plus")) {
@@ -225,10 +232,6 @@ public class GraniteGameRegistry implements GameRegistry {
 
                     String biomeName = biome.fieldGet$biomeName().toLowerCase().replace(" ", "_");
 
-                    /**
-                     * Here the magic happens, if the sponge biome name is equal to the minecraft biome name, place that biome into their correct field
-                     * The biome is found so break the loop and continue to find the next biome
-                     */
                     if (biomeName.equals(name)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
                         field.set(null, biomeType);
@@ -267,6 +270,7 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    // TODO: Needs to not be new instances but the ones that already exist if possible.
     private void registerDimensions() {
         Granite.instance.getLogger().info("Registering Dimensions");
 
@@ -274,30 +278,26 @@ public class GraniteGameRegistry implements GameRegistry {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
-            DimensionType dimensionType;
+            DimensionType dimensionType = null;
             boolean registered = false;
             try {
                 switch (name) {
                     case "overworld":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface").newInstance()));
-                        field.set(null, dimensionType);
-                        dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "nether":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell").newInstance()));
-                        field.set(null, dimensionType);
-                        dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "end":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd").newInstance()));
-                        field.set(null, dimensionType);
-                        dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                 }
                 if (Main.debugLog && registered) {
+                    field.set(null, dimensionType);
+                    dimensions.put("minecraft:" + name, dimensionType);
                     Granite.getInstance().getLogger().info("Registered Dimension minecraft:" + name);
                 }
             } catch (IllegalAccessException | InstantiationException e) {
@@ -355,7 +355,7 @@ public class GraniteGameRegistry implements GameRegistry {
         MCGameRules gameRules = Instantiator.get().newGameRules();
         String[] rules = gameRules.getRules();
         for (String rule : rules) {
-            defaultGameRules.add(rule);
+            defaultGameRules.add("minecraft:" + rule);
             if (Main.debugLog) {
                 Granite.getInstance().getLogger().info("Registered default GameRule minecraft:" + rule);
             }
@@ -509,7 +509,6 @@ public class GraniteGameRegistry implements GameRegistry {
 
     }
 
-    // TODO: THIS IS BIG, FAT AND UGLY. And need redoing if possible.
     private void registerProfessionsAndCareers() {
         Granite.instance.getLogger().info("Registering Professions");
 
@@ -658,8 +657,6 @@ public class GraniteGameRegistry implements GameRegistry {
         Granite.instance.getLogger().info("Registering ParticleTypes");
 
         List<GraniteParticleType> types = new ArrayList<>();
-
-        // Code mostly stolen from Seppe Volkaerts (Cybermaxke)'s Sponge PR, thanks and please don't sue!
         types.add(new GraniteParticleType("EXPLOSION_NORMAL", true));
         types.add(new GraniteParticleType.GraniteResizable("EXPLOSION_LARGE", 1f));
         types.add(new GraniteParticleType("EXPLOSION_HUGE", false));
@@ -700,7 +697,6 @@ public class GraniteGameRegistry implements GameRegistry {
         types.add(new GraniteParticleType.GraniteMaterial("BLOCK_CRACK", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
         types.add(new GraniteParticleType.GraniteMaterial("BLOCK_DUST", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
         types.add(new GraniteParticleType("WATER_DROP", false));
-        // Is this particle available to be spawned? It's not registered on the client though
         types.add(new GraniteParticleType("ITEM_TAKE", false));
         types.add(new GraniteParticleType("MOB_APPEARANCE", false));
 
@@ -782,6 +778,16 @@ public class GraniteGameRegistry implements GameRegistry {
             return new GraniteParticleEffectBuilder.GraniteMaterial((GraniteParticleType.GraniteMaterial) particle);
         }
         return new GraniteParticleEffectBuilder((GraniteParticleType) particle);
+    }
+
+    @Override
+    public Optional<SoundType> getSound(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<SoundType> getSounds() {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -935,5 +941,80 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public List<DimensionType> getDimensionTypes() {
         return ImmutableList.copyOf(dimensions.values());
+    }
+
+    @Override
+    public Optional<Rotation> getRotationFromDegree(int degrees) {
+        return Optional.fromNullable(rotations.get(degrees));
+    }
+
+    @Override
+    public List<Rotation> getRotations() {
+        return ImmutableList.copyOf(rotations.values());
+    }
+
+    @Override
+    public GameProfile createGameProfile(UUID uuid, String name) {
+        return new GraniteGameProfile(Instantiator.get().newGameProfile(uuid, name));
+    }
+
+    @Override
+    public Favicon loadFavicon(String image) throws IOException {
+        return new GraniteFavicon(image);
+    }
+
+    @Override
+    public Favicon loadFavicon(File file) throws IOException {
+        return new GraniteFavicon(file);
+    }
+
+    @Override
+    public Favicon loadFavicon(URL url) throws IOException {
+        return new GraniteFavicon(url);
+    }
+
+    @Override
+    public Favicon loadFavicon(InputStream inputStream) throws IOException {
+        return new GraniteFavicon(inputStream);
+    }
+
+    @Override
+    public Favicon loadFavicon(BufferedImage bufferedImage) throws IOException {
+        return new GraniteFavicon(bufferedImage);
+    }
+
+    @Override
+    public Optional<NotePitch> getNotePitch(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<NotePitch> getNotePitches() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<SkullType> getSkullType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<SkullType> getSkullTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<BannerPatternShape> getBannerPatternShape(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<BannerPatternShape> getBannerPatternShapeById(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<BannerPatternShape> getBannerPatternShapes() {
+        throw new NotImplementedException("");
     }
 }

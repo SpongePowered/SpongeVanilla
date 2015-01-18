@@ -24,7 +24,6 @@
 package org.granitepowered.granite.impl.entity.living;
 
 import com.google.common.base.Optional;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityLiving;
 import org.granitepowered.granite.util.MinecraftUtils;

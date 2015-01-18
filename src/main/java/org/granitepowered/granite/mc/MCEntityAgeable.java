@@ -23,6 +23,12 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "Packet")
-public interface MCPacket extends MCInterface {
+@Implement(name = "EntityAgeable")
+public interface MCEntityAgeable extends MCEntityLiving {
+
+    int getGrowingAge();
+
+    void setGrowingAge(int age);
+
+    void setScaleForAge(boolean scaleForAge);
 }

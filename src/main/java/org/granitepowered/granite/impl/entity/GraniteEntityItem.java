@@ -23,10 +23,13 @@
 
 package org.granitepowered.granite.impl.entity;
 
+import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.mc.MCEntityItem;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.spongepowered.api.entity.Item;
+import org.spongepowered.api.entity.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public class GraniteEntityItem extends GraniteEntity<MCEntityItem> implements Item {
@@ -38,5 +41,45 @@ public class GraniteEntityItem extends GraniteEntity<MCEntityItem> implements It
     @Override
     public ItemStack getItemStack() {
         return new GraniteItemStack((MCItemStack) obj.getEntityItem());
+    }
+
+    @Override
+    public int getPickupDelay() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setPickupDelay(int i) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setInfinitePickupDelay() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getDespawnTime() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setDespawnTime(int i) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setInfiniteDespawnTime() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<User> getThrower() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setThrower(User user) {
+        throw new NotImplementedException("");
     }
 }

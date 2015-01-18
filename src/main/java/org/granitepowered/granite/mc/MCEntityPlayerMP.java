@@ -38,7 +38,5 @@ public interface MCEntityPlayerMP extends MCEntityLivingBase {
 
     MCInventoryPlayer fieldGet$inventory();
 
-    //void addChatComponentMessage(MCChatComponent component);
-
     MCNetHandlerPlayServer fieldGet$playerNetServerHandler();
 }

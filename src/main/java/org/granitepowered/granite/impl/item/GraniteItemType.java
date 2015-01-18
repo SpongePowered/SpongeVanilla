@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.item;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
@@ -53,6 +54,11 @@ public class GraniteItemType<T extends MCItem> extends Composite<T> implements I
     @Override
     public int getMaxStackQuantity() {
         return obj.fieldGet$maxStackSize();
+    }
+
+    @Override
+    public boolean isDamageable() {
+        throw new NotImplementedException("");
     }
 
     @Override

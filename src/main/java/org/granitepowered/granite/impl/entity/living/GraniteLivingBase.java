@@ -36,9 +36,7 @@ import org.granitepowered.granite.impl.potion.GranitePotionEffect;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCPotion;
-import org.granitepowered.granite.mc.MCPotionEffect;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
@@ -48,7 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
+public class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
 
     int maxAir = 300;
 
@@ -214,5 +212,15 @@ public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends Gr
     @Override
     public void setCustomNameVisible(boolean visible) {
         obj.setAlwaysRenderNameTag(visible);
+    }
+
+    @Override
+    public boolean isInvisible() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setInvisible(boolean b) {
+        throw new NotImplementedException("");
     }
 }

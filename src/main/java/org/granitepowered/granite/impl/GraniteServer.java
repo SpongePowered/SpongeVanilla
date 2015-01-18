@@ -41,6 +41,7 @@ import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.GameVersion;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
@@ -56,7 +57,6 @@ import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -120,6 +120,11 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     @Override
     public String getImplementationVersion() {
         return "Granite " + Granite.instance.getVersion();
+    }
+
+    @Override
+    public GameVersion getVersion() {
+        return Granite.instance.getMinecraftVersion();
     }
 
     @Override
@@ -243,7 +248,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public Message.Text getMOTD() {
+    public Message getMotd() {
         return Messages.of(obj.fieldGet$motd());
     }
 

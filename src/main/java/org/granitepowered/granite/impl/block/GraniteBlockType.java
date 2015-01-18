@@ -25,6 +25,8 @@ package org.granitepowered.granite.impl.block;
 
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
+import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
@@ -32,6 +34,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.text.translation.Translation;
 
 public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
@@ -98,6 +101,11 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
     @Override
     public float getEmittedLight() {
         return obj.fieldGet$lightValue();
+    }
+
+    @Override
+    public Optional<ItemBlock> getHeldItem() {
+        throw new NotImplementedException("");
     }
 
     @Override

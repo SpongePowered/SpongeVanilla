@@ -21,26 +21,62 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.weather;
+package org.granitepowered.granite.impl.entity.living;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityLightningBolt;
-import org.spongepowered.api.entity.weather.Lightning;
+import org.granitepowered.granite.mc.MCEntityAgeable;
+import org.spongepowered.api.entity.living.Ageable;
 
-public class GraniteLightning extends GraniteEntity<MCEntityLightningBolt> implements Lightning {
+public class GraniteAgeable extends GraniteLiving<MCEntityAgeable> implements Ageable {
 
-    public GraniteLightning(MCEntityLightningBolt obj) {
+    public GraniteAgeable(MCEntityAgeable obj) {
         super(obj);
     }
 
     @Override
-    public boolean isEffect() {
-        throw new NotImplementedException("");
+    public int getAge() {
+        return obj.getGrowingAge();
     }
 
     @Override
-    public void setEffect(boolean b) {
-        throw new NotImplementedException("");
+    public void setAge(int age) {
+        obj.setGrowingAge(age);
+    }
+
+    @Override
+    public void setBaby() {
+        if (getAge() >= 0) {
+            setAge(-24000);
+        }
+    }
+
+    @Override
+    public void setAdult() {
+        if (getAge() < 0) {
+            setAge(0);
+        }
+    }
+
+    @Override
+    public boolean isBaby() {
+        return getAge() < 0;
+    }
+
+    @Override
+    public boolean canBreed() {
+        return getAge() == 0;
+    }
+
+    @Override
+    public void setBreeding(boolean breeding) {
+        if (breeding) {
+            setAge(0);
+        } else if (getAge() >= 0) {
+            setAge(6000);
+        }
+    }
+
+    @Override
+    public void setScaleForAge() {
+        obj.setScaleForAge(getAge() < 0);
     }
 }

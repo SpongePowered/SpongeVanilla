@@ -42,6 +42,7 @@ import org.granitepowered.granite.bytecode.classes.ItemStackClass;
 import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
 import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
+import org.granitepowered.granite.impl.GraniteGameVersion;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
@@ -95,8 +96,8 @@ public class GraniteStartupThread extends Thread {
     String[] args;
     BytecodeModifier modifier;
 
-    String serverVersion = "UNKNOWN";
-    String apiVersion = "UNKNOWN";
+    String serverVersion;
+    String apiVersion;
     String buildNumber = "UNKNOWN";
 
     public GraniteStartupThread(String args[]) {
@@ -107,20 +108,16 @@ public class GraniteStartupThread extends Thread {
     public void run() {
         try {
             Properties versionProp = new Properties();
-            InputStream versionIn = java.lang.ClassLoader.getSystemClassLoader().getResourceAsStream("version.properties");
+            InputStream versionIn = ClassLoader.getSystemResourceAsStream("version.properties");
             if (versionIn != null) {
                 try {
                     versionProp.load(versionIn);
 
-                    String server = versionProp.getProperty("server");
-                    if (server != null) {
-                        serverVersion = server;
-                    }
+                    String server = versionProp.getProperty("server", "UNKNOWN");
+                    serverVersion = server;
 
-                    String api = versionProp.getProperty("api");
-                    if (api != null) {
-                        apiVersion = api;
-                    }
+                    String api = versionProp.getProperty("api", "UNKNOWN");
+                    apiVersion = api;
 
                     String build = versionProp.getProperty("build");
                     if (build != null && !build.equals("NA")) {
@@ -354,7 +351,10 @@ public class GraniteStartupThread extends Thread {
             }
         }
 
-        Granite.instance.getLogger().info("Loading " + minecraftJar.getName());
+        String minecraftVersion = minecraftJar.getName().replace("minecraft_server.", "Minecraft ").replace(".jar", "");
+        Granite.instance.minecraftVersion = new GraniteGameVersion(minecraftVersion);
+
+        Granite.instance.getLogger().info("Loading " + minecraftVersion);
 
         try {
             Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());

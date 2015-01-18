@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
-import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.mc.MCEntityBat;
 import org.spongepowered.api.entity.living.Bat;
 
