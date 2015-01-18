@@ -34,41 +34,49 @@ public class GraniteAgeable extends GraniteLiving<MCEntityAgeable> implements Ag
 
     @Override
     public int getAge() {
-        return 0;
+        return obj.getGrowingAge();
     }
 
     @Override
-    public void setAge(int i) {
-
+    public void setAge(int age) {
+        obj.setGrowingAge(age);
     }
 
     @Override
     public void setBaby() {
-
+        if (getAge() >= 0) {
+            setAge(-24000);
+        }
     }
 
     @Override
     public void setAdult() {
-
+        if (getAge() < 0) {
+            setAge(0);
+        }
     }
 
     @Override
     public boolean isBaby() {
-        return false;
+        return getAge() < 0;
     }
 
     @Override
     public boolean canBreed() {
-        return false;
+        return getAge() == 0;
     }
 
     @Override
-    public void setBreeding(boolean b) {
-
+    public void setBreeding(boolean breeding) {
+        if (breeding) {
+            setAge(0);
+        } else if (getAge() >= 0) {
+            setAge(6000);
+        }
     }
 
     @Override
     public void setScaleForAge() {
-
+        obj.setScaleForAge(getAge() < 0);
     }
 }
