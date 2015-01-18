@@ -206,11 +206,6 @@ public class GraniteGameRegistry implements GameRegistry {
             Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
             Field biomeList = Mappings.getField(biomeGenBaseClass, "biomeList");
             ArrayList<MCBiomeGenBase> biomesGenBase = Lists.newArrayList((MCBiomeGenBase[]) biomeList.get(biomeGenBaseClass));
-
-            /**
-             * Minecraft mutated biomes are placed into the biomeList with an index equal to the original plus 128.
-             * So there are around 70 null biomes in the list... Lets remove all of these
-             */
             biomesGenBase.removeAll(Collections.singleton(null));
 
             for (Field field : BiomeTypes.class.getDeclaredFields()) {
@@ -219,7 +214,6 @@ public class GraniteGameRegistry implements GameRegistry {
                 String name = field.getName().toLowerCase();
                 for (MCBiomeGenBase biome : biomesGenBase) {
 
-                    // Some Sponge biome names aren't equal to the names defined in the Minecraft class, rename them to their correct name
                     if (name.equals("sky")) {
                         name = "the_end";
                     } else if (name.equals("extreme_hills_plus")) {
@@ -235,10 +229,6 @@ public class GraniteGameRegistry implements GameRegistry {
 
                     String biomeName = biome.fieldGet$biomeName().toLowerCase().replace(" ", "_");
 
-                    /**
-                     * Here the magic happens, if the sponge biome name is equal to the minecraft biome name, place that biome into their correct field
-                     * The biome is found so break the loop and continue to find the next biome
-                     */
                     if (biomeName.equals(name)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
                         field.set(null, biomeType);
@@ -277,6 +267,7 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    // TODO: Needs to not be new instances but the ones that already exist if possible.
     private void registerDimensions() {
         Granite.instance.getLogger().info("Registering Dimensions");
 
@@ -284,30 +275,26 @@ public class GraniteGameRegistry implements GameRegistry {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
-            DimensionType dimensionType;
+            DimensionType dimensionType = null;
             boolean registered = false;
             try {
                 switch (name) {
                     case "overworld":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface").newInstance()));
-                        field.set(null, dimensionType);
-                        dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "nether":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell").newInstance()));
-                        field.set(null, dimensionType);
-                        dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                     case "end":
                         dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd").newInstance()));
-                        field.set(null, dimensionType);
-                        dimensions.put("minecraft:" + name, dimensionType);
                         registered = true;
                         break;
                 }
                 if (Main.debugLog && registered) {
+                    field.set(null, dimensionType);
+                    dimensions.put("minecraft:" + name, dimensionType);
                     Granite.getInstance().getLogger().info("Registered Dimension minecraft:" + name);
                 }
             } catch (IllegalAccessException | InstantiationException e) {
@@ -365,7 +352,7 @@ public class GraniteGameRegistry implements GameRegistry {
         MCGameRules gameRules = Instantiator.get().newGameRules();
         String[] rules = gameRules.getRules();
         for (String rule : rules) {
-            defaultGameRules.add(rule);
+            defaultGameRules.add("minecraft:" + rule);
             if (Main.debugLog) {
                 Granite.getInstance().getLogger().info("Registered default GameRule minecraft:" + rule);
             }
@@ -519,7 +506,6 @@ public class GraniteGameRegistry implements GameRegistry {
 
     }
 
-    // TODO: THIS IS BIG, FAT AND UGLY. And need redoing if possible.
     private void registerProfessionsAndCareers() {
         Granite.instance.getLogger().info("Registering Professions");
 
@@ -668,8 +654,6 @@ public class GraniteGameRegistry implements GameRegistry {
         Granite.instance.getLogger().info("Registering ParticleTypes");
 
         List<GraniteParticleType> types = new ArrayList<>();
-
-        // Code mostly stolen from Seppe Volkaerts (Cybermaxke)'s Sponge PR, thanks and please don't sue!
         types.add(new GraniteParticleType("EXPLOSION_NORMAL", true));
         types.add(new GraniteParticleType.GraniteResizable("EXPLOSION_LARGE", 1f));
         types.add(new GraniteParticleType("EXPLOSION_HUGE", false));
@@ -710,7 +694,6 @@ public class GraniteGameRegistry implements GameRegistry {
         types.add(new GraniteParticleType.GraniteMaterial("BLOCK_CRACK", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
         types.add(new GraniteParticleType.GraniteMaterial("BLOCK_DUST", true, getItemBuilder().itemType(ItemTypes.STONE).build()));
         types.add(new GraniteParticleType("WATER_DROP", false));
-        // Is this particle available to be spawned? It's not registered on the client though
         types.add(new GraniteParticleType("ITEM_TAKE", false));
         types.add(new GraniteParticleType("MOB_APPEARANCE", false));
 
@@ -948,8 +931,8 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public GameProfile createGameProfile(UUID uuid, String s) {
-        throw new NotImplementedException("");
+    public GameProfile createGameProfile(UUID uuid, String name) {
+        return new GraniteGameProfile(Instantiator.get().newGameProfile(uuid, name));
     }
 
     @Override

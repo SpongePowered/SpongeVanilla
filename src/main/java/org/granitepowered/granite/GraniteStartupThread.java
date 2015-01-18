@@ -42,6 +42,7 @@ import org.granitepowered.granite.bytecode.classes.ItemStackClass;
 import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
 import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
+import org.granitepowered.granite.impl.GraniteGameVersion;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;

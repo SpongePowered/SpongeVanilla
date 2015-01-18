@@ -25,5 +25,4 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "Packet")
 public interface MCPacket extends MCInterface {
-
 }

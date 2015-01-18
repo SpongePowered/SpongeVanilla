@@ -1,4 +1,4 @@
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.composite.Composite;

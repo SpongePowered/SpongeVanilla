@@ -48,7 +48,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
+public class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
 
     int maxAir = 300;
 

@@ -21,40 +21,54 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.util;
+package org.granitepowered.granite.impl.entity.living;
 
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntityLiving;
+import org.spongepowered.api.entity.living.Ageable;
 
-import java.util.UUID;
+public class GraniteAgeable extends GraniteLiving implements Ageable {
 
-public class Instantiator {
-
-    private static final InstantiatorInterface instance = null;
-
-    public static InstantiatorInterface get() {
-        return instance;
+    public GraniteAgeable(MCEntityLiving obj) {
+        super(obj);
     }
 
-    public interface InstantiatorInterface {
+    @Override
+    public int getAge() {
+        return 0;
+    }
 
-        MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
+    @Override
+    public void setAge(int i) {
 
-        MCBlockPos newBlockPos(int x, int y, int z);
+    }
 
-        MCGameRules newGameRules();
+    @Override
+    public void setBaby() {
 
-        MCPacketTitle newPacketTitle(MCPacketTitleType type, MCChatComponent component);
+    }
 
-        MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
+    @Override
+    public void setAdult() {
 
-        MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
+    }
 
-        MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
+    @Override
+    public boolean isBaby() {
+        return false;
+    }
 
-        MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_, int ...i2);
+    @Override
+    public boolean canBreed() {
+        return false;
+    }
 
-        MCRotations newRotations(float x, float y, float z);
+    @Override
+    public void setBreeding(boolean b) {
 
-        MCGameProfile newGameProfile(UUID uuid, String name);
+    }
+
+    @Override
+    public void setScaleForAge() {
+
     }
 }

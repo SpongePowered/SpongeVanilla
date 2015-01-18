@@ -1,4 +1,4 @@
-package org.granitepowered.granite;
+package org.granitepowered.granite.impl;
 
 import org.spongepowered.api.GameVersion;
 
