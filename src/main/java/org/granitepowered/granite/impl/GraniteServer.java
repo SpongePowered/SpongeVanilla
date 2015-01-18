@@ -38,7 +38,6 @@ import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCServer;
 import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.mc.MCWorldServer;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;

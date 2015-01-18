@@ -52,5 +52,6 @@ public class Instantiator {
 
         MCRotations newRotations(float x, float y, float z);
 
+        MCEntityArrow newEntityArrow(MCWorld world, MCEntityLivingBase shooter, float something);
     }
 }

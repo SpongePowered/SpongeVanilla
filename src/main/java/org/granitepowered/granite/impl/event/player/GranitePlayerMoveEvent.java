@@ -31,6 +31,7 @@ import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleTypes;
+import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.event.player.PlayerMoveEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.world.Location;
@@ -46,10 +47,7 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
         this.old = old;
         this.new_ = new_;
 
-        player.spawnParticles(
-                ((ParticleEffectBuilder.Material) Granite.getInstance().getGameRegistry().getParticleEffectBuilder(ParticleTypes.BLOCK_CRACK)).itemType(ItemTypes.DIAMOND_BLOCK).count(1).build(),
-                new Vector3d(-138, 65.5, 323)
-        );
+        player.launchProjectile(Arrow.class);
     }
 
     @Override

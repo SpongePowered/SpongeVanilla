@@ -35,6 +35,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
+import org.granitepowered.granite.impl.entity.projectile.GraniteArrow;
+import org.granitepowered.granite.impl.entity.projectile.GraniteProjectile;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
@@ -48,6 +50,7 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
@@ -451,13 +454,18 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<T> projectileClass) {
-        // TODO: Projectile API
+        if (projectileClass.isAssignableFrom(Arrow.class)) {
+            MCEntityArrow arrow = Instantiator.get().newEntityArrow(obj.fieldGet$worldObj(), obj, 2);
+            obj.fieldGet$worldObj().spawnEntityInWorld(arrow);
+            return (T) wrap(arrow);
+        }
         throw new NotImplementedException("");
     }
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<T> projectileClass, Vector3f velocity) {
-        // TODO: Projectile API
+        // MCEntity e = unwrap(launchProjectile(projectileClass));
+        // TODO: Set speed on projectile
         throw new NotImplementedException("");
     }
 

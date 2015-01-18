@@ -23,67 +23,9 @@
 
 package org.granitepowered.granite.mc;
 
-import java.util.UUID;
+@Implement(name = "DataWatcher")
+public interface MCDataWatcher {
+    MCDataWatcherWatchableObject getWatchedObject(int id);
 
-@Implement(name = "Entity")
-public interface MCEntity extends MCInterface {
-
-    boolean fieldGet$onGround();
-
-    double fieldGet$posX();
-
-    double fieldGet$posY();
-
-    double fieldGet$posZ();
-
-    MCEntity fieldGet$riddenByEntity();
-
-    MCEntity fieldGet$ridingEntity();
-
-    void fieldSet$riddenByEntity(MCEntity entity);
-
-    void fieldSet$ridingEntity(MCEntity entity);
-
-    float fieldGet$width();
-
-    float fieldGet$height();
-
-    boolean fieldGet$isDead();
-
-    int fieldGet$fire();
-
-    void fieldSet$fire(int ticks);
-
-    UUID fieldGet$entityUniqueID();
-
-    int fieldGet$fireResistance();
-
-    MCWorld fieldGet$worldObj();
-
-    int fieldGet$hurtResistantTime();
-
-    void fieldSet$hurtResistantTime(int ticks);
-
-    MCDataWatcher fieldGet$dataWatcher();
-
-    void mountEntity(MCEntity other);
-
-    float getEyeHeight();
-
-    int getAir();
-
-    void setAir(int air);
-
-    String getCustomNameTag();
-
-    void setCustomNameTag(String tag);
-
-    boolean getAlwaysRenderNameTag();
-
-    void setAlwaysRenderNameTag(boolean value);
-
-    String getName();
-
-    void setPosition(double x, double y, double z);
-
+    void updateObject(int id, Object object);
 }
