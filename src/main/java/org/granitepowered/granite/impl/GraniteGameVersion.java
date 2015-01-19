@@ -16,6 +16,11 @@ public class GraniteGameVersion implements GameVersion {
     }
 
     @Override
+    public boolean isLegacy() {
+        return false;
+    }
+
+    @Override
     public int compareTo(GameVersion o) {
         return 0;
     }

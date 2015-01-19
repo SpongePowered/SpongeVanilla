@@ -48,6 +48,7 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.entity.projectile.Arrow;
+import org.spongepowered.api.entity.projectile.Egg;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
@@ -471,6 +472,10 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
             MCEntityArrow arrow = Instantiator.get().newEntityArrow(obj.fieldGet$worldObj(), obj, 2);
             obj.fieldGet$worldObj().spawnEntityInWorld(arrow);
             return (T) wrap(arrow);
+        } else if (projectileClass.isAssignableFrom(Egg.class)) {
+            MCEntityEgg egg = Instantiator.get().newEntityEgg(obj.fieldGet$worldObj(), obj);
+            obj.fieldGet$worldObj().spawnEntityInWorld(egg);
+            return (T) wrap(egg);
         }
         throw new NotImplementedException("");
     }

@@ -21,38 +21,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.entity.projectile;
 
-import com.flowpowered.math.vector.Vector3d;
-import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
-import org.spongepowered.api.effect.particle.ParticleTypes;
-import org.spongepowered.api.entity.projectile.Arrow;
+import org.granitepowered.granite.mc.MCEntityEgg;
 import org.spongepowered.api.entity.projectile.Egg;
-import org.spongepowered.api.event.player.PlayerMoveEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.world.Location;
 
-public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
-    Location old;
-    Location new_;
-
-    public GranitePlayerMoveEvent(GranitePlayer player, Location old, Location new_) {
-        super(player);
-        this.old = old;
-        this.new_ = new_;
-
-        player.launchProjectile(Egg.class);
+public class GraniteEgg extends GraniteThrowable<MCEntityEgg> implements Egg {
+    public GraniteEgg(MCEntityEgg obj) {
+        super(obj);
     }
 
     @Override
-    public Location getOldLocation() {
-        return old;
+    public double getDamage() {
+        // Damage is hardcoded in the game as 0
+        // TODO: See if this is possible to edit with bytecode mods
+        return 0;
     }
 
     @Override
-    public Location getNewLocation() {
-        return new_;
+    public void setDamage(double damage) {
+        // Silently ignore
     }
 }

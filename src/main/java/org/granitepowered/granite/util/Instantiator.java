@@ -57,6 +57,8 @@ public class Instantiator {
 
         MCEntityArrow newEntityArrow(MCWorld world, MCEntityLivingBase shooter, float something);
 
+        MCEntityEgg newEntityEgg(MCWorld world, MCEntityLivingBase shooter);
+
         MCGameProfile newGameProfile(UUID uuid, String name);
     }
 }

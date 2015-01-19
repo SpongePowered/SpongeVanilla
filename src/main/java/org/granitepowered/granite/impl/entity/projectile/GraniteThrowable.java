@@ -21,38 +21,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.entity.projectile;
 
-import com.flowpowered.math.vector.Vector3d;
-import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
-import org.spongepowered.api.effect.particle.ParticleTypes;
-import org.spongepowered.api.entity.projectile.Arrow;
-import org.spongepowered.api.entity.projectile.Egg;
-import org.spongepowered.api.event.player.PlayerMoveEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.world.Location;
+import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.granitepowered.granite.mc.MCEntityThrowable;
+import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 
-public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
-    Location old;
-    Location new_;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-    public GranitePlayerMoveEvent(GranitePlayer player, Location old, Location new_) {
-        super(player);
-        this.old = old;
-        this.new_ = new_;
-
-        player.launchProjectile(Egg.class);
+public abstract class GraniteThrowable<T extends MCEntityThrowable> extends GraniteProjectile<T> {
+    public GraniteThrowable(T obj) {
+        super(obj);
     }
 
     @Override
-    public Location getOldLocation() {
-        return old;
+    public ProjectileSource getShooter() {
+        return wrap(obj.getThrower());
     }
 
     @Override
-    public Location getNewLocation() {
-        return new_;
+    public void setShooter(ProjectileSource shooter) {
+        obj.fieldSet$thrower((MCEntityLivingBase) unwrap(shooter));
     }
 }

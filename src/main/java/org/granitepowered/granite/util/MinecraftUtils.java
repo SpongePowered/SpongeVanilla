@@ -46,6 +46,7 @@ import org.granitepowered.granite.impl.entity.living.GraniteLiving;
 import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.entity.projectile.GraniteArrow;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
@@ -82,6 +83,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityArmorStand"), GraniteArmorStand.class)
             .put(Mappings.getClass("EntityArrow"), GraniteArrow.class)
             .put(Mappings.getClass("EntityBat"), GraniteBat.class)
+            .put(Mappings.getClass("EntityEgg"), GraniteEgg.class)
             .put(Mappings.getClass("EntityItem"), GraniteEntityItem.class)
             .put(Mappings.getClass("EntityXPOrb"), GraniteExperienceOrb.class)
             .put(Mappings.getClass("EntityFallingBlock"), GraniteFallingBlock.class)
