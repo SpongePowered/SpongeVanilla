@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.bytecode;
 
+import com.google.common.base.Defaults;
 import com.google.common.base.Throwables;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -39,7 +40,9 @@ import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.bytecode.analysis.Type;
 import javassist.expr.ExprEditor;
+import javassist.expr.MethodCall;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
@@ -450,7 +453,14 @@ public class BytecodeClass {
 
             method.addParameter(type);
 
-            other.setBody("return " + method.getName() + "($$, (" + type.getName() + ") null);");
+            String val = "null";
+            if (type.isPrimitive()) {
+                val = Defaults.defaultValue(getFromCt(type)).toString();
+            }
+
+
+            other.setBody("return " + method.getName() + "($$, (" + type.getName() + ") " + val + ");");
+
             method.getDeclaringClass().addMethod(other);
 
             return method.getParameterTypes().length - 1;
@@ -458,6 +468,48 @@ public class BytecodeClass {
             Throwables.propagate(e);
         }
         return 0;
+    }
+
+    public void replaceMethodCallParameter(String methodName, final CtMethod methodCall, final int parameterToReplace, final String replaceWith) {
+        final CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        try {
+            method.instrument(new ExprEditor() {
+                @Override
+                public void edit(MethodCall m) throws CannotCompileException {
+                    try {
+                        if (m.getMethod().equals(methodCall)) {
+                            String code = "$_ = $proceed(";
+
+                            for (int i = 0; i < methodCall.getParameterTypes().length; i++) {
+                                if (i == parameterToReplace) {
+                                    CtClass parameterType = methodCall.getParameterTypes()[i];
+
+                                    // Fuck boxed types
+                                    if (parameterType.isPrimitive()) {
+                                        code += "((" + ClassUtils.primitiveToWrapper(getFromCt(parameterType)).getName() + ") " + replaceWith + ")." + getFromCt(parameterType).getName() + "Value()";
+                                    } else {
+                                        code += "(" + parameterType.getName() + ") " + replaceWith;
+                                    }
+                                } else {
+                                    code += "$" + (i + 1);
+                                }
+
+                                if (i < methodCall.getParameterTypes().length - 1) {
+                                    code += ", ";
+                                }
+                            }
+
+                            code += ");";
+                            m.replace(code);
+                        }
+                    } catch (NotFoundException e) {
+                        Throwables.propagate(e);
+                    }
+                }
+            });
+        } catch (CannotCompileException e) {
+            Throwables.propagate(e);
+        }
     }
 
     @Override

@@ -53,19 +53,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
 
         addArgumentsVariable("initializeConnectionToPlayer");
 
-        instrumentMethod("initializeConnectionToPlayer", new ExprEditor() {
-            @Override
-            public void edit(MethodCall m) throws CannotCompileException {
-                CtMethod method = Mappings.getCtMethod("ServerConfigurationManager", "sendChatMsg");
-                try {
-                    if (m.getMethod().equals(method)) {
-                        m.replace("$_ = $proceed((" + Mappings.getCtClass("IChatComponent").getName() + ") $mArgs[" + param + "]);");
-                    }
-                } catch (NotFoundException e) {
-                    Throwables.propagate(e);
-                }
-            }
-        });
+        replaceMethodCallParameter("initializeConnectionToPlayer", Mappings.getCtMethod("ServerConfigurationManager", "sendChatMsg"), 0, "$mArgs[" + param + "]");
 
         proxy("initializeConnectionToPlayer", new BytecodeClass.ProxyHandler() {
             @Override

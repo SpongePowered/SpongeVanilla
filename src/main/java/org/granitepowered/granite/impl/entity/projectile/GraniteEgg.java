@@ -27,19 +27,20 @@ import org.granitepowered.granite.mc.MCEntityEgg;
 import org.spongepowered.api.entity.projectile.Egg;
 
 public class GraniteEgg extends GraniteThrowable<MCEntityEgg> implements Egg {
+    // Minecraft is modified to read from this field at runtime
+    double damage = 0;
+
     public GraniteEgg(MCEntityEgg obj) {
         super(obj);
     }
 
     @Override
     public double getDamage() {
-        // Damage is hardcoded in the game as 0
-        // TODO: See if this is possible to edit with bytecode mods
-        return 0;
+        return damage;
     }
 
     @Override
     public void setDamage(double damage) {
-        // Silently ignore
+        this.damage = damage;
     }
 }

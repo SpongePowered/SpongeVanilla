@@ -43,7 +43,7 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
         this.old = old;
         this.new_ = new_;
 
-        player.launchProjectile(Egg.class);
+        player.launchProjectile(Egg.class).setDamage(5);
     }
 
     @Override
