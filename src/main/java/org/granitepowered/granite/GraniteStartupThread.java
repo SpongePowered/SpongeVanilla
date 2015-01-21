@@ -273,6 +273,8 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new EntityClass());
             modifier.add(new EntityEggClass());
             modifier.add(new EntityPlayerMPClass());
+            modifier.add(new EntityXFireballClass("EntitySmallFireball"));
+            modifier.add(new EntityXFireballClass("EntityLargeFireball"));
             modifier.add(new ItemInWorldManagerClass());
             modifier.add(new ItemStackClass());
             modifier.add(new NetHandlerPlayServerClass());
@@ -287,6 +289,10 @@ public class GraniteStartupThread extends Thread {
 
                 if (Granite.instance.classesDir.exists()) {
                     File oldClassesDir = new File(Granite.instance.classesDir.getParentFile(), Granite.instance.classesDir.getName() + "_old");
+
+                    if (oldClassesDir.exists()) {
+                        FileUtils.deleteDirectory(oldClassesDir);
+                    }
 
                     FileUtils.moveDirectory(Granite.instance.classesDir, oldClassesDir);
                     FileUtils.deleteDirectory(oldClassesDir);

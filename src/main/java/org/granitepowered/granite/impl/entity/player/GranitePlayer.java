@@ -50,6 +50,8 @@ import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.entity.projectile.Egg;
 import org.spongepowered.api.entity.projectile.Projectile;
+import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
+import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -468,16 +470,22 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<T> projectileClass) {
+        MCEntity entity = null;
         if (projectileClass.isAssignableFrom(Arrow.class)) {
-            MCEntityArrow arrow = Instantiator.get().newEntityArrow(obj.fieldGet$worldObj(), obj, 2);
-            obj.fieldGet$worldObj().spawnEntityInWorld(arrow);
-            return (T) wrap(arrow);
+            entity = Instantiator.get().newEntityArrow(obj.fieldGet$worldObj(), obj, 2);
         } else if (projectileClass.isAssignableFrom(Egg.class)) {
-            MCEntityEgg egg = Instantiator.get().newEntityEgg(obj.fieldGet$worldObj(), obj);
-            obj.fieldGet$worldObj().spawnEntityInWorld(egg);
-            return (T) wrap(egg);
+            entity = Instantiator.get().newEntityEgg(obj.fieldGet$worldObj(), obj);
+        } else if (projectileClass.isAssignableFrom(SmallFireball.class)) {
+            entity = Instantiator.get().newEntitySmallFireball(obj.fieldGet$worldObj(), obj, 0, 0, 0);
+            entity.setPosition(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
+        } else if (projectileClass.isAssignableFrom(LargeFireball.class)) {
+            entity = Instantiator.get().newEntityLargeFireball(obj.fieldGet$worldObj(), obj, 0, 0, 0);
+            entity.setPosition(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
+        } else {
+            throw new NotImplementedException("");
         }
-        throw new NotImplementedException("");
+        obj.fieldGet$worldObj().spawnEntityInWorld(entity);
+        return (T) wrap(entity);
     }
 
     @Override

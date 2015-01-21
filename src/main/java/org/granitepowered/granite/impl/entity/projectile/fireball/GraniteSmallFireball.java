@@ -21,40 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.entity.projectile.fireball;
 
-import com.flowpowered.math.vector.Vector3d;
-import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
-import org.spongepowered.api.effect.particle.ParticleTypes;
-import org.spongepowered.api.entity.projectile.Arrow;
-import org.spongepowered.api.entity.projectile.Egg;
-import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
+import org.granitepowered.granite.mc.MCEntitySmallFireball;
 import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
-import org.spongepowered.api.event.player.PlayerMoveEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.world.Location;
 
-public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
-    Location old;
-    Location new_;
-
-    public GranitePlayerMoveEvent(GranitePlayer player, Location old, Location new_) {
-        super(player);
-        this.old = old;
-        this.new_ = new_;
-
-        player.launchProjectile(SmallFireball.class);
-    }
-
-    @Override
-    public Location getOldLocation() {
-        return old;
-    }
-
-    @Override
-    public Location getNewLocation() {
-        return new_;
+public class GraniteSmallFireball extends GraniteFireball<MCEntitySmallFireball> implements SmallFireball {
+    public GraniteSmallFireball(MCEntitySmallFireball obj) {
+        super(obj);
     }
 }

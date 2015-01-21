@@ -21,40 +21,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.entity.projectile.fireball;
 
-import com.flowpowered.math.vector.Vector3d;
-import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
-import org.spongepowered.api.effect.particle.ParticleTypes;
-import org.spongepowered.api.entity.projectile.Arrow;
-import org.spongepowered.api.entity.projectile.Egg;
+import org.granitepowered.granite.mc.MCEntityLargeFireball;
 import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
-import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
-import org.spongepowered.api.event.player.PlayerMoveEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.world.Location;
 
-public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
-    Location old;
-    Location new_;
-
-    public GranitePlayerMoveEvent(GranitePlayer player, Location old, Location new_) {
-        super(player);
-        this.old = old;
-        this.new_ = new_;
-
-        player.launchProjectile(SmallFireball.class);
+public class GraniteLargeFireball extends GraniteFireball<MCEntityLargeFireball> implements LargeFireball {
+    public GraniteLargeFireball(MCEntityLargeFireball obj) {
+        super(obj);
     }
 
     @Override
-    public Location getOldLocation() {
-        return old;
+    public int getExplosionPower() {
+        return obj.fieldGet$field_92057_e();
     }
 
     @Override
-    public Location getNewLocation() {
-        return new_;
+    public void setExplosionPower(int explosionPower) {
+        obj.fieldSet$field_92057_e(explosionPower);
     }
 }

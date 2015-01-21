@@ -316,7 +316,7 @@ public class BytecodeClass {
                 MethodInfo mi = newMethod.getMethodInfo();
                 Bytecode
                         bytecode =
-                        new Bytecode(mi.getConstPool(), newMethod.getParameterTypes().length + 1, newMethod.getParameterTypes().length + 1);
+                        new Bytecode(mi.getConstPool(), 1, 1);
                 bytecode.addNew(mcActualRet);
                 bytecode.addOpcode(Opcode.DUP);
 
@@ -351,13 +351,22 @@ public class BytecodeClass {
 
                 //bytecode.addLoadParameters(constructor.getParameterTypes(), 1);
 
+                int localCounter = 1;
+
                 for (int i = 0; i < constructor.getParameterTypes().length; i++) {
                     CtClass parameterType = constructor.getParameterTypes()[i];
 
-                    bytecode.addLoad(i + 1, parameterType);
+                    // Make sure maxLocals starts out being 1, otherwise this code breaks
+                    bytecode.addLoad(bytecode.getMaxLocals(), parameterType);
                     if (!parameterType.isPrimitive()) {
                         bytecode.addCheckcast(parameterType);
                     }
+                    bytecode.growStack(1);
+
+                    int localDiff = (parameterType == CtClass.doubleType || parameterType == CtClass.longType) ? 2 : 1;
+
+                    bytecode.incMaxLocals(localDiff);
+                    localCounter += localDiff;
                 }
 
                 bytecode.addInvokespecial(mcActualRet, "<init>", CtClass.voidType, constructor.getParameterTypes());

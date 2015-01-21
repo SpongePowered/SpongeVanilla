@@ -1,0 +1,69 @@
+/*
+ * License (MIT)
+ *
+ * Copyright (c) 2014-2015 Granite Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package org.granitepowered.granite.impl.entity.projectile.fireball;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.entity.projectile.GraniteProjectile;
+import org.granitepowered.granite.mc.MCEntityFireball;
+import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.spongepowered.api.entity.projectile.fireball.Fireball;
+import org.spongepowered.api.entity.projectile.source.ProjectileSource;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
+public abstract class GraniteFireball<T extends MCEntityFireball> extends GraniteProjectile<T> implements Fireball {
+    // Minecraft is modified to read from this field at runtime
+    private double damage;
+
+    public GraniteFireball(T obj) {
+        super(obj);
+    }
+
+    @Override
+    public void detonate() {
+        // TODO: Spawn explosion and kill entity
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public ProjectileSource getShooter() {
+        return wrap(obj.fieldGet$shootingEntity());
+    }
+
+    @Override
+    public void setShooter(ProjectileSource shooter) {
+        obj.fieldSet$shootingEntity((MCEntityLivingBase) unwrap(shooter));
+    }
+
+    @Override
+    public double getDamage() {
+        return damage;
+    }
+
+    @Override
+    public void setDamage(double damage) {
+        this.damage = damage;
+    }
+}

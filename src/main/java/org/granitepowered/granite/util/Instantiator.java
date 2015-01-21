@@ -59,6 +59,10 @@ public class Instantiator {
 
         MCEntityEgg newEntityEgg(MCWorld world, MCEntityLivingBase shooter);
 
+        MCEntitySmallFireball newEntitySmallFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2, double something3);
+
+        MCEntityLargeFireball newEntityLargeFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2, double something3);
+
         MCGameProfile newGameProfile(UUID uuid, String name);
     }
 }
