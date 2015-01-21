@@ -113,11 +113,9 @@ public class GraniteStartupThread extends Thread {
                 try {
                     versionProp.load(versionIn);
 
-                    String server = versionProp.getProperty("server", "UNKNOWN");
-                    serverVersion = server;
+                    serverVersion = versionProp.getProperty("server", "UNKNOWN");
 
-                    String api = versionProp.getProperty("api", "UNKNOWN");
-                    apiVersion = api;
+                    apiVersion = versionProp.getProperty("api", "UNKNOWN");
 
                     String build = versionProp.getProperty("build");
                     if (build != null && !build.equals("NA")) {
@@ -280,6 +278,7 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new CommandHandlerClass());
             modifier.add(new DedicatedServerClass());
             modifier.add(new EntityClass());
+            modifier.add(new EntityEggClass());
             modifier.add(new EntityPlayerMPClass());
             modifier.add(new ItemInWorldManagerClass());
             modifier.add(new ItemStackClass());
