@@ -95,6 +95,11 @@ public class GraniteBlockLoc implements BlockLoc {
     }
 
     @Override
+    public BlockLoc getRelative(Direction direction) {
+        return new GraniteBlockLoc(getLocation().add(direction.toVector3d()));
+    }
+
+    @Override
     public BlockType getType() {
         return getState().getType();
     }

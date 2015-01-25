@@ -37,12 +37,7 @@ import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCEnumFacing;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.mc.MCWorldInfo;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -51,6 +46,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.service.permission.context.Context;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Dimension;
@@ -80,7 +76,12 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public String getName() {
-        return getMCWorldInfo().fieldGet$levelName();
+        String name = getMCWorldInfo().fieldGet$levelName();
+        if (name == null) {
+            MCWorldInfo parentWorldInfo = ((MCDerivedWorldInfo) getMCWorldInfo()).fieldGet$theWorldInfo();
+            return parentWorldInfo.fieldGet$levelName() + (getDimension().getDimensionId() == 1 ? "_the_end" : "_nether");
+        }
+        return name;
     }
 
     @Override
@@ -216,7 +217,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     @Override
     public Optional<Entity> createEntity(EntityType type, Vector3d position) {
         MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type.getId(), obj);
-        entity.setPosition(position.getX(), position.getY(), position.getZ());
+        entity.setPositionAndUpdate(position.getX(), position.getY(), position.getZ());
         boolean ret = obj.spawnEntityInWorld(entity);
 
         return ret ? Optional.of((Entity) wrap(entity)) : Optional.<Entity>absent();
@@ -318,5 +319,10 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     public MCGameRules getMCGameRules() {
         return getMCWorldInfo().fieldGet$gameRules();
+    }
+
+    @Override
+    public Context getContext() {
+        return new Context("world", getName());
     }
 }

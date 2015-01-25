@@ -45,6 +45,8 @@ import org.spongepowered.api.GameVersion;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.net.ChannelListener;
+import org.spongepowered.api.net.ChannelRegistrationException;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.command.CommandService;
@@ -57,11 +59,7 @@ import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
@@ -252,7 +250,22 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
         return Messages.of(obj.fieldGet$motd());
     }
 
+    @Override
+    public void shutdown(Message kickMessage) {
+        throw new NotImplementedException("");
+    }
+
     private MCServerConfigurationManager getSCM() {
         return obj.fieldGet$serverConfigManager();
+    }
+
+    @Override
+    public void registerChannel(Object plugin, ChannelListener listener, String channel) throws ChannelRegistrationException {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<String> getRegisteredChannels() {
+        throw new NotImplementedException("");
     }
 }

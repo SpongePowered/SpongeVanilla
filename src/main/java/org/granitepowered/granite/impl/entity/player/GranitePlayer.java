@@ -55,6 +55,11 @@ import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.net.PlayerConnection;
+import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.SubjectCollection;
+import org.spongepowered.api.service.permission.SubjectData;
+import org.spongepowered.api.service.permission.context.Context;
 import org.spongepowered.api.service.persistence.DataSource;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.text.chat.ChatType;
@@ -62,6 +67,8 @@ import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
+import org.spongepowered.api.util.Tristate;
+import org.spongepowered.api.util.command.CommandSource;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -161,6 +168,11 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
     @Override
     public void setGameMode(GameMode gameMode) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public PlayerConnection getConnection() {
         throw new NotImplementedException("");
     }
 
@@ -312,7 +324,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
                     e.printStackTrace();
                 }
                 data = item.getDamage();
-            } else if (type.getId() ==  ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId() || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
+            } else if (type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId() || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
                 // Only block types are allowed
                 if (itemType instanceof ItemBlock) {
                     try {
@@ -328,7 +340,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
                 return;
             }
 
-            extra = new int[] { id, data };
+            extra = new int[]{id, data};
         }
 
         if (particleEffect instanceof GraniteParticleEffect.GraniteResizable) {
@@ -404,7 +416,7 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
         List<MCPacket> packets = Lists.newArrayList();
 
-        if (ox == 0f && oy == 0f && oz == 0f){
+        if (ox == 0f && oy == 0f && oz == 0f) {
             for (int i = 0; i < count; i++) {
                 packets.add(Instantiator.get().newPacketParticles(internal, true, px, py, pz, f0, f1, f2, 1f, 0, extra));
             }
@@ -464,6 +476,36 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     }
 
     @Override
+    public int getExperience() {
+        return 0;
+    }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public int getTotalExperinece() {
+        return 0;
+    }
+
+    @Override
+    public void setExperience(int experience) {
+
+    }
+
+    @Override
+    public void setLevel(int level) {
+
+    }
+
+    @Override
+    public void setTotalExperience(int totalExperience) {
+
+    }
+
+    @Override
     public boolean isViewingInventory() {
         return obj.fieldGet$openContainer() != null;
     }
@@ -477,10 +519,10 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
             entity = Instantiator.get().newEntityEgg(obj.fieldGet$worldObj(), obj);
         } else if (projectileClass.isAssignableFrom(SmallFireball.class)) {
             entity = Instantiator.get().newEntitySmallFireball(obj.fieldGet$worldObj(), obj, 0, 0, 0);
-            entity.setPosition(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
+            entity.setPositionAndUpdate(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
         } else if (projectileClass.isAssignableFrom(LargeFireball.class)) {
             entity = Instantiator.get().newEntityLargeFireball(obj.fieldGet$worldObj(), obj, 0, 0, 0);
-            entity.setPosition(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
+            entity.setPositionAndUpdate(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
         } else {
             throw new NotImplementedException("");
         }
@@ -548,6 +590,84 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     @Override
     public void serialize(DataSource source) {
         // TODO: Persistence API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public String getIdentifier() {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<CommandSource> getCommandSource() {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public SubjectCollection getContainingCollection() {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public SubjectData getData() {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public SubjectData getTransientData() {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean hasPermission(Set<Context> contexts, String permission) {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Tristate getPermissionValue(Set<Context> contexts, String permission) {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isChildOf(Subject parent) {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isChildOf(Set<Context> contexts, Subject parent) {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Subject> getParents() {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<Subject> getParents(Set<Context> contexts) {
+        // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Set<Context> getActiveContexts() {
+        // TODO: Permissions API
         throw new NotImplementedException("");
     }
 }

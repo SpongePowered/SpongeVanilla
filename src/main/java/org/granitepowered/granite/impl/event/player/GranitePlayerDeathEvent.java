@@ -32,8 +32,9 @@ import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.player.PlayerDeathEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerDeathEvent;
 import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.world.Location;
 
 import java.util.Collection;
 
@@ -67,12 +68,67 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     }
 
     @Override
+    public boolean keepsInventory() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setKeepsInventory(boolean keepInventory) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean keepsLevel() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setKeepsLevel(boolean keepLevel) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getNewExperience() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setNewExperience(int experience) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getNewLevel() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setNewLevel(int level) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Optional<Cause> getCause() {
         return deathCause;
     }
 
     @Override
     public Collection<Item> getDroppedItems() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Location getLocation() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getDroppedExperience() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setDroppedExperience(int experience) {
         throw new NotImplementedException("");
     }
 }

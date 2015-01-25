@@ -23,12 +23,13 @@
 
 package org.granitepowered.granite.impl.event.player;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.player.PlayerPlaceBlockEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerPlaceBlockEvent;
+import org.spongepowered.api.util.Direction;
 
 public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements PlayerPlaceBlockEvent {
 
@@ -52,7 +53,22 @@ public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements P
     }
 
     @Override
-    public Entity getEntity() {
+    public Player getHuman() {
         return player;
+    }
+
+    @Override
+    public Player getLiving() {
+        return player;
+    }
+
+    @Override
+    public Player getEntity() {
+        return player;
+    }
+
+    @Override
+    public Direction getBlockFaceDirection() {
+        throw new NotImplementedException("");
     }
 }

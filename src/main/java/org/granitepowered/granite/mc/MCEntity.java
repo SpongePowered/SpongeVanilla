@@ -64,6 +64,14 @@ public interface MCEntity extends MCInterface {
 
     void fieldSet$hurtResistantTime(int ticks);
 
+    float fieldGet$rotationYaw();
+
+    void fieldSet$rotationYaw(float yaw);
+
+    float fieldGet$rotationPitch();
+
+    void fieldSet$rotationPitch(float pitch);
+
     MCDataWatcher fieldGet$dataWatcher();
 
     void mountEntity(MCEntity other);
@@ -84,6 +92,7 @@ public interface MCEntity extends MCInterface {
 
     String getName();
 
-    void setPosition(double x, double y, double z);
+    void setPositionAndUpdate(double x, double y, double z);
 
+    void travelToDimension(int dimensionId);
 }

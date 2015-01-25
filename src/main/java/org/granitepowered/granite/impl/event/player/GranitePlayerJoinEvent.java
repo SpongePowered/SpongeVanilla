@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.event.player;
 
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.event.player.PlayerJoinEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
 import org.spongepowered.api.text.message.Message;
 
 public class GranitePlayerJoinEvent extends GranitePlayerEvent implements PlayerJoinEvent {

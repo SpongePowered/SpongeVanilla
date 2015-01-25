@@ -21,28 +21,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.event.entity.living.player.PlayerChatEvent;
-import org.spongepowered.api.util.command.CommandSource;
-
-public class GranitePlayerChatEvent extends GranitePlayerEvent implements PlayerChatEvent {
-
-    String message;
-
-    public GranitePlayerChatEvent(GranitePlayer player, String message) {
-        super(player);
-        this.message = message;
-    }
-
-    @Override
-    public CommandSource getSource() {
-        return player;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
+@Implement(name = "DerivedWorldInfo")
+public interface MCDerivedWorldInfo {
+    MCWorldInfo fieldGet$theWorldInfo();
 }

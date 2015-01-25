@@ -28,9 +28,11 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityLiving;
 import org.spongepowered.api.entity.Entity;
@@ -77,25 +79,36 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean setLocation(Location location) {
-        obj.setPosition(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
+        if (obj.fieldGet$worldObj().fieldGet$provider().fieldGet$dimensionId() != ((GraniteWorld) location.getExtent()).getDimension().getDimensionId()) {
+            obj.travelToDimension(((GraniteWorld) location.getExtent()).getDimension().getDimensionId());
+        }
+        obj.setPositionAndUpdate(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
         return true;
     }
 
     @Override
-    public boolean setLocationAndRotation(Location location, Vector2f vector2f, EnumSet<RelativePositions> enumSet) {
-        throw new NotImplementedException("");
+    public boolean setLocationAndRotation(Location location, Vector3f rotation, EnumSet<RelativePositions> enumSet) {
+        double xToAdd = enumSet.contains(RelativePositions.X) ? obj.fieldGet$posX() : 0;
+        double yToAdd = enumSet.contains(RelativePositions.Y) ? obj.fieldGet$posY() : 0;
+        double zToAdd = enumSet.contains(RelativePositions.Z) ? obj.fieldGet$posZ() : 0;
+
+        double yawToAdd = enumSet.contains(RelativePositions.YAW) ? obj.fieldGet$rotationYaw() : 0;
+        double pitchToAdd = enumSet.contains(RelativePositions.PITCH) ? obj.fieldGet$rotationPitch() : 0;
+
+        setLocation(location.add(xToAdd, yToAdd, zToAdd));
+        setRotation(rotation.add(pitchToAdd, yawToAdd, 0));
+        return true;
     }
 
     @Override
-    public Vector2f getRotation() {
-        // TODO: Figure out Euler stuff
-        throw new NotImplementedException("");
+    public Vector3f getRotation() {
+        return new Vector3f(obj.fieldGet$rotationYaw(), obj.fieldGet$rotationPitch(), 0);
     }
 
     @Override
-    public void setRotation(Vector2f vector2f) {
-        // TODO: Figure out Euler stuff
-        throw new NotImplementedException("");
+    public void setRotation(Vector3f vector2f) {
+        obj.fieldSet$rotationYaw(vector2f.getX());
+        obj.fieldSet$rotationPitch(vector2f.getY());
     }
 
     @Override

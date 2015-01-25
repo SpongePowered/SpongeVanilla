@@ -23,17 +23,8 @@
 
 package org.granitepowered.granite.impl.event.player;
 
-import com.flowpowered.math.vector.Vector3d;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
-import org.spongepowered.api.effect.particle.ParticleTypes;
-import org.spongepowered.api.entity.projectile.Arrow;
-import org.spongepowered.api.entity.projectile.Egg;
-import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
-import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
-import org.spongepowered.api.event.player.PlayerMoveEvent;
-import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.event.entity.living.player.PlayerMoveEvent;
 import org.spongepowered.api.world.Location;
 
 public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
@@ -44,8 +35,6 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
         super(player);
         this.old = old;
         this.new_ = new_;
-
-        player.launchProjectile(SmallFireball.class);
     }
 
     @Override

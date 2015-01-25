@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.event.player;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.GraniteEntityEvent;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.player.PlayerEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerEvent;
 
 public class GranitePlayerEvent extends GraniteEntityEvent implements PlayerEvent {
 
@@ -39,6 +39,21 @@ public class GranitePlayerEvent extends GraniteEntityEvent implements PlayerEven
 
     @Override
     public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public Player getHuman() {
+        return player;
+    }
+
+    @Override
+    public Player getLiving() {
+        return player;
+    }
+
+    @Override
+    public Player getEntity() {
         return player;
     }
 }
