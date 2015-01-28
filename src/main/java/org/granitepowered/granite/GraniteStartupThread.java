@@ -32,7 +32,16 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
 import org.granitepowered.granite.impl.GraniteGameVersion;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
@@ -87,11 +96,11 @@ public class GraniteStartupThread extends Thread {
     String[] args;
     BytecodeModifier modifier;
 
-    String serverVersion;
-    String apiVersion;
+    String serverVersion = "UNKNOWN";
+    String apiVersion = "UNKNOWN";
     String buildNumber = "UNKNOWN";
 
-    public GraniteStartupThread(String args[]) {
+    public GraniteStartupThread(String[] args) {
         this.args = args;
         this.setName("Granite Startup");
     }
@@ -104,11 +113,9 @@ public class GraniteStartupThread extends Thread {
                 try {
                     versionProp.load(versionIn);
 
-                    String server = versionProp.getProperty("server", "UNKNOWN");
-                    serverVersion = server;
+                    serverVersion = versionProp.getProperty("server", "UNKNOWN");
 
-                    String api = versionProp.getProperty("api", "UNKNOWN");
-                    apiVersion = api;
+                    apiVersion = versionProp.getProperty("api", "UNKNOWN");
 
                     String build = versionProp.getProperty("build");
                     if (build != null && !build.equals("NA")) {
@@ -339,10 +346,10 @@ public class GraniteStartupThread extends Thread {
         File minecraftJar = Granite.instance.getServerConfig().getMinecraftJar();
 
         if (!minecraftJar.exists()) {
-            Granite.instance.getLogger().warn("Could not find Minecraft .jar, downloading");
+            Granite.instance.getLogger().warn("Could not find Minecraft.jar, downloading");
             HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/1.8.1/minecraft_server.1.8.1.jar");
             if (req.code() == 404) {
-                throw new RuntimeException("Minecraft 404 error whilst trying to download");
+                throw new RuntimeException("404 error whilst trying to download Minecraft");
             } else if (req.code() == 200) {
                 req.receive(minecraftJar);
                 Granite.instance.getLogger().info("Minecraft Downloaded");
