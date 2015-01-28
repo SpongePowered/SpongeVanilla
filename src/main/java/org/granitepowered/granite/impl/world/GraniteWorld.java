@@ -297,8 +297,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
         // Can't find method to set minVolume?
-
-        throw new NotImplementedException("");
+        this.obj.playSoundEffect(position.getX(), position.getY(), position.getZ(), sound.getName(), (float) volume, (float) pitch);
     }
 
     public boolean isPowered(MCBlockPos blockPos) {

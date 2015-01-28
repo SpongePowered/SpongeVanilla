@@ -27,7 +27,17 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 @Implement(name = "EntityItem")
 public interface MCEntityItem extends MCInterface, MCEntity {
+    int fieldGet$age();
+
+    void fieldSet$age(int age);
+
+    int fieldGet$delayBeforeCanPickup();
+
+    void fieldSet$delayBeforeCanPickup(int delay);
+
+    String fieldGet$thrower();
+
+    void fieldSet$thrower(String thrower);
 
     ItemStack getEntityItem();
-
 }
