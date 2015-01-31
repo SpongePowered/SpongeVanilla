@@ -41,7 +41,7 @@ import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.GameVersion;
+import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
@@ -51,7 +51,8 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.service.scheduler.Scheduler;
+import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
+import org.spongepowered.api.service.scheduler.SynchronousScheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.World;
@@ -59,7 +60,12 @@ import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
@@ -101,8 +107,13 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public Scheduler getScheduler() {
-        return Granite.instance.getScheduler();
+    public SynchronousScheduler getSyncScheduler() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public AsynchronousScheduler getAsyncScheduler() {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -121,7 +132,7 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public GameVersion getVersion() {
+    public MinecraftVersion getMinecraftVersion() {
         return Granite.instance.getMinecraftVersion();
     }
 

@@ -21,35 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.meta;
+package org.granitepowered.granite.impl.meta;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.spongepowered.api.entity.living.meta.DyeColor;
-import org.spongepowered.api.service.persistence.DataSource;
-import org.spongepowered.api.service.persistence.data.DataContainer;
+import org.spongepowered.api.entity.living.meta.OcelotType;
 
-public class GraniteDyeColor implements DyeColor {
+public class GraniteOcelotType extends GraniteMeta implements OcelotType {
 
-    String name;
-
-    public GraniteDyeColor(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public DataContainer toContainer() {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void serialize(DataSource source) {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
+    public GraniteOcelotType(int type, String name) {
+        super(type, name);
     }
 }

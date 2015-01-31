@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "DataWatcher$WatchableObject")
 public interface MCDataWatcherWatchableObject {
+
     Object fieldGet$watchedObject();
 
     // No fieldSet here because it should go through DataWatcher.updateObject

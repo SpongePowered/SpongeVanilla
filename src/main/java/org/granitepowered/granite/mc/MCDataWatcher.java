@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "DataWatcher")
 public interface MCDataWatcher {
+
     MCDataWatcherWatchableObject getWatchedObject(int id);
 
     void updateObject(int id, Object object);

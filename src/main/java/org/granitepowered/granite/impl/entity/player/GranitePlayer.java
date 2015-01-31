@@ -23,6 +23,10 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
+import static org.granitepowered.granite.util.MinecraftUtils.graniteToMinecraftChatComponent;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -38,7 +42,14 @@ import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCFoodStats;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPacketTitleType;
+import org.granitepowered.granite.mc.MCPlayerCapabilities;
+import org.granitepowered.granite.mc.MCRegistryNamespaced;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.GameProfile;
@@ -70,12 +81,16 @@ import org.spongepowered.api.text.title.Titles;
 import org.spongepowered.api.util.Tristate;
 import org.spongepowered.api.util.command.CommandSource;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
 
-import static org.granitepowered.granite.util.MinecraftUtils.*;
+import javax.annotation.Nullable;
 
 public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implements Player {
 
@@ -319,16 +334,21 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
 
             if (type.getId() == ((GraniteParticleType) ParticleTypes.ITEM_CRACK).getId()) {
                 try {
-                    id = ((MCRegistryNamespaced) Mappings.getField("Item", "itemRegistry").get(null)).getIDForObject(((GraniteItemType) itemType).obj);
+                    id =
+                            ((MCRegistryNamespaced) Mappings.getField("Item", "itemRegistry").get(null))
+                                    .getIDForObject(((GraniteItemType) itemType).obj);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
                 data = item.getDamage();
-            } else if (type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId() || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
+            } else if (type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId()
+                       || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
                 // Only block types are allowed
                 if (itemType instanceof ItemBlock) {
                     try {
-                        id = ((MCRegistryNamespaced) Mappings.getField("Block", "blockRegistry").get(null)).getIDForObject(((GraniteItemBlock) itemType).obj.fieldGet$block());
+                        id =
+                                ((MCRegistryNamespaced) Mappings.getField("Block", "blockRegistry").get(null))
+                                        .getIDForObject(((GraniteItemBlock) itemType).obj.fieldGet$block());
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -476,33 +496,33 @@ public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implement
     }
 
     @Override
-    public int getExperience() {
-        return 0;
+    public double getExperience() {
+        throw new NotImplementedException("");
     }
 
     @Override
     public int getLevel() {
-        return 0;
+        throw new NotImplementedException("");
     }
 
     @Override
-    public int getTotalExperinece() {
-        return 0;
+    public double getTotalExperinece() {
+        throw new NotImplementedException("");
     }
 
     @Override
-    public void setExperience(int experience) {
-
+    public void setExperience(double experience) {
+        throw new NotImplementedException("");
     }
 
     @Override
     public void setLevel(int level) {
-
+        throw new NotImplementedException("");
     }
 
     @Override
-    public void setTotalExperience(int totalExperience) {
-
+    public void setTotalExperience(double totalExperience) {
+        throw new NotImplementedException("");
     }
 
     @Override

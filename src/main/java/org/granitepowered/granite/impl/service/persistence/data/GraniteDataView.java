@@ -29,9 +29,14 @@ import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.service.persistence.data.DataQuery;
 import org.spongepowered.api.service.persistence.data.DataView;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GraniteDataView implements DataView {
+
     private final Optional<DataView> parent;
     private final Map<DataQuery, Object> data;
     private final DataQuery currentPath;
@@ -64,7 +69,9 @@ public class GraniteDataView implements DataView {
 
     @Override
     public Set<DataQuery> getKeys(boolean deep) {
-        if (!deep) return data.keySet();
+        if (!deep) {
+            return data.keySet();
+        }
 
         Set<DataQuery> keys = new HashSet<>(data.keySet());
 
@@ -83,7 +90,9 @@ public class GraniteDataView implements DataView {
 
     @Override
     public Map<DataQuery, Object> getValues(boolean deep) {
-        if (!deep) return data;
+        if (!deep) {
+            return data;
+        }
 
         Map<DataQuery, Object> retData = new HashMap<>(data);
 

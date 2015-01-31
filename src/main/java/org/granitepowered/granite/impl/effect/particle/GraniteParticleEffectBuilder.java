@@ -33,6 +33,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import java.awt.*;
 
 public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
+
     protected GraniteParticleType type;
     protected Vector3f motion;
     protected Vector3f offset;
@@ -69,6 +70,7 @@ public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
     }
 
     public static class GraniteColorable extends GraniteParticleEffectBuilder implements Colorable {
+
         private Color color;
 
         public GraniteColorable(GraniteParticleType.GraniteColorable type) {
@@ -104,6 +106,7 @@ public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
     }
 
     public static class GraniteResizable extends GraniteParticleEffectBuilder implements Resizable {
+
         private float size;
 
         public GraniteResizable(GraniteParticleType.GraniteResizable type) {
@@ -139,6 +142,7 @@ public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
     }
 
     public static class GraniteNote extends GraniteParticleEffectBuilder implements Note {
+
         private float note;
 
         public GraniteNote(GraniteParticleType.GraniteNote type) {
@@ -174,6 +178,7 @@ public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
     }
 
     public static class GraniteMaterial extends GraniteParticleEffectBuilder implements Material {
+
         private ItemStack item;
 
         public GraniteMaterial(GraniteParticleType.GraniteMaterial type) {

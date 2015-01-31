@@ -21,28 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.villager;
+package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.villager.Career;
-import org.spongepowered.api.entity.living.villager.Profession;
+import org.spongepowered.api.entity.living.meta.HorseColor;
 
-public class GraniteCareer implements Career {
+public class GraniteHorseColor extends GraniteMeta implements HorseColor {
 
-    Profession profession;
-    String name;
-
-    public GraniteCareer(Profession profession, String name) {
-        this.profession = profession;
-        this.name = name;
-    }
-
-    @Override
-    public Profession getProfession() {
-        return this.profession;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
+    public GraniteHorseColor(int color, String name) {
+        super(color, name);
     }
 }

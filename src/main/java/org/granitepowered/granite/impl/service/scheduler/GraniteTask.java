@@ -24,6 +24,7 @@
 package org.granitepowered.granite.impl.service.scheduler;
 
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.scheduler.Task;
 
@@ -97,8 +98,18 @@ public class GraniteTask implements Task {
     }
 
     @Override
-    public Runnable getRunnable() {
-        return runnable;
+    public Optional<Runnable> getRunnable() {
+        return Optional.fromNullable(runnable);
+    }
+
+    @Override
+    public boolean isSynchronous() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public String setName(String s) {
+        throw new NotImplementedException("");
     }
 
     public Runnable getWrapperRunnable() {

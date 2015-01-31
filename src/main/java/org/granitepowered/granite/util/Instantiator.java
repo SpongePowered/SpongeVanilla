@@ -23,7 +23,23 @@
 
 package org.granitepowered.granite.util;
 
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCChatComponent;
+import org.granitepowered.granite.mc.MCEntityArrow;
+import org.granitepowered.granite.mc.MCEntityEgg;
+import org.granitepowered.granite.mc.MCEntityLargeFireball;
+import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.granitepowered.granite.mc.MCEntitySmallFireball;
+import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.MCGameRules;
+import org.granitepowered.granite.mc.MCPacketBlockChange;
+import org.granitepowered.granite.mc.MCPacketChat;
+import org.granitepowered.granite.mc.MCPacketParticles;
+import org.granitepowered.granite.mc.MCPacketTitle;
+import org.granitepowered.granite.mc.MCPacketTitleType;
+import org.granitepowered.granite.mc.MCPotionEffect;
+import org.granitepowered.granite.mc.MCRotations;
+import org.granitepowered.granite.mc.MCWorld;
 
 import java.util.UUID;
 
@@ -51,7 +67,8 @@ public class Instantiator {
 
         MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
 
-        MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_, int ...i2);
+        MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_,
+                                             int... i2);
 
         MCRotations newRotations(float x, float y, float z);
 
@@ -59,9 +76,11 @@ public class Instantiator {
 
         MCEntityEgg newEntityEgg(MCWorld world, MCEntityLivingBase shooter);
 
-        MCEntitySmallFireball newEntitySmallFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2, double something3);
+        MCEntitySmallFireball newEntitySmallFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2,
+                                                     double something3);
 
-        MCEntityLargeFireball newEntityLargeFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2, double something3);
+        MCEntityLargeFireball newEntityLargeFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2,
+                                                     double something3);
 
         MCGameProfile newGameProfile(UUID uuid, String name);
     }

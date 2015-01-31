@@ -331,15 +331,19 @@ public class BytecodeClass {
                             CtClass instantiatorParameterType = parameterTypes[i];
 
                             if (instantiatorParameterType.subtypeOf(ClassPool.getDefault().get(MCInterface.class.getName()))) {
-                                instantiatorParameterType = Mappings.getCtClass(((Implement) instantiatorParameterType.getAnnotation(Implement.class)).name());
+                                instantiatorParameterType =
+                                        Mappings.getCtClass(((Implement) instantiatorParameterType.getAnnotation(Implement.class)).name());
                             }
 
                             // This may be somewhat broken and/or confusing
-                            if (!(Type.get(constructorParameterType).isAssignableFrom(Type.get(instantiatorParameterType)) || Type.get(instantiatorParameterType).isAssignableFrom(Type.get(constructorParameterType)))) {
+                            if (!(Type.get(constructorParameterType).isAssignableFrom(Type.get(instantiatorParameterType)) || Type
+                                    .get(instantiatorParameterType).isAssignableFrom(Type.get(constructorParameterType)))) {
                                 works = false;
                             }
                         }
-                        if (!works) continue;
+                        if (!works) {
+                            continue;
+                        }
                         constructor = loopConstructor;
                         break;
                     }
@@ -467,7 +471,6 @@ public class BytecodeClass {
                 val = Defaults.defaultValue(getFromCt(type)).toString();
             }
 
-
             other.setBody("return " + method.getName() + "($$, (" + type.getName() + ") " + val + ");");
 
             method.getDeclaringClass().addMethod(other);
@@ -495,7 +498,9 @@ public class BytecodeClass {
 
                                     // Fuck boxed types
                                     if (parameterType.isPrimitive()) {
-                                        code += "((" + ClassUtils.primitiveToWrapper(getFromCt(parameterType)).getName() + ") " + replaceWith + ")." + getFromCt(parameterType).getName() + "Value()";
+                                        code +=
+                                                "((" + ClassUtils.primitiveToWrapper(getFromCt(parameterType)).getName() + ") " + replaceWith + ")."
+                                                + getFromCt(parameterType).getName() + "Value()";
                                     } else {
                                         code += "(" + parameterType.getName() + ") " + replaceWith;
                                     }

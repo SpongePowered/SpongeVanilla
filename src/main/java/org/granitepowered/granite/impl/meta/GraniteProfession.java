@@ -21,35 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.meta;
+package org.granitepowered.granite.impl.meta;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.spongepowered.api.entity.living.meta.HorseVariant;
-import org.spongepowered.api.service.persistence.DataSource;
-import org.spongepowered.api.service.persistence.data.DataContainer;
+import org.spongepowered.api.entity.living.villager.Profession;
 
-public class GraniteHorseVariant implements HorseVariant {
+public class GraniteProfession extends GraniteMeta implements Profession {
 
-    String name;
-
-    public GraniteHorseVariant(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public DataContainer toContainer() {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void serialize(DataSource source) {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
+    public GraniteProfession(int id, String name) {
+        super(id, name);
     }
 }

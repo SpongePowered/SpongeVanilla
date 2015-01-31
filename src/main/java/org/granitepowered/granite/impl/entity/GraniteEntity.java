@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.entity;
 import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import com.flowpowered.math.vector.Vector2f;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -79,7 +78,8 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean setLocation(Location location) {
-        if (obj.fieldGet$worldObj().fieldGet$provider().fieldGet$dimensionId() != ((GraniteWorld) location.getExtent()).getDimension().getDimensionId()) {
+        if (obj.fieldGet$worldObj().fieldGet$provider().fieldGet$dimensionId() != ((GraniteWorld) location.getExtent()).getDimension()
+                .getDimensionId()) {
             obj.travelToDimension(((GraniteWorld) location.getExtent()).getDimension().getDimensionId());
         }
         obj.setPositionAndUpdate(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());

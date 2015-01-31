@@ -29,6 +29,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import java.awt.*;
 
 public class GraniteParticleType implements ParticleType {
+
     private int id;
     private String name;
     private boolean hasMotion;
@@ -57,6 +58,7 @@ public class GraniteParticleType implements ParticleType {
     }
 
     public static class GraniteColorable extends GraniteParticleType implements ParticleType.Colorable {
+
         private Color color;
 
         public GraniteColorable(String name, Color color) {
@@ -71,9 +73,10 @@ public class GraniteParticleType implements ParticleType {
     }
 
     public static class GraniteResizable extends GraniteParticleType implements ParticleType.Resizable {
+
         private float size;
 
-        public GraniteResizable(String name,float size) {
+        public GraniteResizable(String name, float size) {
             super(name, false);
             this.size = size;
         }
@@ -86,6 +89,7 @@ public class GraniteParticleType implements ParticleType {
     }
 
     public static class GraniteNote extends GraniteParticleType implements ParticleType.Note {
+
         private float note;
 
         public GraniteNote(String name, float note) {
@@ -101,6 +105,7 @@ public class GraniteParticleType implements ParticleType {
     }
 
     public static class GraniteMaterial extends GraniteParticleType implements ParticleType.Material {
+
         private ItemStack material;
 
         public GraniteMaterial(String name, boolean hasMotion, ItemStack material) {

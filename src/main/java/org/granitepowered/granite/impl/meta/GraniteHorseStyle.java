@@ -21,35 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.meta;
+package org.granitepowered.granite.impl.meta;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.entity.living.meta.HorseStyle;
-import org.spongepowered.api.service.persistence.DataSource;
-import org.spongepowered.api.service.persistence.data.DataContainer;
 
-public class GraniteHorseStyle implements HorseStyle {
+public class GraniteHorseStyle extends GraniteMeta implements HorseStyle {
 
-    String name;
-
-    public GraniteHorseStyle(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public DataContainer toContainer() {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void serialize(DataSource source) {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
+    public GraniteHorseStyle(int style, String name) {
+        super(style, name);
     }
 }

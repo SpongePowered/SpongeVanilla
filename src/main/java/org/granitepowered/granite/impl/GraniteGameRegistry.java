@@ -36,17 +36,17 @@ import org.granitepowered.granite.Main;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuilder;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteDyeColor;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseColor;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseStyle;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteHorseVariant;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteOcelotType;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteRabbitType;
-import org.granitepowered.granite.impl.entity.living.meta.GraniteSkeletonType;
-import org.granitepowered.granite.impl.entity.living.villager.GraniteCareer;
-import org.granitepowered.granite.impl.entity.living.villager.GraniteProfession;
+import org.granitepowered.granite.impl.meta.GraniteCareer;
+import org.granitepowered.granite.impl.meta.GraniteProfession;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
+import org.granitepowered.granite.impl.meta.GraniteDyeColor;
+import org.granitepowered.granite.impl.meta.GraniteHorseColor;
+import org.granitepowered.granite.impl.meta.GraniteHorseStyle;
+import org.granitepowered.granite.impl.meta.GraniteHorseVariant;
+import org.granitepowered.granite.impl.meta.GraniteOcelotType;
+import org.granitepowered.granite.impl.meta.GraniteRabbitType;
+import org.granitepowered.granite.impl.meta.GraniteSkeletonType;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.status.GraniteFavicon;
@@ -190,7 +190,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     try {
                         Art art = new GraniteArt(mcEnumArt);
                         field.set(null, art);
-                        arts.put("minecraft:" + name, art);
+                        arts.put(name, art);
                         if (Main.debugLog) {
                             Granite.getInstance().getLogger().info("Registered Art minecraft:" + art.getName());
                         }
@@ -235,7 +235,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     if (biomeName.equals(name)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
                         field.set(null, biomeType);
-                        biomes.put("minecraft:" + name, biomeType);
+                        biomes.put(name, biomeType);
                         if (Main.debugLog) {
                             Granite.getInstance().getLogger().info("Registered Biome minecarft:" + name);
                         }
@@ -297,7 +297,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 }
                 if (Main.debugLog && registered) {
                     field.set(null, dimensionType);
-                    dimensions.put("minecraft:" + name, dimensionType);
+                    dimensions.put(name, dimensionType);
                     Granite.getInstance().getLogger().info("Registered Dimension minecraft:" + name);
                 }
             } catch (IllegalAccessException | InstantiationException e) {
@@ -309,14 +309,16 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerDyes() {
         Granite.instance.getLogger().info("Registering Dyes");
 
+        int i = 0;
         for (Field field : DyeColors.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                DyeColor dyeColor = new GraniteDyeColor(name);
+                DyeColor dyeColor = new GraniteDyeColor(i, name);
+                i++;
                 field.set(null, dyeColor);
-                dyeColors.put("minecraft:" + name, dyeColor);
+                dyeColors.put(name, dyeColor);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Dye Color minecraft:" + dyeColor.getName());
                 }
@@ -338,7 +340,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 Enchantment enchantment = new GraniteEnchantment(mcEnchantment);
                 field.set(null, enchantment);
-                enchantments.put("minecraft:" + name, enchantment);
+                enchantments.put(name, enchantment);
 
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Enchantment " + enchantment.getId());
@@ -355,7 +357,7 @@ public class GraniteGameRegistry implements GameRegistry {
         MCGameRules gameRules = Instantiator.get().newGameRules();
         String[] rules = gameRules.getRules();
         for (String rule : rules) {
-            defaultGameRules.add("minecraft:" + rule);
+            defaultGameRules.add(rule);
             if (Main.debugLog) {
                 Granite.getInstance().getLogger().info("Registered default GameRule minecraft:" + rule);
             }
@@ -365,14 +367,16 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerHorseColors() {
         Granite.instance.getLogger().info("Registering Horse Colors");
 
+        int i = 0;
         for (Field field : HorseColors.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                HorseColor horseColor = new GraniteHorseColor(name);
+                HorseColor horseColor = new GraniteHorseColor(i, name);
+                i++;
                 field.set(null, horseColor);
-                horseColors.put("minecraft:" + name, horseColor);
+                horseColors.put(name, horseColor);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Horse Color minecraft:" + horseColor.getName());
                 }
@@ -385,14 +389,16 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerHorseStyles() {
         Granite.instance.getLogger().info("Registering Horse Styles");
 
+        int i = 0;
         for (Field field : HorseStyles.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                HorseStyle horseStyle = new GraniteHorseStyle(name);
+                HorseStyle horseStyle = new GraniteHorseStyle(i, name);
+                i++;
                 field.set(null, horseStyle);
-                horseStyles.put("minecraft:" + name, horseStyle);
+                horseStyles.put(name, horseStyle);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Horse Style minecraft:" + horseStyle.getName());
                 }
@@ -405,14 +411,16 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerHorseVariants() {
         Granite.instance.getLogger().info("Registering Horse Variants");
 
+        int i = 0;
         for (Field field : HorseVariants.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                HorseVariant horseVariant = new GraniteHorseVariant(name);
+                HorseVariant horseVariant = new GraniteHorseVariant(i, name);
+                i++;
                 field.set(null, horseVariant);
-                horseVariants.put("minecraft:" + name, horseVariant);
+                horseVariants.put(name, horseVariant);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Horse Variant minecraft:" + horseVariant.getName());
                 }
@@ -434,7 +442,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 ItemType item = wrap((MCItem) mcItem);
                 field.set(null, item);
-                itemTypes.put("minecraft:" + name, item);
+                itemTypes.put(name, item);
 
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Item minecraft:" + item.getId());
@@ -448,204 +456,18 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerOcelots() {
         Granite.instance.getLogger().info("Registering Ocelots");
 
+        int i = 0;
         for (Field field : OcelotTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                OcelotType ocelotType = new GraniteOcelotType(name);
+                OcelotType ocelotType = new GraniteOcelotType(i, name);
+                i++;
                 field.set(null, ocelotType);
-                ocelots.put("minecraft:" + name, ocelotType);
+                ocelots.put(name, ocelotType);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Ocelot minecraft:" + ocelotType.getName());
-                }
-            } catch (IllegalAccessException e) {
-                Throwables.propagate(e);
-            }
-        }
-    }
-
-    private void registerPotionEffects() {
-        Granite.instance.getLogger().info("Registering PotionEffects");
-
-        try {
-            Class potionClass = Mappings.getClass("Potion");
-            Field potionTypes = Mappings.getField(potionClass, "potionTypes");
-            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
-            mcPotions.removeAll(Collections.singleton(null));
-
-            for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
-                ReflectionUtils.forceAccessible(field);
-
-                String name = field.getName().toLowerCase();
-                for (MCPotion potion : mcPotions) {
-                    HashMap<Object, MCPotion>
-                            resourceToPotion =
-                            (HashMap) Mappings.getField(potion.getClass(), "resourceToPotion").get(potion.getClass());
-
-                    Object resourceLocation = null;
-                    for (Map.Entry entry : resourceToPotion.entrySet()) {
-                        if (potion.equals(entry.getValue())) {
-                            resourceLocation = entry.getKey();
-                        }
-                    }
-
-                    String potionName = (String) Mappings.getField(resourceLocation.getClass(), "resourcePath").get(resourceLocation);
-                    if (name.equals(potionName)) {
-                        PotionEffectType potionEffectType = new GranitePotionEffectType(potion);
-                        field.set(null, potionEffectType);
-                        potionEffects.put("minecraft:" + name, potionEffectType);
-                        if (Main.debugLog) {
-                            Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
-                        }
-                    }
-
-                }
-            }
-
-        } catch (IllegalAccessException e) {
-            Throwables.propagate(e);
-        }
-
-    }
-
-    private void registerProfessionsAndCareers() {
-        Granite.instance.getLogger().info("Registering Professions");
-
-        for (Field field : Professions.class.getDeclaredFields()) {
-            ReflectionUtils.forceAccessible(field);
-
-            String name = field.getName().toLowerCase();
-            try {
-                Profession profession = new GraniteProfession(name);
-                field.set(null, profession);
-                professions.put("minecraft:" + name, profession);
-                if (Main.debugLog) {
-                    Granite.getInstance().getLogger().info("Registered Profession minecraft:" + profession.getName());
-                }
-            } catch (IllegalAccessException e) {
-                Throwables.propagate(e);
-            }
-        }
-
-        Granite.instance.getLogger().info("Registering Careers");
-
-        List<Career> farmers = new ArrayList<>();
-        List<Career> librarians = new ArrayList<>();
-        List<Career> priests = new ArrayList<>();
-        List<Career> blacksmiths = new ArrayList<>();
-        List<Career> butchers = new ArrayList<>();
-
-        Profession farmerProfession = professions.get("farmer");
-        Profession librarianProfession = professions.get("librarian");
-        Profession priestProfession = professions.get("priest");
-        Profession blacksmithProfession = professions.get("blacksmith");
-        Profession butcherProfession = professions.get("butcher");
-
-        Field[] fields = Careers.class.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            ReflectionUtils.forceAccessible(fields[i]);
-
-            String name = fields[i].getName().toLowerCase();
-            try {
-                boolean registered = false;
-                if (i < 4) {
-                    Career career = new GraniteCareer(farmerProfession, name);
-                    fields[i].set(null, career);
-                    farmers.add(career);
-                    registered = true;
-                } else if (i == 4) {
-                    Career career = new GraniteCareer(librarianProfession, name);
-                    fields[i].set(null, career);
-                    librarians.add(career);
-                    registered = true;
-                } else if (i == 5) {
-                    Career career = new GraniteCareer(priestProfession, name);
-                    fields[i].set(null, career);
-                    priests.add(career);
-                    registered = true;
-                } else if (i > 5 && i <= 7) {
-                    Career career = new GraniteCareer(blacksmithProfession, name);
-                    fields[i].set(null, career);
-                    blacksmiths.add(career);
-                    registered = true;
-                } else if (i >= 8 && i <= 10) {
-                    Career career = new GraniteCareer(butcherProfession, name);
-                    fields[i].set(null, career);
-                    butchers.add(career);
-                    registered = true;
-                }
-                if (Main.debugLog && registered) {
-                    Granite.getInstance().getLogger().info("Registered Career minecraft:" + name);
-                }
-            } catch (IllegalAccessException e) {
-                Throwables.propagate(e);
-            }
-        }
-
-        professionCareers.put(farmerProfession, farmers);
-        professionCareers.put(librarianProfession, librarians);
-        professionCareers.put(priestProfession, priests);
-        professionCareers.put(blacksmithProfession, blacksmiths);
-        professionCareers.put(butcherProfession, butchers);
-    }
-
-    private void registerRabbits() {
-        Granite.instance.getLogger().info("Registering Rabbits");
-
-        for (Field field : RabbitTypes.class.getDeclaredFields()) {
-            ReflectionUtils.forceAccessible(field);
-
-            String name = field.getName().toLowerCase();
-            try {
-                RabbitType rabbitType = new GraniteRabbitType(name);
-                field.set(null, rabbitType);
-                rabbits.put("minecraft:" + name, rabbitType);
-                if (Main.debugLog) {
-                    Granite.getInstance().getLogger().info("Registered Rabbit minecraft:" + rabbitType.getName());
-                }
-            } catch (IllegalAccessException e) {
-                Throwables.propagate(e);
-            }
-        }
-    }
-
-    private void registerRotations() {
-        Granite.instance.getLogger().info("Registering Rotations");
-
-        int angle = 0;
-        Field[] fields = Rotations.class.getDeclaredFields();
-
-        for (Field field : fields) {
-            ReflectionUtils.forceAccessible(field);
-
-            try {
-                Rotation rotation = new GraniteRotation(angle);
-                field.set(null, rotation);
-                rotations.put(angle, rotation);
-                angle += 45;
-                if (Main.debugLog) {
-                    Granite.getInstance().getLogger().info("Registered Rotation degrees:" + rotation.getAngle());
-                }
-            } catch (IllegalAccessException e) {
-                Throwables.propagate(e);
-            }
-        }
-    }
-
-    private void registerSkeletons() {
-        Granite.instance.getLogger().info("Registering Skeletons");
-
-        for (Field field : SkeletonTypes.class.getDeclaredFields()) {
-            ReflectionUtils.forceAccessible(field);
-
-            String name = field.getName().toLowerCase();
-            try {
-                SkeletonType skeletonType = new GraniteSkeletonType(name);
-                field.set(null, skeletonType);
-                skeletons.put("minecraft:" + name, skeletonType);
-                if (Main.debugLog) {
-                    Granite.getInstance().getLogger().info("Registered Skeleton minecraft:" + skeletonType.getName());
                 }
             } catch (IllegalAccessException e) {
                 Throwables.propagate(e);
@@ -704,6 +526,203 @@ public class GraniteGameRegistry implements GameRegistry {
             GraniteParticleType type = types.get(i);
             type.setId(i);
             particles.put(type.getName(), type);
+            if (Main.debugLog) {
+                Granite.getInstance().getLogger().info("Registered Particle minecraft:" + type.getName());
+            }
+        }
+    }
+
+    private void registerPotionEffects() {
+        Granite.instance.getLogger().info("Registering PotionEffects");
+
+        try {
+            Class potionClass = Mappings.getClass("Potion");
+            Field potionTypes = Mappings.getField(potionClass, "potionTypes");
+            ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
+            mcPotions.removeAll(Collections.singleton(null));
+
+            for (Field field : PotionEffectTypes.class.getDeclaredFields()) {
+                ReflectionUtils.forceAccessible(field);
+
+                String name = field.getName().toLowerCase();
+                for (MCPotion potion : mcPotions) {
+                    HashMap<Object, MCPotion>
+                            resourceToPotion =
+                            (HashMap) Mappings.getField(potion.getClass(), "resourceToPotion").get(potion.getClass());
+
+                    Object resourceLocation = null;
+                    for (Map.Entry entry : resourceToPotion.entrySet()) {
+                        if (potion.equals(entry.getValue())) {
+                            resourceLocation = entry.getKey();
+                        }
+                    }
+
+                    String potionName = (String) Mappings.getField(resourceLocation.getClass(), "resourcePath").get(resourceLocation);
+                    if (name.equals(potionName)) {
+                        PotionEffectType potionEffectType = new GranitePotionEffectType(potion);
+                        field.set(null, potionEffectType);
+                        potionEffects.put(name, potionEffectType);
+                        if (Main.debugLog) {
+                            Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
+                        }
+                    }
+
+                }
+            }
+
+        } catch (IllegalAccessException e) {
+            Throwables.propagate(e);
+        }
+
+    }
+
+    private void registerProfessionsAndCareers() {
+        Granite.instance.getLogger().info("Registering Professions");
+
+        int i = 0;
+        for (Field field : Professions.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                Profession profession = new GraniteProfession(i, name);
+                i++;
+                field.set(null, profession);
+                professions.put(name, profession);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Profession minecraft:" + profession.getName());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+        }
+
+        Granite.instance.getLogger().info("Registering Careers");
+
+        List<Career> farmers = new ArrayList<>();
+        List<Career> librarians = new ArrayList<>();
+        List<Career> priests = new ArrayList<>();
+        List<Career> blacksmiths = new ArrayList<>();
+        List<Career> butchers = new ArrayList<>();
+
+        Profession farmerProfession = professions.get("farmer");
+        Profession librarianProfession = professions.get("librarian");
+        Profession priestProfession = professions.get("priest");
+        Profession blacksmithProfession = professions.get("blacksmith");
+        Profession butcherProfession = professions.get("butcher");
+
+        Field[] fields = Careers.class.getDeclaredFields();
+        for (i = 0; i < fields.length; i++) {
+            ReflectionUtils.forceAccessible(fields[i]);
+
+            String name = fields[i].getName().toLowerCase();
+            try {
+                boolean registered = false;
+                if (i < 4) {
+                    Career career = new GraniteCareer(i, name, farmerProfession);
+                    fields[i].set(null, career);
+                    farmers.add(career);
+                    registered = true;
+                } else if (i == 4) {
+                    Career career = new GraniteCareer(i, name, librarianProfession);
+                    fields[i].set(null, career);
+                    librarians.add(career);
+                    registered = true;
+                } else if (i == 5) {
+                    Career career = new GraniteCareer(i, name, priestProfession);
+                    fields[i].set(null, career);
+                    priests.add(career);
+                    registered = true;
+                } else if (i > 5 && i <= 7) {
+                    Career career = new GraniteCareer(i, name, blacksmithProfession);
+                    fields[i].set(null, career);
+                    blacksmiths.add(career);
+                    registered = true;
+                } else if (i >= 8 && i <= 10) {
+                    Career career = new GraniteCareer(i, name, butcherProfession);
+                    fields[i].set(null, career);
+                    butchers.add(career);
+                    registered = true;
+                }
+                if (Main.debugLog && registered) {
+                    Granite.getInstance().getLogger().info("Registered Career minecraft:" + name);
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+        }
+
+        professionCareers.put(farmerProfession, farmers);
+        professionCareers.put(librarianProfession, librarians);
+        professionCareers.put(priestProfession, priests);
+        professionCareers.put(blacksmithProfession, blacksmiths);
+        professionCareers.put(butcherProfession, butchers);
+    }
+
+    private void registerRabbits() {
+        Granite.instance.getLogger().info("Registering Rabbits");
+
+        int i = 0;
+        for (Field field : RabbitTypes.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                RabbitType rabbitType = new GraniteRabbitType(i, name);
+                i++;
+                field.set(null, rabbitType);
+                rabbits.put(name, rabbitType);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Rabbit minecraft:" + rabbitType.getName());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+        }
+    }
+
+    private void registerRotations() {
+        Granite.instance.getLogger().info("Registering Rotations");
+
+        int angle = 0;
+        Field[] fields = Rotations.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            ReflectionUtils.forceAccessible(field);
+
+            try {
+                Rotation rotation = new GraniteRotation(angle);
+                field.set(null, rotation);
+                rotations.put(angle, rotation);
+                angle += 45;
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Rotation degrees:" + rotation.getAngle());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+        }
+    }
+
+    private void registerSkeletons() {
+        Granite.instance.getLogger().info("Registering Skeletons");
+
+        int i = 0;
+        for (Field field : SkeletonTypes.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                SkeletonType skeletonType = new GraniteSkeletonType(i, name);
+                i++;
+                field.set(null, skeletonType);
+                skeletons.put(name, skeletonType);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Skeleton minecraft:" + skeletonType.getName());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
         }
     }
 

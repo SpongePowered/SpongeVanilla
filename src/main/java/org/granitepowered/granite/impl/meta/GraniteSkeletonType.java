@@ -21,20 +21,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.villager;
+package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.villager.Profession;
+import org.spongepowered.api.entity.living.meta.SkeletonType;
 
-public class GraniteProfession implements Profession {
+public class GraniteSkeletonType extends GraniteMeta implements SkeletonType {
 
-    String name;
-
-    public GraniteProfession(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
+    public GraniteSkeletonType(int type, String name) {
+        super(type, name);
     }
 }

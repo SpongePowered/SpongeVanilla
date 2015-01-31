@@ -21,35 +21,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living.meta;
+package org.granitepowered.granite.impl.meta;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.spongepowered.api.entity.living.meta.RabbitType;
-import org.spongepowered.api.service.persistence.DataSource;
-import org.spongepowered.api.service.persistence.data.DataContainer;
+import org.spongepowered.api.entity.living.villager.Career;
+import org.spongepowered.api.entity.living.villager.Profession;
 
-public class GraniteRabbitType implements RabbitType {
+public class GraniteCareer extends GraniteMeta implements Career {
 
-    String name;
+    private final Profession profession;
 
-    public GraniteRabbitType(String name) {
-        this.name = name;
+    public GraniteCareer(int id, String name, Profession profession) {
+        super(id, name);
+        this.profession = profession;
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public DataContainer toContainer() {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void serialize(DataSource source) {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
+    public Profession getProfession() {
+        return this.profession;
     }
 }

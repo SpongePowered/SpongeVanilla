@@ -1,27 +1,34 @@
 package org.granitepowered.granite.impl;
 
-import org.spongepowered.api.GameVersion;
+import org.apache.commons.lang3.NotImplementedException;
+import org.spongepowered.api.MinecraftVersion;
 
-public class GraniteGameVersion implements GameVersion {
+public class GraniteGameVersion implements MinecraftVersion {
 
-    String version;
+    private final String version;
+    private final int protocol;
 
-    public GraniteGameVersion(String version) {
+    public GraniteGameVersion(String version, int protocol) {
         this.version = version;
+        this.protocol = protocol;
     }
 
     @Override
     public String getName() {
-        return version;
+        return this.version;
+    }
+
+    public int getProtocol() {
+        return this.protocol;
     }
 
     @Override
     public boolean isLegacy() {
-        return false;
+        return this.protocol < 47;
     }
 
     @Override
-    public int compareTo(GameVersion o) {
-        return 0;
+    public int compareTo(MinecraftVersion minecraftVersion) {
+        throw new NotImplementedException("");
     }
 }

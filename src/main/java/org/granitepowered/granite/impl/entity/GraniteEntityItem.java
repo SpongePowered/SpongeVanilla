@@ -24,7 +24,6 @@
 package org.granitepowered.granite.impl.entity;
 
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.mc.MCEntityItem;

@@ -25,12 +25,6 @@ package org.granitepowered.granite.bytecode.classes;
 
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import com.google.common.base.Throwables;
-import javassist.CannotCompileException;
-import javassist.CtMethod;
-import javassist.NotFoundException;
-import javassist.expr.ExprEditor;
-import javassist.expr.MethodCall;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
@@ -53,7 +47,8 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
 
         addArgumentsVariable("initializeConnectionToPlayer");
 
-        replaceMethodCallParameter("initializeConnectionToPlayer", Mappings.getCtMethod("ServerConfigurationManager", "sendChatMsg"), 0, "$mArgs[" + param + "]");
+        replaceMethodCallParameter("initializeConnectionToPlayer", Mappings.getCtMethod("ServerConfigurationManager", "sendChatMsg"), 0,
+                                   "$mArgs[" + param + "]");
 
         proxy("initializeConnectionToPlayer", new BytecodeClass.ProxyHandler() {
             @Override

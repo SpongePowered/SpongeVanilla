@@ -40,7 +40,7 @@ import org.granitepowered.granite.util.json.ItemStackJson;
 import org.granitepowered.granite.util.json.MessageJson;
 import org.granitepowered.granite.util.json.TextActionJson;
 import org.slf4j.Logger;
-import org.spongepowered.api.GameVersion;
+import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
@@ -65,7 +65,7 @@ public class Granite {
     GraniteServer server;
     String version;
     String apiVersion;
-    GameVersion minecraftVersion;
+    MinecraftVersion minecraftVersion;
     ServerConfig serverConfig;
     ClassPool classPool;
     Logger logger;
@@ -107,7 +107,7 @@ public class Granite {
         return apiVersion;
     }
 
-    public GameVersion getMinecraftVersion() {
+    public MinecraftVersion getMinecraftVersion() {
         return minecraftVersion;
     }
 

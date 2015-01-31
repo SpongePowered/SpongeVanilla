@@ -23,14 +23,13 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import javassist.CtClass;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
-import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCInterface;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class EntityEggClass extends BytecodeClass {
 

@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityThrowable")
 public interface MCEntityThrowable extends MCEntity {
+
     MCEntityLivingBase getThrower();
 
     void fieldSet$thrower(MCEntityLivingBase thrower);

@@ -27,6 +27,7 @@ import org.granitepowered.granite.mc.MCEntitySmallFireball;
 import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
 
 public class GraniteSmallFireball extends GraniteFireball<MCEntitySmallFireball> implements SmallFireball {
+
     public GraniteSmallFireball(MCEntitySmallFireball obj) {
         super(obj);
     }

@@ -32,7 +32,18 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityClass;
+import org.granitepowered.granite.bytecode.classes.EntityEggClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
+import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
 import org.granitepowered.granite.impl.GraniteGameVersion;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
@@ -342,7 +353,7 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.getLogger().warn("Could not find Minecraft .jar, downloading");
             HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/1.8.1/minecraft_server.1.8.1.jar");
             if (req.code() == 404) {
-                throw new RuntimeException("Minecraft 404 error whilst trying to download");
+                throw new RuntimeException("404 error whilst trying to download Minecraft");
             } else if (req.code() == 200) {
                 req.receive(minecraftJar);
                 Granite.instance.getLogger().info("Minecraft Downloaded");
@@ -350,9 +361,10 @@ public class GraniteStartupThread extends Thread {
         }
 
         String minecraftVersion = minecraftJar.getName().replace("minecraft_server.", "Minecraft ").replace(".jar", "");
-        Granite.instance.minecraftVersion = new GraniteGameVersion(minecraftVersion);
+        int protocol = 47;
+        Granite.instance.minecraftVersion = new GraniteGameVersion(minecraftVersion, protocol);
 
-        Granite.instance.getLogger().info("Loading " + minecraftVersion);
+        Granite.instance.getLogger().info("Loading " + minecraftVersion + " with protocol " + protocol);
 
         try {
             Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());

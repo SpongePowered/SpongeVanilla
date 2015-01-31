@@ -28,6 +28,7 @@ import org.spongepowered.api.event.entity.living.player.PlayerMoveEvent;
 import org.spongepowered.api.world.Location;
 
 public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
+
     Location old;
     Location new_;
 

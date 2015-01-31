@@ -25,4 +25,5 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityEgg")
 public interface MCEntityEgg extends MCEntityThrowable {
+
 }

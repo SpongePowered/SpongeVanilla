@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityArrow")
 public interface MCEntityArrow extends MCEntity {
+
     MCEntity fieldGet$shootingEntity();
 
     void fieldSet$shootingEntity(MCEntity entity);
