@@ -102,7 +102,7 @@ public class GraniteStartupThread extends Thread {
     String apiVersion;
     String buildNumber = "UNKNOWN";
 
-    public GraniteStartupThread(String args[]) {
+    public GraniteStartupThread(String[] args) {
         this.args = args;
         this.setName("Granite Startup");
     }
@@ -115,11 +115,8 @@ public class GraniteStartupThread extends Thread {
                 try {
                     versionProp.load(versionIn);
 
-                    String server = versionProp.getProperty("server", "UNKNOWN");
-                    serverVersion = server;
-
-                    String api = versionProp.getProperty("api", "UNKNOWN");
-                    apiVersion = api;
+                    serverVersion = versionProp.getProperty("server", "UNKNOWN");
+                    apiVersion = versionProp.getProperty("api", "UNKNOWN");
 
                     String build = versionProp.getProperty("build");
                     if (build != null && !build.equals("NA")) {
@@ -175,7 +172,7 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
             Granite.instance.getLogger()
-                    .info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion + "...");
+                    .info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion);
 
             Date date = new Date();
             String day = new SimpleDateFormat("dd").format(date);
@@ -183,9 +180,6 @@ public class GraniteStartupThread extends Thread {
             String year = new SimpleDateFormat("yyyy").format(date);
             if (Objects.equals(day + month, "0101")) {
                 Granite.instance.getLogger().info("HAPPY NEW YEAR!");
-            }
-            if (Objects.equals(day + month, "2704")) {
-                Granite.instance.getLogger().info("Happy Birthday matthijs2704!");
             }
             if (Objects.equals(day + month, "2208")) {
                 Granite.instance.getLogger().info("Happy Birthday Voltasalt!");

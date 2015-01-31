@@ -1,4 +1,4 @@
-# Contribution guidlines
+# Contribution guidelines
 
 ## The basics
 1. Find a task to work on.
@@ -6,7 +6,7 @@
 3. Create a new branch in your fork. Name it something relevant to the task.
 4. Make your changes, and test them to be sure everything works as expected.
 5. Commit your changes with a descriptive message.
-6. Create a pull request on GitHub, cleary describing what your code does.
+6. Create a pull request on GitHub, clearly describing what your code does.
 
 Please squash your pull request to a single commit, unless the changes need to be separated for clarity.
 
@@ -17,6 +17,7 @@ Please squash your pull request to a single commit, unless the changes need to b
 * No CRLF line endings. Set git's "core.autocrlf" to true.
 * No line length limit or midstatement new-lines.
 * There needs to a be a new lines at the end of every file.
+* Only use the Sponge code format to keep everything consistent.
 
 ## How to Git
 Once you've forked our repository on GitHub, you can clone your fork to your own machine to make changes:

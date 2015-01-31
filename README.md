@@ -25,15 +25,11 @@ but you can also compile it yourself assuming you have Git and Maven installed:
 
 3. Build the entire project:
 
-   `mvn install`
+   `mvn clean install -U`
 
 4. Run the test script:
 
    `./test.sh`
-
-To-do list
------
-See TODO.md
 
 Want to Help?
 ------
