@@ -41,6 +41,7 @@ import javassist.bytecode.Opcode;
 import javassist.bytecode.analysis.Type;
 import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
+import javassist.expr.NewExpr;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.granitepowered.granite.Granite;
@@ -54,13 +55,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BytecodeClass {
 
@@ -519,6 +514,49 @@ public class BytecodeClass {
             });
         } catch (CannotCompileException e) {
             Throwables.propagate(e);
+        }
+    }
+
+    public void insert(String methodName, String codeToAdd, CodeInsertionMode insertionMode, CodePosition position) {
+        final CtMethod method = Mappings.getCtMethod(clazz, methodName);
+
+        if (position instanceof CodePosition.NewPosition) {
+            String code = "";
+
+            final CtClass clazz = ((CodePosition.NewPosition) position).getClazz();
+            switch (insertionMode) {
+                case BEFORE:
+                    code += "{";
+                    code += codeToAdd;
+                    code += "$_ = $proceed($$);";
+                    code += "}";
+                    break;
+                case REPLACE:
+                    code += "{";
+                    code += codeToAdd;
+                    code += "}";
+                    break;
+                case AFTER:
+                    code += "{";
+                    code += "$_ = $proceed($$);";
+                    code += codeToAdd;
+                    code += "}";
+                    break;
+            }
+
+            try {
+                final String finalCode = code;
+                method.instrument(new ExprEditor() {
+                    @Override
+                    public void edit(NewExpr e) throws CannotCompileException {
+                        if (Objects.equals(e.getClassName(), clazz.getName())) {
+                            e.replace(finalCode);
+                        }
+                    }
+                });
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
         }
     }
 

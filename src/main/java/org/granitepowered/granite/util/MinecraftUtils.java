@@ -49,6 +49,7 @@ import org.granitepowered.granite.impl.entity.projectile.GraniteArrow;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteLargeFireball;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteSmallFireball;
+import org.granitepowered.granite.impl.entity.weather.GraniteEntityLightningBolt;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
@@ -89,6 +90,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityFallingBlock"), GraniteFallingBlock.class)
             .put(Mappings.getClass("EntityItem"), GraniteEntityItem.class)
             .put(Mappings.getClass("EntityLargeFireball"), GraniteLargeFireball.class)
+            .put(Mappings.getClass("EntityLightningBolt"), GraniteEntityLightningBolt.class)
             .put(Mappings.getClass("EntityLivingBase"), GraniteLivingBase.class)
             .put(Mappings.getClass("EntityLiving"), GraniteLiving.class)
             .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
