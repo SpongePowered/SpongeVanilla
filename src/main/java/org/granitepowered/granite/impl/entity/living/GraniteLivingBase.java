@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
 
-    int maxAir = 300;
+    private int maxAir = 300;
 
     public GraniteLivingBase(T obj) {
         super(obj);
