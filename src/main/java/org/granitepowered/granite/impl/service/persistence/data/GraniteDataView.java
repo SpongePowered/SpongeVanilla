@@ -29,27 +29,31 @@ import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.service.persistence.data.DataQuery;
 import org.spongepowered.api.service.persistence.data.DataView;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GraniteDataView implements DataView {
+    private Map<String, Object> children;
+    private DataQuery currentPath;
+    protected DataContainer container;
+    private Optional<DataView> parent;
 
-    private final Optional<DataView> parent;
-    private final Map<DataQuery, Object> data;
-    private final DataQuery currentPath;
-
-    public GraniteDataView(Optional<DataView> parent, DataQuery currentPath) {
-        data = new HashMap<>();
-        this.parent = parent;
+    public GraniteDataView(Map<String, Object> data, DataQuery currentPath, DataContainer container) {
         this.currentPath = currentPath;
+        this.container = container;
+
+        children = data;
+
+        if (currentPath.getParts().size() > 1) {
+            // Using getContainer() here so DataContainer can override
+            parent = Optional.fromNullable((DataView) getContainer().get(currentPath).orNull());
+        } else {
+            parent = Optional.absent();
+        }
     }
 
     @Override
     public DataContainer getContainer() {
-        return null;
+        return container;
     }
 
     @Override
@@ -68,20 +72,17 @@ public class GraniteDataView implements DataView {
     }
 
     @Override
-    public Set<DataQuery> getKeys(boolean deep) {
-        if (!deep) {
-            return data.keySet();
-        }
+    public Set<DataQuery> getKeys(boolean b) {
+        Set<DataQuery> keys = new HashSet<>();
 
-        Set<DataQuery> keys = new HashSet<>(data.keySet());
+        for (Map.Entry<String, Object> key : children.entrySet()) {
+            keys.add(new DataQuery(key.getKey()));
 
-        for (Map.Entry<DataQuery, Object> entry : data.entrySet()) {
-            if (entry.getValue() instanceof DataView) {
-                DataView v = (DataView) entry.getValue();
-
-                for (DataQuery key : v.getKeys(true)) {
-                    keys.add(currentPath.then(key));
-                    // TODO: Get the seperator properly
+            if (b) {
+                if (key.getValue() instanceof DataView) {
+                    for (DataQuery keyy : ((DataView) key.getValue()).getKeys(true)) {
+                        keys.add(new DataQuery(key.getKey()).then(keyy));
+                    }
                 }
             }
         }
@@ -89,143 +90,221 @@ public class GraniteDataView implements DataView {
     }
 
     @Override
-    public Map<DataQuery, Object> getValues(boolean deep) {
-        if (!deep) {
-            return data;
-        }
+    public Map<DataQuery, Object> getValues(boolean b) {
+        Map<DataQuery, Object> values = new HashMap<>();
 
-        Map<DataQuery, Object> retData = new HashMap<>(data);
+        for (Map.Entry<String, Object> key : children.entrySet()) {
+            values.put(new DataQuery(key.getKey()), key.getValue());
 
-        for (Map.Entry<DataQuery, Object> entry : data.entrySet()) {
-            if (entry.getValue() instanceof DataView) {
-                DataView v = (DataView) entry.getValue();
-
-                for (Map.Entry<DataQuery, Object> entry2 : v.getValues(true).entrySet()) {
-                    retData.put(currentPath.then(entry2.getKey()), entry2.getValue());
-                    // TODO: Get the seperator properly
+            if (b) {
+                if (key.getValue() instanceof DataView) {
+                    for (Map.Entry<DataQuery, Object> entry : ((DataView) key.getValue()).getValues(true).entrySet()) {
+                        values.put(new DataQuery(key.getKey()).then(entry.getKey()), entry.getValue());
+                    }
                 }
             }
         }
-        return retData;
+
+        return values;
     }
 
     @Override
-    public boolean contains(DataQuery path) {
-        return false;
+    public boolean contains(DataQuery dataQuery) {
+        if (dataQuery.getParts().size() == 1) {
+            return children.containsKey(dataQuery.getParts().get(0));
+        } else {
+            if (!children.containsKey(dataQuery.getParts().get(0))) return false;
+
+            List<String> dataQueries = new ArrayList<>(dataQuery.getParts());
+            dataQueries.remove(0);
+
+            return ((DataView) children.get(dataQuery.getParts().get(0))).contains(new DataQuery(dataQueries));
+        }
     }
 
     @Override
-    public Optional<Object> get(DataQuery path) {
-        return null;
+    public Optional<Object> get(DataQuery dataQuery) {
+        if (dataQuery.getParts().size() == 1) {
+            return Optional.fromNullable(children.get(dataQuery.getParts().get(0)));
+        } else {
+            if (!children.containsKey(dataQuery.getParts().get(0))) return Optional.absent();
+
+            List<String> dataQueries = new ArrayList<>(dataQuery.getParts());
+            dataQueries.remove(0);
+
+            return ((DataView) children.get(dataQuery.getParts().get(0))).get(new DataQuery(dataQueries));
+        }
     }
 
     @Override
-    public void set(DataQuery path, Object value) {
+    public void set(DataQuery dataQuery, Object o) {
+        if (dataQuery.getParts().size() == 1) {
+            children.put(dataQuery.getParts().get(0), o);
+        } else {
+            List<String> dataQueries = new ArrayList<>(dataQuery.getParts());
+            dataQueries.remove(0);
 
+            ((DataView) children.get(dataQuery.getParts().get(0))).set(new DataQuery(dataQueries), o);
+        }
+
+        if (o instanceof GraniteDataView) {
+            List<String> dataQueries = new ArrayList<>(dataQuery.getParts());
+
+            ((GraniteDataView) o).currentPath = new DataQuery(dataQueries);
+        }
     }
 
     @Override
-    public void remove(DataQuery path) {
+    public void remove(DataQuery dataQuery) {
+        if (dataQuery.getParts().size() == 1) {
+            children.remove(dataQuery.getParts().get(0));
+        } else {
+            List<String> dataQueries = new ArrayList<>(dataQuery.getParts());
+            dataQueries.remove(0);
 
+            ((DataView) children.get(dataQuery.getParts().get(0))).remove(new DataQuery(dataQueries));
+        }
     }
 
     @Override
-    public DataView createView(DataQuery path) {
-        return null;
+    public DataView createView(DataQuery dataQuery) {
+        return createView(dataQuery, new HashMap<>());
     }
 
     @Override
-    public DataView createView(DataQuery path, Map<?, ?> map) {
-        return null;
+    public DataView createView(DataQuery dataQuery, Map<?, ?> map) {
+        List<String> dataQueries = new ArrayList<>(dataQuery.getParts());
+        dataQueries.remove(dataQueries.size() - 1);
+
+        DataView view = new GraniteDataView((Map<String, Object>) map, currentPath.then(dataQuery).then(new DataQuery(dataQueries)), container);
+        set(dataQuery, view);
+
+        return view;
     }
 
     @Override
-    public Optional<DataView> getView(DataQuery path) {
-        return null;
+    public Optional<DataView> getView(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof DataView)
+            return Optional.fromNullable((DataView) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<Boolean> getBoolean(DataQuery path) {
-        return null;
+    public Optional<Boolean> getBoolean(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof Boolean)
+            return Optional.fromNullable((Boolean) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<Integer> getInt(DataQuery path) {
-        return null;
+    public Optional<Integer> getInt(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof Integer)
+            return Optional.fromNullable((Integer) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<Long> getLong(DataQuery path) {
-        return null;
+    public Optional<Long> getLong(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof Long)
+            return Optional.fromNullable((Long) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<Double> getDouble(DataQuery path) {
-        return null;
+    public Optional<Double> getDouble(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof Double)
+            return Optional.fromNullable((Double) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<String> getString(DataQuery path) {
-        return null;
+    public Optional<String> getString(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof String)
+            return Optional.fromNullable((String) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<?>> getList(DataQuery path) {
-        return null;
+    public Optional<List<?>> getList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof DataView)
+            return Optional.<List<?>>fromNullable((List<?>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<String>> getStringList(DataQuery path) {
-        return null;
+    public Optional<List<String>> getStringList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<String>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Character>> getCharacterList(DataQuery path) {
-        return null;
+    public Optional<List<Character>> getCharacterList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Character>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Boolean>> getBooleanList(DataQuery path) {
-        return null;
+    public Optional<List<Boolean>> getBooleanList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Boolean>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Byte>> getByteList(DataQuery path) {
-        return null;
+    public Optional<List<Byte>> getByteList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Byte>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Short>> getShortList(DataQuery path) {
-        return null;
+    public Optional<List<Short>> getShortList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Short>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Integer>> getIntegerList(DataQuery path) {
-        return null;
+    public Optional<List<Integer>> getIntegerList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Integer>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Long>> getLongList(DataQuery path) {
-        return null;
+    public Optional<List<Long>> getLongList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Long>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Float>> getFloatList(DataQuery path) {
-        return null;
+    public Optional<List<Float>> getFloatList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Float>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Double>> getDoubleList(DataQuery path) {
-        return null;
+    public Optional<List<Double>> getDoubleList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Double>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public Optional<List<Map<?, ?>>> getMapList(DataQuery path) {
-        return null;
+    public Optional<List<Map<?, ?>>> getMapList(DataQuery dataQuery) {
+        if (get(dataQuery).isPresent() && get(dataQuery).get() instanceof List)
+            return Optional.fromNullable((List<Map<?, ?>>) get(dataQuery).orNull());
+        return Optional.absent();
     }
 
     @Override
-    public <T extends DataSerializable> Optional<T> getSerializable(DataQuery path, Class<T> clazz) {
-        return null;
+    public <T extends DataSerializable> Optional<T> getSerializable(DataQuery dataQuery, Class<T> aClass) {
+        if (get(dataQuery).isPresent() && aClass.isInstance(get(dataQuery).get()))
+            return Optional.fromNullable((T) get(dataQuery).orNull());
+        return Optional.absent();
     }
 }
