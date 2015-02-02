@@ -557,6 +557,45 @@ public class BytecodeClass {
             } catch (CannotCompileException e) {
                 e.printStackTrace();
             }
+        } else if (position instanceof CodePosition.MethodCallPosition) {
+            String code = "";
+
+            final CtMethod methodd = ((CodePosition.MethodCallPosition) position).getMethod();
+            switch (insertionMode) {
+                case BEFORE:
+                    code += "{";
+                    code += codeToAdd;
+                    code += "$_ = $proceed($$);";
+                    code += "}";
+                    break;
+                case REPLACE:
+                    code += "{";
+                    code += codeToAdd;
+                    code += "}";
+                    break;
+                case AFTER:
+                    code += "{";
+                    code += "$_ = $proceed($$);";
+                    code += codeToAdd;
+                    code += "}";
+                    break;
+            }
+
+            try {
+                final String finalCode = code;
+                method.instrument(new ExprEditor() {
+                    @Override
+                    public void edit(MethodCall m) throws CannotCompileException {
+                        if (Objects.equals(m.getClassName(), methodd.getDeclaringClass().getName())) {
+                            if (Objects.equals(m.getMethodName(), methodd.getName())) {
+                                m.replace(finalCode);
+                            }
+                        }
+                    }
+                });
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
         }
     }
 

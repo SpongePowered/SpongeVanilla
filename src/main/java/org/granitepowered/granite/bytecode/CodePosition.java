@@ -24,6 +24,7 @@
 package org.granitepowered.granite.bytecode;
 
 import javassist.CtClass;
+import javassist.CtMethod;
 import org.granitepowered.granite.mappings.Mappings;
 
 public abstract class CodePosition {
@@ -36,6 +37,18 @@ public abstract class CodePosition {
 
         public CtClass getClazz() {
             return clazz;
+        }
+    }
+
+    public static class MethodCallPosition extends CodePosition {
+        private CtMethod method;
+
+        public MethodCallPosition(String clazz, String methodName) {
+            this.method = Mappings.getCtMethod(clazz, methodName);
+        }
+
+        public CtMethod getMethod() {
+            return method;
         }
     }
 }
