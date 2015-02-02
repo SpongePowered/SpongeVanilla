@@ -26,9 +26,9 @@ package org.granitepowered.granite.impl.entity.living;
 import org.granitepowered.granite.mc.MCEntityAgeable;
 import org.spongepowered.api.entity.living.Ageable;
 
-public class GraniteAgeable extends GraniteLiving<MCEntityAgeable> implements Ageable {
+public class GraniteAgeable<T extends MCEntityAgeable> extends GraniteLiving<T> implements Ageable {
 
-    public GraniteAgeable(MCEntityAgeable obj) {
+    public GraniteAgeable(T obj) {
         super(obj);
     }
 
