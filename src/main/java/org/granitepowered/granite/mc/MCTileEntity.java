@@ -23,38 +23,9 @@
 
 package org.granitepowered.granite.mc;
 
-import java.util.List;
+@Implement(name = "TileEntity")
+public interface MCTileEntity extends MCInterface {
+    MCWorld fieldGet$worldObj();
 
-@Implement(name = "WorldServer")
-public interface MCWorld extends MCInterface {
-
-    MCWorldInfo fieldGet$worldInfo();
-
-    MCWorldBorder fieldGet$worldBorder();
-
-    List<MCEntity> fieldGet$loadedEntityList();
-
-    MCChunkProvider fieldGet$chunkProvider();
-
-    MCWorldProvider fieldGet$provider();
-
-    boolean spawnEntityInWorld(MCEntity entity);
-
-    MCBlockState getBlockState(MCBlockPos blockPos);
-
-    boolean setBlockState(MCBlockPos blockPos, MCBlockState blockState);
-
-    int getLightFor(Enum source, MCBlockPos blockPos);
-
-    boolean isPowered(MCBlockPos blockPos);
-
-    boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing);
-
-    int isIndirectlyPowered(MCBlockPos blockPos);
-
-    MCBiomeGenBase getBiomeGenForCoords(MCBlockPos blockPos);
-
-    void playSoundEffect(double x, double y, double z, String soundName, float volume, float pitch);
-
-    MCTileEntity getTileEntity(MCBlockPos pos);
+    MCBlockPos fieldGet$pos();
 }

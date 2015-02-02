@@ -277,11 +277,15 @@ public class ReflectionUtils {
 
                 Object[] out = (Object[]) Array.newInstance(actualType, src.length);
 
-                for (int i = 0; i < src.length; i++) {
-                    out[i] = actualType.cast(src[i]);
-                }
+                if (!out.getClass().isAssignableFrom(input.getClass())) {
+                    for (int i = 0; i < src.length; i++) {
+                        out[i] = actualType.cast(src[i]);
+                    }
 
-                return out;
+                    return out;
+                } else {
+                    return input;
+                }
             } catch (ClassNotFoundException e) {
                 Throwables.propagate(e);
             }

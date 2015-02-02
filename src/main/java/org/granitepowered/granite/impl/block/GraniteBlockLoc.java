@@ -31,6 +31,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.block.data.GraniteSign;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
@@ -41,11 +42,13 @@ import org.granitepowered.granite.mc.MCEnumFacing;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCMaterial;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.data.Sign;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
@@ -276,8 +279,14 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public <T> Optional<T> getData(Class<T> dataClass) {
-        // TODO: Data API
-        throw new NotImplementedException("");
+        switch (getType().getId()) {
+            case "standing_sign":
+            case "wall_sign":
+                if (Sign.class.isAssignableFrom(dataClass)) {
+                    return Optional.of((T) new GraniteSign(getWorld().obj.getTileEntity(MinecraftUtils.graniteToMinecraftBlockPos(getPosition()))));
+                }
+        }
+        return Optional.absent();
     }
 
     public GraniteWorld getWorld() {
