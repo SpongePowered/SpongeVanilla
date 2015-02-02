@@ -36,6 +36,7 @@ import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
 import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
 import org.granitepowered.granite.bytecode.classes.EntityClass;
 import org.granitepowered.granite.bytecode.classes.EntityEggClass;
+import org.granitepowered.granite.bytecode.classes.EntityLightningBoltClass;
 import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
 import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
 import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
@@ -277,6 +278,7 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new DedicatedServerClass());
             modifier.add(new EntityClass());
             modifier.add(new EntityEggClass());
+            modifier.add(new EntityLightningBoltClass());
             modifier.add(new EntityPlayerMPClass());
             modifier.add(new EntityXFireballClass("EntitySmallFireball"));
             modifier.add(new EntityXFireballClass("EntityLargeFireball"));

@@ -23,24 +23,24 @@
 
 package org.granitepowered.granite.impl.entity.weather;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mc.MCEntityLightningBolt;
 import org.spongepowered.api.entity.weather.Lightning;
 
-public class GraniteLightning extends GraniteEntity<MCEntityLightningBolt> implements Lightning {
+public class GraniteEntityLightningBolt extends GraniteWeatherEffect<MCEntityLightningBolt> implements Lightning {
 
-    public GraniteLightning(MCEntityLightningBolt obj) {
+    private boolean effect = false;
+
+    public GraniteEntityLightningBolt(MCEntityLightningBolt obj) {
         super(obj);
     }
 
     @Override
     public boolean isEffect() {
-        throw new NotImplementedException("");
+        return this.effect;
     }
 
     @Override
-    public void setEffect(boolean b) {
-        throw new NotImplementedException("");
+    public void setEffect(boolean effect) {
+        this.effect = effect;
     }
 }

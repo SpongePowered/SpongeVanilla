@@ -335,7 +335,6 @@ public class BytecodeClass {
                                         Mappings.getCtClass(((Implement) instantiatorParameterType.getAnnotation(Implement.class)).name());
                             }
 
-                            // This may be somewhat broken and/or confusing
                             if (!(Type.get(constructorParameterType).isAssignableFrom(Type.get(instantiatorParameterType)) || Type
                                     .get(instantiatorParameterType).isAssignableFrom(Type.get(constructorParameterType)))) {
                                 works = false;
@@ -352,8 +351,6 @@ public class BytecodeClass {
                 if (constructor == null) {
                     throw Throwables.propagate(new NotFoundException("no such constructor"));
                 }
-
-                //bytecode.addLoadParameters(constructor.getParameterTypes(), 1);
 
                 int localCounter = 1;
 
@@ -496,7 +493,6 @@ public class BytecodeClass {
                                 if (i == parameterToReplace) {
                                     CtClass parameterType = methodCall.getParameterTypes()[i];
 
-                                    // Fuck boxed types
                                     if (parameterType.isPrimitive()) {
                                         code +=
                                                 "((" + ClassUtils.primitiveToWrapper(getFromCt(parameterType)).getName() + ") " + replaceWith + ")."
@@ -591,7 +587,6 @@ public class BytecodeClass {
                 if (!Mappings.getClass("ThreadQuickExitException").isInstance(t)) {
                     Granite.error(t);
                 }
-                // Checked exceptions are literally Hitler
                 throw t;
             }
         }

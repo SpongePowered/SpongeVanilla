@@ -28,7 +28,6 @@ import org.spongepowered.api.entity.projectile.Egg;
 
 public class GraniteEgg extends GraniteThrowable<MCEntityEgg> implements Egg {
 
-    // Minecraft is modified to read from this field at runtime
     double damage = 0;
 
     public GraniteEgg(MCEntityEgg obj) {
