@@ -27,8 +27,10 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import javassist.CtClass;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteFireball;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MCEntityFireball;
 import org.granitepowered.granite.mc.MCInterface;
 
 public class EntityXFireballClass extends BytecodeClass {
@@ -41,13 +43,11 @@ public class EntityXFireballClass extends BytecodeClass {
         addArgumentsVariable("onImpact");
 
         replaceMethodCallParameter("onImpact", Mappings.getCtMethod("Entity", "attackEntityFrom"), 1, "$mArgs[" + idx + "]");
+    }
 
-        proxy("onImpact", new ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-                float damage = (float) ((GraniteFireball) wrap((MCInterface) caller)).getDamage();
-                return callback.invokeParent(args[0], damage);
-            }
-        });
+    @Proxy(methodName = "onImpact")
+    public Object onImpact(MCEntityFireball caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        float damage = (float) ((GraniteFireball) wrap((MCInterface) caller)).getDamage();
+        return callback.invokeParent(args[0], damage);
     }
 }

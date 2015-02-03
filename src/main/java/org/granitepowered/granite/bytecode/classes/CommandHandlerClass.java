@@ -28,6 +28,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import org.apache.commons.lang3.StringUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.event.message.GraniteCommandEvent;
 import org.granitepowered.granite.mc.MCInterface;
 import org.spongepowered.api.service.command.SimpleCommandService;
@@ -39,38 +40,36 @@ public class CommandHandlerClass extends BytecodeClass {
 
     public CommandHandlerClass() {
         super("CommandHandler");
+    }
 
-        proxy("executeCommand", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                String fullCommand = (String) args[1];
+    @Proxy(methodName = "executeCommand")
+    public Object executeCommand(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+        String fullCommand = (String) args[1];
 
-                if (fullCommand.startsWith("/")) {
-                    fullCommand = fullCommand.substring(1);
-                }
+        if (fullCommand.startsWith("/")) {
+            fullCommand = fullCommand.substring(1);
+        }
 
-                String[] commandArgs = fullCommand.split(" ");
-                String commandName = commandArgs[0];
-                commandArgs = Arrays.copyOfRange(commandArgs, 1, commandArgs.length);
+        String[] commandArgs = fullCommand.split(" ");
+        String commandName = commandArgs[0];
+        commandArgs = Arrays.copyOfRange(commandArgs, 1, commandArgs.length);
 
-                CommandSource sender = wrap((MCInterface) args[0]);
+        CommandSource sender = wrap((MCInterface) args[0]);
 
-                GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
-                Granite.getInstance().getEventManager().post(event);
+        GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
+        Granite.getInstance().getEventManager().post(event);
 
-                // DO NOT MERGE AS THIS CAUSES ISSUES!!!
-                if (!event.isCancelled()) {
-                    SimpleCommandService dispatcher = (SimpleCommandService) Granite.getInstance().getCommandService();
-                    event.isCancellable = true;
-                    dispatcher.onCommandEvent(event);
-                }
+        // DO NOT MERGE THESE BLOCKS AS THIS CAUSES ISSUES!!!
+        if (!event.isCancelled()) {
+            SimpleCommandService dispatcher = (SimpleCommandService) Granite.getInstance().getCommandService();
+            event.isCancellable = true;
+            dispatcher.onCommandEvent(event);
+        }
 
-                if (!event.isCancelled()) {
-                    return callback.invokeParent(args);
-                } else {
-                    return 0;
-                }
-            }
-        });
+        if (!event.isCancelled()) {
+            return callback.invokeParent(args);
+        } else {
+            return 0;
+        }
     }
 }

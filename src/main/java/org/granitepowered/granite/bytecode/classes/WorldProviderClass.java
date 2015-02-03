@@ -26,19 +26,20 @@ package org.granitepowered.granite.bytecode.classes;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
+import org.granitepowered.granite.mc.MCWorldProvider;
 
 public class WorldProviderClass extends BytecodeClass {
 
     public WorldProviderClass() {
         super("WorldProvider");
+    }
 
-        proxy("canRespawnHere", new ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-                return ((GraniteDimension) wrap((MCInterface) caller)).allowsPlayerRespawns();
-            }
-        });
+    @Proxy(methodName = "canRespawnHere")
+    public Object canRespawnHere(MCWorldProvider caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        return ((GraniteDimension) wrap(caller)).allowsPlayerRespawns();
     }
 }

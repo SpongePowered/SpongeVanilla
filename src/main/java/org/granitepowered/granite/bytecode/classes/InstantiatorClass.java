@@ -35,7 +35,7 @@ import java.lang.reflect.Field;
 public class InstantiatorClass extends BytecodeClass {
 
     public InstantiatorClass() {
-        super(ClassPool.getDefault().makeClass("InstantiatorImpl"));
+        super(ClassPool.getDefault().makeClass("InstantiatorImpl"), false);
 
         instantiator(Instantiator.InstantiatorInterface.class);
         try {

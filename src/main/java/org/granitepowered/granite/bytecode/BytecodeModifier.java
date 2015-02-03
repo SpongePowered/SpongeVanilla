@@ -66,7 +66,7 @@ public class BytecodeModifier {
                         Granite.getInstance().getLogger().info("Injecting " + ctClass.getSimpleName() + " into " + mcClass.getName());
                     }
 
-                    BytecodeClass bc = new BytecodeClass(((Implement) ctClass.getAnnotation(Implement.class)).name());
+                    BytecodeClass bc = new BytecodeClass(((Implement) ctClass.getAnnotation(Implement.class)).name(), false);
                     bcs.add(bc);
 
                     bc.implement(BytecodeClass.getFromCt(ctClass));

@@ -21,33 +21,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode.classes;
+package org.granitepowered.granite.bytecode;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
-import javassist.CtClass;
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
-import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntityEgg;
-import org.granitepowered.granite.mc.MCInterface;
-
-public class EntityEggClass extends BytecodeClass {
-
-    public EntityEggClass() {
-        super("EntityEgg");
-
-        int idx = addParameter("onImpact", CtClass.floatType);
-
-        addArgumentsVariable("onImpact");
-
-        replaceMethodCallParameter("onImpact", Mappings.getCtMethod("Entity", "attackEntityFrom"), 1, "$mArgs[" + idx + "]");
-    }
-
-    @Proxy(methodName = "onImpact")
-    public Object onImpact(MCEntityEgg caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        float damage = (float) ((GraniteEgg) wrap((MCInterface) caller)).getDamage();
-        return callback.invokeParent(args[0], damage);
-    }
+public @interface Proxy {
+    String methodName();
 }

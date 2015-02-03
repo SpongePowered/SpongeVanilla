@@ -67,10 +67,18 @@ public class BytecodeClass {
     ClassPool pool;
 
     public BytecodeClass(String str) {
-        this(Mappings.getCtClass(str));
+        this(str, true);
     }
 
     public BytecodeClass(CtClass clazz) {
+        this(clazz, true);
+    }
+
+    public BytecodeClass(String str, boolean annotate) {
+        this(Mappings.getCtClass(str), annotate);
+    }
+
+    public BytecodeClass(CtClass clazz, boolean annotate) {
         this.clazz = clazz;
 
         classMap = new HashMap<>();
@@ -80,6 +88,10 @@ public class BytecodeClass {
         classesToLoad = new HashSet<>();
 
         pool = Granite.getInstance().getClassPool();
+
+        if (annotate) {
+            annotate();
+        }
     }
 
     public static Class getFromCt(CtClass clazz) {
@@ -114,9 +126,52 @@ public class BytecodeClass {
         return null;
     }
 
-    public void proxy(final String methodName, ProxyHandler handler) {
+    public void addBytecodeClassField(final CtClass clazz) {
+        try {
+            clazz.getDeclaredField("bytecodeClass");
+        } catch (NotFoundException e) {
+            // Does not have field, adding
+            try {
+                CtField f = new CtField(pool.get(getClass().getName()), "bytecodeClass", clazz);
+                f.setModifiers(AccessFlag.PUBLIC | AccessFlag.STATIC);
+                clazz.addField(f);
+
+                callbacks.add(new PostCallback() {
+                    @Override
+                    public void callback() {
+                        try {
+                            getFromCt(clazz).getDeclaredField("bytecodeClass").set(null, BytecodeClass.this);
+                        } catch (IllegalAccessException | NoSuchFieldException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } catch (CannotCompileException | NotFoundException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public void annotate() {
+        try {
+            CtClass thisClass = ClassPool.getDefault().get(this.getClass().getName());
+
+            addBytecodeClassField(clazz);
+
+            for (CtMethod method : thisClass.getDeclaredMethods()) {
+                if (method.hasAnnotation(Proxy.class)) {
+                    proxy(((Proxy) method.getAnnotation(Proxy.class)).methodName(), method);
+                }
+            }
+        } catch (NotFoundException | ClassNotFoundException e) {
+            Throwables.propagate(e);
+        }
+    }
+
+    public void proxy(final String methodName, CtMethod handler) {
         try {
             final CtMethod method = Mappings.getCtMethod(clazz, methodName);
+            addBytecodeClassField(method.getDeclaringClass());
 
             final String oldName = method.getName();
             method.setName(oldName + "$cb");
@@ -143,10 +198,23 @@ public class BytecodeClass {
                 }
             });
 
-            injectField(method.getDeclaringClass(), pool.get(ProxyHandler.class.getName()), methodName + "$handler", handler);
+            //injectField(method.getDeclaringClass(), pool.get(ProxyHandler.class.getName()), methodName + "$handler", handler);
 
             CtMethod newMethod = new CtMethod(method.getReturnType(), oldName, method.getParameterTypes(), method.getDeclaringClass());
-            newMethod.setBody("return ($r) " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
+            //newMethod.setBody("return ($r) " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
+
+            CtClass callerType = handler.getParameterTypes()[0];
+
+            String code = "{\n";
+            code += ProxyHandlerCallback.class.getName() + " callback = " + getClass().getName() + ".createCallback((Object) this, " + methodName + "$method);\n";
+            code += "return ($r) this.bytecodeClass." + handler.getName() + "((" + callerType.getName() + ") this, $args, callback);\n";
+            code += "}";
+
+            if ((method.getModifiers() & AccessFlag.ABSTRACT) == AccessFlag.ABSTRACT) {
+                throw new RuntimeException("Abstract method " + methodName + " can not be proxied; add implementation to mappings");
+            }
+
+            newMethod.setBody(code);
 
             method.getDeclaringClass().addMethod(newMethod);
 
@@ -215,7 +283,7 @@ public class BytecodeClass {
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -243,7 +311,7 @@ public class BytecodeClass {
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -347,8 +415,6 @@ public class BytecodeClass {
                     throw Throwables.propagate(new NotFoundException("no such constructor"));
                 }
 
-                int localCounter = 1;
-
                 for (int i = 0; i < constructor.getParameterTypes().length; i++) {
                     CtClass parameterType = constructor.getParameterTypes()[i];
 
@@ -362,7 +428,6 @@ public class BytecodeClass {
                     int localDiff = (parameterType == CtClass.doubleType || parameterType == CtClass.longType) ? 2 : 1;
 
                     bytecode.incMaxLocals(localDiff);
-                    localCounter += localDiff;
                 }
 
                 bytecode.addInvokespecial(mcActualRet, "<init>", CtClass.voidType, constructor.getParameterTypes());
@@ -491,7 +556,7 @@ public class BytecodeClass {
                                     if (parameterType.isPrimitive()) {
                                         code +=
                                                 "((" + ClassUtils.primitiveToWrapper(getFromCt(parameterType)).getName() + ") " + replaceWith + ")."
-                                                + getFromCt(parameterType).getName() + "Value()";
+                                                        + getFromCt(parameterType).getName() + "Value()";
                                     } else {
                                         code += "(" + parameterType.getName() + ") " + replaceWith;
                                     }
@@ -636,6 +701,24 @@ public class BytecodeClass {
         }
     }
 
+    // Used by bytecode
+    public static ProxyHandlerCallback createCallback(final Object caller, Method method) {
+        try {
+            method.setAccessible(true);
+            final MethodHandle handle = MethodHandles.lookup().unreflect(method);
+
+            return new ProxyHandlerCallback() {
+                @Override
+                public Object invokeParent(Object... args) throws Throwable {
+                    return handle.invokeWithArguments(ArrayUtils.add(args, 0, caller));
+                }
+            };
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static interface ProxyHandlerCallback {
 
         Object invokeParent(Object... args) throws Throwable;
@@ -645,6 +728,7 @@ public class BytecodeClass {
 
         void callback();
     }
+
 
     public static abstract class ProxyHandler {
 

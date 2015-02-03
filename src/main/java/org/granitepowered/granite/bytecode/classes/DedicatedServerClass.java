@@ -25,57 +25,49 @@ package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.event.state.GraniteServerAboutToStartEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStoppedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStoppingEvent;
+import org.granitepowered.granite.mc.MCServer;
 
 public class DedicatedServerClass extends BytecodeClass {
 
     public DedicatedServerClass() {
         super("DedicatedServer");
+    }
 
-        proxy("startServer", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                Object ret = callback.invokeParent(args);
+    @Proxy(methodName = "startServer")
+    public Object startServer(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        Object ret = callback.invokeParent(args);
 
-                Granite.getInstance().getEventManager().post(new GraniteServerStartingEvent());
-                Granite.getInstance().getEventManager().post(new GraniteServerStartedEvent());
+        Granite.getInstance().getEventManager().post(new GraniteServerStartingEvent());
+        Granite.getInstance().getEventManager().post(new GraniteServerStartedEvent());
 
-                return ret;
-            }
-        });
+        return ret;
+    }
 
-        proxy("setConfigManager", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                Granite.getInstance().getEventManager().post(new GraniteServerAboutToStartEvent());
+    @Proxy(methodName = "setConfigManager")
+    public void setConfigManager(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        Granite.getInstance().getEventManager().post(new GraniteServerAboutToStartEvent());
 
-                return callback.invokeParent(args);
-            }
-        });
+        callback.invokeParent(args);
+    }
 
-        proxy("stopServer", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                Granite.getInstance().getEventManager().post(new GraniteServerStoppingEvent());
+    @Proxy(methodName = "stopServer")
+    public void stopServer(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        Granite.getInstance().getEventManager().post(new GraniteServerStoppingEvent());
 
-                callback.invokeParent(args);
+        callback.invokeParent(args);
 
-                Granite.getInstance().getEventManager().post(new GraniteServerStoppedEvent());
+        Granite.getInstance().getEventManager().post(new GraniteServerStoppedEvent());
+    }
 
-                return null;
-            }
-        });
+    public void tick(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        Granite.getInstance().getScheduler().tick();
 
-        proxy("tick", new ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-                Granite.getInstance().getScheduler().tick();
-                return callback.invokeParent(args);
-            }
-        });
+        callback.invokeParent(args);
     }
 }

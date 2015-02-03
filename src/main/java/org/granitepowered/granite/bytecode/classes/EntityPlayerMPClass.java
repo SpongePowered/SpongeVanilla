@@ -31,6 +31,7 @@ import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerDeathEvent;
 import org.granitepowered.granite.mappings.Mappings;
@@ -61,23 +62,21 @@ public class EntityPlayerMPClass extends BytecodeClass {
                 }
             }
         });
+    }
 
-        proxy("onDeath", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                GranitePlayer player = new GranitePlayer((MCEntityPlayerMP) caller);
-                MCDamageSource source = (MCDamageSource) args[0];
+    @Proxy(methodName = "onDeath")
+    public Object onDeath(MCEntityPlayerMP caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        GranitePlayer player = new GranitePlayer((MCEntityPlayerMP) caller);
+        MCDamageSource source = (MCDamageSource) args[0];
 
-                MCChatComponent deathComponent = ((MCEntityPlayerMP) caller).fieldGet$_combatTracker().func_151521_b();
-                Message deathMessage = MinecraftUtils.minecraftToGraniteMessage(deathComponent);
+        MCChatComponent deathComponent = ((MCEntityPlayerMP) caller).fieldGet$_combatTracker().func_151521_b();
+        Message deathMessage = MinecraftUtils.minecraftToGraniteMessage(deathComponent);
 
-                GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source, deathMessage);
-                Granite.getInstance().getEventManager().post(deathEvent);
+        GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source, deathMessage);
+        Granite.getInstance().getEventManager().post(deathEvent);
 
-                deathComponent = MinecraftUtils.graniteToMinecraftChatComponent(deathEvent.getDeathMessage());
+        deathComponent = MinecraftUtils.graniteToMinecraftChatComponent(deathEvent.getDeathMessage());
 
-                return callback.invokeParent(source, deathComponent);
-            }
-        });
+        return callback.invokeParent(source, deathComponent);
     }
 }

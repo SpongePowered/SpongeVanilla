@@ -28,6 +28,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.event.entity.GraniteEntityMoveEvent;
 import org.granitepowered.granite.mc.MCEntity;
@@ -38,43 +39,41 @@ public class EntityClass extends BytecodeClass {
 
     public EntityClass() {
         super("Entity");
+    }
 
-        proxy("moveEntity", new ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-                if (!(caller instanceof MCEntityPlayerMP)) {
-                    double oldX, oldY, oldZ;
-                    oldX = ((MCEntity) caller).fieldGet$posX();
-                    oldY = ((MCEntity) caller).fieldGet$posY();
-                    oldZ = ((MCEntity) caller).fieldGet$posZ();
+    @Proxy(methodName = "moveEntity")
+    public Object moveEntity(MCEntity caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        if (!(caller instanceof MCEntityPlayerMP)) {
+            double oldX, oldY, oldZ;
+            oldX = caller.fieldGet$posX();
+            oldY = caller.fieldGet$posY();
+            oldZ = caller.fieldGet$posZ();
 
-                    callback.invokeParent(args);
+            callback.invokeParent(args);
 
-                    double newX, newY, newZ;
-                    newX = ((MCEntity) caller).fieldGet$posX();
-                    newY = ((MCEntity) caller).fieldGet$posY();
-                    newZ = ((MCEntity) caller).fieldGet$posZ();
+            double newX, newY, newZ;
+            newX = caller.fieldGet$posX();
+            newY = caller.fieldGet$posY();
+            newZ = caller.fieldGet$posZ();
 
-                    if (oldX != newX || oldY != newY || oldZ != newZ) {
-                        GraniteEntity entity = wrap((MCEntity) caller);
+            if (oldX != newX || oldY != newY || oldZ != newZ) {
+                GraniteEntity entity = wrap((MCEntity) caller);
 
-                        GraniteEntityMoveEvent event = new GraniteEntityMoveEvent(
-                                entity,
-                                new Location(entity.getWorld(), new Vector3d(oldX, oldY, oldZ)),
-                                new Location(entity.getWorld(), new Vector3d(newX, newY, newZ))
-                        );
+                GraniteEntityMoveEvent event = new GraniteEntityMoveEvent(
+                        entity,
+                        new Location(entity.getWorld(), new Vector3d(oldX, oldY, oldZ)),
+                        new Location(entity.getWorld(), new Vector3d(newX, newY, newZ))
+                );
 
-                        Granite.getInstance().getEventManager().post(event);
+                Granite.getInstance().getEventManager().post(event);
 
-                        if (event.isCancelled()) {
-                            entity.setLocation(entity.getLocation().setPosition(new Vector3d(oldX, oldY, oldZ)));
-                        }
-                    }
-                } else {
-                    callback.invokeParent(args);
+                if (event.isCancelled()) {
+                    entity.setLocation(entity.getLocation().setPosition(new Vector3d(oldX, oldY, oldZ)));
                 }
-                return null;
             }
-        });
+        } else {
+            callback.invokeParent(args);
+        }
+        return null;
     }
 }

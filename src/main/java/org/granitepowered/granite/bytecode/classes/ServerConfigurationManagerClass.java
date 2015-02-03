@@ -27,11 +27,13 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.message.Message;
@@ -48,41 +50,37 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
         addArgumentsVariable("initializeConnectionToPlayer");
 
         replaceMethodCallParameter("initializeConnectionToPlayer", Mappings.getCtMethod("ServerConfigurationManager", "sendChatMsg"), 0,
-                                   "$mArgs[" + param + "]");
+                "$mArgs[" + param + "]");
+    }
 
-        proxy("initializeConnectionToPlayer", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                MCEntityPlayerMP player = (MCEntityPlayerMP) args[1];
+    @Proxy(methodName = "initializeConnectionToPlayer")
+    public Object initializeConnectionToPlayer(MCServerConfigurationManager caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+        MCEntityPlayerMP player = (MCEntityPlayerMP) args[1];
 
-                MCGameProfile newProfile = player.fieldGet$gameProfile();
-                MCGameProfile oldProfile = Granite.getInstance().getServer().obj.fieldGet$playerCache().func_152652_a(newProfile.fieldGet$id());
+        MCGameProfile newProfile = player.fieldGet$gameProfile();
+        MCGameProfile oldProfile = Granite.getInstance().getServer().obj.fieldGet$playerCache().func_152652_a(newProfile.fieldGet$id());
 
-                String oldName = oldProfile == null ? newProfile.fieldGet$name() : oldProfile.fieldGet$name();
+        String oldName = oldProfile == null ? newProfile.fieldGet$name() : oldProfile.fieldGet$name();
 
-                Message.Translatable joinMessage;
-                if (!newProfile.fieldGet$name().equals(oldName)) {
-                    joinMessage =
-                            Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), newProfile.fieldGet$name(), oldName)
-                                    .color(TextColors.YELLOW).build();
-                } else {
-                    joinMessage =
-                            Messages.builder(Translations.of("multiplayer.player.joined").get(), newProfile.fieldGet$name()).color(TextColors.YELLOW)
-                                    .build();
-                }
+        Message.Translatable joinMessage;
+        if (!newProfile.fieldGet$name().equals(oldName)) {
+            joinMessage =
+                    Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), newProfile.fieldGet$name(), oldName)
+                            .color(TextColors.YELLOW).build();
+        } else {
+            joinMessage =
+                    Messages.builder(Translations.of("multiplayer.player.joined").get(), newProfile.fieldGet$name()).color(TextColors.YELLOW)
+                            .build();
+        }
 
-                GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GranitePlayer) wrap(player), joinMessage);
-                Granite.getInstance().getServer().getEventManager().post(event);
+        GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GranitePlayer) wrap(player), joinMessage);
+        Granite.getInstance().getServer().getEventManager().post(event);
 
-                return callback.invokeParent(args[0], args[1], MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
-            }
-        });
+        return callback.invokeParent(args[0], args[1], MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
+    }
 
-        proxy("sendChatMsg", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                return callback.invokeParent(args);
-            }
-        });
+    @Proxy(methodName = "sendChatMsg")
+    public Object sendChatMsg(MCServerConfigurationManager caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
+        return callback.invokeParent(args);
     }
 }

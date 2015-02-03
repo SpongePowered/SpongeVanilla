@@ -28,6 +28,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.block.GraniteBlockSnapshot;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
@@ -45,31 +46,27 @@ public class ItemInWorldManagerClass extends BytecodeClass {
 
     public ItemInWorldManagerClass() {
         super("ItemInWorldManager");
+    }
 
-        proxy("func_180237_b", new BytecodeClass.ProxyHandler() {
-            @Override
-            protected Object handle(Object caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-                MCItemInWorldManager thisIiwm = (MCItemInWorldManager) caller;
+    @Proxy(methodName = "func_180237_b")
+    public Object func_180237_b(MCItemInWorldManager caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+        MCBlockPos mcBlockPos = (MCBlockPos) args[0];
+        Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
 
-                MCBlockPos mcBlockPos = (MCBlockPos) args[0];
-                Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
+        GranitePlayer player = wrap(caller.fieldGet$thisPlayerMP());
 
-                GranitePlayer player = wrap(thisIiwm.fieldGet$thisPlayerMP());
+        GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(caller.fieldGet$theWorld()), pos));
+        GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
 
-                GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(thisIiwm.fieldGet$theWorld()), pos));
-                GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
+        GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
+        Granite.getInstance().getServer().getEventManager().post(event);
 
-                GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
-                Granite.getInstance().getServer().getEventManager().post(event);
-
-                if (!event.isCancelled()) {
-                    return callback.invokeParent(args);
-                } else {
-                    MCPacket p = Instantiator.get().newPacketBlockChange(thisIiwm.fieldGet$theWorld(), mcBlockPos);
-                    player.sendPacket(p);
-                    return false;
-                }
-            }
-        });
+        if (!event.isCancelled()) {
+            return callback.invokeParent(args);
+        } else {
+            MCPacket p = Instantiator.get().newPacketBlockChange(caller.fieldGet$theWorld(), mcBlockPos);
+            player.sendPacket(p);
+            return false;
+        }
     }
 }
