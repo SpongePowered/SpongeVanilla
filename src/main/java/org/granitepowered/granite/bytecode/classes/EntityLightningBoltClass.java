@@ -12,7 +12,7 @@ public class EntityLightningBoltClass extends BytecodeClass {
     public EntityLightningBoltClass() {
         super("EntityLightningBolt");
 
-        insert("onUpdate",
+        /*insert("onUpdate",
                "if (((" + GraniteEntityLightningBolt.class.getName() + ") " + MinecraftUtils.class.getName() + ".wrap((" + MCEntityLightningBolt.class
                        .getName() + ") this)).isEffect()) return;",
                CodeInsertionMode.BEFORE, new CodePosition.NewPosition("BlockPos"));
@@ -20,6 +20,6 @@ public class EntityLightningBoltClass extends BytecodeClass {
         insert("onUpdate",
                "if (((" + GraniteEntityLightningBolt.class.getName() + ") " + MinecraftUtils.class.getName() + ".wrap((" + MCEntityLightningBolt.class
                        .getName() + ") this)).isEffect()) return;",
-               CodeInsertionMode.BEFORE, new CodePosition.NewPosition("AxisAlignedBB"));
+               CodeInsertionMode.BEFORE, new CodePosition.NewPosition("AxisAlignedBB"));*/
     }
 }

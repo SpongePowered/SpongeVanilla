@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.entity.weather;
 import org.granitepowered.granite.mc.MCEntityLightningBolt;
 import org.spongepowered.api.entity.weather.Lightning;
 
-public class GraniteEntityLightningBolt extends GraniteWeatherEffect<MCEntityLightningBolt> implements Lightning {
+public class GraniteEntityLightningBolt extends GraniteEntityWeatherEffect<MCEntityLightningBolt> implements Lightning {
 
     private boolean effect = false;
 
