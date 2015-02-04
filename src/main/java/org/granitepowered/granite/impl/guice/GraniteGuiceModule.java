@@ -26,6 +26,8 @@ package org.granitepowered.granite.impl.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Scopes;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.GraniteGameRegistry;
 import org.granitepowered.granite.impl.GraniteServer;
@@ -42,7 +44,6 @@ import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.service.scheduler.Scheduler;
-import org.spongepowered.api.util.config.ConfigFile;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -76,7 +77,7 @@ public class GraniteGuiceModule extends AbstractModule {
         bind(Logger.class).toProvider(PluginLoggerProvider.class).in(PluginScoped.class);
         bind(File.class).annotatedWith(privateConfigDir).toProvider(PluginDataDirProvider.class).in(PluginScoped.class);
         bind(File.class).annotatedWith(pluginConfig).toProvider(PluginConfigFileProvider.class).in(PluginScoped.class);
-        bind(ConfigFile.class).annotatedWith(pluginConfig).toProvider(PluginHoconConfigProvider.class).in(PluginScoped.class);
+        bind(ConfigurationLoader.class).annotatedWith(pluginConfig).toProvider(PluginHoconConfigProvider.class).in(PluginScoped.class);
     }
 
     /**
@@ -143,7 +144,7 @@ public class GraniteGuiceModule extends AbstractModule {
 
     }
 
-    private static class PluginHoconConfigProvider implements Provider<ConfigFile> {
+    private static class PluginHoconConfigProvider implements Provider<ConfigurationLoader> {
 
         private final File configFile;
 
@@ -153,8 +154,8 @@ public class GraniteGuiceModule extends AbstractModule {
         }
 
         @Override
-        public ConfigFile get() {
-            return ConfigFile.parseFile(configFile);
+        public ConfigurationLoader get() {
+            return HoconConfigurationLoader.builder().setFile(configFile).build();
         }
 
     }

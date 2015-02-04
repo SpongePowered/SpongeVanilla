@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityLightningBolt")
-public interface MCEntityLightningBolt extends MCWeatherEffect {
+public interface MCEntityLightningBolt extends MCEntityWeatherEffect {
 
 }
