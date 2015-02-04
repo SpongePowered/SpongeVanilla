@@ -21,26 +21,37 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode.classes;
+package org.granitepowered.granite.bytecode;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+public class CallbackInfo<T> {
+    private T caller;
+    private Object[] methodArguments;
+    private Object[] callerArguments;
+    private boolean cancelled;
 
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
-import org.granitepowered.granite.impl.world.GraniteDimension;
-import org.granitepowered.granite.mc.MCInterface;
-import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
-import org.granitepowered.granite.mc.MCWorldProvider;
-
-public class WorldProviderClass extends BytecodeClass {
-
-    public WorldProviderClass() {
-        super("WorldProvider");
+    public CallbackInfo(T caller, Object[] methodArguments, Object[] callerArguments) {
+        this.caller = caller;
+        this.methodArguments = methodArguments;
+        this.callerArguments = callerArguments;
     }
 
-    @Proxy(methodName = "canRespawnHere")
-    public Object canRespawnHere(ProxyCallbackInfo<MCWorldProvider> info) throws Throwable {
-        return ((GraniteDimension) wrap(info.getCaller())).allowsPlayerRespawns();
+    public T getCaller() {
+        return caller;
+    }
+
+    public Object[] getMethodArguments() {
+        return methodArguments;
+    }
+
+    public Object[] getCallerArguments() {
+        return callerArguments;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void cancel() {
+        cancelled = true;
     }
 }

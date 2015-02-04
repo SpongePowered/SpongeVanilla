@@ -21,26 +21,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode.classes;
+package org.granitepowered.granite.bytecode;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+public class ProxyCallbackInfo<T> {
+    private T caller;
+    private Object[] arguments;
+    private BytecodeClass.ProxyHandlerCallback callback;
 
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
-import org.granitepowered.granite.impl.world.GraniteDimension;
-import org.granitepowered.granite.mc.MCInterface;
-import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
-import org.granitepowered.granite.mc.MCWorldProvider;
-
-public class WorldProviderClass extends BytecodeClass {
-
-    public WorldProviderClass() {
-        super("WorldProvider");
+    public ProxyCallbackInfo(T caller, Object[] arguments, BytecodeClass.ProxyHandlerCallback callback) {
+        this.caller = caller;
+        this.arguments = arguments;
+        this.callback = callback;
     }
 
-    @Proxy(methodName = "canRespawnHere")
-    public Object canRespawnHere(ProxyCallbackInfo<MCWorldProvider> info) throws Throwable {
-        return ((GraniteDimension) wrap(info.getCaller())).allowsPlayerRespawns();
+    public T getCaller() {
+        return caller;
+    }
+
+    public Object[] getArguments() {
+        return arguments;
+    }
+
+    public Object callback(Object... arguments) throws Throwable {
+        return callback.invokeParent(arguments);
+    }
+
+    public Object callback() throws Throwable {
+        return callback(arguments);
     }
 }

@@ -28,6 +28,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.mappings.Mappings;
@@ -54,8 +55,8 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "initializeConnectionToPlayer")
-    public Object initializeConnectionToPlayer(MCServerConfigurationManager caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-        MCEntityPlayerMP player = (MCEntityPlayerMP) args[1];
+    public Object initializeConnectionToPlayer(ProxyCallbackInfo<MCServerConfigurationManager> info) throws Throwable {
+        MCEntityPlayerMP player = (MCEntityPlayerMP) info.getArguments()[1];
 
         MCGameProfile newProfile = player.fieldGet$gameProfile();
         MCGameProfile oldProfile = Granite.getInstance().getServer().obj.fieldGet$playerCache().func_152652_a(newProfile.fieldGet$id());
@@ -76,11 +77,11 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
         GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GranitePlayer) wrap(player), joinMessage);
         Granite.getInstance().getServer().getEventManager().post(event);
 
-        return callback.invokeParent(args[0], args[1], MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
+        return info.callback(info.getArguments()[0], info.getArguments()[1], MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
     }
 
-    @Proxy(methodName = "sendChatMsg")
+    /*@Proxy(methodName = "sendChatMsg")
     public Object sendChatMsg(MCServerConfigurationManager caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
         return callback.invokeParent(args);
-    }
+    }*/
 }

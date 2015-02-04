@@ -30,6 +30,7 @@ import com.google.common.base.Throwables;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerChatEvent;
 import org.granitepowered.granite.impl.event.player.GranitePlayerMoveEvent;
@@ -47,28 +48,28 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "processChatMessage")
-    public Object processChatMessage(MCNetHandlerPlayServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        quickExitThreadIfNotServer((MCPacket) args[0], caller);
+    public Object processChatMessage(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
+        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
 
-        MCPacketChatMessage packet = (MCPacketChatMessage) args[0];
+        MCPacketChatMessage packet = (MCPacketChatMessage) info.getArguments()[0];
         String message = packet.fieldGet$message();
 
-        GranitePlayer p = wrap(caller.fieldGet$playerEntity());
+        GranitePlayer p = wrap(info.getCaller().fieldGet$playerEntity());
         GranitePlayerChatEvent event = new GranitePlayerChatEvent(p, message);
         Granite.getInstance().getEventManager().post(event);
 
-        return callback.invokeParent(args);
+        return info.callback();
     }
 
     @Proxy(methodName = "processPlayer")
-    public Object processPlayer(MCNetHandlerPlayServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        quickExitThreadIfNotServer((MCPacket) args[0], caller);
+    public Object processPlayer(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
+        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
 
-        GranitePlayer player = wrap(caller.fieldGet$playerEntity());
+        GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         Location old = player.getLocation();
         Location new_ = new Location(old.getExtent(), new Vector3d(0, 0, 0));
 
-        MCPacketPlayer packet = (MCPacketPlayer) args[0];
+        MCPacketPlayer packet = (MCPacketPlayer) info.getArguments()[0];
 
         // If setting position (for some reason MCP doesn't wanna name the field correctly)
         if (packet.fieldGet$field_149480_h()) {
@@ -84,10 +85,10 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
             Granite.getInstance().getEventManager().post(event);
 
             if (!event.isCancelled()) {
-                callback.invokeParent(args);
+                info.callback(info.getArguments());
             }
         } else {
-            callback.invokeParent(args);
+            info.callback(info.getArguments());
         }
         return null;
     }

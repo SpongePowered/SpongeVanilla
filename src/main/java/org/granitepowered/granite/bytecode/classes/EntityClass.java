@@ -29,6 +29,7 @@ import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.event.entity.GraniteEntityMoveEvent;
 import org.granitepowered.granite.mc.MCEntity;
@@ -42,22 +43,22 @@ public class EntityClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "moveEntity")
-    public Object moveEntity(MCEntity caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        if (!(caller instanceof MCEntityPlayerMP)) {
+    public Object moveEntity(ProxyCallbackInfo<MCEntity> info) throws Throwable {
+        if (!(info.getCaller() instanceof MCEntityPlayerMP)) {
             double oldX, oldY, oldZ;
-            oldX = caller.fieldGet$posX();
-            oldY = caller.fieldGet$posY();
-            oldZ = caller.fieldGet$posZ();
+            oldX = info.getCaller().fieldGet$posX();
+            oldY = info.getCaller().fieldGet$posY();
+            oldZ = info.getCaller().fieldGet$posZ();
 
-            callback.invokeParent(args);
+            info.callback();
 
             double newX, newY, newZ;
-            newX = caller.fieldGet$posX();
-            newY = caller.fieldGet$posY();
-            newZ = caller.fieldGet$posZ();
+            newX = info.getCaller().fieldGet$posX();
+            newY = info.getCaller().fieldGet$posY();
+            newZ = info.getCaller().fieldGet$posZ();
 
             if (oldX != newX || oldY != newY || oldZ != newZ) {
-                GraniteEntity entity = wrap((MCEntity) caller);
+                GraniteEntity entity = wrap(info.getCaller());
 
                 GraniteEntityMoveEvent event = new GraniteEntityMoveEvent(
                         entity,
@@ -72,7 +73,7 @@ public class EntityClass extends BytecodeClass {
                 }
             }
         } else {
-            callback.invokeParent(args);
+            info.callback();
         }
         return null;
     }

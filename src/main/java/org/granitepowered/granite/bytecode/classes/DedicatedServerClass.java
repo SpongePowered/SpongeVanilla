@@ -26,6 +26,7 @@ package org.granitepowered.granite.bytecode.classes;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.event.state.GraniteServerAboutToStartEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
@@ -40,8 +41,8 @@ public class DedicatedServerClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "startServer")
-    public Object startServer(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        Object ret = callback.invokeParent(args);
+    public Object startServer(ProxyCallbackInfo info) throws Throwable {
+        Object ret = info.callback();
 
         Granite.getInstance().getEventManager().post(new GraniteServerStartingEvent());
         Granite.getInstance().getEventManager().post(new GraniteServerStartedEvent());
@@ -50,24 +51,24 @@ public class DedicatedServerClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "setConfigManager")
-    public void setConfigManager(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+    public void setConfigManager(ProxyCallbackInfo info) throws Throwable {
         Granite.getInstance().getEventManager().post(new GraniteServerAboutToStartEvent());
 
-        callback.invokeParent(args);
+        info.callback();
     }
 
     @Proxy(methodName = "stopServer")
-    public void stopServer(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+    public void stopServer(ProxyCallbackInfo info) throws Throwable {
         Granite.getInstance().getEventManager().post(new GraniteServerStoppingEvent());
 
-        callback.invokeParent(args);
+        info.callback();
 
         Granite.getInstance().getEventManager().post(new GraniteServerStoppedEvent());
     }
 
-    public void tick(MCServer caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
+    public void tick(ProxyCallbackInfo info) throws Throwable {
         Granite.getInstance().getScheduler().tick();
 
-        callback.invokeParent(args);
+        info.callback();
     }
 }

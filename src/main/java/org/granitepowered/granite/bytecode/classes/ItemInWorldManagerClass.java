@@ -29,6 +29,7 @@ import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.block.GraniteBlockSnapshot;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
@@ -49,22 +50,22 @@ public class ItemInWorldManagerClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "func_180237_b")
-    public Object func_180237_b(MCItemInWorldManager caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        MCBlockPos mcBlockPos = (MCBlockPos) args[0];
+    public Object func_180237_b(ProxyCallbackInfo<MCItemInWorldManager> info) throws Throwable {
+        MCBlockPos mcBlockPos = (MCBlockPos) info.getArguments()[0];
         Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
 
-        GranitePlayer player = wrap(caller.fieldGet$thisPlayerMP());
+        GranitePlayer player = wrap(info.getCaller().fieldGet$thisPlayerMP());
 
-        GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(caller.fieldGet$theWorld()), pos));
+        GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(info.getCaller().fieldGet$theWorld()), pos));
         GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
 
         GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
         Granite.getInstance().getServer().getEventManager().post(event);
 
         if (!event.isCancelled()) {
-            return callback.invokeParent(args);
+            return info.callback(info.getArguments());
         } else {
-            MCPacket p = Instantiator.get().newPacketBlockChange(caller.fieldGet$theWorld(), mcBlockPos);
+            MCPacket p = Instantiator.get().newPacketBlockChange(info.getCaller().fieldGet$theWorld(), mcBlockPos);
             player.sendPacket(p);
             return false;
         }

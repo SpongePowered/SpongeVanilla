@@ -162,6 +162,11 @@ public class BytecodeClass {
                 if (method.hasAnnotation(Proxy.class)) {
                     proxy(((Proxy) method.getAnnotation(Proxy.class)).methodName(), method);
                 }
+
+                if (method.hasAnnotation(Insert.class)) {
+                    Insert insert = (Insert) method.getAnnotation(Insert.class);
+                    insert(insert.methodName(), method, insert.mode(), insert.position());
+                }
             }
         } catch (NotFoundException | ClassNotFoundException e) {
             Throwables.propagate(e);
@@ -203,11 +208,12 @@ public class BytecodeClass {
             CtMethod newMethod = new CtMethod(method.getReturnType(), oldName, method.getParameterTypes(), method.getDeclaringClass());
             //newMethod.setBody("return ($r) " + methodName + "$handler.preHandle(this, $args, " + methodName + "$method);");
 
-            CtClass callerType = handler.getParameterTypes()[0];
+            //CtClass callerType = handler.getParameterTypes()[0];
 
             String code = "{\n";
             code += ProxyHandlerCallback.class.getName() + " callback = " + getClass().getName() + ".createCallback((Object) this, " + methodName + "$method);\n";
-            code += "return ($r) this.bytecodeClass." + handler.getName() + "((" + callerType.getName() + ") this, $args, callback);\n";
+            code += ProxyCallbackInfo.class.getName() + " info = new " + ProxyCallbackInfo.class.getName() + "(this, $args, callback);";
+            code += "return ($r) this.bytecodeClass." + handler.getName() + "(info);\n";
             code += "}";
 
             if ((method.getModifiers() & AccessFlag.ABSTRACT) == AccessFlag.ABSTRACT) {
@@ -582,13 +588,22 @@ public class BytecodeClass {
         }
     }
 
-    public void insert(String methodName, String codeToAdd, CodeInsertionMode insertionMode, CodePosition position) {
+    public void insert(String methodName, CtMethod methodToInsert, CodeInsertionMode insertionMode, Position position) {
         final CtMethod method = Mappings.getCtMethod(clazz, methodName);
 
-        if (position instanceof CodePosition.NewPosition) {
+        addBytecodeClassField(method.getDeclaringClass());
+
+        addArgumentsVariable(methodName);
+
+        String codeToAdd = "";
+        codeToAdd += CallbackInfo.class.getName() + " info = new " + CallbackInfo.class.getName() + "(this, $args, $mArgs);";
+        codeToAdd += "this.bytecodeClass." + methodToInsert.getName() + "(info);";
+        codeToAdd += "if (info.isCancelled()) return;";
+
+        if (position.mode() == Position.PositionMode.NEW) {
             String code = "";
 
-            final CtClass clazz = ((CodePosition.NewPosition) position).getClazz();
+            final CtClass clazz = Mappings.getCtClass(position.value());
             switch (insertionMode) {
                 case BEFORE:
                     code += "{";

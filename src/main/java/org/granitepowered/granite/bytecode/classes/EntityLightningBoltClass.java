@@ -1,8 +1,6 @@
 package org.granitepowered.granite.bytecode.classes;
 
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CodeInsertionMode;
-import org.granitepowered.granite.bytecode.CodePosition;
+import org.granitepowered.granite.bytecode.*;
 import org.granitepowered.granite.impl.entity.weather.GraniteEntityLightningBolt;
 import org.granitepowered.granite.mc.MCEntityLightningBolt;
 import org.granitepowered.granite.util.MinecraftUtils;
@@ -11,15 +9,15 @@ public class EntityLightningBoltClass extends BytecodeClass {
 
     public EntityLightningBoltClass() {
         super("EntityLightningBolt");
+    }
 
-        insert("onUpdate",
-               "if (((" + GraniteEntityLightningBolt.class.getName() + ") " + MinecraftUtils.class.getName() + ".wrap((" + MCEntityLightningBolt.class
-                       .getName() + ") this)).isEffect()) return;",
-               CodeInsertionMode.BEFORE, new CodePosition.NewPosition("BlockPos"));
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.NEW, value = "BlockPos"))
+    public void onUpdateBP(CallbackInfo<MCEntityLightningBolt> info) {
+        if (((GraniteEntityLightningBolt) MinecraftUtils.wrap(info.getCaller())).isEffect()) info.cancel();
+    }
 
-        insert("onUpdate",
-               "if (((" + GraniteEntityLightningBolt.class.getName() + ") " + MinecraftUtils.class.getName() + ".wrap((" + MCEntityLightningBolt.class
-                       .getName() + ") this)).isEffect()) return;",
-               CodeInsertionMode.BEFORE, new CodePosition.NewPosition("AxisAlignedBB"));
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.NEW, value = "AxisAlignedBB"))
+    public void onUpdateAABB(CallbackInfo<MCEntityLightningBolt> info) {
+        if (((GraniteEntityLightningBolt) MinecraftUtils.wrap(info.getCaller())).isEffect()) info.cancel();
     }
 }

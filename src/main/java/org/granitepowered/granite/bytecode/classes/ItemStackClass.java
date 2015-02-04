@@ -29,6 +29,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerPlaceBlockEvent;
@@ -45,11 +46,11 @@ public class ItemStackClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "onItemUse")
-    public Object onItemUse(MCItemStack caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        MCEntityPlayerMP mcPlayer = (MCEntityPlayerMP) args[0];
-        MCWorld mcWorld = (MCWorld) args[1];
-        MCBlockPos posClicked = (MCBlockPos) args[2];
-        MCEnumFacing face = (MCEnumFacing) args[3];
+    public Object onItemUse(ProxyCallbackInfo<MCItemStack> info) throws Throwable {
+        MCEntityPlayerMP mcPlayer = (MCEntityPlayerMP) info.getArguments()[0];
+        MCWorld mcWorld = (MCWorld) info.getArguments()[1];
+        MCBlockPos posClicked = (MCBlockPos) info.getArguments()[2];
+        MCEnumFacing face = (MCEnumFacing) info.getArguments()[3];
 
         GranitePlayer player = wrap(mcPlayer);
         GraniteWorld world = wrap(mcWorld);
@@ -66,7 +67,7 @@ public class ItemStackClass extends BytecodeClass {
         BlockSnapshot oldSnapshot = loc.getSnapshot();
         // TODO: Send PR to Sponge devs with hitX, hitY, hitZ (args[4 - 6])
 
-        boolean ret = (boolean) callback.invokeParent(args);
+        boolean ret = (boolean) info.callback();
 
         BlockSnapshot newSnapshot = loc.getSnapshot();
 

@@ -28,6 +28,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import javassist.CtClass;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntityEgg;
@@ -46,8 +47,8 @@ public class EntityEggClass extends BytecodeClass {
     }
 
     @Proxy(methodName = "onImpact")
-    public Object onImpact(MCEntityEgg caller, Object[] args, ProxyHandlerCallback callback) throws Throwable {
-        float damage = (float) ((GraniteEgg) wrap((MCInterface) caller)).getDamage();
-        return callback.invokeParent(args[0], damage);
+    public Object onImpact(ProxyCallbackInfo<MCEntityEgg> info) throws Throwable {
+        float damage = (float) ((GraniteEgg) wrap(info.getCaller())).getDamage();
+        return info.callback(info.getArguments(), damage);
     }
 }
