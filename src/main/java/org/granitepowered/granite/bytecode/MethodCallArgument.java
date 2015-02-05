@@ -26,6 +26,8 @@ package org.granitepowered.granite.bytecode;
 public @interface MethodCallArgument {
     String methodName();
 
+    String methodCallClass();
+
     String methodCallName();
 
     int argumentIndex();

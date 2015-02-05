@@ -43,7 +43,6 @@ import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 import javassist.expr.NewExpr;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ClassUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
@@ -166,6 +165,11 @@ public class BytecodeClass {
                 if (method.hasAnnotation(Insert.class)) {
                     Insert insert = (Insert) method.getAnnotation(Insert.class);
                     insert(insert.methodName(), method, insert.mode(), insert.position());
+                }
+
+                if (method.hasAnnotation(MethodCallArgument.class)) {
+                    MethodCallArgument mca = (MethodCallArgument) method.getAnnotation(MethodCallArgument.class);
+                    replaceMethodCallArgument(mca.methodName(), method, mca.methodCallClass(), mca.methodCallName(), mca.argumentIndex());
                 }
             }
         } catch (NotFoundException | ClassNotFoundException e) {
@@ -545,27 +549,26 @@ public class BytecodeClass {
         return 0;
     }
 
-    public void replaceMethodCallParameter(String methodName, final CtMethod methodCall, final int parameterToReplace, final String replaceWith) {
+    public void replaceMethodCallArgument(String methodName, final CtMethod methodToCallback, String methodCallClass, String methodCallName, final int parameterToReplace) {
+        addArgumentsVariable(methodName);
+
         final CtMethod method = Mappings.getCtMethod(clazz, methodName);
+        final CtMethod methodCall = Mappings.getCtMethod(methodCallClass, methodCallName);
         try {
             method.instrument(new ExprEditor() {
                 @Override
                 public void edit(MethodCall m) throws CannotCompileException {
                     try {
                         if (m.getMethod().equals(methodCall)) {
-                            String code = "$_ = $proceed(";
+                            String code = "";
+                            code += CallbackInfo.class.getName() + " info = new " + CallbackInfo.class.getName() + "(this, $args, $mArgs);";
+                            code += methodToCallback.getReturnType().getName() + " var = this.bytecodeClass." + methodToCallback.getName() + "(info);";
+                            code += "if (!info.isCancelled()) {";
+                            code += "$_ = $proceed(";
 
                             for (int i = 0; i < methodCall.getParameterTypes().length; i++) {
                                 if (i == parameterToReplace) {
-                                    CtClass parameterType = methodCall.getParameterTypes()[i];
-
-                                    if (parameterType.isPrimitive()) {
-                                        code +=
-                                                "((" + ClassUtils.primitiveToWrapper(getFromCt(parameterType)).getName() + ") " + replaceWith + ")."
-                                                        + getFromCt(parameterType).getName() + "Value()";
-                                    } else {
-                                        code += "(" + parameterType.getName() + ") " + replaceWith;
-                                    }
+                                    code += "(" + methodCall.getParameterTypes()[i].getName() + ") var";
                                 } else {
                                     code += "$" + (i + 1);
                                 }
@@ -576,6 +579,7 @@ public class BytecodeClass {
                             }
 
                             code += ");";
+                            code += "}";
                             m.replace(code);
                         }
                     } catch (NotFoundException e) {

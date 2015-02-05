@@ -21,26 +21,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode.classes;
+package org.granitepowered.granite.util;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+import java.util.HashMap;
+import java.util.Map;
 
-import javassist.CtClass;
-import org.granitepowered.granite.bytecode.*;
-import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
-import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteFireball;
-import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntityEgg;
-import org.granitepowered.granite.mc.MCEntityFireball;
+public class ThreadedContainer<T> {
+    private Map<Long, T> map;
 
-public class EntityEggClass extends BytecodeClass {
-
-    public EntityEggClass() {
-        super("EntityEgg");
+    public ThreadedContainer() {
+        map = new HashMap<>();
     }
 
-    @MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
-    public float onImpactDamage(CallbackInfo<MCEntityEgg> info) {
-        return (float) ((GraniteEgg) wrap(info.getCaller())).getDamage();
+    public T get() {
+        return map.get(Thread.currentThread().getId());
+    }
+
+    public T get(Thread thread) {
+        return map.get(thread.getId());
+    }
+
+    public void set(T obj) {
+        map.put(Thread.currentThread().getId(), obj);
+    }
+
+    public void set(T obj, Thread thread) {
+        map.put(thread.getId(), obj);
     }
 }

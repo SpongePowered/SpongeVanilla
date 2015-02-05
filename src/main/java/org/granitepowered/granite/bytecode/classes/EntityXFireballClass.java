@@ -23,12 +23,10 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import javassist.CtClass;
 import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.MethodCallArgument;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteFireball;
-import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntityFireball;
 
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
@@ -37,17 +35,10 @@ public class EntityXFireballClass extends BytecodeClass {
 
     public EntityXFireballClass(String clazz) {
         super(clazz);
-
-        int idx = addParameter("onImpact", CtClass.floatType);
-
-        addArgumentsVariable("onImpact");
-
-        replaceMethodCallParameter("onImpact", Mappings.getCtMethod("Entity", "attackEntityFrom"), 1, "$mArgs[" + idx + "]");
     }
 
-    @Proxy(methodName = "onImpact")
-    public Object onImpact(ProxyCallbackInfo<MCEntityFireball> info) throws Throwable {
-        float damage = (float) ((GraniteFireball) wrap(info.getCaller())).getDamage();
-        return info.callback(info.getArguments()[0], damage);
+    @MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
+    public float onImpactDamage(CallbackInfo<MCEntityFireball> info) {
+        return (float) ((GraniteFireball) wrap(info.getCaller())).getDamage();
     }
 }
