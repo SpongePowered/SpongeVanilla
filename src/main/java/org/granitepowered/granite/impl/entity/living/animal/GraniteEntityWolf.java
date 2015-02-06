@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntityWolf;
 import org.spongepowered.api.entity.Tamer;
+import org.spongepowered.api.entity.living.animal.DyeColor;
 import org.spongepowered.api.entity.living.animal.Wolf;
-import org.spongepowered.api.entity.living.meta.DyeColor;
 
 public class GraniteEntityWolf extends GraniteEntityAnimal<MCEntityWolf> implements Wolf {
 

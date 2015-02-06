@@ -5,9 +5,9 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntityHorse;
 import org.spongepowered.api.entity.Tamer;
 import org.spongepowered.api.entity.living.animal.Horse;
-import org.spongepowered.api.entity.living.meta.HorseColor;
-import org.spongepowered.api.entity.living.meta.HorseStyle;
-import org.spongepowered.api.entity.living.meta.HorseVariant;
+import org.spongepowered.api.entity.living.animal.HorseColor;
+import org.spongepowered.api.entity.living.animal.HorseStyle;
+import org.spongepowered.api.entity.living.animal.HorseVariant;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public class GraniteEntityHorse extends GraniteEntityAnimal<MCEntityHorse> implements Horse {

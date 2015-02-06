@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.meta.OcelotType;
+import org.spongepowered.api.entity.living.animal.OcelotType;
 
 public class GraniteOcelotType extends GraniteMeta implements OcelotType {
 

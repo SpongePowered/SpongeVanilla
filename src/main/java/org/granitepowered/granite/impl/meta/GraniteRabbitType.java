@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.meta.RabbitType;
+import org.spongepowered.api.entity.living.animal.RabbitType;
 
 public class GraniteRabbitType extends GraniteMeta implements RabbitType {
 

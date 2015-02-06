@@ -35,6 +35,7 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuilder;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
+import org.granitepowered.granite.impl.effect.sound.GraniteSoundType;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.impl.meta.GraniteCareer;
 import org.granitepowered.granite.impl.meta.GraniteProfession;
@@ -74,23 +75,13 @@ import org.spongepowered.api.block.meta.SkullType;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.effect.sound.SoundType;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.hanging.art.Arts;
-import org.spongepowered.api.entity.living.meta.DyeColor;
-import org.spongepowered.api.entity.living.meta.DyeColors;
-import org.spongepowered.api.entity.living.meta.HorseColor;
-import org.spongepowered.api.entity.living.meta.HorseColors;
-import org.spongepowered.api.entity.living.meta.HorseStyle;
-import org.spongepowered.api.entity.living.meta.HorseStyles;
-import org.spongepowered.api.entity.living.meta.HorseVariant;
-import org.spongepowered.api.entity.living.meta.HorseVariants;
-import org.spongepowered.api.entity.living.meta.OcelotType;
-import org.spongepowered.api.entity.living.meta.OcelotTypes;
-import org.spongepowered.api.entity.living.meta.RabbitType;
-import org.spongepowered.api.entity.living.meta.RabbitTypes;
-import org.spongepowered.api.entity.living.meta.SkeletonType;
-import org.spongepowered.api.entity.living.meta.SkeletonTypes;
+import org.spongepowered.api.entity.living.animal.*;
+import org.spongepowered.api.entity.living.monster.SkeletonType;
+import org.spongepowered.api.entity.living.monster.SkeletonTypes;
 import org.spongepowered.api.entity.living.villager.Career;
 import org.spongepowered.api.entity.living.villager.Careers;
 import org.spongepowered.api.entity.living.villager.Profession;
@@ -144,12 +135,13 @@ public class GraniteGameRegistry implements GameRegistry {
     public Map<String, ItemType> itemTypes = Maps.newHashMap();
     public Map<String, Profession> professions = Maps.newHashMap();
     public Map<String, OcelotType> ocelots = Maps.newHashMap();
+    public Map<String, ParticleType> particles = Maps.newHashMap();
     public Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
     public Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
     public Map<String, RabbitType> rabbits = Maps.newHashMap();
     public Map<Integer, Rotation> rotations = Maps.newHashMap();
     public Map<String, SkeletonType> skeletons = Maps.newHashMap();
-    public Map<String, ParticleType> particles = Maps.newHashMap();
+    public Map<String, SoundType> sounds = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
@@ -175,6 +167,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
+        registerSounds();
     }
 
     private void registerArts() {
@@ -522,6 +515,7 @@ public class GraniteGameRegistry implements GameRegistry {
         types.add(new GraniteParticleType("ITEM_TAKE", false));
         types.add(new GraniteParticleType("MOB_APPEARANCE", false));
 
+        // TODO: Set particle fields in the SpongeAPI class
         for (int i = 0; i < types.size(); i++) {
             GraniteParticleType type = types.get(i);
             type.setId(i);
@@ -726,6 +720,29 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerSounds() {
+        // TODO: Register all sounds to list in order they are in the SpongeAPI Class
+        /*Granite.instance.getLogger().info("Registering Sounds");
+
+        List<String> minecraftSoundNames = new ArrayList<>();
+        minecraftSoundNames.add("");
+
+        for (int i = 0; i < minecraftSoundNames.size(); i++) {
+            SoundType soundType = new GraniteSoundType(minecraftSoundNames.get(i));
+            sounds.put(minecraftSoundNames.get(i), soundType);
+            Field field = SoundTypes.class.getDeclaredFields()[i];
+            ReflectionUtils.forceAccessible(field);
+            try {
+                field.set(null, soundType);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            if (Main.debugLog) {
+                Granite.getInstance().getLogger().info("Registered Sound minecraft:" + soundType.getName());
+            }
+        }*/
+    }
+
     @Override
     public Optional<BlockType> getBlock(String id) {
         return Optional.fromNullable(blockTypes.get(id));
@@ -800,13 +817,13 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<SoundType> getSound(String s) {
-        throw new NotImplementedException("");
+    public Optional<SoundType> getSound(String id) {
+        return Optional.fromNullable(sounds.get(id));
     }
 
     @Override
     public List<SoundType> getSounds() {
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(sounds.values());
     }
 
     @Override
@@ -1003,7 +1020,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<NotePitch> getNotePitch(String s) {
+    public Optional<NotePitch> getNotePitch(String id) {
         throw new NotImplementedException("");
     }
 
@@ -1013,7 +1030,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<SkullType> getSkullType(String s) {
+    public Optional<SkullType> getSkullType(String id) {
         throw new NotImplementedException("");
     }
 
@@ -1023,12 +1040,12 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<BannerPatternShape> getBannerPatternShape(String s) {
+    public Optional<BannerPatternShape> getBannerPatternShape(String id) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public Optional<BannerPatternShape> getBannerPatternShapeById(String s) {
+    public Optional<BannerPatternShape> getBannerPatternShapeById(String id) {
         throw new NotImplementedException("");
     }
 

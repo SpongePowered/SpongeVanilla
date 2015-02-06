@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.meta.HorseStyle;
+import org.spongepowered.api.entity.living.animal.HorseStyle;
 
 public class GraniteHorseStyle extends GraniteMeta implements HorseStyle {
 

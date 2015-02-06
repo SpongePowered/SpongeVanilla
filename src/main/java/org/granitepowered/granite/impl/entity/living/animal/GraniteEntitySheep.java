@@ -2,8 +2,8 @@ package org.granitepowered.granite.impl.entity.living.animal;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntitySheep;
+import org.spongepowered.api.entity.living.animal.DyeColor;
 import org.spongepowered.api.entity.living.animal.Sheep;
-import org.spongepowered.api.entity.living.meta.DyeColor;
 
 public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> implements Sheep {
 

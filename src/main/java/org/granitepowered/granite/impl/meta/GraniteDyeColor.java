@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.meta.DyeColor;
+import org.spongepowered.api.entity.living.animal.DyeColor;
 
 public class GraniteDyeColor extends GraniteMeta implements DyeColor {
 

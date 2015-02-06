@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.meta;
 
-import org.spongepowered.api.entity.living.meta.SkeletonType;
+import org.spongepowered.api.entity.living.monster.SkeletonType;
 
 public class GraniteSkeletonType extends GraniteMeta implements SkeletonType {
 

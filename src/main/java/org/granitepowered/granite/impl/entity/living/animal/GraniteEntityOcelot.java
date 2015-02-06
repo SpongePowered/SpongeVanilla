@@ -5,7 +5,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntityOcelot;
 import org.spongepowered.api.entity.Tamer;
 import org.spongepowered.api.entity.living.animal.Ocelot;
-import org.spongepowered.api.entity.living.meta.OcelotType;
+import org.spongepowered.api.entity.living.animal.OcelotType;
 
 public class GraniteEntityOcelot extends GraniteEntityAnimal<MCEntityOcelot> implements Ocelot {
 
