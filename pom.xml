@@ -199,6 +199,8 @@
                                     <include>com.google.inject:guice</include>
                                     <include>javax.inject:javax.inject</include>
                                     <include>aopalliance:aopalliance</include>
+                                    <include>ninja.leaping.configurate:configurate-core</include>
+                                    <include>ninja.leaping.configurate:configurate-hocon</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
