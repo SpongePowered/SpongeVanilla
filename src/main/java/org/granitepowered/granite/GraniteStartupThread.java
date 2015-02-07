@@ -112,6 +112,10 @@ public class GraniteStartupThread extends Thread {
     }
 
     public void run() {
+        Injector injector = Guice.createInjector(new GraniteGuiceModule());
+        Granite.instance = injector.getInstance(Granite.class);
+        Granite.instance.logger = LoggerFactory.getLogger("Granite");
+
         try {
             Properties versionProp = new Properties();
             InputStream versionIn = ClassLoader.getSystemResourceAsStream("version.properties");
@@ -135,12 +139,8 @@ public class GraniteStartupThread extends Thread {
                 }
             }
 
-            Injector injector = Guice.createInjector(new GraniteGuiceModule());
-
-            Granite.instance = injector.getInstance(Granite.class);
             Granite.instance.version = serverVersion;
             Granite.instance.apiVersion = apiVersion;
-            Granite.instance.logger = LoggerFactory.getLogger("Granite");
 
             Granite.instance.serverConfig = new ServerConfig();
             Granite.instance.classPool = ClassPool.getDefault();
