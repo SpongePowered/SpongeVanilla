@@ -35,7 +35,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.GraniteGameProfile;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
-import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
+import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
@@ -92,11 +92,11 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-public class GranitePlayer extends GraniteLivingBase<MCEntityPlayerMP> implements Player {
+public class GraniteEntityPlayer extends GraniteEntityLivingBase<MCEntityPlayerMP> implements Player {
 
     private Optional<Message> displayName = Optional.absent();
 
-    public GranitePlayer(MCEntityPlayerMP obj) {
+    public GraniteEntityPlayer(MCEntityPlayerMP obj) {
         super(obj);
     }
 

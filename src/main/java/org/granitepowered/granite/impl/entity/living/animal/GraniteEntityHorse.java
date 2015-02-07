@@ -1,13 +1,17 @@
 package org.granitepowered.granite.impl.entity.living.animal;
 
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityHorse;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Tamer;
 import org.spongepowered.api.entity.living.animal.Horse;
 import org.spongepowered.api.entity.living.animal.HorseColor;
 import org.spongepowered.api.entity.living.animal.HorseStyle;
 import org.spongepowered.api.entity.living.animal.HorseVariant;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public class GraniteEntityHorse extends GraniteEntityAnimal<MCEntityHorse> implements Horse {
@@ -18,61 +22,71 @@ public class GraniteEntityHorse extends GraniteEntityAnimal<MCEntityHorse> imple
 
     @Override
     public HorseStyle getStyle() {
-        throw new NotImplementedException("");
+        return Granite.getInstance().getGameRegistry().horseStyles
+                .get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
     }
 
     @Override
     public void setStyle(HorseStyle horseStyle) {
-        throw new NotImplementedException("");
+        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) getColor()).type & 0xFF | ((GraniteMeta) horseStyle).type << 8);
     }
 
     @Override
     public HorseColor getColor() {
-        throw new NotImplementedException("");
+        return Granite.getInstance().getGameRegistry().horseColors
+                .get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
     }
 
     @Override
     public void setColor(HorseColor horseColor) {
-        throw new NotImplementedException("");
+        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) horseColor).type & 0xFF | ((GraniteMeta) getStyle()).type << 8);
     }
 
     @Override
     public HorseVariant getVariant() {
-        throw new NotImplementedException("");
+        return Granite.getInstance().getGameRegistry().horseVariants.get(obj.fieldGet$dataWatcher().getWatchedObject(19).fieldGet$watchedObject());
     }
 
     @Override
     public void setVariant(HorseVariant horseVariant) {
-        throw new NotImplementedException("");
+        obj.fieldGet$dataWatcher().updateObject(19, ((GraniteMeta) horseVariant).type);
     }
 
     @Override
     public Optional<ItemStack> getSaddle() {
-        throw new NotImplementedException("");
+        ItemStack itemStack = MinecraftUtils.wrap(obj.fieldGet$animalChest().fieldGet$inventoryContents()[0]);
+        return Optional.fromNullable(itemStack);
     }
 
     @Override
     public void setSaddle(ItemStack itemStack) {
-        throw new NotImplementedException("");
+        if (itemStack.getItem() == ItemTypes.SADDLE) {
+            MCItemStack[] inventory = obj.fieldGet$animalChest().fieldGet$inventoryContents();
+            inventory[0] = MinecraftUtils.unwrap(itemStack);
+            obj.fieldGet$animalChest().fieldSet$inventoryContents(inventory);
+        }
     }
 
     @Override
     public boolean isTamed() {
-        throw new NotImplementedException("");
+        int object = (int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
+        return (object & 2) != 0;
     }
 
     @Override
     public void setTamed(boolean tamed) {
-        throw new NotImplementedException("");
+        obj.fieldGet$dataWatcher().updateObject(2, tamed);
     }
 
     @Override
     public Optional<Tamer> getOwner() {
-        throw new NotImplementedException("");
+        return Optional.fromNullable((Tamer) Granite.getInstance().getServer()
+                .getPlayer((String) obj.fieldGet$dataWatcher().getWatchedObject(21).fieldGet$watchedObject()));
     }
 
     @Override
     public void setOwner(Tamer tamer) {
-        throw new NotImplementedException("");
+        obj.fieldGet$dataWatcher().updateObject(21, tamer.getUniqueId().toString());
+        setTamed(true);
     }
 }

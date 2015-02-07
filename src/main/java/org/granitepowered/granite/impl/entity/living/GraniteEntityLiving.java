@@ -30,9 +30,9 @@ import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Agent;
 
-public class GraniteLiving<T extends MCEntityLiving> extends GraniteLivingBase<T> implements Agent {
+public class GraniteEntityLiving<T extends MCEntityLiving> extends GraniteEntityLivingBase<T> implements Agent {
 
-    public GraniteLiving(T obj) {
+    public GraniteEntityLiving(T obj) {
         super(obj);
     }
 

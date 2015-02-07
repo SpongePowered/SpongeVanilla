@@ -21,26 +21,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.projectile;
+package org.granitepowered.granite.impl.entity.living;
 
-import org.granitepowered.granite.mc.MCEntityEgg;
-import org.spongepowered.api.entity.projectile.Egg;
+import org.granitepowered.granite.mc.MCEntityBat;
+import org.spongepowered.api.entity.living.Bat;
 
-public class GraniteEgg extends GraniteThrowable<MCEntityEgg> implements Egg {
+public class GraniteEntityBat extends GraniteEntityLiving<MCEntityBat> implements Bat {
 
-    double damage = 0;
-
-    public GraniteEgg(MCEntityEgg obj) {
+    public GraniteEntityBat(MCEntityBat obj) {
         super(obj);
     }
 
     @Override
-    public double getDamage() {
-        return damage;
+    public boolean isAwake() {
+        return !obj.getIsBatHanging();
     }
 
     @Override
-    public void setDamage(double damage) {
-        this.damage = damage;
+    public void setAwake(boolean awake) {
+        obj.setIsBatHanging(!awake);
     }
 }

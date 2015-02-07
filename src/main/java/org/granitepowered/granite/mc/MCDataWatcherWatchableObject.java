@@ -27,6 +27,4 @@ package org.granitepowered.granite.mc;
 public interface MCDataWatcherWatchableObject {
 
     Object fieldGet$watchedObject();
-
-    // No fieldSet here because it should go through DataWatcher.updateObject
 }

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.event.player;
 
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
 import org.spongepowered.api.event.entity.living.player.PlayerChatEvent;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -31,7 +31,7 @@ public class GranitePlayerChatEvent extends GranitePlayerEvent implements Player
 
     String message;
 
-    public GranitePlayerChatEvent(GranitePlayer player, String message) {
+    public GranitePlayerChatEvent(GraniteEntityPlayer player, String message) {
         super(player);
         this.message = message;
     }

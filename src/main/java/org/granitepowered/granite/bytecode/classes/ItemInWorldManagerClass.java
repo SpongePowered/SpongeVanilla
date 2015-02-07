@@ -33,7 +33,7 @@ import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.block.GraniteBlockSnapshot;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerBreakBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mc.MCBlockPos;
@@ -54,7 +54,7 @@ public class ItemInWorldManagerClass extends BytecodeClass {
         MCBlockPos mcBlockPos = (MCBlockPos) info.getArguments()[0];
         Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
 
-        GranitePlayer player = wrap(info.getCaller().fieldGet$thisPlayerMP());
+        GraniteEntityPlayer player = wrap(info.getCaller().fieldGet$thisPlayerMP());
 
         GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(info.getCaller().fieldGet$theWorld()), pos));
         GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());

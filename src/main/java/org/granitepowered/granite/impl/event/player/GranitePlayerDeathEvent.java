@@ -27,7 +27,7 @@ package org.granitepowered.granite.impl.event.player;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Item;
@@ -44,7 +44,7 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
 
     Optional<Cause> deathCause;
 
-    public GranitePlayerDeathEvent(GranitePlayer player, MCDamageSource playerDeathCause, Message deathMessage) {
+    public GranitePlayerDeathEvent(GraniteEntityPlayer player, MCDamageSource playerDeathCause, Message deathMessage) {
         super(player);
         GraniteEntity source = MinecraftUtils.wrap(playerDeathCause.getSourceOfDamage());
         if (source == null) {

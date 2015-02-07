@@ -21,24 +21,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity;
+package org.granitepowered.granite.impl.entity.explosive;
 
-import org.granitepowered.granite.mc.MCEntityXPOrb;
-import org.spongepowered.api.entity.ExperienceOrb;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-public class GraniteExperienceOrb extends GraniteEntity<MCEntityXPOrb> implements ExperienceOrb {
+import com.google.common.base.Optional;
+import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.mc.MCPrimedTNT;
+import org.spongepowered.api.entity.explosive.PrimedTNT;
+import org.spongepowered.api.entity.living.Living;
 
-    public GraniteExperienceOrb(MCEntityXPOrb obj) {
+public class GraniteEntityPrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
+
+    public GraniteEntityPrimedTNT(MCPrimedTNT obj) {
         super(obj);
     }
 
     @Override
-    public double getExperience() {
-        return obj.fieldGet$xpValue();
+    public Optional<Living> getDetonator() {
+        return Optional.fromNullable((Living) wrap(obj.fieldGet$tntTriggeredBy()));
     }
 
     @Override
-    public void setExperience(double experience) {
-        obj.fieldSet$xpValue((int) experience);
+    public int getFuseDuration() {
+        return obj.fieldGet$fuse();
+    }
+
+    @Override
+    public void setFuseDuration(int ticks) {
+        obj.fieldSet$fuse(ticks);
+    }
+
+    @Override
+    public void detonate() {
+        this.setFuseDuration(0);
     }
 }

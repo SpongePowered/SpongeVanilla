@@ -21,62 +21,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.living;
+package org.granitepowered.granite.impl.entity.projectile;
 
-import org.granitepowered.granite.mc.MCEntityAgeable;
-import org.spongepowered.api.entity.living.Ageable;
+import org.granitepowered.granite.mc.MCEntityEgg;
+import org.spongepowered.api.entity.projectile.Egg;
 
-public class GraniteAgeable<T extends MCEntityAgeable> extends GraniteLiving<T> implements Ageable {
+public class GraniteEntityEgg extends GraniteEntityThrowable<MCEntityEgg> implements Egg {
 
-    public GraniteAgeable(T obj) {
+    double damage = 0;
+
+    public GraniteEntityEgg(MCEntityEgg obj) {
         super(obj);
     }
 
     @Override
-    public int getAge() {
-        return obj.getGrowingAge();
+    public double getDamage() {
+        return damage;
     }
 
     @Override
-    public void setAge(int age) {
-        obj.setGrowingAge(age);
-    }
-
-    @Override
-    public void setBaby() {
-        if (getAge() >= 0) {
-            setAge(-24000);
-        }
-    }
-
-    @Override
-    public void setAdult() {
-        if (getAge() < 0) {
-            setAge(0);
-        }
-    }
-
-    @Override
-    public boolean isBaby() {
-        return getAge() < 0;
-    }
-
-    @Override
-    public boolean canBreed() {
-        return getAge() == 0;
-    }
-
-    @Override
-    public void setBreeding(boolean breeding) {
-        if (breeding) {
-            setAge(0);
-        } else if (getAge() >= 0) {
-            setAge(6000);
-        }
-    }
-
-    @Override
-    public void setScaleForAge() {
-        obj.setScaleForAge(getAge() < 0);
+    public void setDamage(double damage) {
+        this.damage = damage;
     }
 }

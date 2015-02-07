@@ -30,9 +30,9 @@ import org.granitepowered.granite.mc.MCEnumFacing;
 import org.spongepowered.api.entity.hanging.Hanging;
 import org.spongepowered.api.util.Direction;
 
-public class GraniteHanging<T extends MCEntityHanging> extends GraniteEntity<T> implements Hanging {
+public class GraniteEntityHanging<T extends MCEntityHanging> extends GraniteEntity<T> implements Hanging {
 
-    public GraniteHanging(T obj) {
+    public GraniteEntityHanging(T obj) {
         super(obj);
     }
 

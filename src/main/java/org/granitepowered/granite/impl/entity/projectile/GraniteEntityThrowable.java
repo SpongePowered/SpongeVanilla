@@ -26,55 +26,23 @@ package org.granitepowered.granite.impl.entity.projectile;
 import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCEntityArrow;
-import org.spongepowered.api.entity.projectile.Arrow;
+import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.granitepowered.granite.mc.MCEntityThrowable;
 import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 
-public class GraniteArrow extends GraniteProjectile<MCEntityArrow> implements Arrow {
+public abstract class GraniteEntityThrowable<T extends MCEntityThrowable> extends GraniteProjectile<T> {
 
-    public GraniteArrow(MCEntityArrow obj) {
+    public GraniteEntityThrowable(T obj) {
         super(obj);
     }
 
     @Override
-    public boolean isCritical() {
-        return (((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject()) & 1) != 0;
-    }
-
-    @Override
-    public void setCritical(boolean critical) {
-        byte prev = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, critical ? prev | 1 : prev & -2);
-    }
-
-    @Override
-    public int getKnockbackStrength() {
-        return obj.fieldGet$knockbackStrength();
-    }
-
-    @Override
-    public void setKnockbackStrength(int knockbackStrength) {
-        obj.fieldSet$knockbackStrength(knockbackStrength);
-    }
-
-    @Override
     public ProjectileSource getShooter() {
-        return wrap(obj.fieldGet$shootingEntity());
+        return wrap(obj.getThrower());
     }
 
     @Override
     public void setShooter(ProjectileSource shooter) {
-        obj.fieldSet$shootingEntity((MCEntity) unwrap(shooter));
-    }
-
-    @Override
-    public double getDamage() {
-        return obj.fieldGet$damage();
-    }
-
-    @Override
-    public void setDamage(double damage) {
-        obj.fieldSet$damage(damage);
+        obj.fieldSet$thrower((MCEntityLivingBase) unwrap(shooter));
     }
 }

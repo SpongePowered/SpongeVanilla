@@ -36,17 +36,17 @@ import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.block.GraniteBlockType;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.entity.GraniteEntityItem;
-import org.granitepowered.granite.impl.entity.GraniteExperienceOrb;
-import org.granitepowered.granite.impl.entity.GraniteFallingBlock;
-import org.granitepowered.granite.impl.entity.explosive.GranitePrimedTNT;
+import org.granitepowered.granite.impl.entity.GraniteEntityExperienceOrb;
+import org.granitepowered.granite.impl.entity.GraniteEntityFallingBlock;
+import org.granitepowered.granite.impl.entity.explosive.GraniteEntityPrimedTNT;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
-import org.granitepowered.granite.impl.entity.living.GraniteArmorStand;
-import org.granitepowered.granite.impl.entity.living.GraniteBat;
-import org.granitepowered.granite.impl.entity.living.GraniteLiving;
-import org.granitepowered.granite.impl.entity.living.GraniteLivingBase;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.granitepowered.granite.impl.entity.projectile.GraniteArrow;
-import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
+import org.granitepowered.granite.impl.entity.living.GraniteEntityArmorStand;
+import org.granitepowered.granite.impl.entity.living.GraniteEntityBat;
+import org.granitepowered.granite.impl.entity.living.GraniteEntityLiving;
+import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEntityArrow;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEntityEgg;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteLargeFireball;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteSmallFireball;
 import org.granitepowered.granite.impl.entity.weather.GraniteEntityLightningBolt;
@@ -83,20 +83,20 @@ public class MinecraftUtils {
             .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
             .put(Mappings.getClass("Enchantment"), GraniteServer.class)
             .put(Mappings.getClass("Entity"), GraniteEntity.class)
-            .put(Mappings.getClass("EntityArmorStand"), GraniteArmorStand.class)
-            .put(Mappings.getClass("EntityArrow"), GraniteArrow.class)
-            .put(Mappings.getClass("EntityBat"), GraniteBat.class)
-            .put(Mappings.getClass("EntityEgg"), GraniteEgg.class)
-            .put(Mappings.getClass("EntityFallingBlock"), GraniteFallingBlock.class)
+            .put(Mappings.getClass("EntityArmorStand"), GraniteEntityArmorStand.class)
+            .put(Mappings.getClass("EntityArrow"), GraniteEntityArrow.class)
+            .put(Mappings.getClass("EntityBat"), GraniteEntityBat.class)
+            .put(Mappings.getClass("EntityEgg"), GraniteEntityEgg.class)
+            .put(Mappings.getClass("EntityFallingBlock"), GraniteEntityFallingBlock.class)
             .put(Mappings.getClass("EntityItem"), GraniteEntityItem.class)
             .put(Mappings.getClass("EntityLargeFireball"), GraniteLargeFireball.class)
             .put(Mappings.getClass("EntityLightningBolt"), GraniteEntityLightningBolt.class)
-            .put(Mappings.getClass("EntityLivingBase"), GraniteLivingBase.class)
-            .put(Mappings.getClass("EntityLiving"), GraniteLiving.class)
-            .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
+            .put(Mappings.getClass("EntityLivingBase"), GraniteEntityLivingBase.class)
+            .put(Mappings.getClass("EntityLiving"), GraniteEntityLiving.class)
+            .put(Mappings.getClass("EntityPlayerMP"), GraniteEntityPlayer.class)
             .put(Mappings.getClass("EntitySmallFireball"), GraniteSmallFireball.class)
-            .put(Mappings.getClass("EntityTNTPrimed"), GranitePrimedTNT.class)
-            .put(Mappings.getClass("EntityXPOrb"), GraniteExperienceOrb.class)
+            .put(Mappings.getClass("EntityTNTPrimed"), GraniteEntityPrimedTNT.class)
+            .put(Mappings.getClass("EntityXPOrb"), GraniteEntityExperienceOrb.class)
             .put(Mappings.getClass("EnumArt"), GraniteArt.class)
             .put(Mappings.getClass("GameProfile"), GraniteGameProfile.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)

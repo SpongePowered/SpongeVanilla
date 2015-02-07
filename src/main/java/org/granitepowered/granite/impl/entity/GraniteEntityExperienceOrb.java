@@ -21,28 +21,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.hanging;
+package org.granitepowered.granite.impl.entity;
 
-import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
-import org.granitepowered.granite.mc.MCEntityPainting;
-import org.granitepowered.granite.mc.MCEnumArt;
-import org.granitepowered.granite.util.MinecraftUtils;
-import org.spongepowered.api.entity.hanging.Painting;
-import org.spongepowered.api.entity.hanging.art.Art;
+import org.granitepowered.granite.mc.MCEntityXPOrb;
+import org.spongepowered.api.entity.ExperienceOrb;
 
-public class GranitePainting extends GraniteHanging<MCEntityPainting> implements Painting {
+public class GraniteEntityExperienceOrb extends GraniteEntity<MCEntityXPOrb> implements ExperienceOrb {
 
-    public GranitePainting(MCEntityPainting obj) {
+    public GraniteEntityExperienceOrb(MCEntityXPOrb obj) {
         super(obj);
     }
 
     @Override
-    public Art getArt() {
-        return new GraniteArt(obj.fieldGet$art());
+    public double getExperience() {
+        return obj.fieldGet$xpValue();
     }
 
     @Override
-    public void setArt(Art art) {
-        obj.fieldSet$art((MCEnumArt) MinecraftUtils.unwrap(art));
+    public void setExperience(double experience) {
+        obj.fieldSet$xpValue((int) experience);
     }
 }

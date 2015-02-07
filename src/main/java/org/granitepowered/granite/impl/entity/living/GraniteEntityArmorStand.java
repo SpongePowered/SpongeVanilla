@@ -31,9 +31,9 @@ import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-public class GraniteArmorStand extends GraniteLivingBase<MCEntityArmorStand> implements ArmorStand {
+public class GraniteEntityArmorStand extends GraniteEntityLivingBase<MCEntityArmorStand> implements ArmorStand {
 
-    public GraniteArmorStand(MCEntityArmorStand obj) {
+    public GraniteEntityArmorStand(MCEntityArmorStand obj) {
         super(obj);
     }
 

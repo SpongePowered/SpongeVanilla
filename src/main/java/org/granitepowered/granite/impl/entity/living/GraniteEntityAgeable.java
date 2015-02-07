@@ -21,42 +21,62 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.hanging;
+package org.granitepowered.granite.impl.entity.living;
 
-import com.google.common.base.Optional;
-import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.impl.util.GraniteRotation;
-import org.granitepowered.granite.mc.MCEntityItemFrame;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.util.MinecraftUtils;
-import org.spongepowered.api.entity.hanging.ItemFrame;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.util.rotation.Rotation;
+import org.granitepowered.granite.mc.MCEntityAgeable;
+import org.spongepowered.api.entity.living.Ageable;
 
-public class GraniteItemFrame extends GraniteHanging<MCEntityItemFrame> implements ItemFrame {
+public class GraniteEntityAgeable<T extends MCEntityAgeable> extends GraniteEntityLiving<T> implements Ageable {
 
-    public GraniteItemFrame(MCEntityItemFrame obj) {
+    public GraniteEntityAgeable(T obj) {
         super(obj);
     }
 
     @Override
-    public Optional<ItemStack> getItem() {
-        return Optional.fromNullable((ItemStack) new GraniteItemStack(obj.getDisplayedItem()));
+    public int getAge() {
+        return obj.getGrowingAge();
     }
 
     @Override
-    public void setItem(ItemStack itemStack) {
-        obj.setDisplayedItem((MCItemStack) MinecraftUtils.unwrap(itemStack));
-    }
-
-    // TODO: Replace this when Sponge add rotations to the GameRegistry
-    @Override
-    public Rotation getItemRotation() {
-        return new GraniteRotation(obj.getRotation());
+    public void setAge(int age) {
+        obj.setGrowingAge(age);
     }
 
     @Override
-    public void setRotation(Rotation rotation) {
-        obj.setItemRotation(rotation.getAngle());
+    public void setBaby() {
+        if (getAge() >= 0) {
+            setAge(-24000);
+        }
+    }
+
+    @Override
+    public void setAdult() {
+        if (getAge() < 0) {
+            setAge(0);
+        }
+    }
+
+    @Override
+    public boolean isBaby() {
+        return getAge() < 0;
+    }
+
+    @Override
+    public boolean canBreed() {
+        return getAge() == 0;
+    }
+
+    @Override
+    public void setBreeding(boolean breeding) {
+        if (breeding) {
+            setAge(0);
+        } else if (getAge() >= 0) {
+            setAge(6000);
+        }
+    }
+
+    @Override
+    public void setScaleForAge() {
+        obj.setScaleForAge(getAge() < 0);
     }
 }

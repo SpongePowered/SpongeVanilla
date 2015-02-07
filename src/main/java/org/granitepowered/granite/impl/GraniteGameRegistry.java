@@ -74,6 +74,7 @@ import org.spongepowered.api.block.meta.NotePitch;
 import org.spongepowered.api.block.meta.SkullType;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
+import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.EntityType;
@@ -515,11 +516,19 @@ public class GraniteGameRegistry implements GameRegistry {
         types.add(new GraniteParticleType("ITEM_TAKE", false));
         types.add(new GraniteParticleType("MOB_APPEARANCE", false));
 
-        // TODO: Set particle fields in the SpongeAPI class
         for (int i = 0; i < types.size(); i++) {
             GraniteParticleType type = types.get(i);
             type.setId(i);
             particles.put(type.getName(), type);
+
+            Field field = ParticleTypes.class.getDeclaredFields()[i];
+            ReflectionUtils.forceAccessible(field);
+            try {
+                field.set(null, type);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
             if (Main.debugLog) {
                 Granite.getInstance().getLogger().info("Registered Particle minecraft:" + type.getName());
             }
@@ -571,7 +580,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerProfessionsAndCareers() {
-        Granite.instance.getLogger().info("Registering Professions");
+        Granite.instance.getLogger().info("Registering Professions and Careers");
 
         int i = 0;
         for (Field field : Professions.class.getDeclaredFields()) {
@@ -590,8 +599,6 @@ public class GraniteGameRegistry implements GameRegistry {
                 Throwables.propagate(e);
             }
         }
-
-        Granite.instance.getLogger().info("Registering Careers");
 
         List<Career> farmers = new ArrayList<>();
         List<Career> librarians = new ArrayList<>();

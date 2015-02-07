@@ -31,7 +31,7 @@ import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
 import org.granitepowered.granite.impl.event.player.GranitePlayerPlaceBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mc.*;
@@ -52,7 +52,7 @@ public class ItemStackClass extends BytecodeClass {
         MCBlockPos posClicked = (MCBlockPos) info.getArguments()[2];
         MCEnumFacing face = (MCEnumFacing) info.getArguments()[3];
 
-        GranitePlayer player = wrap(mcPlayer);
+        GraniteEntityPlayer player = wrap(mcPlayer);
         GraniteWorld world = wrap(mcWorld);
 
         BlockLoc clickedLoc = world.getBlock(posClicked.fieldGet$x(), posClicked.fieldGet$y(), posClicked.fieldGet$z());

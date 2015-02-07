@@ -46,11 +46,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class GraniteLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
+public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
 
     private int maxAir = 300;
 
-    public GraniteLivingBase(T obj) {
+    public GraniteEntityLivingBase(T obj) {
         super(obj);
     }
 

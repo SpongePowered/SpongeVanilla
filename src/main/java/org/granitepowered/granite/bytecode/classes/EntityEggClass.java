@@ -25,13 +25,10 @@ package org.granitepowered.granite.bytecode.classes;
 
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import javassist.CtClass;
 import org.granitepowered.granite.bytecode.*;
-import org.granitepowered.granite.impl.entity.projectile.GraniteEgg;
-import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteFireball;
-import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntityEgg;
-import org.granitepowered.granite.mc.MCEntityFireball;
+import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEntityEgg;
 
 public class EntityEggClass extends BytecodeClass {
 
@@ -41,6 +38,6 @@ public class EntityEggClass extends BytecodeClass {
 
     @MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
     public float onImpactDamage(CallbackInfo<MCEntityEgg> info) {
-        return (float) ((GraniteEgg) wrap(info.getCaller())).getDamage();
+        return (float) ((GraniteEntityEgg) wrap(info.getCaller())).getDamage();
     }
 }

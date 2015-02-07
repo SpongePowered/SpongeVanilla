@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.event.player;
 
-import org.granitepowered.granite.impl.entity.player.GranitePlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
 import org.spongepowered.api.event.entity.living.player.PlayerMoveEvent;
 import org.spongepowered.api.world.Location;
 
@@ -32,7 +32,7 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
     Location old;
     Location new_;
 
-    public GranitePlayerMoveEvent(GranitePlayer player, Location old, Location new_) {
+    public GranitePlayerMoveEvent(GraniteEntityPlayer player, Location old, Location new_) {
         super(player);
         this.old = old;
         this.new_ = new_;

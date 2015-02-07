@@ -21,39 +21,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.entity.explosive;
+package org.granitepowered.granite.impl.entity.hanging;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
+import org.granitepowered.granite.mc.MCEntityPainting;
+import org.granitepowered.granite.mc.MCEnumArt;
+import org.granitepowered.granite.util.MinecraftUtils;
+import org.spongepowered.api.entity.hanging.Painting;
+import org.spongepowered.api.entity.hanging.art.Art;
 
-import com.google.common.base.Optional;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCPrimedTNT;
-import org.spongepowered.api.entity.explosive.PrimedTNT;
-import org.spongepowered.api.entity.living.Living;
+public class GraniteEntityPainting extends GraniteEntityHanging<MCEntityPainting> implements Painting {
 
-public class GranitePrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
-
-    public GranitePrimedTNT(MCPrimedTNT obj) {
+    public GraniteEntityPainting(MCEntityPainting obj) {
         super(obj);
     }
 
     @Override
-    public Optional<Living> getDetonator() {
-        return Optional.fromNullable((Living) wrap(obj.fieldGet$tntTriggeredBy()));
+    public Art getArt() {
+        return new GraniteArt(obj.fieldGet$art());
     }
 
     @Override
-    public int getFuseDuration() {
-        return obj.fieldGet$fuse();
-    }
-
-    @Override
-    public void setFuseDuration(int ticks) {
-        obj.fieldSet$fuse(ticks);
-    }
-
-    @Override
-    public void detonate() {
-        this.setFuseDuration(0);
+    public void setArt(Art art) {
+        obj.fieldSet$art((MCEnumArt) MinecraftUtils.unwrap(art));
     }
 }
