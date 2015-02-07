@@ -37,6 +37,7 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.granitepowered.granite.mc.MCPotion;
+import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
@@ -65,12 +66,17 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public double getHealth() {
-        return obj.getHealth();
+        return (float) obj.fieldGet$dataWatcher().getWatchedObject(6).fieldGet$watchedObject();
     }
 
     @Override
     public void setHealth(double health) {
-        obj.setHealth((float) health);
+        if (health < 0) {
+            health = 0;
+        } else if (health > 20) {
+            health = 20;
+        }
+        obj.fieldGet$dataWatcher().updateObject(6, (float) health);
     }
 
     @Override
@@ -216,11 +222,16 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public boolean isInvisible() {
-        throw new NotImplementedException("");
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(0).fieldGet$watchedObject() & 1 << 5) != 0;
     }
 
     @Override
-    public void setInvisible(boolean b) {
-        throw new NotImplementedException("");
+    public void setInvisible(boolean invisible) {
+        if (this instanceof ArmorStand) {
+            GraniteEntityArmorStand armorStand = (GraniteEntityArmorStand) this;
+            armorStand.obj.fieldSet$canInteract(invisible);
+        }
+        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(0).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(0, (byte) (invisible ? (object | 1 << 5) : (object & ~(1 << 5))));
     }
 }

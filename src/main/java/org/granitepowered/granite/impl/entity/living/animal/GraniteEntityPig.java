@@ -1,6 +1,5 @@
 package org.granitepowered.granite.impl.entity.living.animal;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntityPig;
 import org.spongepowered.api.entity.living.animal.Pig;
 
@@ -12,11 +11,11 @@ public class GraniteEntityPig extends GraniteEntityAnimal<MCEntityPig> implement
 
     @Override
     public boolean isSaddled() {
-        throw new NotImplementedException("");
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
     }
 
     @Override
     public void setSaddled(boolean saddled) {
-        throw new NotImplementedException("");
+        obj.fieldGet$dataWatcher().updateObject(16, saddled ? (byte) 1 : (byte) 0);
     }
 }

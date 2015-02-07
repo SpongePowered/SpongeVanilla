@@ -1,6 +1,7 @@
 package org.granitepowered.granite.impl.entity.living.animal;
 
-import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntitySheep;
 import org.spongepowered.api.entity.living.animal.DyeColor;
 import org.spongepowered.api.entity.living.animal.Sheep;
@@ -13,21 +14,23 @@ public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> imple
 
     @Override
     public boolean isSheared() {
-        throw new NotImplementedException("");
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 16) != 0;
     }
 
     @Override
     public void setSheared(boolean sheared) {
-        throw new NotImplementedException("");
+        byte isSheared = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(16, (byte) (sheared ? isSheared | 16 : isSheared & -17));
     }
 
     @Override
     public DyeColor getColor() {
-        throw new NotImplementedException("");
+        return Granite.instance.getGameRegistry().dyeColors.get((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 15);
     }
 
     @Override
     public void setColor(DyeColor dyeColor) {
-        throw new NotImplementedException("");
+        byte currentColor = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(16, ((byte) (currentColor & 240 | ((GraniteMeta) dyeColor).type) & 15));
     }
 }

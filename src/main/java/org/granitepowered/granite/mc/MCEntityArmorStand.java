@@ -26,49 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityArmorStand")
 public interface MCEntityArmorStand extends MCEntityLivingBase {
 
-    MCRotations fieldGet$headRotation();
-
-    void setHeadRotation(MCRotations mcRotations);
-
-    MCRotations fieldGet$bodyRotation();
-
-    void setBodyRotation(MCRotations mcRotations);
-
-    MCRotations fieldGet$leftArmRotation();
-
-    void setLeftArmRotation(MCRotations mcRotations);
-
-    MCRotations fieldGet$rightArmRotation();
-
-    void setRightArmRotation(MCRotations mcRotations);
-
-    MCRotations fieldGet$leftLegRotation();
-
-    void setLeftLegRotation(MCRotations mcRotations);
-
-    MCRotations fieldGet$rightLegRotation();
-
-    void setRightLegRotation(MCRotations mcRotations);
-
     MCItemStack getEquipmentInSlot(int slot);
 
     void setCurrentItemOrArmor(int slot, MCItemStack itemStack);
 
-    void setInvisible(boolean invisible);
-
-    boolean isSmall();
-
-    void setSmall(boolean small);
-
-    boolean hasNoGravity();
-
-    void setNoGravity(boolean gravity);
-
-    boolean getShowArms();
-
-    void setShowArms(boolean showArms);
-
-    boolean hasNoBasePlate();
-
-    void setNoBasePlate(boolean noBasePlate);
+    void fieldSet$canInteract(boolean interact);
 }

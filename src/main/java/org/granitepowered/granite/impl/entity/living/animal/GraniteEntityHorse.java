@@ -6,7 +6,6 @@ import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityHorse;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.util.MinecraftUtils;
-import org.spongepowered.api.entity.Tamer;
 import org.spongepowered.api.entity.living.animal.Horse;
 import org.spongepowered.api.entity.living.animal.HorseColor;
 import org.spongepowered.api.entity.living.animal.HorseStyle;
@@ -14,7 +13,7 @@ import org.spongepowered.api.entity.living.animal.HorseVariant;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-public class GraniteEntityHorse extends GraniteEntityAnimal<MCEntityHorse> implements Horse {
+public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> implements Horse {
 
     public GraniteEntityHorse(MCEntityHorse obj) {
         super(obj);
@@ -65,28 +64,5 @@ public class GraniteEntityHorse extends GraniteEntityAnimal<MCEntityHorse> imple
             inventory[0] = MinecraftUtils.unwrap(itemStack);
             obj.fieldGet$animalChest().fieldSet$inventoryContents(inventory);
         }
-    }
-
-    @Override
-    public boolean isTamed() {
-        int object = (int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        return (object & 2) != 0;
-    }
-
-    @Override
-    public void setTamed(boolean tamed) {
-        obj.fieldGet$dataWatcher().updateObject(2, tamed);
-    }
-
-    @Override
-    public Optional<Tamer> getOwner() {
-        return Optional.fromNullable((Tamer) Granite.getInstance().getServer()
-                .getPlayer((String) obj.fieldGet$dataWatcher().getWatchedObject(21).fieldGet$watchedObject()));
-    }
-
-    @Override
-    public void setOwner(Tamer tamer) {
-        obj.fieldGet$dataWatcher().updateObject(21, tamer.getUniqueId().toString());
-        setTamed(true);
     }
 }

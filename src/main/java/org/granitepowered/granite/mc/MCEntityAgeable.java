@@ -24,7 +24,7 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityAgeable")
-public interface MCEntityAgeable extends MCEntityLiving {
+public interface MCEntityAgeable extends MCEntityCreature {
 
     int getGrowingAge();
 

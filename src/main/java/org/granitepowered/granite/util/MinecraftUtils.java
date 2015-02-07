@@ -44,7 +44,7 @@ import org.granitepowered.granite.impl.entity.living.GraniteEntityArmorStand;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityBat;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityLiving;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEntityArrow;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEntityEgg;
 import org.granitepowered.granite.impl.entity.projectile.fireball.GraniteLargeFireball;
@@ -93,7 +93,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityLightningBolt"), GraniteEntityLightningBolt.class)
             .put(Mappings.getClass("EntityLivingBase"), GraniteEntityLivingBase.class)
             .put(Mappings.getClass("EntityLiving"), GraniteEntityLiving.class)
-            .put(Mappings.getClass("EntityPlayerMP"), GraniteEntityPlayer.class)
+            .put(Mappings.getClass("EntityPlayerMP"), GraniteEntityPlayerMP.class)
             .put(Mappings.getClass("EntitySmallFireball"), GraniteSmallFireball.class)
             .put(Mappings.getClass("EntityTNTPrimed"), GraniteEntityPrimedTNT.class)
             .put(Mappings.getClass("EntityXPOrb"), GraniteEntityExperienceOrb.class)

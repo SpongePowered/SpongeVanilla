@@ -27,6 +27,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.granitepowered.granite.mc.MCEntityArmorStand;
 import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCRotations;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -39,107 +40,106 @@ public class GraniteEntityArmorStand extends GraniteEntityLivingBase<MCEntityArm
 
     @Override
     public Vector3f getHeadDirection() {
-        return MinecraftUtils.minecraftToGraniteRotations(obj.fieldGet$headRotation());
+        return MinecraftUtils.minecraftToGraniteRotations((MCRotations) obj.fieldGet$dataWatcher().getWatchedObject(11).fieldGet$watchedObject());
     }
 
     @Override
     public void setHeadDirection(Vector3f vector3f) {
-        obj.setHeadRotation(MinecraftUtils.graniteToMinecraftRotations(vector3f));
+        obj.fieldGet$dataWatcher().updateObject(11, MinecraftUtils.graniteToMinecraftRotations(vector3f));
     }
 
     @Override
     public Vector3f getBodyRotation() {
-        return MinecraftUtils.minecraftToGraniteRotations(obj.fieldGet$bodyRotation());
+        return MinecraftUtils.minecraftToGraniteRotations((MCRotations) obj.fieldGet$dataWatcher().getWatchedObject(12).fieldGet$watchedObject());
     }
 
     @Override
     public void setBodyDirection(Vector3f vector3f) {
-        obj.setBodyRotation(MinecraftUtils.graniteToMinecraftRotations(vector3f));
+        obj.fieldGet$dataWatcher().updateObject(12, MinecraftUtils.graniteToMinecraftRotations(vector3f));
     }
 
     @Override
     public Vector3f getLeftArmDirection() {
-        return MinecraftUtils.minecraftToGraniteRotations(obj.fieldGet$leftArmRotation());
+        return MinecraftUtils.minecraftToGraniteRotations((MCRotations) obj.fieldGet$dataWatcher().getWatchedObject(13).fieldGet$watchedObject());
     }
 
     @Override
     public void setLeftArmDirection(Vector3f vector3f) {
-        obj.setLeftArmRotation(MinecraftUtils.graniteToMinecraftRotations(vector3f));
+        obj.fieldGet$dataWatcher().updateObject(13, MinecraftUtils.graniteToMinecraftRotations(vector3f));
     }
 
     @Override
     public Vector3f getRightArmDirection() {
-        return MinecraftUtils.minecraftToGraniteRotations(obj.fieldGet$rightArmRotation());
+        return MinecraftUtils.minecraftToGraniteRotations((MCRotations) obj.fieldGet$dataWatcher().getWatchedObject(14).fieldGet$watchedObject());
     }
 
     @Override
     public void setRightArmDirection(Vector3f vector3f) {
-        obj.setRightArmRotation(MinecraftUtils.graniteToMinecraftRotations(vector3f));
+        obj.fieldGet$dataWatcher().updateObject(14, MinecraftUtils.graniteToMinecraftRotations(vector3f));
     }
 
     @Override
     public Vector3f getLeftLegDirection() {
-        return MinecraftUtils.minecraftToGraniteRotations(obj.fieldGet$leftLegRotation());
+        return MinecraftUtils.minecraftToGraniteRotations((MCRotations) obj.fieldGet$dataWatcher().getWatchedObject(15).fieldGet$watchedObject());
     }
 
     @Override
     public void setLeftLegDirection(Vector3f vector3f) {
-        obj.setLeftLegRotation(MinecraftUtils.graniteToMinecraftRotations(vector3f));
+        obj.fieldGet$dataWatcher().updateObject(15, MinecraftUtils.graniteToMinecraftRotations(vector3f));
     }
 
     @Override
     public Vector3f getRightLegDirection() {
-        return MinecraftUtils.minecraftToGraniteRotations(obj.fieldGet$rightLegRotation());
+        return MinecraftUtils.minecraftToGraniteRotations((MCRotations) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject());
     }
 
     @Override
     public void setRightLegDirection(Vector3f vector3f) {
-        obj.setRightLegRotation(MinecraftUtils.graniteToMinecraftRotations(vector3f));
+        obj.fieldGet$dataWatcher().updateObject(16, MinecraftUtils.graniteToMinecraftRotations(vector3f));
     }
 
     @Override
     public boolean isSmall() {
-        return obj.isSmall();
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject() & 1) != 0;
     }
 
     @Override
     public void setSmall(boolean small) {
-        obj.setSmall(small);
+        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(10, (byte) (small ? (object | 1) : (object & -2)));
     }
 
     @Override
     public boolean hasGravity() {
-        return !obj.hasNoGravity();
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject() & 2) == 0;
     }
 
     @Override
     public void setGravity(boolean gravity) {
-        obj.setNoGravity(!gravity);
-    }
-
-    @Override
-    public void setInvisible(boolean invisible) {
-        obj.setInvisible(invisible);
+        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(10, (byte) (gravity ? (object & -3) : (object | 2)));
     }
 
     @Override
     public boolean doesShowArms() {
-        return obj.getShowArms();
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject() & 4) != 0;
     }
 
     @Override
     public void setShowArms(boolean showArms) {
-        obj.setShowArms(showArms);
+        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(10, (byte) (showArms ? (object | 4) : (object & -5)));
     }
 
     @Override
     public boolean hasBasePlate() {
-        return !obj.hasNoBasePlate();
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject() & 8) == 0;
     }
 
     @Override
     public void setHasBasePlate(boolean hasBasePlate) {
-        obj.setNoBasePlate(!hasBasePlate);
+        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(10).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(10, (byte) (hasBasePlate ? (object & -9) : (object | 8)));
     }
 
     @Override

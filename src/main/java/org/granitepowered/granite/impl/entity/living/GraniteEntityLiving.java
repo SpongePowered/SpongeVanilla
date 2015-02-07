@@ -42,8 +42,8 @@ public class GraniteEntityLiving<T extends MCEntityLiving> extends GraniteEntity
     }
 
     @Override
-    public void setPersistent(boolean b) {
-        obj.fieldSet$persistenceRequired(b);
+    public void setPersistent(boolean persistent) {
+        obj.fieldSet$persistenceRequired(persistent);
     }
 
     public boolean getCanPickupItems() {
@@ -77,11 +77,11 @@ public class GraniteEntityLiving<T extends MCEntityLiving> extends GraniteEntity
 
     @Override
     public boolean isAiEnabled() {
-        return !obj.isAIDisabled();
+        return (int) obj.fieldGet$dataWatcher().getWatchedObject(15).fieldGet$watchedObject() == 0;
     }
 
     @Override
-    public void setAiEnabled(boolean b) {
-        obj.setNoAI(!b);
+    public void setAiEnabled(boolean ai) {
+        obj.fieldGet$dataWatcher().updateObject(15, (byte) (ai ? 1 : 0));
     }
 }

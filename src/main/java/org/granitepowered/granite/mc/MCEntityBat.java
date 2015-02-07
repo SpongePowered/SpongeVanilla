@@ -24,9 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityBat")
-public interface MCEntityBat extends MCEntityLiving {
+public interface MCEntityBat extends MCEntityAmbientCreature {
 
-    boolean getIsBatHanging();
-
-    void setIsBatHanging(boolean awake);
 }

@@ -1,5 +1,5 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityOcelot")
-public interface MCEntityOcelot extends MCEntityAnimal {
+public interface MCEntityOcelot extends MCEntityTameable {
 }

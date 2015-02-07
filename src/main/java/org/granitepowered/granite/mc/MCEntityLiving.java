@@ -41,8 +41,4 @@ public interface MCEntityLiving extends MCEntityLivingBase {
     boolean fieldGet$persistenceRequired();
 
     void fieldSet$persistenceRequired(boolean persistence);
-
-    boolean isAIDisabled();
-
-    void setNoAI(boolean noAI);
 }

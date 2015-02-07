@@ -119,6 +119,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class GraniteGameRegistry implements GameRegistry {
@@ -303,14 +304,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerDyes() {
         Granite.instance.getLogger().info("Registering Dyes");
 
-        int i = 0;
-        for (Field field : DyeColors.class.getDeclaredFields()) {
+        for (int i = 0; i < DyeColors.class.getDeclaredFields().length; i++) {
+            Field field = DyeColors.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 DyeColor dyeColor = new GraniteDyeColor(i, name);
-                i++;
                 field.set(null, dyeColor);
                 dyeColors.put(name, dyeColor);
                 if (Main.debugLog) {
@@ -361,14 +361,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerHorseColors() {
         Granite.instance.getLogger().info("Registering Horse Colors");
 
-        int i = 0;
-        for (Field field : HorseColors.class.getDeclaredFields()) {
+        for (int i = 0; i < HorseColors.class.getDeclaredFields().length; i++) {
+            Field field = HorseColors.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 HorseColor horseColor = new GraniteHorseColor(i, name);
-                i++;
                 field.set(null, horseColor);
                 horseColors.put(name, horseColor);
                 if (Main.debugLog) {
@@ -383,14 +382,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerHorseStyles() {
         Granite.instance.getLogger().info("Registering Horse Styles");
 
-        int i = 0;
-        for (Field field : HorseStyles.class.getDeclaredFields()) {
+        for (int i = 0; i < HorseStyles.class.getDeclaredFields().length; i++) {
+            Field field = HorseStyles.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 HorseStyle horseStyle = new GraniteHorseStyle(i, name);
-                i++;
                 field.set(null, horseStyle);
                 horseStyles.put(name, horseStyle);
                 if (Main.debugLog) {
@@ -405,14 +403,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerHorseVariants() {
         Granite.instance.getLogger().info("Registering Horse Variants");
 
-        int i = 0;
-        for (Field field : HorseVariants.class.getDeclaredFields()) {
+        for (int i = 0; i < HorseVariants.class.getDeclaredFields().length; i++) {
+            Field field = HorseVariants.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 HorseVariant horseVariant = new GraniteHorseVariant(i, name);
-                i++;
                 field.set(null, horseVariant);
                 horseVariants.put(name, horseVariant);
                 if (Main.debugLog) {
@@ -450,14 +447,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerOcelots() {
         Granite.instance.getLogger().info("Registering Ocelots");
 
-        int i = 0;
-        for (Field field : OcelotTypes.class.getDeclaredFields()) {
+        for (int i = 0; i < OcelotTypes.class.getDeclaredFields().length; i++) {
+            Field field = OcelotTypes.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 OcelotType ocelotType = new GraniteOcelotType(i, name);
-                i++;
                 field.set(null, ocelotType);
                 ocelots.put(name, ocelotType);
                 if (Main.debugLog) {
@@ -582,14 +578,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerProfessionsAndCareers() {
         Granite.instance.getLogger().info("Registering Professions and Careers");
 
-        int i = 0;
-        for (Field field : Professions.class.getDeclaredFields()) {
+        for (int i = 0; i < Professions.class.getDeclaredFields().length; i++) {
+            Field field = Professions.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 Profession profession = new GraniteProfession(i, name);
-                i++;
                 field.set(null, profession);
                 professions.put(name, profession);
                 if (Main.debugLog) {
@@ -612,36 +607,36 @@ public class GraniteGameRegistry implements GameRegistry {
         Profession blacksmithProfession = professions.get("blacksmith");
         Profession butcherProfession = professions.get("butcher");
 
-        Field[] fields = Careers.class.getDeclaredFields();
-        for (i = 0; i < fields.length; i++) {
-            ReflectionUtils.forceAccessible(fields[i]);
+        for (int i = 0; i < Careers.class.getDeclaredFields().length; i++) {
+            Field field = Careers.class.getDeclaredFields()[i];
+            ReflectionUtils.forceAccessible(field);
 
-            String name = fields[i].getName().toLowerCase();
+            String name = field.getName().toLowerCase();
             try {
                 boolean registered = false;
                 if (i < 4) {
                     Career career = new GraniteCareer(i, name, farmerProfession);
-                    fields[i].set(null, career);
+                    field.set(null, career);
                     farmers.add(career);
                     registered = true;
                 } else if (i == 4) {
                     Career career = new GraniteCareer(i, name, librarianProfession);
-                    fields[i].set(null, career);
+                    field.set(null, career);
                     librarians.add(career);
                     registered = true;
                 } else if (i == 5) {
                     Career career = new GraniteCareer(i, name, priestProfession);
-                    fields[i].set(null, career);
+                    field.set(null, career);
                     priests.add(career);
                     registered = true;
                 } else if (i > 5 && i <= 7) {
                     Career career = new GraniteCareer(i, name, blacksmithProfession);
-                    fields[i].set(null, career);
+                    field.set(null, career);
                     blacksmiths.add(career);
                     registered = true;
                 } else if (i >= 8 && i <= 10) {
                     Career career = new GraniteCareer(i, name, butcherProfession);
-                    fields[i].set(null, career);
+                    field.set(null, career);
                     butchers.add(career);
                     registered = true;
                 }
@@ -663,14 +658,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerRabbits() {
         Granite.instance.getLogger().info("Registering Rabbits");
 
-        int i = 0;
-        for (Field field : RabbitTypes.class.getDeclaredFields()) {
+        for (int i = 0; i < RabbitTypes.class.getDeclaredFields().length; i++) {
+            Field field = RabbitTypes.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
-                RabbitType rabbitType = new GraniteRabbitType(i, name);
-                i++;
+                RabbitType rabbitType = new GraniteRabbitType(RabbitTypes.class.getDeclaredFields()[i].toString().equals("KILLER") ? 99 : i, name);
                 field.set(null, rabbitType);
                 rabbits.put(name, rabbitType);
                 if (Main.debugLog) {
@@ -708,14 +702,13 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerSkeletons() {
         Granite.instance.getLogger().info("Registering Skeletons");
 
-        int i = 0;
-        for (Field field : SkeletonTypes.class.getDeclaredFields()) {
+        for (int i = 0; i < SkeletonTypes.class.getDeclaredFields().length; i++) {
+            Field field = SkeletonTypes.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase();
             try {
                 SkeletonType skeletonType = new GraniteSkeletonType(i, name);
-                i++;
                 field.set(null, skeletonType);
                 skeletons.put(name, skeletonType);
                 if (Main.debugLog) {

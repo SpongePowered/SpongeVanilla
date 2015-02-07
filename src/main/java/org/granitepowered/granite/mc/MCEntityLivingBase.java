@@ -44,10 +44,6 @@ public interface MCEntityLivingBase extends MCEntity {
 
     void damageEntity(MCDamageSource source, float amount);
 
-    float getHealth();
-
-    void setHealth(float health);
-
     float getMaxHealth();
 
     void addPotionEffect(MCPotionEffect potionEffect);

@@ -30,7 +30,7 @@ import org.granitepowered.granite.bytecode.*;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayer;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
 import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
@@ -78,7 +78,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
                             .build();
         }
 
-        GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GraniteEntityPlayer) wrap(player), joinMessage);
+        GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GraniteEntityPlayerMP) wrap(player), joinMessage);
         Granite.getInstance().getServer().getEventManager().post(event);
 
         this.joinMessage.set(MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));

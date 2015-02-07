@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.entity.living;
 import org.granitepowered.granite.mc.MCEntityBat;
 import org.spongepowered.api.entity.living.Bat;
 
-public class GraniteEntityBat extends GraniteEntityLiving<MCEntityBat> implements Bat {
+public class GraniteEntityBat extends GraniteEntityAmbientCreature<MCEntityBat> implements Bat {
 
     public GraniteEntityBat(MCEntityBat obj) {
         super(obj);
@@ -34,11 +34,16 @@ public class GraniteEntityBat extends GraniteEntityLiving<MCEntityBat> implement
 
     @Override
     public boolean isAwake() {
-        return !obj.getIsBatHanging();
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
     }
 
     @Override
     public void setAwake(boolean awake) {
-        obj.setIsBatHanging(!awake);
+        byte isAwake = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
+        if (awake) {
+            obj.fieldGet$dataWatcher().updateObject(16, Byte.valueOf((byte)(isAwake | 1)));
+        } else {
+            obj.fieldGet$dataWatcher().updateObject(16, Byte.valueOf((byte)(isAwake & -2)));
+        }
     }
 }
