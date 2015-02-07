@@ -41,9 +41,9 @@ public class GraniteEntityBat extends GraniteEntityAmbientCreature<MCEntityBat> 
     public void setAwake(boolean awake) {
         byte isAwake = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
         if (awake) {
-            obj.fieldGet$dataWatcher().updateObject(16, Byte.valueOf((byte)(isAwake | 1)));
+            obj.fieldGet$dataWatcher().updateObject(16, Byte.valueOf((byte) (isAwake | 1)));
         } else {
-            obj.fieldGet$dataWatcher().updateObject(16, Byte.valueOf((byte)(isAwake & -2)));
+            obj.fieldGet$dataWatcher().updateObject(16, Byte.valueOf((byte) (isAwake & -2)));
         }
     }
 }

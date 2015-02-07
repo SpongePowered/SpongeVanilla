@@ -24,6 +24,7 @@
 package org.granitepowered.granite.bytecode;
 
 public class ProxyCallbackInfo<T> {
+
     private T caller;
     private Object[] arguments;
     private BytecodeClass.ProxyHandlerCallback callback;

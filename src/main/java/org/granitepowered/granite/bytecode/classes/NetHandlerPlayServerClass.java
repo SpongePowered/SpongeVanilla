@@ -35,12 +35,16 @@ import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
 import org.granitepowered.granite.impl.event.player.GranitePlayerChatEvent;
 import org.granitepowered.granite.impl.event.player.GranitePlayerMoveEvent;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPacketChatMessage;
+import org.granitepowered.granite.mc.MCPacketPlayer;
 import org.spongepowered.api.world.Location;
 
 import java.lang.reflect.Constructor;
 
 public class NetHandlerPlayServerClass extends BytecodeClass {
+
     Constructor quickExitExceptionConstructor;
 
     public NetHandlerPlayServerClass() {

@@ -24,6 +24,7 @@
 package org.granitepowered.granite.bytecode;
 
 public class CallbackInfo<T> {
+
     private T caller;
     private Object[] methodArguments;
     private Object[] callerArguments;

@@ -24,6 +24,7 @@
 package org.granitepowered.granite.bytecode;
 
 public @interface Insert {
+
     String methodName();
 
     CodeInsertionMode mode();

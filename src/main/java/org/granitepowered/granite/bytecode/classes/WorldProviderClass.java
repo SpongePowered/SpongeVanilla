@@ -29,8 +29,6 @@ import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.world.GraniteDimension;
-import org.granitepowered.granite.mc.MCInterface;
-import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
 import org.granitepowered.granite.mc.MCWorldProvider;
 
 public class WorldProviderClass extends BytecodeClass {

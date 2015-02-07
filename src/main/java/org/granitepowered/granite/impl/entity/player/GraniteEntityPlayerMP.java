@@ -35,7 +35,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.GraniteGameProfile;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
-import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;

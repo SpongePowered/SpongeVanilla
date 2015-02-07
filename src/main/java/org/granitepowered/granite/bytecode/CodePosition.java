@@ -28,7 +28,9 @@ import javassist.CtMethod;
 import org.granitepowered.granite.mappings.Mappings;
 
 public abstract class CodePosition {
+
     public static class NewPosition extends CodePosition {
+
         private CtClass clazz;
 
         public NewPosition(String clazz) {
@@ -41,6 +43,7 @@ public abstract class CodePosition {
     }
 
     public static class MethodCallPosition extends CodePosition {
+
         private CtMethod method;
 
         public MethodCallPosition(String clazz, String methodName) {

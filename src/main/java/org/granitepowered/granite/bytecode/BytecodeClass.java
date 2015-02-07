@@ -54,7 +54,14 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class BytecodeClass {
 
@@ -215,7 +222,9 @@ public class BytecodeClass {
             //CtClass callerType = handler.getParameterTypes()[0];
 
             String code = "{\n";
-            code += ProxyHandlerCallback.class.getName() + " callback = " + getClass().getName() + ".createCallback((Object) this, " + methodName + "$method);\n";
+            code +=
+                    ProxyHandlerCallback.class.getName() + " callback = " + getClass().getName() + ".createCallback((Object) this, " + methodName
+                    + "$method);\n";
             code += ProxyCallbackInfo.class.getName() + " info = new " + ProxyCallbackInfo.class.getName() + "(this, $args, callback);";
             code += "return ($r) this.bytecodeClass." + handler.getName() + "(info);\n";
             code += "}";
@@ -293,7 +302,7 @@ public class BytecodeClass {
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -321,7 +330,7 @@ public class BytecodeClass {
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -549,7 +558,8 @@ public class BytecodeClass {
         return 0;
     }
 
-    public void replaceMethodCallArgument(String methodName, final CtMethod methodToCallback, String methodCallClass, String methodCallName, final int parameterToReplace) {
+    public void replaceMethodCallArgument(String methodName, final CtMethod methodToCallback, String methodCallClass, String methodCallName,
+                                          final int parameterToReplace) {
         addArgumentsVariable(methodName);
 
         final CtMethod method = Mappings.getCtMethod(clazz, methodName);
@@ -562,7 +572,9 @@ public class BytecodeClass {
                         if (m.getMethod().equals(methodCall)) {
                             String code = "";
                             code += CallbackInfo.class.getName() + " info = new " + CallbackInfo.class.getName() + "(this, $args, $mArgs);";
-                            code += methodToCallback.getReturnType().getName() + " var = this.bytecodeClass." + methodToCallback.getName() + "(info);";
+                            code +=
+                                    methodToCallback.getReturnType().getName() + " var = this.bytecodeClass." + methodToCallback.getName()
+                                    + "(info);";
                             code += "if (!info.isCancelled()) {";
                             code += "$_ = $proceed(";
 

@@ -24,8 +24,7 @@
 package org.granitepowered.granite.impl.entity.hanging;
 
 import com.google.common.base.Optional;
-import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.impl.util.GraniteRotation;
+import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mc.MCEntityItemFrame;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.util.MinecraftUtils;
@@ -41,7 +40,8 @@ public class GraniteEntityItemFrame extends GraniteEntityHanging<MCEntityItemFra
 
     @Override
     public Optional<ItemStack> getItem() {
-        return Optional.fromNullable((ItemStack) new GraniteItemStack(obj.getDisplayedItem()));
+        return Optional
+                .fromNullable((ItemStack) MinecraftUtils.wrap((MCItemStack) obj.fieldGet$dataWatcher().getWatchedObject(8).fieldGet$watchedObject()));
     }
 
     @Override
@@ -49,10 +49,9 @@ public class GraniteEntityItemFrame extends GraniteEntityHanging<MCEntityItemFra
         obj.setDisplayedItem((MCItemStack) MinecraftUtils.unwrap(itemStack));
     }
 
-    // TODO: Replace this when Sponge add rotations to the GameRegistry
     @Override
     public Rotation getItemRotation() {
-        return new GraniteRotation(obj.getRotation());
+        return Granite.instance.getGameRegistry().rotations.get(obj.fieldGet$dataWatcher().getWatchedObject(9).fieldGet$watchedObject());
     }
 
     @Override

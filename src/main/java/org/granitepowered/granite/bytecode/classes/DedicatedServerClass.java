@@ -32,7 +32,6 @@ import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStoppedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStoppingEvent;
-import org.granitepowered.granite.mc.MCServer;
 
 public class DedicatedServerClass extends BytecodeClass {
 

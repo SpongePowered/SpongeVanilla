@@ -25,5 +25,6 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "TileEntitySign")
 public interface MCTileEntitySign extends MCTileEntity {
+
     MCChatComponent[] fieldGet$signText();
 }

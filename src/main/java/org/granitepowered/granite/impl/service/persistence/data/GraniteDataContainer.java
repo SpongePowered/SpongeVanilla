@@ -29,6 +29,7 @@ import org.spongepowered.api.service.persistence.data.DataQuery;
 import java.util.HashMap;
 
 public class GraniteDataContainer extends GraniteDataView implements DataContainer {
+
     public GraniteDataContainer() {
         super(new HashMap<String, Object>(), new DataQuery(), null);
         container = this;

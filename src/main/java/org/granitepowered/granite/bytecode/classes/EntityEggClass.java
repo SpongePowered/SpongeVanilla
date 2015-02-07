@@ -25,10 +25,11 @@ package org.granitepowered.granite.bytecode.classes;
 
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import org.granitepowered.granite.bytecode.*;
-import org.granitepowered.granite.mc.MCEntityEgg;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.MethodCallArgument;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEntityEgg;
+import org.granitepowered.granite.mc.MCEntityEgg;
 
 public class EntityEggClass extends BytecodeClass {
 

@@ -25,6 +25,7 @@ package org.granitepowered.granite.mc;
 
 @Implement(name = "TileEntity")
 public interface MCTileEntity extends MCInterface {
+
     MCWorld fieldGet$worldObj();
 
     MCBlockPos fieldGet$pos();

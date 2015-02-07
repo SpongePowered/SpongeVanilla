@@ -24,5 +24,6 @@
 package org.granitepowered.granite.bytecode;
 
 public @interface Proxy {
+
     String methodName();
 }

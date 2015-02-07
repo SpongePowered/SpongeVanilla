@@ -26,8 +26,9 @@ package org.granitepowered.granite.bytecode.classes;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.bytecode.*;
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.MethodCallArgument;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
@@ -44,6 +45,7 @@ import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.text.translation.Translations;
 
 public class ServerConfigurationManagerClass extends BytecodeClass {
+
     // Using this here so race conditions don't happen
     // (If one thread runs iCTP, then quickly another, joinMessage is set to the second thread's value
     // And then the first thread runs the sendChatMsg call and gets the second's message

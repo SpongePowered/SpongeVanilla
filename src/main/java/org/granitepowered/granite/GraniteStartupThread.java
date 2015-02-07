@@ -59,7 +59,6 @@ import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.BasicMarker;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
@@ -95,7 +94,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.LoggingPermission;
 
 public class GraniteStartupThread extends Thread {
 

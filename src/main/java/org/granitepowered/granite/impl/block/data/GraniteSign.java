@@ -32,6 +32,7 @@ import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.text.message.Message;
 
 public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements Sign {
+
     public GraniteSign(Object obj) {
         super(obj);
     }
@@ -68,13 +69,17 @@ public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements 
 
     @Override
     public Message getLine(int index) throws IndexOutOfBoundsException {
-        if (index >= 4) throw new IndexOutOfBoundsException();
+        if (index >= 4) {
+            throw new IndexOutOfBoundsException();
+        }
         return MinecraftUtils.minecraftToGraniteMessage(obj.fieldGet$signText()[index]);
     }
 
     @Override
     public void setLine(int index, Message text) throws IndexOutOfBoundsException {
-        if (index >= 4) throw new IndexOutOfBoundsException();
+        if (index >= 4) {
+            throw new IndexOutOfBoundsException();
+        }
         obj.fieldGet$signText()[index] = MinecraftUtils.graniteToMinecraftChatComponent(text);
     }
 }
