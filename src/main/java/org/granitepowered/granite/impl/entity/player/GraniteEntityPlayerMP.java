@@ -242,7 +242,7 @@ public class GraniteEntityPlayerMP extends GraniteEntityPlayer<MCEntityPlayerMP>
 
     @Override
     public GameProfile getProfile() {
-        return new GraniteGameProfile(wrap(obj.fieldGet$gameProfile()));
+        return wrap(obj.fieldGet$gameProfile());
     }
 
     @Override
