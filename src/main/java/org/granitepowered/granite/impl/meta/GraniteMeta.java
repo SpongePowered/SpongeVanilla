@@ -29,10 +29,10 @@ import org.spongepowered.api.service.persistence.data.DataContainer;
 
 public class GraniteMeta {
 
-    public final int type;
+    public final Object type;
     public final String name;
 
-    public GraniteMeta(int type, String name) {
+    public GraniteMeta(Object type, String name) {
         this.type = type;
         this.name = name;
     }
@@ -42,7 +42,11 @@ public class GraniteMeta {
     }
 
     public int getType() {
-        return this.type;
+        return (int) this.type;
+    }
+
+    public byte getId() {
+        return (byte) type;
     }
 
     public DataContainer toContainer() {

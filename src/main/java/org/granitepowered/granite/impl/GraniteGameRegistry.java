@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.impl;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -36,17 +34,10 @@ import org.granitepowered.granite.Main;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuilder;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
+import org.granitepowered.granite.impl.entity.player.gamemode.GraniteGameMode;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
-import org.granitepowered.granite.impl.meta.GraniteCareer;
-import org.granitepowered.granite.impl.meta.GraniteDyeColor;
-import org.granitepowered.granite.impl.meta.GraniteHorseColor;
-import org.granitepowered.granite.impl.meta.GraniteHorseStyle;
-import org.granitepowered.granite.impl.meta.GraniteHorseVariant;
-import org.granitepowered.granite.impl.meta.GraniteOcelotType;
-import org.granitepowered.granite.impl.meta.GraniteProfession;
-import org.granitepowered.granite.impl.meta.GraniteRabbitType;
-import org.granitepowered.granite.impl.meta.GraniteSkeletonType;
+import org.granitepowered.granite.impl.meta.*;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.status.GraniteFavicon;
@@ -55,22 +46,14 @@ import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCBiomeGenBase;
-import org.granitepowered.granite.mc.MCBlock;
-import org.granitepowered.granite.mc.MCEnchantment;
-import org.granitepowered.granite.mc.MCEnumArt;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCItem;
-import org.granitepowered.granite.mc.MCPotion;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.meta.BannerPatternShape;
-import org.spongepowered.api.block.meta.NotePitch;
-import org.spongepowered.api.block.meta.SkullType;
+import org.spongepowered.api.block.meta.*;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.effect.particle.ParticleTypes;
@@ -78,18 +61,7 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.hanging.art.Arts;
-import org.spongepowered.api.entity.living.animal.DyeColor;
-import org.spongepowered.api.entity.living.animal.DyeColors;
-import org.spongepowered.api.entity.living.animal.HorseColor;
-import org.spongepowered.api.entity.living.animal.HorseColors;
-import org.spongepowered.api.entity.living.animal.HorseStyle;
-import org.spongepowered.api.entity.living.animal.HorseStyles;
-import org.spongepowered.api.entity.living.animal.HorseVariant;
-import org.spongepowered.api.entity.living.animal.HorseVariants;
-import org.spongepowered.api.entity.living.animal.OcelotType;
-import org.spongepowered.api.entity.living.animal.OcelotTypes;
-import org.spongepowered.api.entity.living.animal.RabbitType;
-import org.spongepowered.api.entity.living.animal.RabbitTypes;
+import org.spongepowered.api.entity.living.animal.*;
 import org.spongepowered.api.entity.living.monster.SkeletonType;
 import org.spongepowered.api.entity.living.monster.SkeletonTypes;
 import org.spongepowered.api.entity.living.villager.Career;
@@ -97,6 +69,7 @@ import org.spongepowered.api.entity.living.villager.Careers;
 import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.living.villager.Professions;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
+import org.spongepowered.api.entity.player.gamemode.GameModes;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
@@ -121,55 +94,58 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteGameRegistry implements GameRegistry {
 
     public Map<String, Art> arts = Maps.newHashMap();
-    public Map<String, BiomeType> biomes = Maps.newHashMap();
+    public Map<String, BannerPatternShape> bannerPatternShapes = Maps.newHashMap();
+    public Map<String, BiomeType> biomeTypes = Maps.newHashMap();
     public Map<String, BlockType> blockTypes = Maps.newHashMap();
     public Map<String, Career> careers = Maps.newHashMap();
-    public Map<String, DimensionType> dimensions = Maps.newHashMap();
+    public Map<String, DimensionType> dimensionTypes = Maps.newHashMap();
     public Map<String, DyeColor> dyeColors = Maps.newHashMap();
     public Map<String, Enchantment> enchantments = Maps.newHashMap();
+    public Map<String, GameMode> gameModes = Maps.newHashMap();
     public Map<String, HorseColor> horseColors = Maps.newHashMap();
     public Map<String, HorseStyle> horseStyles = Maps.newHashMap();
     public Map<String, HorseVariant> horseVariants = Maps.newHashMap();
     public Map<String, ItemType> itemTypes = Maps.newHashMap();
+    public Map<String, NotePitch> notePitches = Maps.newHashMap();
+    public Map<String, OcelotType> ocelotTypes = Maps.newHashMap();
+    public Map<String, ParticleType> particleTypes = Maps.newHashMap();
+    public Map<String, PotionEffectType> potionEffectTypes = Maps.newHashMap();
     public Map<String, Profession> professions = Maps.newHashMap();
-    public Map<String, OcelotType> ocelots = Maps.newHashMap();
-    public Map<String, ParticleType> particles = Maps.newHashMap();
-    public Map<String, PotionEffectType> potionEffects = Maps.newHashMap();
     public Map<Profession, List<Career>> professionCareers = Maps.newHashMap();
-    public Map<String, RabbitType> rabbits = Maps.newHashMap();
+    public Map<String, RabbitType> rabbitTypes = Maps.newHashMap();
     public Map<Integer, Rotation> rotations = Maps.newHashMap();
-    public Map<String, SkeletonType> skeletons = Maps.newHashMap();
-    public Map<String, SoundType> sounds = Maps.newHashMap();
+    public Map<String, SkeletonType> skeletonTypes = Maps.newHashMap();
+    public Map<String, SkullType> skullTypes = Maps.newHashMap();
+    public Map<String, SoundType> soundTypes = Maps.newHashMap();
 
     Collection<String> defaultGameRules = new ArrayList<>();
 
-    GraniteItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
-    GranitePotionBuilder potionBuilder = new GranitePotionBuilder();
+    ItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
+    PotionEffectBuilder potionEffectBuilder = new GranitePotionBuilder();
 
     public void register() {
         registerArts();
+        registerBannerPatternShapes();
         registerBiomes();
         registerBlocks();
         registerDimensions();
-        registerDyes();
+        registerDyeColors();
         registerEnchantments();
+        registerGameModes();
         registerGameRules();
         registerHorseColors();
         registerHorseStyles();
         registerHorseVariants();
         registerItems();
+        registerNotePitches();
         registerOcelots();
         registerParticleTypes();
         registerPotionEffects();
@@ -177,6 +153,7 @@ public class GraniteGameRegistry implements GameRegistry {
         registerRabbits();
         registerRotations();
         registerSkeletons();
+        registerSkullTypes();
         registerSounds();
     }
 
@@ -205,6 +182,27 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerBannerPatternShapes() {
+        Granite.instance.getLogger().info("Registering Banner Shapes");
+
+        Object[] enums = Mappings.getClass("EnumBannerPattern").getEnumConstants();
+        Field[] fields = BannerPatternShapes.class.getFields();
+        for (int i = 0; i < enums.length; i++) {
+            ReflectionUtils.forceAccessible(fields[i]);
+
+            try {
+                BannerPatternShape bannerPatternShape = wrap((MCInterface) enums[i]);
+                fields[i].set(null, bannerPatternShape);
+                bannerPatternShapes.put(bannerPatternShape.getName(), bannerPatternShape);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Banner Pattern minecraft:" + bannerPatternShape.getName());
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void registerBiomes() {
         Granite.instance.getLogger().info("Registering Biomes");
 
@@ -225,9 +223,9 @@ public class GraniteGameRegistry implements GameRegistry {
                     } else if (name.equals("extreme_hills_plus")) {
                         name = "extreme_hills+";
                     } else if (name.equals("frozen_ocean") || field.getName().equals("frozen_river") || field.getName().equals("mushroom_island")
-                               || field.getName().equals("mushroom_island_shore") || field.getName().equals("desert_hills") || field.getName()
+                            || field.getName().equals("mushroom_island_shore") || field.getName().equals("desert_hills") || field.getName()
                             .equals("forest_hills") || field.getName().equals("taiga_hills") || field.getName().equals("jungle_hills") || field
-                                       .getName().equals("jungle_edge")) {
+                            .getName().equals("jungle_edge")) {
                         name = name.replace("_", "");
                     } else if (name.equals("mesa_plateau_forest")) {
                         name = "mesa_plateau_f";
@@ -238,7 +236,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     if (biomeName.equals(name)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);
                         field.set(null, biomeType);
-                        biomes.put(name, biomeType);
+                        biomeTypes.put(name, biomeType);
                         if (Main.debugLog) {
                             Granite.getInstance().getLogger().info("Registered Biome minecarft:" + name);
                         }
@@ -273,7 +271,6 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
-    // TODO: Needs to not be new instances but the ones that already exist if possible.
     private void registerDimensions() {
         Granite.instance.getLogger().info("Registering Dimensions");
 
@@ -300,7 +297,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 }
                 if (Main.debugLog && registered) {
                     field.set(null, dimensionType);
-                    dimensions.put(name, dimensionType);
+                    dimensionTypes.put(name, dimensionType);
                     Granite.getInstance().getLogger().info("Registered Dimension minecraft:" + name);
                 }
             } catch (IllegalAccessException | InstantiationException e) {
@@ -309,23 +306,23 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
-    private void registerDyes() {
-        Granite.instance.getLogger().info("Registering Dyes");
+    private void registerDyeColors() {
+        Granite.instance.getLogger().info("Registering Dye Colors");
 
-        for (int i = 0; i < DyeColors.class.getDeclaredFields().length; i++) {
-            Field field = DyeColors.class.getDeclaredFields()[i];
-            ReflectionUtils.forceAccessible(field);
+        Object[] enums = Mappings.getClass("EnumDyeColor").getEnumConstants();
+        Field[] fields = DyeColors.class.getFields();
+        for (int i = 0; i < enums.length; i++) {
+            ReflectionUtils.forceAccessible(fields[i]);
 
-            String name = field.getName().toLowerCase();
             try {
-                DyeColor dyeColor = new GraniteDyeColor(i, name);
-                field.set(null, dyeColor);
-                dyeColors.put(name, dyeColor);
+                DyeColor dyeColor = wrap((MCInterface) enums[i]);
+                fields[i].set(null, dyeColor);
+                dyeColors.put(dyeColor.getName(), dyeColor);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Dye Color minecraft:" + dyeColor.getName());
                 }
             } catch (IllegalAccessException e) {
-                Throwables.propagate(e);
+                e.printStackTrace();
             }
         }
     }
@@ -346,6 +343,28 @@ public class GraniteGameRegistry implements GameRegistry {
 
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Enchantment " + enchantment.getId());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+
+        }
+    }
+
+    private void registerGameModes() {
+        Granite.instance.getLogger().info("Registering default GameModes");
+
+        for (Field field : GameModes.class.getDeclaredFields()) {
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                GameMode gameMode = new GraniteGameMode(name);
+                field.set(null, gameMode);
+                gameModes.put(name, gameMode);
+
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered GameMode minecraft:" + name);
                 }
             } catch (IllegalAccessException e) {
                 Throwables.propagate(e);
@@ -452,6 +471,27 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerNotePitches() {
+        Granite.instance.getLogger().info("Registering Ocelots");
+
+        for (int i = 0; i < NotePitches.class.getDeclaredFields().length; i++) {
+            Field field = NotePitches.class.getDeclaredFields()[i];
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                NotePitch notePitch = new GraniteNotePitch((byte) i, name);
+                field.set(null, notePitch);
+                notePitches.put(name, notePitch);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered NotePitch minecraft:" + notePitch.getName());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+        }
+    }
+
     private void registerOcelots() {
         Granite.instance.getLogger().info("Registering Ocelots");
 
@@ -463,7 +503,7 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 OcelotType ocelotType = new GraniteOcelotType(i, name);
                 field.set(null, ocelotType);
-                ocelots.put(name, ocelotType);
+                ocelotTypes.put(name, ocelotType);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Ocelot minecraft:" + ocelotType.getName());
                 }
@@ -523,7 +563,7 @@ public class GraniteGameRegistry implements GameRegistry {
         for (int i = 0; i < types.size(); i++) {
             GraniteParticleType type = types.get(i);
             type.setId(i);
-            particles.put(type.getName(), type);
+            particleTypes.put(type.getName(), type);
 
             Field field = ParticleTypes.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
@@ -568,7 +608,7 @@ public class GraniteGameRegistry implements GameRegistry {
                     if (name.equals(potionName)) {
                         PotionEffectType potionEffectType = new GranitePotionEffectType(potion);
                         field.set(null, potionEffectType);
-                        potionEffects.put(name, potionEffectType);
+                        potionEffectTypes.put(name, potionEffectType);
                         if (Main.debugLog) {
                             Granite.getInstance().getLogger().info("Registered Potion Effect minecraft:" + potionName);
                         }
@@ -674,7 +714,7 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 RabbitType rabbitType = new GraniteRabbitType(RabbitTypes.class.getDeclaredFields()[i].toString().equals("KILLER") ? 99 : i, name);
                 field.set(null, rabbitType);
-                rabbits.put(name, rabbitType);
+                rabbitTypes.put(name, rabbitType);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Rabbit minecraft:" + rabbitType.getName());
                 }
@@ -718,7 +758,7 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 SkeletonType skeletonType = new GraniteSkeletonType(i, name);
                 field.set(null, skeletonType);
-                skeletons.put(name, skeletonType);
+                skeletonTypes.put(name, skeletonType);
                 if (Main.debugLog) {
                     Granite.getInstance().getLogger().info("Registered Skeleton minecraft:" + skeletonType.getName());
                 }
@@ -728,8 +768,29 @@ public class GraniteGameRegistry implements GameRegistry {
         }
     }
 
+    private void registerSkullTypes() {
+        Granite.instance.getLogger().info("Registering Skulls");
+
+        for (int i = 0; i < SkullTypes.class.getDeclaredFields().length; i++) {
+            Field field = SkullTypes.class.getDeclaredFields()[i];
+            ReflectionUtils.forceAccessible(field);
+
+            String name = field.getName().toLowerCase();
+            try {
+                SkullType skullType = new GraniteSkullType((byte) i, name);
+                field.set(null, skullType);
+                skullTypes.put(name, skullType);
+                if (Main.debugLog) {
+                    Granite.getInstance().getLogger().info("Registered Skull minecraft:" + skullType.getName());
+                }
+            } catch (IllegalAccessException e) {
+                Throwables.propagate(e);
+            }
+        }
+    }
+
     private void registerSounds() {
-        // TODO: Register all sounds to list in order they are in the SpongeAPI Class
+        // TODO: Register all soundTypes to list in order they are in the SpongeAPI Class
         /*Granite.instance.getLogger().info("Registering Sounds");
 
         List<String> minecraftSoundNames = new ArrayList<>();
@@ -737,7 +798,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
         for (int i = 0; i < minecraftSoundNames.size(); i++) {
             SoundType soundType = new GraniteSoundType(minecraftSoundNames.get(i));
-            sounds.put(minecraftSoundNames.get(i), soundType);
+            soundTypes.put(minecraftSoundNames.get(i), soundType);
             Field field = SoundTypes.class.getDeclaredFields()[i];
             ReflectionUtils.forceAccessible(field);
             try {
@@ -773,12 +834,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<BiomeType> getBiome(String id) {
-        return Optional.fromNullable(biomes.get(id));
+        return Optional.fromNullable(biomeTypes.get(id));
     }
 
     @Override
     public List<BiomeType> getBiomes() {
-        return ImmutableList.copyOf(biomes.values());
+        return ImmutableList.copyOf(biomeTypes.values());
     }
 
     @Override
@@ -794,17 +855,17 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public PotionEffectBuilder getPotionEffectBuilder() {
-        return potionBuilder;
+        return potionEffectBuilder;
     }
 
     @Override
     public Optional<ParticleType> getParticleType(String name) {
-        return Optional.fromNullable(particles.get(name));
+        return Optional.fromNullable(particleTypes.get(name));
     }
 
     @Override
     public List<ParticleType> getParticleTypes() {
-        return ImmutableList.copyOf(particles.values());
+        return ImmutableList.copyOf(particleTypes.values());
     }
 
     @Override
@@ -826,12 +887,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<SoundType> getSound(String id) {
-        return Optional.fromNullable(sounds.get(id));
+        return Optional.fromNullable(soundTypes.get(id));
     }
 
     @Override
     public List<SoundType> getSounds() {
-        return ImmutableList.copyOf(sounds.values());
+        return ImmutableList.copyOf(soundTypes.values());
     }
 
     @Override
@@ -898,32 +959,32 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<OcelotType> getOcelotType(String id) {
-        return Optional.fromNullable(ocelots.get(id));
+        return Optional.fromNullable(ocelotTypes.get(id));
     }
 
     @Override
     public List<OcelotType> getOcelotTypes() {
-        return ImmutableList.copyOf(ocelots.values());
+        return ImmutableList.copyOf(ocelotTypes.values());
     }
 
     @Override
     public Optional<RabbitType> getRabbitType(String id) {
-        return Optional.fromNullable(rabbits.get(id));
+        return Optional.fromNullable(rabbitTypes.get(id));
     }
 
     @Override
     public List<RabbitType> getRabbitTypes() {
-        return ImmutableList.copyOf(rabbits.values());
+        return ImmutableList.copyOf(rabbitTypes.values());
     }
 
     @Override
     public Optional<SkeletonType> getSkeletonType(String id) {
-        return Optional.fromNullable(skeletons.get(id));
+        return Optional.fromNullable(skeletonTypes.get(id));
     }
 
     @Override
     public List<SkeletonType> getSkeletonTypes() {
-        return ImmutableList.copyOf(skeletons.values());
+        return ImmutableList.copyOf(skeletonTypes.values());
     }
 
     @Override
@@ -953,13 +1014,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public List<GameMode> getGameModes() {
-        // TODO: GameMode API
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(gameModes.values());
     }
 
     @Override
     public List<PotionEffectType> getPotionEffects() {
-        return ImmutableList.copyOf(potionEffects.values());
+        return ImmutableList.copyOf(potionEffectTypes.values());
     }
 
     @Override
@@ -979,12 +1039,12 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<DimensionType> getDimensionType(String id) {
-        return Optional.fromNullable(dimensions.get(id));
+        return Optional.fromNullable(dimensionTypes.get(id));
     }
 
     @Override
     public List<DimensionType> getDimensionTypes() {
-        return ImmutableList.copyOf(dimensions.values());
+        return ImmutableList.copyOf(dimensionTypes.values());
     }
 
     @Override
@@ -999,7 +1059,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public GameProfile createGameProfile(UUID uuid, String name) {
-        return new GraniteGameProfile(Instantiator.get().newGameProfile(uuid, name));
+        return wrap(Instantiator.get().newGameProfile(uuid, name));
     }
 
     @Override
@@ -1029,36 +1089,46 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Optional<NotePitch> getNotePitch(String id) {
-        throw new NotImplementedException("");
+        return Optional.fromNullable(notePitches.get(id));
     }
 
     @Override
     public List<NotePitch> getNotePitches() {
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(notePitches.values());
     }
 
     @Override
     public Optional<SkullType> getSkullType(String id) {
-        throw new NotImplementedException("");
+        return Optional.fromNullable(skullTypes.get(id));
     }
 
     @Override
     public List<SkullType> getSkullTypes() {
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(skullTypes.values());
     }
 
     @Override
     public Optional<BannerPatternShape> getBannerPatternShape(String id) {
-        throw new NotImplementedException("");
+        for (BannerPatternShape bannerPatternShape : bannerPatternShapes.values()) {
+            if (bannerPatternShape.getName().equals(id)) {
+                return Optional.fromNullable(bannerPatternShape);
+            }
+        }
+        return Optional.absent();
     }
 
     @Override
     public Optional<BannerPatternShape> getBannerPatternShapeById(String id) {
-        throw new NotImplementedException("");
+        for (BannerPatternShape bannerPatternShape : bannerPatternShapes.values()) {
+            if (bannerPatternShape.getId().equals(id)) {
+                return Optional.fromNullable(bannerPatternShape);
+            }
+        }
+        return Optional.absent();
     }
 
     @Override
     public List<BannerPatternShape> getBannerPatternShapes() {
-        throw new NotImplementedException("");
+        return ImmutableList.copyOf(bannerPatternShapes.values());
     }
 }

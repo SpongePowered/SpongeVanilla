@@ -54,6 +54,6 @@ public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> imple
     @Override
     public void setColor(DyeColor dyeColor) {
         byte currentColor = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, ((byte) (currentColor & 240 | ((GraniteMeta) dyeColor).type) & 15));
+        obj.fieldGet$dataWatcher().updateObject(16, ((byte) (currentColor & 240 | ((GraniteMeta) dyeColor).getType()) & 15));
     }
 }

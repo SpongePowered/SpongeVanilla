@@ -53,6 +53,8 @@ import org.granitepowered.granite.impl.entity.weather.GraniteEntityLightningBolt
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
+import org.granitepowered.granite.impl.meta.GraniteBannerPatternShape;
+import org.granitepowered.granite.impl.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.potion.GranitePotionEffect;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
@@ -98,6 +100,8 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityTNTPrimed"), GraniteEntityPrimedTNT.class)
             .put(Mappings.getClass("EntityXPOrb"), GraniteEntityExperienceOrb.class)
             .put(Mappings.getClass("EnumArt"), GraniteArt.class)
+            .put(Mappings.getClass("EnumBannerPattern"), GraniteBannerPatternShape.class)
+            .put(Mappings.getClass("EnumDyeColor"), GraniteDyeColor.class)
             .put(Mappings.getClass("GameProfile"), GraniteGameProfile.class)
             .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)

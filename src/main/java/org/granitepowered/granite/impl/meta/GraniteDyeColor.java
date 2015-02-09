@@ -23,11 +23,30 @@
 
 package org.granitepowered.granite.impl.meta;
 
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.mc.MCEnumDyeColor;
 import org.spongepowered.api.entity.living.animal.DyeColor;
+import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 
-public class GraniteDyeColor extends GraniteMeta implements DyeColor {
+public class GraniteDyeColor extends Composite<MCEnumDyeColor> implements DyeColor {
 
-    public GraniteDyeColor(int color, String name) {
-        super(color, name);
+    public GraniteDyeColor(Object obj) {
+        super(obj);
+    }
+
+    @Override
+    public String getName() {
+        return obj.fieldGet$name();
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        return null;
+    }
+
+    @Override
+    public void serialize(DataSource dataSource) {
+
     }
 }

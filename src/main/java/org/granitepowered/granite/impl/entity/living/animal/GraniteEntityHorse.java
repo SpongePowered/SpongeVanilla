@@ -50,7 +50,7 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public void setStyle(HorseStyle horseStyle) {
-        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) getColor()).type & 0xFF | ((GraniteMeta) horseStyle).type << 8);
+        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) getColor()).getType() & 0xFF | ((GraniteMeta) horseStyle).getType() << 8);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public void setColor(HorseColor horseColor) {
-        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) horseColor).type & 0xFF | ((GraniteMeta) getStyle()).type << 8);
+        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) horseColor).getType() & 0xFF | ((GraniteMeta) getStyle()).getType() << 8);
     }
 
     @Override

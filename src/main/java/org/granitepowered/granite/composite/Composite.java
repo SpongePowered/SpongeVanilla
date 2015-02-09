@@ -52,53 +52,6 @@ public abstract class Composite<T extends MCInterface> {
         }
     }
 
-    /*public Composite(Class<?> clazz, Object... constructorArgs) {
-        this(clazz, ReflectionUtils.getTypes(constructorArgs), constructorArgs);
-    }*/
-
-    /*public Object invoke(Object instance, MethodHandle m, Object... args) {
-        return Mappings.invoke(instance, m, args);
-    }
-
-    public Object invoke(MethodHandle m, Object... args) {
-        return invoke(obj, m, args);
-    }
-
-    public Object invoke(String methodName, Object... args) {
-        return invoke(Mappings.getMethod(clazz, methodName), args);
-    }*/
-
-    /*public Object invoke(String className, SignatureParser.MethodSignature methodSignature, Object... args) {
-        return invoke(Mappings.getMethod(className, methodSignature), args);
-    }*/
-
-    /*public Object fieldGet(Object instance, String fieldName) {
-        try {
-            return Mappings.getField(instance.getClass(), fieldName).get(instance);
-        } catch (IllegalAccessException e) {
-            Throwables.propagate(e);
-        }
-        return null;
-    }
-
-    public Object fieldGet(String fieldName) {
-        return fieldGet(obj, fieldName);
-    }
-
-
-    public void fieldSet(Object instance, String fieldName, Object value) {
-        try {
-            Mappings.getField(instance.getClass(), fieldName).set(instance, value);
-        } catch (IllegalAccessException e) {
-            Throwables.propagate(e);
-        }
-    }
-
-    public void fieldSet(String fieldName, Object value) {
-        fieldSet(obj, fieldName, value);
-    }*/
-
-
     public static <T extends Composite> T new_(MCInterface parent, Class<T> compositeType) {
         if (!instanceMap.containsKey(compositeType)) {
             instanceMap.put(compositeType, new HashMap<Object, Composite>());

@@ -244,7 +244,7 @@ public class GraniteStartupThread extends Thread {
         injectConstants(TextStyles.class, styles);
         injectEnumConstants(ChatTypes.class, GraniteChatType.class);
 
-        injectConstants(ParticleTypes.class, Granite.getInstance().getGameRegistry().particles);
+        injectConstants(ParticleTypes.class, Granite.getInstance().getGameRegistry().particleTypes);
     }
 
     private void injectEnumConstants(Class<?> destination, Class<? extends Enum> source) {

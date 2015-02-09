@@ -27,4 +27,9 @@ import org.spongepowered.api.entity.player.gamemode.GameMode;
 
 public class GraniteGameMode implements GameMode {
 
+    private final String name;
+
+    public GraniteGameMode(String name) {
+        this.name = name;
+    }
 }
