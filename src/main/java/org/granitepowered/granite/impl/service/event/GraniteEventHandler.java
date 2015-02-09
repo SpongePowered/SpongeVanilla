@@ -50,6 +50,7 @@ public class GraniteEventHandler {
         this.ignoreCancelled = ignoreCancelled;
         this.method = method;
         try {
+            method.setAccessible(true);
             this.methodHandle = MethodHandles.lookup().unreflect(method);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
