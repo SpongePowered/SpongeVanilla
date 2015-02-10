@@ -150,6 +150,16 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     }
 
     @Override
+    public Optional<Entity> createEntity(EntitySnapshot entitySnapshot, Vector3i vector3i) {
+        return null;
+    }
+
+    @Override
+    public Optional<Entity> createEntity(EntityType entityType, Vector3i vector3i) {
+        return null;
+    }
+
+    @Override
     public Optional<Entity> createEntity(EntitySnapshot entitySnapshot, Vector3d vector3d) {
         // TODO: EntitySnapshot API
         throw new NotImplementedException("");
@@ -159,6 +169,11 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     public Optional<Entity> createEntity(DataContainer dataContainer) {
         // TODO: Persistence API
         throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean spawnEntity(Entity entity) {
+        return false;
     }
 
     public GraniteWorld getWorld() {

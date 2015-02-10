@@ -23,12 +23,12 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEntityEnderCrystal;
 import org.spongepowered.api.entity.EnderCrystal;
 
-public class GraniteEnderCrystal extends GraniteEntity implements EnderCrystal {
+public class GraniteEntityEnderCrystal extends GraniteEntity<MCEntityEnderCrystal> implements EnderCrystal {
 
-    public GraniteEnderCrystal(MCEntity obj) {
+    public GraniteEntityEnderCrystal(MCEntityEnderCrystal obj) {
         super(obj);
     }
 }

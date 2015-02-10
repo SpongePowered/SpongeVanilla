@@ -34,10 +34,11 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.config.DefaultConfig;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.File;
 import java.lang.annotation.Annotation;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class GranitePluginGuiceModule extends AbstractModule {
 

@@ -32,6 +32,8 @@ import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.granitepowered.granite.mc.MCEntitySmallFireball;
 import org.granitepowered.granite.mc.MCGameProfile;
 import org.granitepowered.granite.mc.MCGameRules;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCMerchantRecipe;
 import org.granitepowered.granite.mc.MCPacketBlockChange;
 import org.granitepowered.granite.mc.MCPacketChat;
 import org.granitepowered.granite.mc.MCPacketParticles;
@@ -53,24 +55,7 @@ public class Instantiator {
 
     public interface InstantiatorInterface {
 
-        MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
-
         MCBlockPos newBlockPos(int x, int y, int z);
-
-        MCGameRules newGameRules();
-
-        MCPacketTitle newPacketTitle(MCPacketTitleType type, MCChatComponent component);
-
-        MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
-
-        MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
-
-        MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
-
-        MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_,
-                                             int... i2);
-
-        MCRotations newRotations(float x, float y, float z);
 
         MCEntityArrow newEntityArrow(MCWorld world, MCEntityLivingBase shooter, float something);
 
@@ -83,5 +68,25 @@ public class Instantiator {
                                                      double something3);
 
         MCGameProfile newGameProfile(UUID uuid, String name);
+
+        MCGameRules newGameRules();
+
+        MCMerchantRecipe newMerchantRecipe(MCItemStack firstSellingItem, MCItemStack secondSellingItem, MCItemStack buyingItem, int uses,
+                                           int maxUses);
+
+        MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
+
+        MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
+
+        MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_,
+                                             int... i2);
+
+        MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
+
+        MCPacketTitle newPacketTitle(MCPacketTitleType type, MCChatComponent component);
+
+        MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
+
+        MCRotations newRotations(float x, float y, float z);
     }
 }

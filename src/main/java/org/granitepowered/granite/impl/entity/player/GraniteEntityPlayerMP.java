@@ -32,7 +32,6 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.GraniteGameProfile;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.item.GraniteItemBlock;

@@ -42,6 +42,6 @@ public class GraniteEntityWolf extends GraniteEntityTameable<MCEntityWolf> imple
 
     @Override
     public void setColor(DyeColor dyeColor) {
-        obj.fieldGet$dataWatcher().updateObject(20, ((byte) (((GraniteMeta) dyeColor).type) & 15));
+        obj.fieldGet$dataWatcher().updateObject(20, ((byte) (((GraniteMeta) dyeColor).getType()) & 15));
     }
 }

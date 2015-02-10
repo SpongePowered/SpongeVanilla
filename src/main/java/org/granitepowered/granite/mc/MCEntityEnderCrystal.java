@@ -23,8 +23,7 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+@Implement(name = "EntityEnderCrystal")
+public interface MCEntityEnderCrystal extends MCEntity {
 
-    String fieldGet$name();
 }

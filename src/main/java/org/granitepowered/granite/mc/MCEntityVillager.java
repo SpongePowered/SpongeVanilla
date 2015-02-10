@@ -23,8 +23,20 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+@Implement(name = "EntityVillager")
+public interface MCEntityVillager extends MCEntityAgeable {
 
-    String fieldGet$name();
+    boolean fieldGet$isPlaying();
+
+    void fieldSet$isPlaying(boolean playing);
+
+    MCEntityPlayer fieldGet$buyingPlayer();
+
+    int fieldGet$career();
+
+    void fieldSet$career(int career);
+
+    void interact(MCEntityPlayer entityPlayer);
+
+    MCMerchantRecipeList fieldGet$buyingList();
 }

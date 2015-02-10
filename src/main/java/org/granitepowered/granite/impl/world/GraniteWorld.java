@@ -101,8 +101,8 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public boolean deleteChunk(Chunk chunk) {
-        throw new NotImplementedException("");
+    public boolean unloadChunk(Chunk chunk) {
+        return false;
     }
 
     @Override
@@ -230,6 +230,16 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
+    public Optional<Entity> createEntity(EntitySnapshot entitySnapshot, Vector3i vector3i) {
+        return null;
+    }
+
+    @Override
+    public Optional<Entity> createEntity(EntityType entityType, Vector3i vector3i) {
+        return null;
+    }
+
+    @Override
     public Optional<Entity> createEntity(EntitySnapshot snapshot, Vector3d position) {
         // TODO: Entity Snapshot API
         throw new NotImplementedException("");
@@ -239,6 +249,11 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     public Optional<Entity> createEntity(DataContainer entityContainer) {
         /// TODO: Persistence API
         throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean spawnEntity(Entity entity) {
+        return false;
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.granitepowered.granite.impl.block.GraniteBlockProperty;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.block.GraniteBlockType;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.impl.entity.GraniteEntityEnderCrystal;
 import org.granitepowered.granite.impl.entity.GraniteEntityExperienceOrb;
 import org.granitepowered.granite.impl.entity.GraniteEntityFallingBlock;
 import org.granitepowered.granite.impl.entity.GraniteEntityItem;
@@ -44,6 +45,8 @@ import org.granitepowered.granite.impl.entity.living.GraniteEntityArmorStand;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityBat;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityLiving;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
+import org.granitepowered.granite.impl.entity.living.complex.GraniteEntityDragon;
+import org.granitepowered.granite.impl.entity.living.complex.GraniteEntityDragonPart;
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEntityArrow;
 import org.granitepowered.granite.impl.entity.projectile.GraniteEntityEgg;
@@ -53,6 +56,7 @@ import org.granitepowered.granite.impl.entity.weather.GraniteEntityLightningBolt
 import org.granitepowered.granite.impl.item.GraniteItemBlock;
 import org.granitepowered.granite.impl.item.GraniteItemType;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
+import org.granitepowered.granite.impl.item.merchant.GraniteTradeOffer;
 import org.granitepowered.granite.impl.meta.GraniteBannerPatternShape;
 import org.granitepowered.granite.impl.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.potion.GranitePotionEffect;
@@ -88,6 +92,9 @@ public class MinecraftUtils {
             .put(Mappings.getClass("EntityArmorStand"), GraniteEntityArmorStand.class)
             .put(Mappings.getClass("EntityArrow"), GraniteEntityArrow.class)
             .put(Mappings.getClass("EntityBat"), GraniteEntityBat.class)
+            .put(Mappings.getClass("EntityEnderCrystal"), GraniteEntityEnderCrystal.class)
+            .put(Mappings.getClass("EntityDragon"), GraniteEntityDragon.class)
+            .put(Mappings.getClass("EntityDragonPart"), GraniteEntityDragonPart.class)
             .put(Mappings.getClass("EntityEgg"), GraniteEntityEgg.class)
             .put(Mappings.getClass("EntityFallingBlock"), GraniteEntityFallingBlock.class)
             .put(Mappings.getClass("EntityItem"), GraniteEntityItem.class)
@@ -106,6 +113,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("Item"), GraniteItemType.class)
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
+            .put(Mappings.getClass("MerchantRecipe"), GraniteTradeOffer.class)
             .put(Mappings.getClass("Potion"), GranitePotionEffectType.class)
             .put(Mappings.getClass("PotionEffect"), GranitePotionEffect.class)
             .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)

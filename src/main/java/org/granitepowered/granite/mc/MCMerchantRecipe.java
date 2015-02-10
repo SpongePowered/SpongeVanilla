@@ -23,8 +23,20 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+@Implement(name = "MerchantRecipe")
+public interface MCMerchantRecipe extends MCInterface {
 
-    String fieldGet$name();
+    MCItemStack fieldGet$firstItemToBuy();
+
+    MCItemStack fieldGet$secondItemToBuy();
+
+    MCItemStack fieldGet$itemToSell();
+
+    int fieldGet$uses();
+
+    int fieldGet$maxUses();
+
+    boolean fieldGet$grantExperience();
+
+    void fieldSet$grantExperience(boolean grant);
 }

@@ -71,7 +71,7 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public void setVariant(HorseVariant horseVariant) {
-        obj.fieldGet$dataWatcher().updateObject(19, ((GraniteMeta) horseVariant).type);
+        obj.fieldGet$dataWatcher().updateObject(19, ((GraniteMeta) horseVariant).getType());
     }
 
     @Override

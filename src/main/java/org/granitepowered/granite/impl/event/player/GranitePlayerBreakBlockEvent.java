@@ -26,9 +26,12 @@ package org.granitepowered.granite.impl.event.player;
 import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.entity.living.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.util.Direction;
+
+import java.util.Collection;
 
 public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements PlayerBreakBlockEvent {
 
@@ -68,6 +71,21 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
 
     @Override
     public Direction getBlockFaceDirection() {
+        return null;
+    }
+
+    @Override
+    public double getExp() {
+        return 0;
+    }
+
+    @Override
+    public void setExp(double v) {
+
+    }
+
+    @Override
+    public Collection<Item> getDroppedItems() {
         return null;
     }
 }

@@ -21,10 +21,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.living.golem;
 
-@Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+import org.granitepowered.granite.mc.MCEntityIronGolem;
+import org.spongepowered.api.entity.living.golem.IronGolem;
 
-    String fieldGet$name();
+public class GraniteEntityIronGolem extends GraniteEntityGolem<MCEntityIronGolem> implements IronGolem {
+
+    public GraniteEntityIronGolem(MCEntityIronGolem obj) {
+        super(obj);
+    }
+
+    @Override
+    public boolean isPlayerCreated() {
+        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
+    }
+
+    @Override
+    public void setPlayerCreated(boolean playerCreated) {
+        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
+        obj.fieldGet$dataWatcher().updateObject(16, (byte) (playerCreated ? (object | 1) : (object & -2)));
+    }
 }

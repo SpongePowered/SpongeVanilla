@@ -21,10 +21,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.living.golem;
 
-@Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+import org.granitepowered.granite.mc.MCEntitySnowGolem;
+import org.spongepowered.api.entity.living.golem.SnowGolem;
 
-    String fieldGet$name();
+public class GraniteEntitySnowGolem extends GraniteEntityGolem<MCEntitySnowGolem> implements SnowGolem {
+
+    public GraniteEntitySnowGolem(MCEntitySnowGolem obj) {
+        super(obj);
+    }
 }

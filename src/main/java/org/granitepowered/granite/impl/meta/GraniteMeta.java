@@ -29,8 +29,8 @@ import org.spongepowered.api.service.persistence.data.DataContainer;
 
 public class GraniteMeta {
 
-    public final Object type;
-    public final String name;
+    private final Object type;
+    private final String name;
 
     public GraniteMeta(Object type, String name) {
         this.type = type;

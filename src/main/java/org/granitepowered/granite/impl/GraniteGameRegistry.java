@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -37,7 +39,17 @@ import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.impl.entity.player.gamemode.GraniteGameMode;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
-import org.granitepowered.granite.impl.meta.*;
+import org.granitepowered.granite.impl.item.merchant.GraniteTradeOfferBuilder;
+import org.granitepowered.granite.impl.meta.GraniteCareer;
+import org.granitepowered.granite.impl.meta.GraniteHorseColor;
+import org.granitepowered.granite.impl.meta.GraniteHorseStyle;
+import org.granitepowered.granite.impl.meta.GraniteHorseVariant;
+import org.granitepowered.granite.impl.meta.GraniteNotePitch;
+import org.granitepowered.granite.impl.meta.GraniteOcelotType;
+import org.granitepowered.granite.impl.meta.GraniteProfession;
+import org.granitepowered.granite.impl.meta.GraniteRabbitType;
+import org.granitepowered.granite.impl.meta.GraniteSkeletonType;
+import org.granitepowered.granite.impl.meta.GraniteSkullType;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.status.GraniteFavicon;
@@ -46,14 +58,26 @@ import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBiomeGenBase;
+import org.granitepowered.granite.mc.MCBlock;
+import org.granitepowered.granite.mc.MCEnchantment;
+import org.granitepowered.granite.mc.MCEnumArt;
+import org.granitepowered.granite.mc.MCGameRules;
+import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MCItem;
+import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.meta.*;
+import org.spongepowered.api.block.meta.BannerPatternShape;
+import org.spongepowered.api.block.meta.BannerPatternShapes;
+import org.spongepowered.api.block.meta.NotePitch;
+import org.spongepowered.api.block.meta.NotePitches;
+import org.spongepowered.api.block.meta.SkullType;
+import org.spongepowered.api.block.meta.SkullTypes;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.effect.particle.ParticleTypes;
@@ -61,7 +85,18 @@ import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.hanging.art.Arts;
-import org.spongepowered.api.entity.living.animal.*;
+import org.spongepowered.api.entity.living.animal.DyeColor;
+import org.spongepowered.api.entity.living.animal.DyeColors;
+import org.spongepowered.api.entity.living.animal.HorseColor;
+import org.spongepowered.api.entity.living.animal.HorseColors;
+import org.spongepowered.api.entity.living.animal.HorseStyle;
+import org.spongepowered.api.entity.living.animal.HorseStyles;
+import org.spongepowered.api.entity.living.animal.HorseVariant;
+import org.spongepowered.api.entity.living.animal.HorseVariants;
+import org.spongepowered.api.entity.living.animal.OcelotType;
+import org.spongepowered.api.entity.living.animal.OcelotTypes;
+import org.spongepowered.api.entity.living.animal.RabbitType;
+import org.spongepowered.api.entity.living.animal.RabbitTypes;
 import org.spongepowered.api.entity.living.monster.SkeletonType;
 import org.spongepowered.api.entity.living.monster.SkeletonTypes;
 import org.spongepowered.api.entity.living.villager.Career;
@@ -94,10 +129,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+import java.util.Map;
+import java.util.UUID;
 
 public class GraniteGameRegistry implements GameRegistry {
 
@@ -130,6 +169,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     ItemStackBuilder itemStackBuilder = new GraniteItemStackBuilder();
     PotionEffectBuilder potionEffectBuilder = new GranitePotionBuilder();
+    TradeOfferBuilder tradeOfferBuilder = new GraniteTradeOfferBuilder();
 
     public void register() {
         registerArts();
@@ -223,9 +263,9 @@ public class GraniteGameRegistry implements GameRegistry {
                     } else if (name.equals("extreme_hills_plus")) {
                         name = "extreme_hills+";
                     } else if (name.equals("frozen_ocean") || field.getName().equals("frozen_river") || field.getName().equals("mushroom_island")
-                            || field.getName().equals("mushroom_island_shore") || field.getName().equals("desert_hills") || field.getName()
+                               || field.getName().equals("mushroom_island_shore") || field.getName().equals("desert_hills") || field.getName()
                             .equals("forest_hills") || field.getName().equals("taiga_hills") || field.getName().equals("jungle_hills") || field
-                            .getName().equals("jungle_edge")) {
+                                       .getName().equals("jungle_edge")) {
                         name = name.replace("_", "");
                     } else if (name.equals("mesa_plateau_forest")) {
                         name = "mesa_plateau_f";
@@ -849,8 +889,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public TradeOfferBuilder getTradeOfferBuilder() {
-        // TODO: TradeOfferBuilder API
-        throw new NotImplementedException("");
+        return tradeOfferBuilder;
     }
 
     @Override

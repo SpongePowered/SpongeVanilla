@@ -21,10 +21,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package org.granitepowered.granite.impl.entity.living.complex;
 
-@Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.mc.MCEntityDragonPart;
+import org.granitepowered.granite.util.MinecraftUtils;
+import org.spongepowered.api.entity.living.complex.EnderDragon;
+import org.spongepowered.api.entity.living.complex.EnderDragonPart;
 
-    String fieldGet$name();
+public class GraniteEntityDragonPart extends GraniteEntity<MCEntityDragonPart> implements EnderDragonPart {
+
+    public GraniteEntityDragonPart(MCEntityDragonPart obj) {
+        super(obj);
+    }
+
+    @Override
+    public EnderDragon getParent() {
+        return (EnderDragon) MinecraftUtils.wrap(obj.fieldGet$entityDragonObj());
+    }
 }
