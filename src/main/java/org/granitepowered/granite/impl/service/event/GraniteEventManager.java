@@ -29,7 +29,6 @@ import com.google.common.collect.MultimapBuilder;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
-import org.granitepowered.granite.impl.guice.PluginScope;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Event;
@@ -41,18 +40,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 public class GraniteEventManager implements EventManager {
 
     Multimap<Class<? extends Event>, GraniteEventHandler> handlers = MultimapBuilder.SetMultimapBuilder.hashKeys().hashSetValues().build();
-
-    private PluginScope pluginScope;
-
-    @Inject
-    public GraniteEventManager(PluginScope pluginScope) {
-        this.pluginScope = pluginScope;
-    }
 
     @Override
     public void register(Object plugin, Object obj) {
@@ -126,20 +116,14 @@ public class GraniteEventManager implements EventManager {
 
     public boolean postEventWithOrder(Set<GraniteEventHandler> unfilteredHandlers, Event event, Order order) {
         for (GraniteEventHandler handler : unfilteredHandlers) {
-            try {
-                pluginScope.enter(handler.getPluginContainer());
-
-                if (handler.getOrder() == order) {
-                    if (!((GraniteEvent) event).cancelled || !handler.isIgnoreCancelled()) {
-                        try {
-                            handler.getMethodHandle().invoke(handler.getInstance(), event);
-                        } catch (Throwable throwable) {
-                            Granite.error(throwable);
-                        }
+            if (handler.getOrder() == order) {
+                if (!((GraniteEvent) event).cancelled || !handler.isIgnoreCancelled()) {
+                    try {
+                        handler.getMethodHandle().invoke(handler.getInstance(), event);
+                    } catch (Throwable throwable) {
+                        Granite.error(throwable);
                     }
                 }
-            } finally {
-                pluginScope.exit();
             }
         }
 

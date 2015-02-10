@@ -29,12 +29,12 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.guice.PluginScope;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -46,19 +46,15 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javax.inject.Inject;
-
 public class GranitePluginManager implements PluginManager {
 
     Collection<PluginContainer> plugins = new ArrayList<>();
 
-    private Injector injector;
-    private PluginScope pluginScope;
+    private final Injector injector;
 
     @Inject
-    public GranitePluginManager(Injector injector, PluginScope pluginScope) {
+    public GranitePluginManager(Injector injector) {
         this.injector = injector;
-        this.pluginScope = pluginScope;
     }
 
     public void loadPlugins() {
@@ -94,7 +90,7 @@ public class GranitePluginManager implements PluginManager {
                                 CtClass ctClass = classPool.get(className);
 
                                 if (ctClass.hasAnnotation(Plugin.class)) {
-                                    PluginContainer pluginContainer = new GranitePluginContainer(classLoader.loadClass(className));
+                                    PluginContainer pluginContainer = new GranitePluginContainer(injector, classLoader.loadClass(className));
                                     pluginContainers.add(pluginContainer);
                                 }
                             } catch (ClassNotFoundException | NotFoundException e) {
@@ -135,28 +131,12 @@ public class GranitePluginManager implements PluginManager {
                 if (missingDependencies.size() == 0) {
                     plugins.add(plugin);
                     Granite.instance.getEventManager().register(plugin.getInstance(), plugin.getInstance());
-                    bootstrapPlugin(plugin);
                     Granite.instance.getLogger().info("Loaded {} ({})!", plugin.getName(), plugin.getVersion());
                 } else {
                     Granite.instance.getLogger().info("Could not load {} ({})! Missing dependencies: {}", plugin.getName(), plugin.getVersion(),
                                                       missingDependencies.toString());
                 }
             }
-        }
-    }
-
-    /**
-     * Bootstraps a plugin container.
-     *
-     * @param container
-     */
-    private void bootstrapPlugin(PluginContainer container) {
-        try {
-            pluginScope.enter(container);
-
-            injector.injectMembers(container.getInstance());
-        } finally {
-            pluginScope.exit();
         }
     }
 

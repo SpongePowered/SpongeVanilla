@@ -23,7 +23,8 @@
 
 package org.granitepowered.granite.impl.plugin;
 
-import com.google.common.base.Throwables;
+import com.google.inject.Injector;
+import org.granitepowered.granite.impl.guice.GranitePluginGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
@@ -42,7 +43,7 @@ public class GranitePluginContainer implements PluginContainer {
 
     Logger logger;
 
-    public GranitePluginContainer(Class<?> clazz) {
+    public GranitePluginContainer(Injector injector, Class<?> clazz) {
         annotation = clazz.getAnnotation(Plugin.class);
         this.clazz = clazz;
         id = annotation.id();
@@ -52,11 +53,8 @@ public class GranitePluginContainer implements PluginContainer {
 
         logger = LoggerFactory.getLogger(name);
 
-        try {
-            instance = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            Throwables.propagate(e);
-        }
+        Injector pluginInjector = injector.createChildInjector(new GranitePluginGuiceModule(this));
+        instance = pluginInjector.getInstance(clazz);
     }
 
     public String getDependencies() {
