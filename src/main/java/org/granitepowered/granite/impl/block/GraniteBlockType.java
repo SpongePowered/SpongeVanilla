@@ -64,8 +64,8 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     @SuppressWarnings("deprecated")
-    public BlockState getStateFromDataValue(byte b) {
-        return wrap(obj.getStateFromMeta(b));
+    public BlockState getStateFromDataValue(byte dataValue) {
+        return wrap(obj.getStateFromMeta(dataValue));
     }
 
     @Override

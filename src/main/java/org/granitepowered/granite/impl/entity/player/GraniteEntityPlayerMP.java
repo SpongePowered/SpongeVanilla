@@ -231,12 +231,13 @@ public class GraniteEntityPlayerMP extends GraniteEntityPlayer<MCEntityPlayerMP>
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().getCurrentItem()));
+        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$mainInventory()[obj.fieldGet$inventory().fieldGet$currentItem()]));
     }
 
     @Override
     public void setItemInHand(@Nullable ItemStack itemInHand) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[0] = itemInHand == null ? null : (MCItemStack) unwrap(itemInHand);
+        MCItemStack[] itemStack = obj.fieldGet$inventory().fieldGet$mainInventory();
+        itemStack[obj.fieldGet$inventory().fieldGet$currentItem()] = unwrap(itemInHand);
     }
 
     @Override
@@ -251,7 +252,8 @@ public class GraniteEntityPlayerMP extends GraniteEntityPlayer<MCEntityPlayerMP>
 
     @Override
     public boolean hasJoinedBefore() {
-        return true;
+        // TODO: Not sure if possible
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -280,7 +282,7 @@ public class GraniteEntityPlayerMP extends GraniteEntityPlayer<MCEntityPlayerMP>
 
     @Override
     public boolean isOnline() {
-        throw new NotImplementedException("");
+        return true;
     }
 
     @Override
@@ -296,8 +298,6 @@ public class GraniteEntityPlayerMP extends GraniteEntityPlayer<MCEntityPlayerMP>
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
         // TODO: Radius is currently ignored, fix this
-
-        // Code mostly stolen from Seppe Volkaerts (Cybermaxke)'s Sponge PR, thanks and please don't sue!
         GraniteParticleType type = (GraniteParticleType) particleEffect.getType();
 
         Vector3f offset = particleEffect.getOffset();
