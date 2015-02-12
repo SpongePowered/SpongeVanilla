@@ -31,7 +31,7 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerChatEvent;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerMoveEvent;
 import org.granitepowered.granite.mappings.Mappings;
@@ -58,7 +58,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         MCPacketChatMessage packet = (MCPacketChatMessage) info.getArguments()[0];
         String message = packet.fieldGet$message();
 
-        GraniteEntityPlayerMP p = wrap(info.getCaller().fieldGet$playerEntity());
+        GranitePlayer p = wrap(info.getCaller().fieldGet$playerEntity());
         GranitePlayerChatEvent event = new GranitePlayerChatEvent(p, message);
         Granite.getInstance().getEventManager().post(event);
 
@@ -69,7 +69,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
     public Object processPlayer(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
         quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
 
-        GraniteEntityPlayerMP player = wrap(info.getCaller().fieldGet$playerEntity());
+        GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         Location old = player.getLocation();
         Location new_ = new Location(old.getExtent(), new Vector3d(0, 0, 0));
 

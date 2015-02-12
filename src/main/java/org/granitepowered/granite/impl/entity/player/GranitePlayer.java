@@ -90,11 +90,10 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-public class GraniteEntityPlayerMP extends GraniteEntityPlayer<MCEntityPlayerMP> implements Player {
-
+public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> implements Player {
     private Optional<Message> displayName = Optional.absent();
 
-    public GraniteEntityPlayerMP(MCEntityPlayerMP obj) {
+    public GranitePlayer(MCEntityPlayerMP obj) {
         super(obj);
     }
 

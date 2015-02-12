@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.event.entity.living.player;
 
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
 import org.spongepowered.api.text.message.Message;
 
@@ -31,7 +31,7 @@ public class GranitePlayerJoinEvent extends GranitePlayerEvent implements Player
 
     Message joinMessage;
 
-    public GranitePlayerJoinEvent(GraniteEntityPlayerMP player, Message joinMessage) {
+    public GranitePlayerJoinEvent(GranitePlayer player, Message joinMessage) {
         super(player);
 
         this.joinMessage = joinMessage;

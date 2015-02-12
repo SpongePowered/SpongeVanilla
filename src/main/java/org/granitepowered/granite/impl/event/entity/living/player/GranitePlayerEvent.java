@@ -23,16 +23,16 @@
 
 package org.granitepowered.granite.impl.event.entity.living.player;
 
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.GraniteEntityEvent;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.entity.living.player.PlayerEvent;
 
 public class GranitePlayerEvent extends GraniteEntityEvent implements PlayerEvent {
 
-    GraniteEntityPlayerMP player;
+    GranitePlayer player;
 
-    public GranitePlayerEvent(GraniteEntityPlayerMP player) {
+    public GranitePlayerEvent(GranitePlayer player) {
         super(player);
         this.player = player;
     }

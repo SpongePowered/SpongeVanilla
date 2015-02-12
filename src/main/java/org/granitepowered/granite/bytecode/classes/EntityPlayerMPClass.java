@@ -33,7 +33,7 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerDeathEvent;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCChatComponent;
@@ -67,7 +67,7 @@ public class EntityPlayerMPClass extends BytecodeClass {
 
     @Proxy(methodName = "onDeath")
     public Object onDeath(ProxyCallbackInfo<MCEntityPlayerMP> info) throws Throwable {
-        GraniteEntityPlayerMP player = new GraniteEntityPlayerMP(info.getCaller());
+        GranitePlayer player = new GranitePlayer(info.getCaller());
         MCDamageSource source = (MCDamageSource) info.getArguments()[0];
 
         MCChatComponent deathComponent = info.getCaller().fieldGet$_combatTracker().func_151521_b();

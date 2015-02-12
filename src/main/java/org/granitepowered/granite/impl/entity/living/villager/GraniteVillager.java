@@ -27,7 +27,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityAgeable;
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
+import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.item.merchant.GraniteTradeOffer;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityVillager;
@@ -96,7 +96,7 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
 
     @Override
     public void setCustomer(Human human) {
-        obj.interact(MinecraftUtils.unwrap((GraniteEntityPlayerMP) human));
+        obj.interact(MinecraftUtils.unwrap((GranitePlayer) human));
     }
 
     @Override
