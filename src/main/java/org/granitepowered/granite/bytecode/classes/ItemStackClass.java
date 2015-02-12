@@ -32,7 +32,7 @@ import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
-import org.granitepowered.granite.impl.event.player.GranitePlayerPlaceBlockEvent;
+import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerPlaceBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;

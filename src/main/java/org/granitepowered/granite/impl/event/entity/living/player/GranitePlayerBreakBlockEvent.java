@@ -21,30 +21,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.event.entity.living.player;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.player.PlayerPlaceBlockEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.util.Direction;
 
-public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements PlayerPlaceBlockEvent {
+import java.util.Collection;
+
+public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements PlayerBreakBlockEvent {
 
     Player player;
-    BlockSnapshot previous;
+    BlockSnapshot nextBlock;
 
-    public GranitePlayerPlaceBlockEvent(BlockLoc loc, Player player, BlockSnapshot previous) {
+    public GranitePlayerBreakBlockEvent(BlockLoc loc, Player player, BlockSnapshot nextBlock) {
         super(loc);
         this.player = player;
-        this.previous = previous;
+        this.nextBlock = nextBlock;
     }
 
     @Override
     public BlockSnapshot getReplacementBlock() {
-        return previous;
+        return nextBlock;
     }
 
     @Override
@@ -54,12 +56,12 @@ public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements P
 
     @Override
     public Player getHuman() {
-        return player;
+        return null;
     }
 
     @Override
     public Player getLiving() {
-        return player;
+        return null;
     }
 
     @Override
@@ -69,6 +71,21 @@ public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements P
 
     @Override
     public Direction getBlockFaceDirection() {
-        throw new NotImplementedException("");
+        return null;
+    }
+
+    @Override
+    public double getExp() {
+        return 0;
+    }
+
+    @Override
+    public void setExp(double v) {
+
+    }
+
+    @Override
+    public Collection<Item> getDroppedItems() {
+        return null;
     }
 }

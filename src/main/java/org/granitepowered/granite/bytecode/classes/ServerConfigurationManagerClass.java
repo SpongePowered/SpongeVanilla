@@ -32,7 +32,7 @@ import org.granitepowered.granite.bytecode.MethodCallArgument;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
-import org.granitepowered.granite.impl.event.player.GranitePlayerJoinEvent;
+import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCGameProfile;

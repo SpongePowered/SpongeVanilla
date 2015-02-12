@@ -22,7 +22,7 @@
  */
 
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.event.entity.living.player;
 
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;

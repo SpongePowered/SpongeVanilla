@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.event.entity.living.player;
 
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
 import org.spongepowered.api.event.entity.living.player.PlayerChatEvent;

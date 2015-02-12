@@ -21,32 +21,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.event.entity.living.player;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.player.PlayerBreakBlockEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerPlaceBlockEvent;
 import org.spongepowered.api.util.Direction;
 
-import java.util.Collection;
-
-public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements PlayerBreakBlockEvent {
+public class GranitePlayerPlaceBlockEvent extends GraniteBlockEvent implements PlayerPlaceBlockEvent {
 
     Player player;
-    BlockSnapshot nextBlock;
+    BlockSnapshot previous;
 
-    public GranitePlayerBreakBlockEvent(BlockLoc loc, Player player, BlockSnapshot nextBlock) {
+    public GranitePlayerPlaceBlockEvent(BlockLoc loc, Player player, BlockSnapshot previous) {
         super(loc);
         this.player = player;
-        this.nextBlock = nextBlock;
+        this.previous = previous;
     }
 
     @Override
     public BlockSnapshot getReplacementBlock() {
-        return nextBlock;
+        return previous;
     }
 
     @Override
@@ -56,12 +54,12 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
 
     @Override
     public Player getHuman() {
-        return null;
+        return player;
     }
 
     @Override
     public Player getLiving() {
-        return null;
+        return player;
     }
 
     @Override
@@ -71,21 +69,6 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
 
     @Override
     public Direction getBlockFaceDirection() {
-        return null;
-    }
-
-    @Override
-    public double getExp() {
-        return 0;
-    }
-
-    @Override
-    public void setExp(double v) {
-
-    }
-
-    @Override
-    public Collection<Item> getDroppedItems() {
-        return null;
+        throw new NotImplementedException("");
     }
 }

@@ -21,6 +21,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-@NonnullByDefault package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.event.entity.living.player;
 
-import org.spongepowered.api.util.annotation.NonnullByDefault;
+import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
+import org.spongepowered.api.event.entity.living.player.PlayerMoveEvent;
+import org.spongepowered.api.world.Location;
+
+public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
+
+    Location old;
+    Location new_;
+
+    public GranitePlayerMoveEvent(GraniteEntityPlayerMP player, Location old, Location new_) {
+        super(player);
+        this.old = old;
+        this.new_ = new_;
+    }
+
+    @Override
+    public Location getOldLocation() {
+        return old;
+    }
+
+    @Override
+    public Location getNewLocation() {
+        return new_;
+    }
+}

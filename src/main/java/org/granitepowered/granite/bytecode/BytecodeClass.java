@@ -653,10 +653,10 @@ public class BytecodeClass {
             } catch (CannotCompileException e) {
                 e.printStackTrace();
             }
-        } else if (position instanceof CodePosition.MethodCallPosition) {
+        } else if (position.mode() == Position.PositionMode.METHOD_CALL) {
             String code = "";
 
-            final CtMethod methodd = ((CodePosition.MethodCallPosition) position).getMethod();
+            final CtMethod methodd = Mappings.getCtMethod(clazz, position.value());
             switch (insertionMode) {
                 case BEFORE:
                     code += "{";

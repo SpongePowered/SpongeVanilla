@@ -34,7 +34,7 @@ import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.block.GraniteBlockSnapshot;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
-import org.granitepowered.granite.impl.event.player.GranitePlayerBreakBlockEvent;
+import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerBreakBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCItemInWorldManager;

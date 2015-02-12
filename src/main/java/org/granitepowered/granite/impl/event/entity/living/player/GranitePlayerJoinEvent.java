@@ -21,30 +21,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+package org.granitepowered.granite.impl.event.entity.living.player;
 
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
-import org.spongepowered.api.event.entity.living.player.PlayerMoveEvent;
-import org.spongepowered.api.world.Location;
+import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
+import org.spongepowered.api.text.message.Message;
 
-public class GranitePlayerMoveEvent extends GranitePlayerEvent implements PlayerMoveEvent {
+public class GranitePlayerJoinEvent extends GranitePlayerEvent implements PlayerJoinEvent {
 
-    Location old;
-    Location new_;
+    Message joinMessage;
 
-    public GranitePlayerMoveEvent(GraniteEntityPlayerMP player, Location old, Location new_) {
+    public GranitePlayerJoinEvent(GraniteEntityPlayerMP player, Message joinMessage) {
         super(player);
-        this.old = old;
-        this.new_ = new_;
+
+        this.joinMessage = joinMessage;
     }
 
     @Override
-    public Location getOldLocation() {
-        return old;
+    public Message getJoinMessage() {
+        return joinMessage;
     }
 
     @Override
-    public Location getNewLocation() {
-        return new_;
+    public void setJoinMessage(Message joinMessage) {
+        checkModify();
+        this.joinMessage = joinMessage;
     }
 }

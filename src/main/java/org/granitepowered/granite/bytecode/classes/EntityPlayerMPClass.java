@@ -34,7 +34,7 @@ import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
-import org.granitepowered.granite.impl.event.player.GranitePlayerDeathEvent;
+import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerDeathEvent;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCDamageSource;

@@ -21,39 +21,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.impl.event.player;
+@NonnullByDefault package org.granitepowered.granite.impl.event.entity.living.player;
 
-import org.granitepowered.granite.impl.entity.player.GraniteEntityPlayerMP;
-import org.granitepowered.granite.impl.event.entity.GraniteEntityEvent;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.player.PlayerEvent;
-
-public class GranitePlayerEvent extends GraniteEntityEvent implements PlayerEvent {
-
-    GraniteEntityPlayerMP player;
-
-    public GranitePlayerEvent(GraniteEntityPlayerMP player) {
-        super(player);
-        this.player = player;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
-
-    @Override
-    public Player getHuman() {
-        return player;
-    }
-
-    @Override
-    public Player getLiving() {
-        return player;
-    }
-
-    @Override
-    public Player getEntity() {
-        return player;
-    }
-}
+import org.spongepowered.api.util.annotation.NonnullByDefault;
