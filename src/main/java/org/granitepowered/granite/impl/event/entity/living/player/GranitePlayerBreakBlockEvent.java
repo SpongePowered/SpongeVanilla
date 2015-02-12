@@ -73,19 +73,4 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
     public Direction getBlockFaceDirection() {
         return null;
     }
-
-    @Override
-    public double getExp() {
-        return 0;
-    }
-
-    @Override
-    public void setExp(double v) {
-
-    }
-
-    @Override
-    public Collection<Item> getDroppedItems() {
-        return null;
-    }
 }
