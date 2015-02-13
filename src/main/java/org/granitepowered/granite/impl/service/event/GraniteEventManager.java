@@ -31,6 +31,7 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.event.GraniteEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.util.event.Cancellable;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Order;
 import org.spongepowered.api.util.event.Subscribe;
