@@ -68,8 +68,23 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         return info.callback();
     }
 
+    @Proxy(methodName = "processPlayerDigging")
+    public Object processPlayerDigging(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
+        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
+
+        GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
+        MCPacketPlayerDigging packet = (MCPacketPlayerDigging) info.getArguments()[0];
+        BlockLoc loc = new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179717_a().fieldGet$x(), packet.fieldGet$field_179717_a().fieldGet$y(), packet.fieldGet$field_179717_a().fieldGet$z())));
+
+        GranitePlayerInteractBlockEvent event = new GranitePlayerInteractBlockEvent(player, EntityInteractionType.LEFT_CLICK, Optional.<Vector3f>absent(), loc);
+        Granite.getInstance().getEventManager().post(event);
+        return info.callback();
+    }
+
     @Proxy(methodName = "processPlayerBlockPlacement")
     public Object processPlayerBlockPlacement(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
+        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
+
         GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         MCPacketPlayerBlockPlacement packet = (MCPacketPlayerBlockPlacement) info.getArguments()[0];
 
