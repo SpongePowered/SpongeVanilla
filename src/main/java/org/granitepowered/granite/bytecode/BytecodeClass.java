@@ -224,7 +224,7 @@ public class BytecodeClass {
             String code = "{\n";
             code +=
                     ProxyHandlerCallback.class.getName() + " callback = " + getClass().getName() + ".createCallback((Object) this, " + methodName
-                    + "$method);\n";
+                            + "$method);\n";
             code += ProxyCallbackInfo.class.getName() + " info = new " + ProxyCallbackInfo.class.getName() + "(this, $args, callback);";
             code += "return ($r) this.bytecodeClass." + handler.getName() + "(info);\n";
             code += "}";
@@ -302,7 +302,7 @@ public class BytecodeClass {
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -330,7 +330,7 @@ public class BytecodeClass {
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -574,7 +574,7 @@ public class BytecodeClass {
                             code += CallbackInfo.class.getName() + " info = new " + CallbackInfo.class.getName() + "(this, $args, $mArgs);";
                             code +=
                                     methodToCallback.getReturnType().getName() + " var = this.bytecodeClass." + methodToCallback.getName()
-                                    + "(info);";
+                                            + "(info);";
                             code += "if (!info.isCancelled()) {";
                             code += "$_ = $proceed(";
 
@@ -606,6 +606,10 @@ public class BytecodeClass {
 
     public void insert(String methodName, CtMethod methodToInsert, CodeInsertionMode insertionMode, Position position) {
         final CtMethod method = Mappings.getCtMethod(clazz, methodName);
+
+        if (method == null) {
+            throw new RuntimeException("Method " + methodName + " not found");
+        }
 
         addBytecodeClassField(method.getDeclaringClass());
 
@@ -682,10 +686,12 @@ public class BytecodeClass {
                 method.instrument(new ExprEditor() {
                     @Override
                     public void edit(MethodCall m) throws CannotCompileException {
-                        if (Objects.equals(m.getClassName(), methodd.getDeclaringClass().getName())) {
-                            if (Objects.equals(m.getMethodName(), methodd.getName())) {
+                        try {
+                            if (Objects.equals(m.getMethod().getLongName(), methodd.getLongName())) {
                                 m.replace(finalCode);
                             }
+                        } catch (NotFoundException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
