@@ -21,26 +21,37 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode.classes;
+package org.granitepowered.granite.impl.status;
 
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CallbackInfo;
-import org.granitepowered.granite.bytecode.CodeInsertionMode;
-import org.granitepowered.granite.bytecode.Insert;
-import org.granitepowered.granite.bytecode.Position;
-import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
-import org.granitepowered.granite.mc.MCEntityLivingBase;
-import org.granitepowered.granite.util.MinecraftUtils;
+import org.granitepowered.granite.ProtocolMinecraftVersion;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.GraniteMinecraftVersion;
+import org.granitepowered.granite.mc.MCMinecraftProtocolVersionIdentifier;
+import org.spongepowered.api.MinecraftVersion;
 
-public class EntityLivingBaseClass extends BytecodeClass {
+public class GraniteMinecraftProtocolVersionIdentifier extends Composite<MCMinecraftProtocolVersionIdentifier> implements ProtocolMinecraftVersion {
 
-    public EntityLivingBaseClass() {
-        super("EntityLivingBase");
+    public GraniteMinecraftProtocolVersionIdentifier(Object obj) {
+        super(obj);
     }
 
-    @Insert(methodName = "onEntityUpdate", mode = CodeInsertionMode.REPLACE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "setAir", index = 2))
-    public void onEntityUpdateSetAir(CallbackInfo<MCEntityLivingBase> info) {
-        GraniteEntityLivingBase livingBase = MinecraftUtils.wrap(info.getCaller());
-        ((MCEntityLivingBase) livingBase.obj).setAir(livingBase.getMaxAir());
+    @Override
+    public int getProtocol() {
+        return obj.fieldGet$protocol();
+    }
+
+    @Override
+    public String getName() {
+        return obj.fieldGet$name();
+    }
+
+    @Override
+    public boolean isLegacy() {
+        return false;
+    }
+
+    @Override
+    public int compareTo(MinecraftVersion minecraftVersion) {
+        return GraniteMinecraftVersion.compare(this, minecraftVersion);
     }
 }

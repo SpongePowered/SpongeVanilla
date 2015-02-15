@@ -7,6 +7,8 @@ import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.monster.Zombie;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import java.util.Random;
+
 public class GraniteEntityZombie<T extends MCEntityZombie> extends GraniteEntityMonster<T> implements Zombie {
 
     public GraniteEntityZombie(T obj) {
@@ -25,12 +27,12 @@ public class GraniteEntityZombie<T extends MCEntityZombie> extends GraniteEntity
 
     @Override
     public int getAge() {
-        throw new NotImplementedException("");
+        return isBaby() ? -2400 : 0;
     }
 
     @Override
     public void setAge(int age) {
-        throw new NotImplementedException("");
+        obj.setChild(age < 0);
     }
 
     @Override
@@ -50,12 +52,12 @@ public class GraniteEntityZombie<T extends MCEntityZombie> extends GraniteEntity
 
     @Override
     public boolean canBreed() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$attributeMap().getAttributeInstance(obj.fieldGet$reinforcementsAttribute()).getAttributeValue() > 0;
     }
 
     @Override
-    public void setBreeding(boolean b) {
-        throw new NotImplementedException("");
+    public void setBreeding(boolean breeding) {
+        obj.fieldGet$attributeMap().getAttributeInstance(obj.fieldGet$reinforcementsAttribute()).setBaseValue(breeding ? new Random().nextDouble() * 0.10000000149011612D : 0);
     }
 
     @Override

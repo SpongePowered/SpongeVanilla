@@ -24,23 +24,26 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CallbackInfo;
-import org.granitepowered.granite.bytecode.CodeInsertionMode;
-import org.granitepowered.granite.bytecode.Insert;
-import org.granitepowered.granite.bytecode.Position;
-import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
-import org.granitepowered.granite.mc.MCEntityLivingBase;
+import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
+import org.granitepowered.granite.impl.status.ConnectionInfo;
+import org.granitepowered.granite.impl.status.GraniteStatusClient;
+import org.granitepowered.granite.mc.MCNetHandlerHandshakeTCP;
+import org.granitepowered.granite.mc.MCPacketHandshake;
 import org.granitepowered.granite.util.MinecraftUtils;
 
-public class EntityLivingBaseClass extends BytecodeClass {
+public class NetHandlerHandshakeTCPClass extends BytecodeClass {
 
-    public EntityLivingBaseClass() {
-        super("EntityLivingBase");
+    public NetHandlerHandshakeTCPClass() {
+        super("NetHandlerHandshakeTCP");
     }
 
-    @Insert(methodName = "onEntityUpdate", mode = CodeInsertionMode.REPLACE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "setAir", index = 2))
-    public void onEntityUpdateSetAir(CallbackInfo<MCEntityLivingBase> info) {
-        GraniteEntityLivingBase livingBase = MinecraftUtils.wrap(info.getCaller());
-        ((MCEntityLivingBase) livingBase.obj).setAir(livingBase.getMaxAir());
+    @Proxy(methodName = "processHandshake")
+    public Object processHandshake(ProxyCallbackInfo<MCNetHandlerHandshakeTCP> info) throws Throwable {
+        ConnectionInfo connectionInfo = (GraniteStatusClient) MinecraftUtils.wrap(info.getCaller().fieldGet$networkManager());
+        MCPacketHandshake packetHandshake = ((MCPacketHandshake) info.getArguments()[0]);
+        connectionInfo.setVersion(packetHandshake.fieldGet$protocolVersion());
+        connectionInfo.setVirtualHost(packetHandshake.fieldGet$ip(), packetHandshake.fieldGet$port());
+        return info.callback();
     }
 }

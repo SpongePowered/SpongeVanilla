@@ -24,21 +24,22 @@
 package org.granitepowered.granite.impl;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.ProtocolMinecraftVersion;
 import org.spongepowered.api.MinecraftVersion;
 
-public class GraniteGameVersion implements MinecraftVersion {
+public class GraniteMinecraftVersion implements ProtocolMinecraftVersion {
 
-    private final String version;
+    private final String name;
     private final int protocol;
 
-    public GraniteGameVersion(String version, int protocol) {
-        this.version = version;
+    public GraniteMinecraftVersion(String name, int protocol) {
+        this.name = name;
         this.protocol = protocol;
     }
 
     @Override
     public String getName() {
-        return this.version;
+        return this.name;
     }
 
     public int getProtocol() {
@@ -47,7 +48,14 @@ public class GraniteGameVersion implements MinecraftVersion {
 
     @Override
     public boolean isLegacy() {
-        return this.protocol < 47;
+        return false;
+    }
+
+    public static int compare(ProtocolMinecraftVersion version, MinecraftVersion to) {
+        if (version == to) {
+            return 0;
+        }
+        return to.isLegacy() ? 1 : version.getProtocol() - ((ProtocolMinecraftVersion) to).getProtocol();
     }
 
     @Override

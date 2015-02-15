@@ -65,8 +65,8 @@ public class ItemInWorldManagerClass extends BytecodeClass {
         if (!event.isCancelled()) {
             return info.callback(info.getArguments());
         } else {
-            MCPacket p = Instantiator.get().newPacketBlockChange(info.getCaller().fieldGet$theWorld(), mcBlockPos);
-            player.sendPacket(p);
+            MCPacket packet = Instantiator.get().newPacketBlockChange(info.getCaller().fieldGet$theWorld(), mcBlockPos);
+            player.obj.fieldGet$playerNetServerHandler().sendPacket(packet);
             return false;
         }
     }

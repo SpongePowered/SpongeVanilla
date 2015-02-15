@@ -43,10 +43,11 @@ import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
 import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
 import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
 import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerHandshakeTCPClass;
 import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
 import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
 import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
-import org.granitepowered.granite.impl.GraniteGameVersion;
+import org.granitepowered.granite.impl.GraniteMinecraftVersion;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
@@ -136,6 +137,8 @@ public class GraniteStartupThread extends Thread {
                     }
                 }
             }
+            Granite.instance.getLogger()
+                    .info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion);
 
             Granite.instance.version = serverVersion;
             Granite.instance.apiVersion = apiVersion;
@@ -173,8 +176,6 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.eventManager.post(new GranitePostInitializationEvent());
             Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
-            Granite.instance.getLogger()
-                    .info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion);
 
             Date date = new Date();
             String day = new SimpleDateFormat("dd").format(date);
@@ -286,6 +287,7 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new EntityXFireballClass("EntityLargeFireball"));
             modifier.add(new ItemInWorldManagerClass());
             modifier.add(new ItemStackClass());
+            modifier.add(new NetHandlerHandshakeTCPClass());
             modifier.add(new NetHandlerPlayServerClass());
             modifier.add(new ServerConfigurationManagerClass());
             modifier.add(new WorldProviderClass());
@@ -359,10 +361,8 @@ public class GraniteStartupThread extends Thread {
         }
 
         String minecraftVersion = minecraftJar.getName().replace("minecraft_server.", "Minecraft ").replace(".jar", "");
-        int protocol = 47;
-        Granite.instance.minecraftVersion = new GraniteGameVersion(minecraftVersion, protocol);
-
-        Granite.instance.getLogger().info("Loading " + minecraftVersion + " with protocol " + protocol);
+        Granite.instance.minecraftVersion = new GraniteMinecraftVersion(minecraftVersion, 47);
+        Granite.instance.getLogger().info("Loading " + minecraftVersion);
 
         try {
             Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());

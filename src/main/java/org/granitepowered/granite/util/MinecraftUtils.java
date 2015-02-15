@@ -61,6 +61,7 @@ import org.granitepowered.granite.impl.meta.GraniteBannerPatternShape;
 import org.granitepowered.granite.impl.meta.GraniteDyeColor;
 import org.granitepowered.granite.impl.potion.GranitePotionEffect;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
+import org.granitepowered.granite.impl.status.GraniteStatusClient;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.world.GraniteChunk;
 import org.granitepowered.granite.impl.world.GraniteDimension;
@@ -114,6 +115,7 @@ public class MinecraftUtils {
             .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
             .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
             .put(Mappings.getClass("MerchantRecipe"), GraniteTradeOffer.class)
+            .put(Mappings.getClass("NetworkManager"), GraniteStatusClient.class)
             .put(Mappings.getClass("Potion"), GranitePotionEffectType.class)
             .put(Mappings.getClass("PotionEffect"), GranitePotionEffect.class)
             .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)

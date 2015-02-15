@@ -23,86 +23,58 @@
 
 package org.granitepowered.granite.impl.status;
 
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
-import org.granitepowered.granite.Granite;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+
+import com.google.common.base.Charsets;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.base64.Base64;
 import org.spongepowered.api.status.Favicon;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 
 public class GraniteFavicon implements Favicon {
 
-    String FAVICON_PREFIX = "data:image/png;base64,";
-    BufferedImage bufferedImage;
-
-    public GraniteFavicon(String image) throws IOException {
-        if (isValid(image)) {
-            this.bufferedImage = ImageIO.read(new ByteArrayInputStream(image.getBytes(Charsets.UTF_8)));
-        }
-    }
-
-    public GraniteFavicon(File file) throws IOException {
-        byte[] bytes = Files.readAllBytes(file.toPath());
-        String encoded = new String(bytes, Charsets.UTF_8);
-
-        if (isValid(encoded)) {
-            this.bufferedImage = ImageIO.read(new ByteArrayInputStream(encoded.getBytes(Charsets.UTF_8)));
-        }
-    }
-
-    public GraniteFavicon(URL url) throws IOException {
-        if (isValid(IOUtils.toString(url, Charsets.UTF_8))) {
-            this.bufferedImage = ImageIO.read(new ByteArrayInputStream(IOUtils.toString(url, Charsets.UTF_8).getBytes(Charsets.UTF_8)));
-        }
-    }
-
-    public GraniteFavicon(InputStream inputStream) throws IOException {
-        String encoded = IOUtils.toString(inputStream, Charsets.UTF_8);
-        if (isValid(encoded)) {
-            this.bufferedImage = ImageIO.read(inputStream);
-        }
-    }
+    private static final String FAVICON_PREFIX = "data:image/png;base64,";
+    private final BufferedImage bufferedImage;
 
     public GraniteFavicon(BufferedImage bufferedImage) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
-        byteArrayOutputStream.flush();
-        String encoded = byteArrayOutputStream.toString("UTF-8");
-        byteArrayOutputStream.close();
-        if (isValid(encoded)) {
-            this.bufferedImage = bufferedImage;
+        this.bufferedImage = bufferedImage;
+    }
+
+    public GraniteFavicon(String string) throws IOException {
+        checkArgument(string.startsWith(FAVICON_PREFIX), "Unknown favicon format");
+        ByteBuf base64 = Unpooled.copiedBuffer(string.substring(FAVICON_PREFIX.length()), Charsets.UTF_8);
+        try {
+            ByteBuf byteBuf = Base64.decode(base64);
+            try {
+                BufferedImage result = ImageIO.read(new ByteBufInputStream(byteBuf));
+                checkState(result.getWidth() == 64, "favicon must be 64 pixels wide");
+                checkState(result.getHeight() == 64, "favicon must be 64 pixels high");
+                this.bufferedImage = result;
+            } finally {
+                byteBuf.release();
+            }
+        } finally {
+            base64.release();
         }
     }
 
     @Override
     public BufferedImage getImage() {
-        return bufferedImage;
+        return this.bufferedImage;
     }
 
-    private boolean isValid(String image) {
-        if (image != null) {
-            if (image.startsWith(FAVICON_PREFIX)) {
-                if (bufferedImage.getWidth() == 64 && bufferedImage.getHeight() == 64) {
-                    return true;
-                } else {
-                    Granite.instance.getLogger()
-                            .error("Image must be 64x64. Currently it is " + bufferedImage.getWidth() + "x" + bufferedImage.getHeight());
-                }
-            } else {
-                Granite.instance.getLogger().error("Unknown icon");
-            }
-        } else {
-            Granite.instance.getLogger().error("The buffered image returned null when encoding to String");
-        }
-        return false;
+    public static Favicon load(String raw) throws IOException {
+        return new GraniteFavicon(raw);
+    }
+
+    public static Favicon load(BufferedImage image) throws IOException {
+        return new GraniteFavicon(image);
     }
 }

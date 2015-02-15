@@ -44,10 +44,10 @@
     </organization>
 
     <scm>
-        <connection>scm:git:https://github.com/GraniteTeam/Granite.git</connection>
-        <developerConnection>scm:git:git@github.com:GraniteTeam/Granite.git</developerConnection>
+        <connection>scm:git:https://github.com/GranitePowered/Granite.git</connection>
+        <developerConnection>scm:git:git@github.com:GranitePowered/Granite.git</developerConnection>
         <tag>HEAD</tag>
-        <url>https://github.com/GraniteTeam/Granite</url>
+        <url>https://github.com/GranitePowered/Granite</url>
     </scm>
 
     <repositories>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0</version>
+            <version>4.0-beta5</version>
         </dependency>
 
         <dependency>
@@ -127,6 +127,12 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.0-beta9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.24.Final</version>
         </dependency>
     </dependencies>
 
@@ -201,6 +207,7 @@
                                     <include>aopalliance:aopalliance</include>
                                     <include>ninja.leaping.configurate:configurate-core</include>
                                     <include>ninja.leaping.configurate:configurate-hocon</include>
+                                    <include>io.netty:netty-all</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

@@ -84,12 +84,10 @@ public class ItemStackClass extends BytecodeClass {
                 loc.replaceWith(oldSnapshot);
 
                 MCPacket clickedUpdate = Instantiator.get().newPacketBlockChange(mcPlayer.fieldGet$worldObj(), posClicked);
-
-                player.sendPacket(clickedUpdate);
+                player.obj.fieldGet$playerNetServerHandler().sendPacket(clickedUpdate);
 
                 MCPacket placedUpdate = Instantiator.get().newPacketBlockChange(mcPlayer.fieldGet$worldObj(), posPlaced);
-
-                player.sendPacket(placedUpdate);
+                player.obj.fieldGet$playerNetServerHandler().sendPacket(placedUpdate);
             }
             return !event.isCancelled();
         } else {

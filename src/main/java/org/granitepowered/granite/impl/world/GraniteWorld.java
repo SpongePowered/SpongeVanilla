@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.world;
 
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector3d;
@@ -76,11 +77,6 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public UUID getUniqueID() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
     public String getName() {
         String name = getMCWorldInfo().fieldGet$levelName();
         if (name == null) {
@@ -101,7 +97,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public boolean deleteChunk(Chunk chunk) {
+    public boolean unloadChunk(Chunk chunk) {
         throw new NotImplementedException("");
     }
 
@@ -111,11 +107,12 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
-    public Optional<Entity> getEntityFromUUID(final UUID uuid) {
+    public Optional<Entity> getEntity(UUID uuid) {
+        final UUID finalUUID = uuid;
         return Iterables.tryFind(getEntities(), new Predicate<Entity>() {
             @Override
             public boolean apply(Entity input) {
-                return input.getUniqueId().equals(uuid);
+                return input.getUniqueId().equals(finalUUID);
             }
         });
     }
@@ -230,6 +227,18 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     @Override
+    public Optional<Entity> createEntity(EntitySnapshot entitySnapshot, Vector3i vector3i) {
+        // TODO: Entity Snapshot API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Entity> createEntity(EntityType entityType, Vector3i vector3i) {
+        /// TODO: EntityType API
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Optional<Entity> createEntity(EntitySnapshot snapshot, Vector3d position) {
         // TODO: Entity Snapshot API
         throw new NotImplementedException("");
@@ -239,6 +248,11 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     public Optional<Entity> createEntity(DataContainer entityContainer) {
         /// TODO: Persistence API
         throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean spawnEntity(Entity entity) {
+        return obj.spawnEntityInWorld((MCEntity) unwrap((GraniteEntity) entity));
     }
 
     @Override
@@ -302,7 +316,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume) {
-        // Can't find method to set minVolume?
+        // TODO: Can't find method to set minVolume?
         this.obj.playSoundEffect(position.getX(), position.getY(), position.getZ(), sound.getName(), (float) volume, (float) pitch);
     }
 
@@ -329,5 +343,11 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     @Override
     public Context getContext() {
         return new Context("world", getName());
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        // TODO: UUID
+        throw new NotImplementedException("");
     }
 }

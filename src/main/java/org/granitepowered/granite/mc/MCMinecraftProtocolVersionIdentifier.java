@@ -21,26 +21,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode.classes;
+package org.granitepowered.granite.mc;
 
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CallbackInfo;
-import org.granitepowered.granite.bytecode.CodeInsertionMode;
-import org.granitepowered.granite.bytecode.Insert;
-import org.granitepowered.granite.bytecode.Position;
-import org.granitepowered.granite.impl.entity.living.GraniteEntityLivingBase;
-import org.granitepowered.granite.mc.MCEntityLivingBase;
-import org.granitepowered.granite.util.MinecraftUtils;
+@Implement(name = "MinecraftProtocolVersionIdentifier")
+public interface MCMinecraftProtocolVersionIdentifier extends MCInterface {
 
-public class EntityLivingBaseClass extends BytecodeClass {
+    String fieldGet$name();
 
-    public EntityLivingBaseClass() {
-        super("EntityLivingBase");
-    }
-
-    @Insert(methodName = "onEntityUpdate", mode = CodeInsertionMode.REPLACE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "setAir", index = 2))
-    public void onEntityUpdateSetAir(CallbackInfo<MCEntityLivingBase> info) {
-        GraniteEntityLivingBase livingBase = MinecraftUtils.wrap(info.getCaller());
-        ((MCEntityLivingBase) livingBase.obj).setAir(livingBase.getMaxAir());
-    }
+    int fieldGet$protocol();
 }

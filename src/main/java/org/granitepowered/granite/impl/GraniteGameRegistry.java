@@ -138,6 +138,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+
 public class GraniteGameRegistry implements GameRegistry {
 
     public Map<String, Art> arts = Maps.newHashMap();
@@ -1108,17 +1110,17 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Favicon loadFavicon(File file) throws IOException {
-        return new GraniteFavicon(file);
+        return new GraniteFavicon(ImageIO.read(file));
     }
 
     @Override
     public Favicon loadFavicon(URL url) throws IOException {
-        return new GraniteFavicon(url);
+        return new GraniteFavicon(ImageIO.read(url));
     }
 
     @Override
     public Favicon loadFavicon(InputStream inputStream) throws IOException {
-        return new GraniteFavicon(inputStream);
+        return new GraniteFavicon(ImageIO.read(inputStream));
     }
 
     @Override

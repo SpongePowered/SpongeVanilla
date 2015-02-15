@@ -42,11 +42,9 @@ import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCFoodStats;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.mc.MCPacketTitleType;
-import org.granitepowered.granite.mc.MCPlayerCapabilities;
 import org.granitepowered.granite.mc.MCRegistryNamespaced;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
@@ -104,12 +102,12 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public boolean getAllowFlight() {
-        return getPlayerCapabilities().fieldGet$allowFlying();
+        return obj.fieldGet$capabilities().fieldGet$allowFlying();
     }
 
     @Override
     public void setAllowFlight(boolean allowFlight) {
-        getPlayerCapabilities().fieldSet$allowFlying(allowFlight);
+        obj.fieldGet$capabilities().fieldSet$allowFlying(allowFlight);
     }
 
     @Override
@@ -136,7 +134,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
                     (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, null);
-            sendPacket(packet);
+            obj.fieldGet$playerNetServerHandler().sendPacket(packet);
         }
 
         if (title.getFadeIn().isPresent() || title.getStay().isPresent() || title.getFadeOut().isPresent()) {
@@ -145,21 +143,21 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             int fadeOut = title.getFadeIn().or(-1);
 
             MCPacket packet = Instantiator.get().newPacketTitle(fadeIn, stay, fadeOut);
-            sendPacket(packet);
+            obj.fieldGet$playerNetServerHandler().sendPacket(packet);
         }
 
         if (title.getTitle().isPresent()) {
             MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 0);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getTitle().get()));
-            sendPacket(packet);
+            obj.fieldGet$playerNetServerHandler().sendPacket(packet);
         }
 
         if (title.getTitle().isPresent()) {
             MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 1);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
-            sendPacket(packet);
+            obj.fieldGet$playerNetServerHandler().sendPacket(packet);
         }
     }
 
@@ -372,7 +370,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             }
 
             if (size == 0f) {
-                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                obj.fieldGet$playerNetServerHandler()
+                        .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             }
 
@@ -382,7 +381,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             Color color1 = ((GraniteParticleType.Colorable) type).getDefaultColor();
 
             if (color0.equals(color1)) {
-                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                obj.fieldGet$playerNetServerHandler()
+                        .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             }
 
@@ -398,7 +398,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             float note = ((GraniteParticleEffect.Note) particleEffect).getNote();
 
             if (note == 0f) {
-                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                obj.fieldGet$playerNetServerHandler()
+                        .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             }
 
@@ -416,7 +417,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             }
 
             if (mx == 0f && my == 0f && mz == 0f) {
-                sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+                obj.fieldGet$playerNetServerHandler()
+                        .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             } else {
                 f0 = mx;
@@ -427,7 +429,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
         // Is this check necessary?
         if (f0 == 0f && f1 == 0f && f2 == 0f) {
-            sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
+            obj.fieldGet$playerNetServerHandler()
+                    .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
             return;
         }
 
@@ -450,7 +453,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
         }
 
         for (MCPacket packet : packets) {
-            sendPacket(packet);
+            obj.fieldGet$playerNetServerHandler().sendPacket(packet);
         }
     }
 
@@ -474,52 +477,52 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public float getHunger() {
-        return getFoodStats().fieldGet$foodLevel();
+        return obj.fieldGet$foodStats().fieldGet$foodLevel();
     }
 
     @Override
     public void setHunger(float hunger) {
-        getFoodStats().fieldSet$foodLevel((int) hunger);
+        obj.fieldGet$foodStats().fieldSet$foodLevel((int) hunger);
     }
 
     @Override
     public float getSaturation() {
-        return getFoodStats().fieldGet$foodSaturationLevel();
+        return obj.fieldGet$foodStats().fieldGet$foodSaturationLevel();
     }
 
     @Override
     public void setSaturation(float saturation) {
-        getFoodStats().fieldSet$foodSaturationLevel(saturation);
+        obj.fieldGet$foodStats().fieldSet$foodSaturationLevel(saturation);
     }
 
     @Override
     public double getExperience() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$experience();
     }
 
     @Override
     public int getLevel() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$experienceLevel();
     }
 
     @Override
     public double getTotalExperinece() {
-        throw new NotImplementedException("");
+        return obj.fieldGet$experienceTotal();
     }
 
     @Override
     public void setExperience(double experience) {
-        throw new NotImplementedException("");
+        obj.fieldSet$experience((float) experience);
     }
 
     @Override
     public void setLevel(int level) {
-        throw new NotImplementedException("");
+        obj.fieldSet$experienceLevel(level);
     }
 
     @Override
     public void setTotalExperience(double totalExperience) {
-        throw new NotImplementedException("");
+        obj.fieldSet$experienceTotal((int) totalExperience);
     }
 
     @Override
@@ -584,18 +587,6 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
         }
 
         MCPacket packet = Instantiator.get().newPacketChat(graniteToMinecraftChatComponent(message), (byte) ((GraniteChatType) type).getId());
-        sendPacket(packet);
-    }
-
-    public MCPlayerCapabilities getPlayerCapabilities() {
-        return obj.fieldGet$capabilities();
-    }
-
-    public MCFoodStats getFoodStats() {
-        return obj.fieldGet$foodStats();
-    }
-
-    public void sendPacket(MCPacket packet) {
         obj.fieldGet$playerNetServerHandler().sendPacket(packet);
     }
 

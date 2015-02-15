@@ -86,9 +86,4 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
         this.joinMessage.set(MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
         return info.callback(info.getArguments()[0], info.getArguments()[1]);
     }
-
-    /*@Proxy(methodName = "sendChatMsg")
-    public Object sendChatMsg(MCServerConfigurationManager caller, Object[] args, BytecodeClass.ProxyHandlerCallback callback) throws Throwable {
-        return callback.invokeParent(args);
-    }*/
 }

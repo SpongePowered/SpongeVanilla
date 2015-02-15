@@ -122,8 +122,8 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     }
 
     @Override
-    public String getAPIVersion() {
-        return Granite.instance.getApiVersion();
+    public String getApiVersion() {
+        return "Sponge" + Granite.instance.getApiVersion();
     }
 
     @Override
@@ -138,13 +138,13 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
 
     @Override
     public Collection<Player> getOnlinePlayers() {
-        Set<Player> ret = new HashSet<>();
+        Set<Player> players = new HashSet<>();
 
         for (MCEntityPlayerMP playerEntity : getSCM().fieldGet$playerEntityList()) {
-            ret.add((Player) wrap(playerEntity));
+            players.add((Player) wrap(playerEntity));
         }
 
-        return ret;
+        return players;
     }
 
     @Override
@@ -182,8 +182,8 @@ public class GraniteServer extends Composite<MCServer> implements Game, Server {
     @Override
     public Optional<World> getWorld(final UUID uuid) {
         return Optional.fromNullable(Iterables.find(getWorlds(), new Predicate<World>() {
-            public boolean apply(World input) {
-                return input.getUniqueID().equals(uuid);
+            public boolean apply(World world) {
+                return world.getUniqueId().equals(uuid);
             }
         }, null));
     }

@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.event.entity.living.player;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.event.block.GraniteBlockEvent;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -61,7 +62,7 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
 
     @Override
     public Player getLiving() {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -72,5 +73,20 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
     @Override
     public Direction getBlockFaceDirection() {
         return null;
+    }
+
+    @Override
+    public double getExp() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setExp(double v) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<Item> getDroppedItems() {
+        throw new NotImplementedException("");
     }
 }

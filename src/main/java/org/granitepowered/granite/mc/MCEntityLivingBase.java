@@ -51,4 +51,6 @@ public interface MCEntityLivingBase extends MCEntity {
     void removePotionEffect(int potionId);
 
     Map fieldGet$activePotions();
+
+    MCBaseAttributeMap fieldGet$attributeMap();
 }
