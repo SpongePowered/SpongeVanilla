@@ -29,6 +29,8 @@ public @interface Position {
 
     String value();
 
+    int index() default -1;
+
     public static enum PositionMode {
         NEW,
         METHOD_CALL

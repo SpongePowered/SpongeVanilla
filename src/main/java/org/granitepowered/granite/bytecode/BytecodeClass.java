@@ -564,6 +564,7 @@ public class BytecodeClass {
 
         final CtMethod method = Mappings.getCtMethod(clazz, methodName);
         final CtMethod methodCall = Mappings.getCtMethod(methodCallClass, methodCallName);
+
         try {
             method.instrument(new ExprEditor() {
                 @Override
@@ -604,7 +605,7 @@ public class BytecodeClass {
         }
     }
 
-    public void insert(String methodName, CtMethod methodToInsert, CodeInsertionMode insertionMode, Position position) {
+    public void insert(String methodName, CtMethod methodToInsert, CodeInsertionMode insertionMode, final Position position) {
         final CtMethod method = Mappings.getCtMethod(clazz, methodName);
 
         if (method == null) {
@@ -647,10 +648,15 @@ public class BytecodeClass {
             try {
                 final String finalCode = code;
                 method.instrument(new ExprEditor() {
+                    private int idx;
+
                     @Override
                     public void edit(NewExpr e) throws CannotCompileException {
                         if (Objects.equals(e.getClassName(), clazz.getName())) {
-                            e.replace(finalCode);
+                            if (position.index() < 0 || idx == position.index()) {
+                                e.replace(finalCode);
+                            }
+                            idx++;
                         }
                     }
                 });
@@ -684,11 +690,16 @@ public class BytecodeClass {
             try {
                 final String finalCode = code;
                 method.instrument(new ExprEditor() {
+                    private int idx;
+
                     @Override
                     public void edit(MethodCall m) throws CannotCompileException {
                         try {
                             if (Objects.equals(m.getMethod().getLongName(), methodd.getLongName())) {
-                                m.replace(finalCode);
+                                if (position.index() < 0 || idx == position.index()) {
+                                    m.replace(finalCode);
+                                }
+                                idx++;
                             }
                         } catch (NotFoundException e) {
                             e.printStackTrace();
