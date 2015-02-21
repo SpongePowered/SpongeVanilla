@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -42,9 +40,12 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.entity.EntityInteractionType;
+import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.Location;
 
 import java.lang.reflect.Constructor;
+
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class NetHandlerPlayServerClass extends BytecodeClass {
 
@@ -62,7 +63,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         String message = packet.fieldGet$message();
 
         GranitePlayer p = wrap(info.getCaller().fieldGet$playerEntity());
-        GranitePlayerChatEvent event = new GranitePlayerChatEvent(p, message);
+        GranitePlayerChatEvent event = new GranitePlayerChatEvent(p, Messages.builder(message).build());
         Granite.getInstance().getEventManager().post(event);
 
         return info.callback();
