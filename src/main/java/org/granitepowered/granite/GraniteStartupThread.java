@@ -36,9 +36,12 @@ import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
 import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
 import org.granitepowered.granite.bytecode.classes.EntityClass;
 import org.granitepowered.granite.bytecode.classes.EntityEggClass;
+import org.granitepowered.granite.bytecode.classes.EntityEnderPearlClass;
+import org.granitepowered.granite.bytecode.classes.EntityFishHookClass;
 import org.granitepowered.granite.bytecode.classes.EntityLightningBoltClass;
 import org.granitepowered.granite.bytecode.classes.EntityLivingBaseClass;
 import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.EntitySnowballClass;
 import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
 import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
 import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
@@ -176,7 +179,6 @@ public class GraniteStartupThread extends Thread {
             Granite.instance.eventManager.post(new GranitePostInitializationEvent());
             Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
 
-
             Date date = new Date();
             String day = new SimpleDateFormat("dd").format(date);
             String month = new SimpleDateFormat("MM").format(date);
@@ -280,9 +282,12 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new DedicatedServerClass());
             modifier.add(new EntityClass());
             modifier.add(new EntityEggClass());
+            modifier.add(new EntityEnderPearlClass());
+            modifier.add(new EntityFishHookClass());
             modifier.add(new EntityLightningBoltClass());
             modifier.add(new EntityLivingBaseClass());
             modifier.add(new EntityPlayerMPClass());
+            modifier.add(new EntitySnowballClass());
             modifier.add(new EntityXFireballClass("EntitySmallFireball"));
             modifier.add(new EntityXFireballClass("EntityLargeFireball"));
             modifier.add(new ItemInWorldManagerClass());

@@ -28,7 +28,7 @@ import org.spongepowered.api.entity.projectile.Egg;
 
 public class GraniteEntityEgg extends GraniteEntityThrowable<MCEntityEgg> implements Egg {
 
-    double damage = 0;
+    private double damage = 0;
 
     public GraniteEntityEgg(MCEntityEgg obj) {
         super(obj);
@@ -36,7 +36,7 @@ public class GraniteEntityEgg extends GraniteEntityThrowable<MCEntityEgg> implem
 
     @Override
     public double getDamage() {
-        return damage;
+        return this.damage;
     }
 
     @Override

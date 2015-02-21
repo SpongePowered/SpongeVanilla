@@ -61,7 +61,11 @@ import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
 import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.equipment.EquipmentType;
+import org.spongepowered.api.item.inventory.types.CarriedInventory;
 import org.spongepowered.api.net.PlayerConnection;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.SubjectCollection;
@@ -89,6 +93,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> implements Player {
+
     private Optional<Message> displayName = Optional.absent();
 
     public GranitePlayer(MCEntityPlayerMP obj) {
@@ -228,7 +233,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$mainInventory()[obj.fieldGet$inventory().fieldGet$currentItem()]));
+        return Optional
+                .fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$mainInventory()[obj.fieldGet$inventory().fieldGet$currentItem()]));
     }
 
     @Override
@@ -501,23 +507,23 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
-    public int getLevel() {
-        return obj.fieldGet$experienceLevel();
-    }
-
-    @Override
-    public double getTotalExperinece() {
-        return obj.fieldGet$experienceTotal();
-    }
-
-    @Override
     public void setExperience(double experience) {
         obj.fieldSet$experience((float) experience);
     }
 
     @Override
+    public int getLevel() {
+        return obj.fieldGet$experienceLevel();
+    }
+
+    @Override
     public void setLevel(int level) {
         obj.fieldSet$experienceLevel(level);
+    }
+
+    @Override
+    public double getTotalExperinece() {
+        return obj.fieldGet$experienceTotal();
     }
 
     @Override
@@ -528,6 +534,21 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     @Override
     public boolean isViewingInventory() {
         return obj.fieldGet$openContainer() != null;
+    }
+
+    @Override
+    public Optional<Inventory> getOpenInventory() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void openInventory(Inventory inventory) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void closeInventory() {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -676,6 +697,31 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     @Override
     public Set<Context> getActiveContexts() {
         // TODO: Permissions API
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean canEquip(EquipmentType equipmentType) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean canEquip(EquipmentType equipmentType, @Nullable ItemStack itemStack) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<ItemStack> getEquipped(EquipmentType equipmentType) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean equip(EquipmentType equipmentType, @Nullable ItemStack itemStack) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public CarriedInventory<? extends Carrier> getInventory() {
         throw new NotImplementedException("");
     }
 }

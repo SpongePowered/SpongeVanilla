@@ -68,6 +68,7 @@ import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
+import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.block.BlockType;
@@ -111,6 +112,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
+import org.spongepowered.api.item.recipe.RecipeRegistry;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.potion.PotionEffectTypes;
@@ -1171,5 +1173,15 @@ public class GraniteGameRegistry implements GameRegistry {
     @Override
     public List<BannerPatternShape> getBannerPatternShapes() {
         return ImmutableList.copyOf(bannerPatternShapes.values());
+    }
+
+    @Override
+    public GameDictionary getGameDictionary() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public RecipeRegistry getRecipeRegistry() {
+        throw new NotImplementedException("");
     }
 }

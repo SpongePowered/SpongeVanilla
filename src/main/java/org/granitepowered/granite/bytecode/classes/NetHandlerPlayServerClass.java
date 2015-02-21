@@ -39,9 +39,16 @@ import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerC
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerInteractBlockEvent;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerMoveEvent;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPacketChatMessage;
+import org.granitepowered.granite.mc.MCPacketPlayer;
+import org.granitepowered.granite.mc.MCPacketPlayerBlockPlacement;
+import org.granitepowered.granite.mc.MCPacketPlayerDigging;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.entity.EntityInteractionType;
+import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.Location;
 
 import java.lang.reflect.Constructor;
@@ -59,7 +66,8 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
 
         MCPacketChatMessage packet = (MCPacketChatMessage) info.getArguments()[0];
-        String message = packet.fieldGet$message();
+        String messageString = packet.fieldGet$message();
+        Message message = Messages.of(messageString);
 
         GranitePlayer p = wrap(info.getCaller().fieldGet$playerEntity());
         GranitePlayerChatEvent event = new GranitePlayerChatEvent(p, message);
@@ -74,9 +82,15 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
         GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         MCPacketPlayerDigging packet = (MCPacketPlayerDigging) info.getArguments()[0];
-        BlockLoc loc = new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179717_a().fieldGet$x(), packet.fieldGet$field_179717_a().fieldGet$y(), packet.fieldGet$field_179717_a().fieldGet$z())));
+        BlockLoc
+                loc =
+                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179717_a().fieldGet$x(),
+                                                                                 packet.fieldGet$field_179717_a().fieldGet$y(),
+                                                                                 packet.fieldGet$field_179717_a().fieldGet$z())));
 
-        GranitePlayerInteractBlockEvent event = new GranitePlayerInteractBlockEvent(player, EntityInteractionType.LEFT_CLICK, Optional.<Vector3f>absent(), loc);
+        GranitePlayerInteractBlockEvent
+                event =
+                new GranitePlayerInteractBlockEvent(player, EntityInteractionType.LEFT_CLICK, Optional.<Vector3f>absent(), loc);
         Granite.getInstance().getEventManager().post(event);
         return info.callback();
     }
@@ -90,10 +104,16 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
         Vector3f localHitPoint = new Vector3f(packet.fieldGet$facingX(), packet.fieldGet$facingY(), packet.fieldGet$facingZ());
 
-        BlockLoc loc = new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179725_b().fieldGet$x(), packet.fieldGet$field_179725_b().fieldGet$y(), packet.fieldGet$field_179725_b().fieldGet$z())));
+        BlockLoc
+                loc =
+                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179725_b().fieldGet$x(),
+                                                                                 packet.fieldGet$field_179725_b().fieldGet$y(),
+                                                                                 packet.fieldGet$field_179725_b().fieldGet$z())));
         Vector3f globalHitPoint = new Vector3f(loc.getX(), loc.getY(), loc.getZ()).add(localHitPoint);
 
-        GranitePlayerInteractBlockEvent event = new GranitePlayerInteractBlockEvent(player, EntityInteractionType.RIGHT_CLICK, Optional.of(globalHitPoint), loc);
+        GranitePlayerInteractBlockEvent
+                event =
+                new GranitePlayerInteractBlockEvent(player, EntityInteractionType.RIGHT_CLICK, Optional.of(globalHitPoint), loc);
         Granite.getInstance().getEventManager().post(event);
         return info.callback();
     }

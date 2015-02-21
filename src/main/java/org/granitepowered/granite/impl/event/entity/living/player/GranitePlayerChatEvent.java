@@ -25,13 +25,14 @@ package org.granitepowered.granite.impl.event.entity.living.player;
 
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.spongepowered.api.event.entity.living.player.PlayerChatEvent;
+import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.util.command.CommandSource;
 
 public class GranitePlayerChatEvent extends GranitePlayerEvent implements PlayerChatEvent {
 
-    String message;
+    Message message;
 
-    public GranitePlayerChatEvent(GranitePlayer player, String message) {
+    public GranitePlayerChatEvent(GranitePlayer player, Message message) {
         super(player);
         this.message = message;
     }
@@ -42,7 +43,12 @@ public class GranitePlayerChatEvent extends GranitePlayerEvent implements Player
     }
 
     @Override
-    public String getMessage() {
+    public Message getMessage() {
         return message;
+    }
+
+    @Override
+    public void setMessage(Message message) {
+        this.message = message;
     }
 }

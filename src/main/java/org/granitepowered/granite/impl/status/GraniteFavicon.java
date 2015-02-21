@@ -65,16 +65,16 @@ public class GraniteFavicon implements Favicon {
         }
     }
 
-    @Override
-    public BufferedImage getImage() {
-        return this.bufferedImage;
-    }
-
     public static Favicon load(String raw) throws IOException {
         return new GraniteFavicon(raw);
     }
 
     public static Favicon load(BufferedImage image) throws IOException {
         return new GraniteFavicon(image);
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return this.bufferedImage;
     }
 }

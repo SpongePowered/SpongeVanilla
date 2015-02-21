@@ -23,7 +23,6 @@
 
 package org.granitepowered.granite.impl;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.ProtocolMinecraftVersion;
 import org.spongepowered.api.MinecraftVersion;
 
@@ -35,6 +34,13 @@ public class GraniteMinecraftVersion implements ProtocolMinecraftVersion {
     public GraniteMinecraftVersion(String name, int protocol) {
         this.name = name;
         this.protocol = protocol;
+    }
+
+    public static int compare(ProtocolMinecraftVersion version, MinecraftVersion to) {
+        if (version == to) {
+            return 0;
+        }
+        return to.isLegacy() ? 1 : version.getProtocol() - ((ProtocolMinecraftVersion) to).getProtocol();
     }
 
     @Override
@@ -51,15 +57,8 @@ public class GraniteMinecraftVersion implements ProtocolMinecraftVersion {
         return false;
     }
 
-    public static int compare(ProtocolMinecraftVersion version, MinecraftVersion to) {
-        if (version == to) {
-            return 0;
-        }
-        return to.isLegacy() ? 1 : version.getProtocol() - ((ProtocolMinecraftVersion) to).getProtocol();
-    }
-
     @Override
     public int compareTo(MinecraftVersion minecraftVersion) {
-        throw new NotImplementedException("");
+        return compare(this, minecraftVersion);
     }
 }

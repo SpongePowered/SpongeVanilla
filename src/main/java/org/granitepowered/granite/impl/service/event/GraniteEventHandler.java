@@ -101,11 +101,11 @@ public class GraniteEventHandler {
         return method;
     }
 
-    public MethodHandle getMethodHandle() {
-        return methodHandle;
-    }
-
     public void setMethod(Method method) {
         this.method = method;
+    }
+
+    public MethodHandle getMethodHandle() {
+        return methodHandle;
     }
 }

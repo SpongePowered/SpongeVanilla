@@ -33,6 +33,7 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.entity.living.player.PlayerInteractBlockEvent;
 
 public class GranitePlayerInteractBlockEvent extends GranitePlayerInteractEvent implements PlayerInteractBlockEvent {
+
     private BlockLoc block;
 
     public GranitePlayerInteractBlockEvent(GranitePlayer player, EntityInteractionType type, Optional<Vector3f> clickedPosition, BlockLoc block) {

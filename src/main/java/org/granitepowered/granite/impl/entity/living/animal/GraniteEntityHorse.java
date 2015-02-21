@@ -24,6 +24,7 @@
 package org.granitepowered.granite.impl.entity.living.animal;
 
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityHorse;
@@ -34,7 +35,9 @@ import org.spongepowered.api.entity.living.animal.HorseColor;
 import org.spongepowered.api.entity.living.animal.HorseStyle;
 import org.spongepowered.api.entity.living.animal.HorseVariant;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.types.CarriedInventory;
 
 public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> implements Horse {
 
@@ -87,5 +90,10 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
             inventory[0] = MinecraftUtils.unwrap(itemStack);
             obj.fieldGet$animalChest().fieldSet$inventoryContents(inventory);
         }
+    }
+
+    @Override
+    public CarriedInventory<? extends Carrier> getInventory() {
+        throw new NotImplementedException("");
     }
 }

@@ -132,6 +132,24 @@ public class BytecodeClass {
         return null;
     }
 
+    // Used by bytecode
+    public static ProxyHandlerCallback createCallback(final Object caller, Method method) {
+        try {
+            method.setAccessible(true);
+            final MethodHandle handle = MethodHandles.lookup().unreflect(method);
+
+            return new ProxyHandlerCallback() {
+                @Override
+                public Object invokeParent(Object... args) throws Throwable {
+                    return handle.invokeWithArguments(ArrayUtils.add(args, 0, caller));
+                }
+            };
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void addBytecodeClassField(final CtClass clazz) {
         try {
             clazz.getDeclaredField("bytecodeClass");
@@ -224,7 +242,7 @@ public class BytecodeClass {
             String code = "{\n";
             code +=
                     ProxyHandlerCallback.class.getName() + " callback = " + getClass().getName() + ".createCallback((Object) this, " + methodName
-                            + "$method);\n";
+                    + "$method);\n";
             code += ProxyCallbackInfo.class.getName() + " info = new " + ProxyCallbackInfo.class.getName() + "(this, $args, callback);";
             code += "return ($r) this.bytecodeClass." + handler.getName() + "(info);\n";
             code += "}";
@@ -302,7 +320,7 @@ public class BytecodeClass {
                         if (!interfaceMethod.getReturnType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getReturnType()));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(interfaceMethod.getReturnType());
                         }
 
@@ -330,7 +348,7 @@ public class BytecodeClass {
                         if (!mcField.getType().isPrimitive()) {
                             bytecode.addLdc(bytecode.getConstPool().addClassInfo(interfaceMethod.getParameterTypes()[0]));
                             bytecode.addInvokestatic(ReflectionUtils.class.getName(), "cast",
-                                    "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
+                                                     "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;");
                             bytecode.addCheckcast(mcField.getType());
                         }
 
@@ -575,7 +593,7 @@ public class BytecodeClass {
                             code += CallbackInfo.class.getName() + " info = new " + CallbackInfo.class.getName() + "(this, $args, $mArgs);";
                             code +=
                                     methodToCallback.getReturnType().getName() + " var = this.bytecodeClass." + methodToCallback.getName()
-                                            + "(info);";
+                                    + "(info);";
                             code += "if (!info.isCancelled()) {";
                             code += "$_ = $proceed(";
 
@@ -747,24 +765,6 @@ public class BytecodeClass {
                 Throwables.propagate(e);
             }
         }
-    }
-
-    // Used by bytecode
-    public static ProxyHandlerCallback createCallback(final Object caller, Method method) {
-        try {
-            method.setAccessible(true);
-            final MethodHandle handle = MethodHandles.lookup().unreflect(method);
-
-            return new ProxyHandlerCallback() {
-                @Override
-                public Object invokeParent(Object... args) throws Throwable {
-                    return handle.invokeWithArguments(ArrayUtils.add(args, 0, caller));
-                }
-            };
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static interface ProxyHandlerCallback {

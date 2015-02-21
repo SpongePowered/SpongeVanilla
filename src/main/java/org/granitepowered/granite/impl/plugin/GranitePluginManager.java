@@ -49,9 +49,8 @@ import javax.inject.Inject;
 
 public class GranitePluginManager implements PluginManager {
 
-    Collection<PluginContainer> plugins = new ArrayList<>();
-
     private final Injector injector;
+    Collection<PluginContainer> plugins = new ArrayList<>();
 
     @Inject
     public GranitePluginManager(Injector injector) {

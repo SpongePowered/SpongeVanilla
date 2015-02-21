@@ -100,7 +100,7 @@ public class GraniteTradeOfferBuilder implements TradeOfferBuilder {
     }
 
     @Override
-    public TradeOfferBuilder fromTradeOffer(TradeOffer tradeOffer) {
+    public TradeOfferBuilder from(TradeOffer tradeOffer) {
         this.firstBuyingItem = tradeOffer.getFirstBuyingItem();
         this.secondBuyingItem = tradeOffer.getSecondBuyingItem().orNull();
         this.sellingItem = tradeOffer.getSellingItem();

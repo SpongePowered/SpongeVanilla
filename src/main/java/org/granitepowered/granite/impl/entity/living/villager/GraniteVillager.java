@@ -25,6 +25,7 @@ package org.granitepowered.granite.impl.entity.living.villager;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityAgeable;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
@@ -38,6 +39,8 @@ import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.villager.Career;
 import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.living.villager.Villager;
+import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.item.inventory.types.CarriedInventory;
 import org.spongepowered.api.item.merchant.TradeOffer;
 
 import java.util.ArrayList;
@@ -122,5 +125,10 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
     public void addOffer(TradeOffer tradeOffer) {
         ArrayList<MCMerchantRecipe> recipes = (ArrayList<MCMerchantRecipe>) obj.fieldGet$buyingList();
         recipes.add((MCMerchantRecipe) MinecraftUtils.unwrap(tradeOffer));
+    }
+
+    @Override
+    public CarriedInventory<? extends Carrier> getInventory() {
+        throw new NotImplementedException("");
     }
 }

@@ -89,6 +89,14 @@ public class Granite {
         return instance;
     }
 
+    public static void error(String message, Throwable t) {
+        instance.logger.error(message, t);
+    }
+
+    public static void error(Throwable t) {
+        error("We did a boo-boo :'(", t);
+    }
+
     public void createGson() {
         GsonBuilder builder = new GsonBuilder();
 
@@ -153,14 +161,6 @@ public class Granite {
 
     public CommandService getCommandService() {
         return commandService;
-    }
-
-    public static void error(String message, Throwable t) {
-        instance.logger.error(message, t);
-    }
-
-    public static void error(Throwable t) {
-        error("We did a boo-boo :'(", t);
     }
 
     public GraniteScheduler getScheduler() {

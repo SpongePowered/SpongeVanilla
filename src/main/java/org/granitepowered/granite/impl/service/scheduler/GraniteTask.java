@@ -36,11 +36,11 @@ public class GraniteTask implements Task {
     private final Optional<Long> delay;
     private final Optional<Long> interval;
     private final long timeCreated;
-    boolean cancelled;
-    private boolean hasRan;
     private final UUID uuid;
     private final Runnable runnable;
     private final Runnable wrapperRunnable;
+    boolean cancelled;
+    private boolean hasRan;
 
     public GraniteTask(PluginContainer owner, Optional<Long> delay, Optional<Long> interval, long timeCreated, final Runnable runnable) {
         this.owner = owner;

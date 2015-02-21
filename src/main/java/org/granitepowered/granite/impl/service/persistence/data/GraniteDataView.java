@@ -38,9 +38,9 @@ import java.util.Set;
 
 public class GraniteDataView implements DataView {
 
+    protected DataContainer container;
     private Map<String, Object> children;
     private DataQuery currentPath;
-    protected DataContainer container;
     private Optional<DataView> parent;
 
     public GraniteDataView(Map<String, Object> data, DataQuery currentPath, DataContainer container) {

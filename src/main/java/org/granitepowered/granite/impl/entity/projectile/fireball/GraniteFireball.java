@@ -35,7 +35,6 @@ import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 
 public abstract class GraniteFireball<T extends MCEntityFireball> extends GraniteProjectile<T> implements Fireball {
 
-    // Minecraft is modified to read from this field at runtime
     private double damage;
 
     public GraniteFireball(T obj) {
@@ -60,7 +59,7 @@ public abstract class GraniteFireball<T extends MCEntityFireball> extends Granit
 
     @Override
     public double getDamage() {
-        return damage;
+        return this.damage;
     }
 
     @Override

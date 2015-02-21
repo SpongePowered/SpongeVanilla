@@ -25,12 +25,16 @@ package org.granitepowered.granite.impl.entity.living;
 
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntityArmorStand;
 import org.granitepowered.granite.mc.MCItemStack;
 import org.granitepowered.granite.mc.MCRotations;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.ArmorStand;
+import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.equipment.EquipmentType;
+import org.spongepowered.api.item.inventory.types.CarriedInventory;
 
 public class GraniteEntityArmorStand extends GraniteEntityLivingBase<MCEntityArmorStand> implements ArmorStand {
 
@@ -190,5 +194,30 @@ public class GraniteEntityArmorStand extends GraniteEntityLivingBase<MCEntityArm
     @Override
     public void setItemInHand(ItemStack itemStack) {
         obj.setCurrentItemOrArmor(0, (MCItemStack) MinecraftUtils.unwrap(itemStack));
+    }
+
+    @Override
+    public boolean canEquip(EquipmentType equipmentType) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean canEquip(EquipmentType equipmentType, ItemStack itemStack) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<ItemStack> getEquipped(EquipmentType equipmentType) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean equip(EquipmentType equipmentType, ItemStack itemStack) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public CarriedInventory<? extends Carrier> getInventory() {
+        throw new NotImplementedException("");
     }
 }
