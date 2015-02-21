@@ -67,7 +67,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
         MCPacketChatMessage packet = (MCPacketChatMessage) info.getArguments()[0];
         String messageString = packet.fieldGet$message();
-        Message message = Messages.of(messageString);
+        Message message = Messages.builder(messageString).build();
 
         GranitePlayer p = wrap(info.getCaller().fieldGet$playerEntity());
         GranitePlayerChatEvent event = new GranitePlayerChatEvent(p, message);
