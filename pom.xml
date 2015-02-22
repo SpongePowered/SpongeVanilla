@@ -134,6 +134,12 @@
             <artifactId>netty-all</artifactId>
             <version>4.0.24.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.1.0</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -208,6 +214,7 @@
                                     <include>ninja.leaping.configurate:configurate-core</include>
                                     <include>ninja.leaping.configurate:configurate-hocon</include>
                                     <include>io.netty:netty-all</include>
+                                    <include>net.java.dev.jna:jna</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

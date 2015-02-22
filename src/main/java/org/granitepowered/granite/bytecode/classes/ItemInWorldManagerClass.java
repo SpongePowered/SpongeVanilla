@@ -49,8 +49,8 @@ public class ItemInWorldManagerClass extends BytecodeClass {
         super("ItemInWorldManager");
     }
 
-    @Proxy(methodName = "func_180237_b")
-    public Object func_180237_b(ProxyCallbackInfo<MCItemInWorldManager> info) throws Throwable {
+    @Proxy(methodName = "handleRightClick")
+    public Object handleRightClick(ProxyCallbackInfo<MCItemInWorldManager> info) throws Throwable {
         MCBlockPos mcBlockPos = (MCBlockPos) info.getArguments()[0];
         Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
 

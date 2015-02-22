@@ -85,6 +85,7 @@ public class BytecodeClass {
     }
 
     public BytecodeClass(CtClass clazz, boolean annotate) {
+        if (clazz == null) throw new IllegalArgumentException("Can't find class");
         this.clazz = clazz;
 
         classMap = new HashMap<>();

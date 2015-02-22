@@ -45,7 +45,7 @@ public class ItemStackJson implements JsonSerializer<GraniteItemStack>, JsonDese
     @Override
     public GraniteItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String nbtString = json.getAsString();
-        MCNBTTagCompound nbt = (MCNBTTagCompound) Mappings.invokeStatic("JsonToNBT", "func_180713_a", nbtString);
+        MCNBTTagCompound nbt = (MCNBTTagCompound) Mappings.invokeStatic("JsonToNBT", "parseStringToTag", nbtString);
 
         return wrap((MCItemStack) Mappings.invokeStatic("ItemStack", "loadItemStackFromNBT", nbt));
     }

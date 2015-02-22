@@ -74,7 +74,7 @@ public class Mappings {
     private static void downloadMappings(File mappingsFile, String url, HttpRequest req) {
         Granite.instance.getLogger().warn("Downloading from " + url);
         if (req.code() == 404) {
-            throw new RuntimeException("GitHub 404 error whilst trying to download");
+            //throw new RuntimeException("GitHub 404 error whilst trying to download");
         } else if (req.code() == 200) {
             req.receive(mappingsFile);
             Granite.instance.getServerConfig().set("latest-mappings-etag", req.eTag());
@@ -85,7 +85,7 @@ public class Mappings {
     public static void load() {
         try {
             File mappingsFile = new File(Granite.instance.getServerConfig().getMappingsFile().getAbsolutePath());
-            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.1.json";
+            String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.3.json";
             try {
                 HttpRequest req = HttpRequest.get(url);
 

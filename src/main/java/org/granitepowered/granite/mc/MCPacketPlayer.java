@@ -36,7 +36,7 @@ public interface MCPacketPlayer extends MCPacket {
 
     float fieldGet$pitch();
 
-    boolean fieldGet$field_149480_h();
+    boolean fieldGet$isPosition();
 
     boolean fieldGet$rotating();
 }

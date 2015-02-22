@@ -42,7 +42,7 @@ public interface MCEntityFallingBlock extends MCInterface, MCEntity {
 
     void fieldSet$shouldDropItem(boolean drop);
 
-    MCBlockState fieldGet$field_175132_d();
+    MCBlockState fieldGet$block();
 
-    void fieldSet$field_175132_d(MCBlockState state);
+    void fieldSet$block(MCBlockState state);
 }

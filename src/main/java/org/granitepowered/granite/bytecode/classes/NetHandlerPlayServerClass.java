@@ -63,7 +63,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
     @Proxy(methodName = "processChatMessage")
     public Object processChatMessage(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
-        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
+        processOnServerThread((MCPacket) info.getArguments()[0], info.getCaller());
 
         MCPacketChatMessage packet = (MCPacketChatMessage) info.getArguments()[0];
         String messageString = packet.fieldGet$message();
@@ -78,15 +78,15 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
     @Proxy(methodName = "processPlayerDigging")
     public Object processPlayerDigging(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
-        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
+        processOnServerThread((MCPacket) info.getArguments()[0], info.getCaller());
 
         GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         MCPacketPlayerDigging packet = (MCPacketPlayerDigging) info.getArguments()[0];
         BlockLoc
                 loc =
-                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179717_a().fieldGet$x(),
-                                                                                 packet.fieldGet$field_179717_a().fieldGet$y(),
-                                                                                 packet.fieldGet$field_179717_a().fieldGet$z())));
+                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$position().fieldGet$x(),
+                                                                                 packet.fieldGet$position().fieldGet$y(),
+                                                                                 packet.fieldGet$position().fieldGet$z())));
 
         GranitePlayerInteractBlockEvent
                 event =
@@ -97,7 +97,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
     @Proxy(methodName = "processPlayerBlockPlacement")
     public Object processPlayerBlockPlacement(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
-        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
+        processOnServerThread((MCPacket) info.getArguments()[0], info.getCaller());
 
         GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         MCPacketPlayerBlockPlacement packet = (MCPacketPlayerBlockPlacement) info.getArguments()[0];
@@ -106,9 +106,9 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
         BlockLoc
                 loc =
-                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$field_179725_b().fieldGet$x(),
-                                                                                 packet.fieldGet$field_179725_b().fieldGet$y(),
-                                                                                 packet.fieldGet$field_179725_b().fieldGet$z())));
+                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$position().fieldGet$x(),
+                                                                                 packet.fieldGet$position().fieldGet$y(),
+                                                                                 packet.fieldGet$position().fieldGet$z())));
         Vector3f globalHitPoint = new Vector3f(loc.getX(), loc.getY(), loc.getZ()).add(localHitPoint);
 
         GranitePlayerInteractBlockEvent
@@ -120,7 +120,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
 
     @Proxy(methodName = "processPlayer")
     public Object processPlayer(ProxyCallbackInfo<MCNetHandlerPlayServer> info) throws Throwable {
-        quickExitThreadIfNotServer((MCPacket) info.getArguments()[0], info.getCaller());
+        processOnServerThread((MCPacket) info.getArguments()[0], info.getCaller());
 
         GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         Location old = player.getLocation();
@@ -129,7 +129,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         MCPacketPlayer packet = (MCPacketPlayer) info.getArguments()[0];
 
         // If setting position (for some reason MCP doesn't wanna name the field correctly)
-        if (packet.fieldGet$field_149480_h()) {
+        if (packet.fieldGet$isPosition()) {
             new_ = new_.add(packet.fieldGet$x(), packet.fieldGet$y(), packet.fieldGet$z());
         } else {
             new_ = new_.add(old.getPosition());
@@ -162,9 +162,9 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         }
     }
 
-    public void quickExitThreadIfNotServer(MCPacket packet, MCNetHandlerPlayServer netHandlerPlayServer) {
+    public void processOnServerThread(MCPacket packet, MCNetHandlerPlayServer netHandlerPlayServer) {
         Mappings.invokeStatic(
-                "PacketThreadUtil", "func_180031_a",
+                "PacketThreadUtil", "processOnServerThread",
                 packet, netHandlerPlayServer, netHandlerPlayServer.fieldGet$playerEntity().fieldGet$worldObj());
     }
 }

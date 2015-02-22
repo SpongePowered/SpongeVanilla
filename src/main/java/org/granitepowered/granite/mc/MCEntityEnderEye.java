@@ -26,4 +26,19 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityEnderEye")
 public interface MCEntityEnderEye extends MCEntityThrowable {
 
+    double fieldGet$targetX();
+
+    void fieldSet$targetX(double x);
+
+    double fieldGet$targetY();
+
+    void fieldSet$targetY(double y);
+
+    double fieldGet$targetZ();
+
+    void fieldSet$targetZ(double z);
+
+    boolean fieldGet$shatterOrDrop();
+
+    void fieldSet$shatterOrDrop(boolean shatter);
 }

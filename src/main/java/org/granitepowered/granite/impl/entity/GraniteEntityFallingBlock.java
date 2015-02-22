@@ -59,12 +59,12 @@ public class GraniteEntityFallingBlock extends GraniteEntity<MCEntityFallingBloc
 
     @Override
     public BlockState getBlockState() {
-        return wrap(obj.fieldGet$field_175132_d());
+        return wrap(obj.fieldGet$block());
     }
 
     @Override
     public void setBlockState(BlockState blockState) {
-        obj.fieldSet$field_175132_d((MCBlockState) unwrap(blockState));
+        obj.fieldSet$block((MCBlockState) unwrap(blockState));
     }
 
     @Override

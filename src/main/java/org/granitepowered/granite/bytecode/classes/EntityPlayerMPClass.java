@@ -55,7 +55,7 @@ public class EntityPlayerMPClass extends BytecodeClass {
             @Override
             public void edit(MethodCall m) throws CannotCompileException {
                 try {
-                    if (m.getMethod().equals(Mappings.getCtMethod("CombatTracker", "func_151521_b"))) {
+                    if (m.getMethod().equals(Mappings.getCtMethod("CombatTracker", "getDeathMessage"))) {
                         m.replace("$_ = $mArgs[" + param + "];");
                     }
                 } catch (NotFoundException e) {
@@ -70,7 +70,7 @@ public class EntityPlayerMPClass extends BytecodeClass {
         GranitePlayer player = new GranitePlayer(info.getCaller());
         MCDamageSource source = (MCDamageSource) info.getArguments()[0];
 
-        MCChatComponent deathComponent = info.getCaller().fieldGet$_combatTracker().func_151521_b();
+        MCChatComponent deathComponent = info.getCaller().fieldGet$_combatTracker().getDeathMessage();
         Message deathMessage = MinecraftUtils.minecraftToGraniteMessage(deathComponent);
 
         GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source, deathMessage);

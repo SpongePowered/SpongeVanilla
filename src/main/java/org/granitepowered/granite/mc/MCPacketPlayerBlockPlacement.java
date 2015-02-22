@@ -26,7 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "C08PacketPlayerBlockPlacement")
 public interface MCPacketPlayerBlockPlacement extends MCPacket {
 
-    MCBlockPos fieldGet$field_179725_b();
+    MCBlockPos fieldGet$position();
 
     float fieldGet$facingX();
 

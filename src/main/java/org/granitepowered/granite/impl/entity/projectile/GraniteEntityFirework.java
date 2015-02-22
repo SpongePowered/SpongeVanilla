@@ -25,13 +25,13 @@ package org.granitepowered.granite.impl.entity.projectile;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityFirework;
+import org.granitepowered.granite.mc.MCEntityFireworkRocket;
 import org.spongepowered.api.entity.projectile.Firework;
 import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 
-public class GraniteEntityFirework extends GraniteEntity<MCEntityFirework> implements Firework {
+public class GraniteEntityFirework extends GraniteEntity<MCEntityFireworkRocket> implements Firework {
 
-    public GraniteEntityFirework(MCEntityFirework obj) {
+    public GraniteEntityFirework(MCEntityFireworkRocket obj) {
         super(obj);
     }
 

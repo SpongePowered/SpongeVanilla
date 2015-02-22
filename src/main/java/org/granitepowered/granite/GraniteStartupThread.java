@@ -32,24 +32,7 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
-import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
-import org.granitepowered.granite.bytecode.classes.EntityClass;
-import org.granitepowered.granite.bytecode.classes.EntityEggClass;
-import org.granitepowered.granite.bytecode.classes.EntityEnderPearlClass;
-import org.granitepowered.granite.bytecode.classes.EntityFishHookClass;
-import org.granitepowered.granite.bytecode.classes.EntityLightningBoltClass;
-import org.granitepowered.granite.bytecode.classes.EntityLivingBaseClass;
-import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
-import org.granitepowered.granite.bytecode.classes.EntitySnowballClass;
-import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
-import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
-import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
-import org.granitepowered.granite.bytecode.classes.ItemStackClass;
-import org.granitepowered.granite.bytecode.classes.NetHandlerHandshakeTCPClass;
-import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
-import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
-import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
+import org.granitepowered.granite.bytecode.classes.*;
 import org.granitepowered.granite.impl.GraniteMinecraftVersion;
 import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
@@ -166,6 +149,8 @@ public class GraniteStartupThread extends Thread {
 
             bootstrap();
 
+            postLoadClasses();
+
             Granite.instance.gameRegistry.register();
 
             injectSpongeFields();
@@ -220,11 +205,13 @@ public class GraniteStartupThread extends Thread {
             method.setAccessible(true);
 
             method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getClassesDir().toURI().toURL());
-
-            modifier.post();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
             Throwables.propagate(e);
         }
+    }
+
+    private void postLoadClasses() {
+        modifier.post();
     }
 
     private void injectSpongeFields() {
@@ -307,15 +294,15 @@ public class GraniteStartupThread extends Thread {
                     File oldClassesDir = new File(Granite.instance.classesDir.getParentFile(), Granite.instance.classesDir.getName() + "_old");
 
                     if (oldClassesDir.exists()) {
-                        FileUtils.deleteDirectory(oldClassesDir);
+                        forceDeleteFolder(oldClassesDir);
                     }
 
                     FileUtils.moveDirectory(Granite.instance.classesDir, oldClassesDir);
-                    FileUtils.deleteDirectory(oldClassesDir);
+                    forceDeleteFolder(oldClassesDir);
                 }
 
                 try {
-                    JarFile file = new JarFile(Granite.instance.getServerConfig().getMinecraftJar());
+                    JarFile file = new JarFile("minecraft_server." + Granite.instance.getMinecraftVersion().getName().split(" ")[1] + ".jar");
                     Enumeration<JarEntry> entries = file.entries();
                     while (entries.hasMoreElements()) {
                         JarEntry entry = entries.nextElement();
@@ -348,15 +335,16 @@ public class GraniteStartupThread extends Thread {
     private void bootstrap() {
         Granite.instance.getLogger().info("Bootstrapping Minecraft");
 
-        Mappings.invokeStatic("Bootstrap", "func_151354_b");
+        Mappings.invokeStatic("Bootstrap", "register");
     }
 
     private void loadMinecraftToClassPool() {
-        File minecraftJar = Granite.instance.getServerConfig().getMinecraftJar();
+        String version = "1.8.3";
+        File minecraftJar = new File("minecraft_server." + version + ".jar");
 
         if (!minecraftJar.exists()) {
             Granite.instance.getLogger().warn("Could not find Minecraft .jar, downloading");
-            HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/1.8.1/minecraft_server.1.8.1.jar");
+            HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/" + version + "/minecraft_server." + version + ".jar");
             if (req.code() == 404) {
                 throw new RuntimeException("404 error whilst trying to download Minecraft");
             } else if (req.code() == 200) {
@@ -373,6 +361,22 @@ public class GraniteStartupThread extends Thread {
             Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());
         } catch (NotFoundException e) {
             Throwables.propagate(e);
+        }
+    }
+
+    private void forceDeleteFolder(File folder) {
+        try {
+            FileUtils.deleteDirectory(folder);
+        } catch (IOException e) {
+            if (e.getMessage().startsWith("Unable to delete directory")) {
+                Granite.instance.getLogger().info("Unable to delete old classes, retrying in one second");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                forceDeleteFolder(folder);
+            }
         }
     }
 }

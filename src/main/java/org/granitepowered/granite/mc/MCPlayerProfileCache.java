@@ -28,5 +28,5 @@ import java.util.UUID;
 @Implement(name = "PlayerProfileCache")
 public interface MCPlayerProfileCache extends MCInterface {
 
-    MCGameProfile func_152652_a(UUID uuid);
+    MCGameProfile getProfileByUUID(UUID uuid);
 }

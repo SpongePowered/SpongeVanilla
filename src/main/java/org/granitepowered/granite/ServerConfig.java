@@ -75,10 +75,6 @@ public class ServerConfig {
         return new File(config.getString("plugin-directory"));
     }
 
-    public File getMinecraftJar() {
-        return new File(config.getString("minecraft-jar"));
-    }
-
     public File getLibrariesDirectory() {
         return new File(config.getString("libraries-directory"));
     }

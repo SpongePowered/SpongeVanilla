@@ -26,7 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityLargeFireball")
 public interface MCEntityLargeFireball extends MCEntityFireball {
 
-    int fieldGet$field_92057_e();
+    int fieldGet$explosionSize();
 
-    void fieldSet$field_92057_e(int explosionPower);
+    void fieldSet$explosionSize(int explosionPower);
 }

@@ -65,7 +65,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
         MCEntityPlayerMP player = (MCEntityPlayerMP) info.getArguments()[1];
 
         MCGameProfile newProfile = player.fieldGet$gameProfile();
-        MCGameProfile oldProfile = Granite.getInstance().getServer().obj.fieldGet$playerCache().func_152652_a(newProfile.fieldGet$id());
+        MCGameProfile oldProfile = Granite.getInstance().getServer().obj.fieldGet$playerCache().getProfileByUUID(newProfile.fieldGet$id());
 
         String oldName = oldProfile == null ? newProfile.fieldGet$name() : oldProfile.fieldGet$name();
 

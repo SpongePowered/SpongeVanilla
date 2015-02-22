@@ -34,11 +34,11 @@ public class GraniteLargeFireball extends GraniteFireball<MCEntityLargeFireball>
 
     @Override
     public int getExplosionPower() {
-        return obj.fieldGet$field_92057_e();
+        return obj.fieldGet$explosionSize();
     }
 
     @Override
     public void setExplosionPower(int explosionPower) {
-        obj.fieldSet$field_92057_e(explosionPower);
+        obj.fieldSet$explosionSize(explosionPower);
     }
 }
