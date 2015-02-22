@@ -26,7 +26,7 @@
 
     <groupId>org.granitepowered</groupId>
     <name>Granite</name>
-    <version>1.8.1-A2</version>
+    <version>1.8.3-A1-SNAPSHOT</version>
     <artifactId>granite</artifactId>
 
     <properties>
