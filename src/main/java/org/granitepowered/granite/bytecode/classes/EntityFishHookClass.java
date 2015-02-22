@@ -24,6 +24,11 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.MethodCallArgument;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEntityFishHook;
+import org.granitepowered.granite.mc.MCEntityFishHook;
+import org.granitepowered.granite.util.MinecraftUtils;
 
 public class EntityFishHookClass extends BytecodeClass {
 
@@ -31,8 +36,8 @@ public class EntityFishHookClass extends BytecodeClass {
         super("EntityFishHook");
     }
 
-    /*@MethodCallArgument(methodName = "onUpdate", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
+    @MethodCallArgument(methodName = "onUpdate", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
     public float onUpdateDamage(CallbackInfo<MCEntityFishHook> info) {
-        return (float) ((GraniteEntityFishHook) wrap(info.getCaller())).getDamage();
-    }*/
+        return (float) ((GraniteEntityFishHook) MinecraftUtils.wrap(info.getCaller())).getDamage();
+    }
 }

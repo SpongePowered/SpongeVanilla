@@ -24,6 +24,11 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.MethodCallArgument;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEntitySnowball;
+import org.granitepowered.granite.mc.MCEntitySnowball;
+import org.granitepowered.granite.util.MinecraftUtils;
 
 public class EntitySnowballClass extends BytecodeClass {
 
@@ -31,8 +36,8 @@ public class EntitySnowballClass extends BytecodeClass {
         super("EntitySnowball");
     }
 
-    /*@MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
+    @MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
     public float onImpactDamage(CallbackInfo<MCEntitySnowball> info) {
-        return (float) ((GraniteEntitySnowball) wrap(info.getCaller())).getDamage();
-    }*/
+        return (float) ((GraniteEntitySnowball) MinecraftUtils.wrap(info.getCaller())).getDamage();
+    }
 }

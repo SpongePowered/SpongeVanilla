@@ -24,6 +24,11 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.MethodCallArgument;
+import org.granitepowered.granite.impl.entity.projectile.GraniteEntityEnderPearl;
+import org.granitepowered.granite.mc.MCEntityEnderPearl;
+import org.granitepowered.granite.util.MinecraftUtils;
 
 public class EntityEnderPearlClass extends BytecodeClass {
 
@@ -31,8 +36,8 @@ public class EntityEnderPearlClass extends BytecodeClass {
         super("EntityEnderPearl");
     }
 
-    /*@MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
+    @MethodCallArgument(methodName = "onImpact", methodCallClass = "Entity", methodCallName = "attackEntityFrom", argumentIndex = 1)
     public float onImpactDamage(CallbackInfo<MCEntityEnderPearl> info) {
-        return (float) ((GraniteEntityEnderPearl) wrap(info.getCaller())).getDamage();
-    }*/
+        return (float) ((GraniteEntityEnderPearl) MinecraftUtils.wrap(info.getCaller())).getDamage();
+    }
 }
