@@ -502,12 +502,12 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
-    public double getExperience() {
-        return obj.fieldGet$experience();
+    public int getExperience() {
+        return (int) obj.fieldGet$experience();
     }
 
     @Override
-    public void setExperience(double experience) {
+    public void setExperience(int experience) {
         obj.fieldSet$experience((float) experience);
     }
 
@@ -522,12 +522,12 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
-    public double getTotalExperinece() {
+    public int getTotalExperinece() {
         return obj.fieldGet$experienceTotal();
     }
 
     @Override
-    public void setTotalExperience(double totalExperience) {
+    public void setTotalExperience(int totalExperience) {
         obj.fieldSet$experienceTotal((int) totalExperience);
     }
 

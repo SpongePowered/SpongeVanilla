@@ -76,12 +76,12 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
     }
 
     @Override
-    public double getExp() {
+    public int getExp() {
         throw new NotImplementedException("");
     }
 
     @Override
-    public void setExp(double v) {
+    public void setExp(int v) {
         throw new NotImplementedException("");
     }
 

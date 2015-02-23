@@ -33,12 +33,12 @@ public class GraniteEntityExperienceOrb extends GraniteEntity<MCEntityXPOrb> imp
     }
 
     @Override
-    public double getExperience() {
+    public int getExperience() {
         return obj.fieldGet$xpValue();
     }
 
     @Override
-    public void setExperience(double experience) {
-        obj.fieldSet$xpValue((int) experience);
+    public void setExperience(int experience) {
+        obj.fieldSet$xpValue(experience);
     }
 }

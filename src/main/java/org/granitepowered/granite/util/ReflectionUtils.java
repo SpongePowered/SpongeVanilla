@@ -27,6 +27,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import javassist.CtClass;
+import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -291,5 +292,18 @@ public class ReflectionUtils {
             }
         }
         return input;
+    }
+
+    public static CtMethod getCtMethod(String clazz, String method) {
+        try {
+            return Mappings.getCtMethod(clazz, method);
+        } catch (Mappings.MappingNotFoundException e) {
+            CtClass clazzz = getCtClassByName(clazz);
+            try {
+                return clazzz.getDeclaredMethod(method);
+            } catch (NotFoundException e1) {
+                throw Throwables.propagate(e1);
+            }
+        }
     }
 }

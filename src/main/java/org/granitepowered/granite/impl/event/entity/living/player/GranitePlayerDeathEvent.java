@@ -88,12 +88,12 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     }
 
     @Override
-    public double getNewExperience() {
+    public int getNewExperience() {
         throw new NotImplementedException("");
     }
 
     @Override
-    public void setNewExperience(double experience) {
+    public void setNewExperience(int experience) {
         throw new NotImplementedException("");
     }
 
@@ -123,12 +123,12 @@ public class GranitePlayerDeathEvent extends GranitePlayerEvent implements Playe
     }
 
     @Override
-    public double getDroppedExperience() {
+    public int getExp() {
         throw new NotImplementedException("");
     }
 
     @Override
-    public void setDroppedExperience(double experience) {
+    public void setExp(int i) {
         throw new NotImplementedException("");
     }
 }

@@ -685,7 +685,8 @@ public class BytecodeClass {
         } else if (position.mode() == Position.PositionMode.METHOD_CALL) {
             String code = "";
 
-            final CtMethod methodd = Mappings.getCtMethod(clazz, position.value());
+
+            final CtMethod methodd = ReflectionUtils.getCtMethod(position.value().split("\\.")[0], position.value().split("\\.")[1]);
             switch (insertionMode) {
                 case BEFORE:
                     code += "{";

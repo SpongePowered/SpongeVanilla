@@ -392,7 +392,7 @@ public class Mappings {
         return invokeStatic(getClass(className), methodName, args);
     }
 
-    private static class MappingNotFoundException extends RuntimeException {
+    public static class MappingNotFoundException extends RuntimeException {
 
         public MappingNotFoundException(String s) {
             super(s);
