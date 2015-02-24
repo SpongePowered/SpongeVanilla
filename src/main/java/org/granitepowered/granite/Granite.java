@@ -35,6 +35,7 @@ import org.granitepowered.granite.impl.service.event.GraniteEventManager;
 import org.granitepowered.granite.impl.service.scheduler.GraniteScheduler;
 import org.granitepowered.granite.impl.text.action.GraniteTextAction;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
+import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.util.json.EntityJson;
 import org.granitepowered.granite.util.json.ItemStackJson;
 import org.granitepowered.granite.util.json.MessageJson;
@@ -49,6 +50,8 @@ import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.event.EventManager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -90,6 +93,36 @@ public class Granite {
     }
 
     public static void error(String message, Throwable t) {
+        if (t instanceof RuntimeException && t.getCause() != null) {
+            t.setStackTrace(t.getCause().getStackTrace());
+        }
+
+        List<StackTraceElement> newStackTrace = new ArrayList<>();
+
+        for (StackTraceElement oldElement : t.getStackTrace()) {
+            String className = oldElement.getClassName();
+            String methodName = oldElement.getMethodName();
+            String fileName = oldElement.getFileName();
+            int lineNumber = oldElement.getLineNumber();
+
+            Class<?> clazz = null;
+            try {
+                clazz = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                className = Mappings.getClassName(clazz);
+            } catch (Mappings.MappingNotFoundException ignored) {
+            }
+
+            StackTraceElement newElement = new StackTraceElement(className, methodName, fileName, lineNumber);
+            newStackTrace.add(newElement);
+        }
+
+        t.setStackTrace(newStackTrace.toArray(new StackTraceElement[newStackTrace.size()]));
+
         instance.logger.error(message, t);
     }
 

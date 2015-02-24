@@ -299,6 +299,17 @@ public class ReflectionUtils {
             return Mappings.getCtMethod(clazz, method);
         } catch (Mappings.MappingNotFoundException e) {
             CtClass clazzz = getCtClassByName(clazz);
+
+            if (method.contains("(")) {
+                for (CtMethod methodd : clazzz.getDeclaredMethods()) {
+                    if (method.split("\\(")[0].equals(methodd.getName())) {
+                        if (methodd.getLongName().split("\\(")[1].equals(method.split("\\(")[1])) {
+                            return methodd;
+                        }
+                    }
+                }
+                throw new RuntimeException(clazz + "#" + method + " not found");
+            }
             try {
                 return clazzz.getDeclaredMethod(method);
             } catch (NotFoundException e1) {

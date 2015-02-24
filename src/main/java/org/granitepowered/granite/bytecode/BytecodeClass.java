@@ -686,7 +686,7 @@ public class BytecodeClass {
             String code = "";
 
 
-            final CtMethod methodd = ReflectionUtils.getCtMethod(position.value().split("\\.")[0], position.value().split("\\.")[1]);
+            final CtMethod methodd = ReflectionUtils.getCtMethod(position.value().split("#")[0], position.value().split("#")[1]);
             switch (insertionMode) {
                 case BEFORE:
                     code += "{";
@@ -770,18 +770,15 @@ public class BytecodeClass {
     }
 
     public static interface ProxyHandlerCallback {
-
         Object invokeParent(Object... args) throws Throwable;
     }
 
     public static interface PostCallback {
-
         void callback();
     }
 
 
     public static abstract class ProxyHandler {
-
         public Object preHandle(final Object caller, Object[] args, final Method method) throws Throwable {
             ProxyHandlerCallback callback = new ProxyHandlerCallback() {
                 @Override

@@ -24,9 +24,7 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
+import org.granitepowered.granite.bytecode.*;
 import org.granitepowered.granite.impl.event.state.GraniteServerAboutToStartEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
@@ -54,6 +52,7 @@ public class DedicatedServerClass extends BytecodeClass {
         Granite.getInstance().getEventManager().post(new GraniteServerAboutToStartEvent());
 
         info.callback();
+        throw new RuntimeException("test");
     }
 
     @Proxy(methodName = "stopServer")
@@ -65,6 +64,12 @@ public class DedicatedServerClass extends BytecodeClass {
         Granite.getInstance().getEventManager().post(new GraniteServerStoppedEvent());
     }
 
+    @Insert(methodName = "run", mode = CodeInsertionMode.REPLACE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "org.apache.logging.log4j.Logger#error(java.lang.String,java.lang.Throwable)"))
+    public void run(CallbackInfo info) {
+        Granite.error((Throwable) info.getCallArguments()[1]);
+    }
+
+    @Proxy(methodName = "tick")
     public void tick(ProxyCallbackInfo info) throws Throwable {
         Granite.getInstance().getScheduler().tick();
 

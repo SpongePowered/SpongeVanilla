@@ -26,13 +26,13 @@ package org.granitepowered.granite.bytecode;
 public class CallbackInfo<T> {
 
     private T caller;
-    private Object[] methodArguments;
+    private Object[] callArguments;
     private Object[] callerArguments;
     private boolean cancelled;
 
-    public CallbackInfo(T caller, Object[] methodArguments, Object[] callerArguments) {
+    public CallbackInfo(T caller, Object[] callArguments, Object[] callerArguments) {
         this.caller = caller;
-        this.methodArguments = methodArguments;
+        this.callArguments = callArguments;
         this.callerArguments = callerArguments;
     }
 
@@ -40,8 +40,8 @@ public class CallbackInfo<T> {
         return caller;
     }
 
-    public Object[] getMethodArguments() {
-        return methodArguments;
+    public Object[] getCallArguments() {
+        return callArguments;
     }
 
     public Object[] getCallerArguments() {

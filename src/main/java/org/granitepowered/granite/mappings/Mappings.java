@@ -175,6 +175,7 @@ public class Mappings {
     }
 
     public static CtClass getCtClass(String humanClassName) {
+        if (!ctClasses.containsKey(humanClassName)) throw new MappingNotFoundException("Could not find CtClass " + humanClassName);
         return ctClasses.get(humanClassName);
     }
 
