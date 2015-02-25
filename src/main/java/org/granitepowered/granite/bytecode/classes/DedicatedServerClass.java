@@ -24,7 +24,13 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.bytecode.*;
+import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.CodeInsertionMode;
+import org.granitepowered.granite.bytecode.Insert;
+import org.granitepowered.granite.bytecode.Position;
+import org.granitepowered.granite.bytecode.Proxy;
+import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.event.state.GraniteServerAboutToStartEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
 import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
@@ -52,7 +58,6 @@ public class DedicatedServerClass extends BytecodeClass {
         Granite.getInstance().getEventManager().post(new GraniteServerAboutToStartEvent());
 
         info.callback();
-        throw new RuntimeException("test");
     }
 
     @Proxy(methodName = "stopServer")

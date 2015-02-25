@@ -341,7 +341,7 @@ public class Mappings {
     public static CtField getCtField(CtClass clazz, String humanFieldName) {
         try {
             if (!ctFields.containsKey(clazz)) {
-                throw new MappingNotFoundException("Could not find class " + clazz.getName());
+                throw new MappingNotFoundException("Could not find field " + humanFieldName);
             }
             CtField ctField = ctFields.get(clazz).get(humanFieldName);
 
