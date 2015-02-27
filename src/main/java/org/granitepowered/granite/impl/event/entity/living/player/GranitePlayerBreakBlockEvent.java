@@ -84,9 +84,4 @@ public class GranitePlayerBreakBlockEvent extends GraniteBlockEvent implements P
     public void setExp(int v) {
         throw new NotImplementedException("");
     }
-
-    @Override
-    public Collection<Item> getDroppedItems() {
-        throw new NotImplementedException("");
-    }
 }

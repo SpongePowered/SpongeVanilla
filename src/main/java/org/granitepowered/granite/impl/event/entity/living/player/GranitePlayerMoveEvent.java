@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.event.entity.living.player;
 
+import com.flowpowered.math.vector.Vector3f;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.spongepowered.api.event.entity.living.player.PlayerMoveEvent;
 import org.spongepowered.api.world.Location;
@@ -46,5 +48,15 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
     @Override
     public Location getNewLocation() {
         return new_;
+    }
+
+    @Override
+    public Vector3f getRotation() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setRotation(Vector3f vector3f) {
+        throw new NotImplementedException("");
     }
 }

@@ -56,11 +56,6 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
     }
 
     @Override
-    public void apply(Living living) {
-        living.addPotionEffect(this, true);
-    }
-
-    @Override
     public int getDuration() {
         return obj.fieldGet$duration();
     }

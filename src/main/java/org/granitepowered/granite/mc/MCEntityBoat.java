@@ -21,19 +21,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.bytecode;
+package org.granitepowered.granite.mc;
 
-public @interface Position {
+@Implement(name = "EntityBoat")
+public interface MCEntityBoat extends MCEntity {
 
-    PositionMode mode();
+    double fieldGet$speedMultiplier();
 
-    String value();
-
-    int index() default -1;
-
-    public static enum PositionMode {
-        NEW,
-        METHOD_CALL,
-        FIELD
-    }
+    void fieldSet$speedMultiplier(double speed);
 }

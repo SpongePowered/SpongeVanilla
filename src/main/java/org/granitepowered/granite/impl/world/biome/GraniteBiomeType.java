@@ -36,6 +36,11 @@ public class GraniteBiomeType extends Composite<MCBiomeGenBase> implements Biome
     }
 
     @Override
+    public String getName() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public double getTemperature() {
         return obj.fieldGet$temperature();
     }

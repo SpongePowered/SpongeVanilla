@@ -39,6 +39,7 @@ import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.granitepowered.granite.mc.MCPotion;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
 
@@ -233,5 +234,15 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
         }
         byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(0).fieldGet$watchedObject();
         obj.fieldGet$dataWatcher().updateObject(0, (byte) (invisible ? (object | 1 << 5) : (object & ~(1 << 5))));
+    }
+
+    @Override
+    public boolean isInvisibleTo(Player player) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setInvisibleTo(Player player, boolean b) {
+        throw new NotImplementedException("");
     }
 }

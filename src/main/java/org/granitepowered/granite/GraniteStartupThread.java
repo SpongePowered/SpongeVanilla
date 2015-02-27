@@ -268,6 +268,7 @@ public class GraniteStartupThread extends Thread {
             modifier.add(new CommandHandlerClass());
             modifier.add(new DedicatedServerClass());
             modifier.add(new EntityClass());
+            modifier.add(new EntityBoatClass());
             modifier.add(new EntityEggClass());
             modifier.add(new EntityEnderPearlClass());
             modifier.add(new EntityFishHookClass());

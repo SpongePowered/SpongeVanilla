@@ -121,56 +121,6 @@ public class ReflectionUtils {
         return true;
     }
 
-    /**
-     * Invoke a method, casting every type to the appropriate type, ctPrimitives included
-     *
-     * @param instance The instance to invoke on
-     * @param m        The method to invoke
-     * @param args     The arguments to feed the method
-     * @return The object returned by the method
-     * @throws InvocationTargetException
-     */
-    public static Object invoke(Object instance, MethodHandle m, Object... args) throws InvocationTargetException {
-        try {
-            return m.invoke(instance, args);
-        } catch (Throwable throwable) {
-            Throwables.propagate(throwable);
-        }
-        return null;
-    }
-
-    /**
-     * Create a proxy that will direct every method called into the specified {@link javassist.util.proxy.MethodHandler}.
-     * This will create a new instance of the source object.
-     *
-     * @param source          The source object
-     * @param handler         The handler to proxy every method call to
-     * @param createIdentical If true, will copy every field from the source object into the new proxy
-     * @param paramTypes      The type of the constructor parameters - must match the types of the actual constructor parameters exactly
-     * @param args            The objects to pass to the constructor as arguments
-     * @return A new instance of the source object, with a proxy on top
-     */
-    @Deprecated
-    public static Object createProxy(Object source, MethodHandler handler, boolean createIdentical, Class<?>[] paramTypes, Object... args) {
-        ProxyFactory pf = new ProxyFactory();
-        pf.setSuperclass(ReflectionUtils.extractClass(source));
-
-        try {
-            Object proxy = pf.create(paramTypes, args, handler);
-
-            if (createIdentical) {
-                for (Field f : proxy.getClass().getSuperclass().getDeclaredFields()) {
-                    throw new RuntimeException("not implemented - go bug marvin about this");
-                }
-            }
-
-            return proxy;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            Throwables.propagate(e);
-        }
-        return null;
-    }
-
     public static Class<?> extractClass(Object obj) {
         Class<?> clazz;
 

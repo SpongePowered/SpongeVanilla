@@ -95,4 +95,18 @@ public interface MCEntity extends MCInterface {
     void setPositionAndUpdate(double x, double y, double z);
 
     void travelToDimension(int dimensionId);
+
+    boolean fieldGet$isInWater();
+
+    double fieldGet$motionX();
+
+    void fieldSet$motionX(double motionX);
+
+    double fieldGet$motionY();
+
+    void fieldSet$motionY(double motionY);
+
+    double fieldGet$motionZ();
+
+    void fieldSet$motionZ(double motionZ);
 }

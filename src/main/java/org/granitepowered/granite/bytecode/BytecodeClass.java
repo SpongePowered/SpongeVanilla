@@ -40,6 +40,7 @@ import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.bytecode.analysis.Type;
 import javassist.expr.ExprEditor;
+import javassist.expr.FieldAccess;
 import javassist.expr.MethodCall;
 import javassist.expr.NewExpr;
 import org.apache.commons.lang3.ArrayUtils;
@@ -682,9 +683,8 @@ public class BytecodeClass {
             } catch (CannotCompileException e) {
                 e.printStackTrace();
             }
-        } else if (position.mode() == Position.PositionMode.METHOD_CALL) {
+        }  else if (position.mode() == Position.PositionMode.METHOD_CALL) {
             String code = "";
-
 
             final CtMethod methodd = ReflectionUtils.getCtMethod(position.value().split("#")[0], position.value().split("#")[1]);
             switch (insertionMode) {
@@ -716,6 +716,8 @@ public class BytecodeClass {
                     public void edit(MethodCall m) throws CannotCompileException {
                         try {
                             if (Objects.equals(m.getMethod().getLongName(), methodd.getLongName())) {
+                                String temp1 = m.getMethod().getLongName();
+                                String temp2 = methodd.getLongName();
                                 if (position.index() < 0 || idx == position.index()) {
                                     m.replace(finalCode);
                                 }
@@ -723,6 +725,49 @@ public class BytecodeClass {
                             }
                         } catch (NotFoundException e) {
                             e.printStackTrace();
+                        }
+                    }
+                });
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+        } else if (position.mode() == Position.PositionMode.FIELD) {
+            String code = "";
+
+            final CtField ctField = Mappings.getCtField(clazz, position.value());
+            switch (insertionMode) {
+                case BEFORE:
+                    code += "{";
+                    code += codeToAdd;
+                    code += "$_ = $proceed($$);";
+                    code += "}";
+                    break;
+                case REPLACE:
+                    code += "{";
+                    code += codeToAdd;
+                    code += "}";
+                    break;
+                case AFTER:
+                    code += "{";
+                    code += "$_ = $proceed($$);";
+                    code += codeToAdd;
+                    code += "}";
+                    break;
+            }
+            try {
+                final String finalCode = code;
+                method.instrument(new ExprEditor() {
+                    private int idx;
+
+                    @Override
+                    public void edit(FieldAccess f) throws CannotCompileException {
+                        if (clazz.getName().equals(f.getClassName())) {
+                            if (Objects.equals(f.getFieldName(), ctField.getName())) {
+                                if (position.index() < 0 || idx == position.index()) {
+                                    f.replace(finalCode);
+                                }
+                                idx++;
+                            }
                         }
                     }
                 });
@@ -744,7 +789,6 @@ public class BytecodeClass {
         BytecodeClass that = (BytecodeClass) o;
 
         return clazz.getName().equals(that.clazz.getName());
-
     }
 
     @Override

@@ -112,6 +112,16 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
     }
 
     @Override
+    public Vector3d getVelocity() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setVelocity(Vector3d vector3d) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public World getWorld() {
         return wrap(obj.fieldGet$worldObj());
     }
