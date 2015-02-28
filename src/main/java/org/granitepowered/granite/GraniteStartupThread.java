@@ -35,11 +35,7 @@ import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.bytecode.classes.*;
 import org.granitepowered.granite.impl.GraniteMinecraftVersion;
 import org.granitepowered.granite.impl.GraniteServer;
-import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
-import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
-import org.granitepowered.granite.impl.event.state.GraniteLoadCompleteEvent;
-import org.granitepowered.granite.impl.event.state.GranitePostInitializationEvent;
-import org.granitepowered.granite.impl.event.state.GranitePreInitializationEvent;
+import org.granitepowered.granite.impl.event.state.*;
 import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
@@ -73,12 +69,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -267,6 +258,7 @@ public class GraniteStartupThread extends Thread {
 
             modifier.add(new CommandHandlerClass());
             modifier.add(new DedicatedServerClass());
+            modifier.add(new EntityMinecartClass());
             modifier.add(new EntityClass());
             modifier.add(new EntityBoatClass());
             modifier.add(new EntityEggClass());

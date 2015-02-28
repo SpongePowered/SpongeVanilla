@@ -23,19 +23,13 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CallbackInfo;
-import org.granitepowered.granite.bytecode.MethodCallArgument;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
+import org.granitepowered.granite.bytecode.*;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerJoinEvent;
-import org.granitepowered.granite.mc.MCChatComponent;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCGameProfile;
+import org.granitepowered.granite.mc.MCIChatComponent;
 import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.granitepowered.granite.util.ThreadedContainer;
@@ -44,19 +38,21 @@ import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.text.translation.Translations;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 public class ServerConfigurationManagerClass extends BytecodeClass {
 
     // Using this here so race conditions don't happen
     // (If one thread runs iCTP, then quickly another, joinMessage is set to the second thread's value
     // And then the first thread runs the sendChatMsg call and gets the second's message
-    private ThreadedContainer<MCChatComponent> joinMessage = new ThreadedContainer<>();
+    private ThreadedContainer<MCIChatComponent> joinMessage = new ThreadedContainer<>();
 
     public ServerConfigurationManagerClass() {
         super("ServerConfigurationManager");
     }
 
     @MethodCallArgument(methodName = "initializeConnectionToPlayer", methodCallClass = "ServerConfigurationManager", methodCallName = "sendChatMsg", argumentIndex = 0)
-    public MCChatComponent initializeConnectionToPlayerJoinMessage(CallbackInfo<MCServerConfigurationManager> info) {
+    public MCIChatComponent initializeConnectionToPlayerJoinMessage(CallbackInfo<MCServerConfigurationManager> info) {
         return joinMessage.get();
     }
 

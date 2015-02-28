@@ -23,25 +23,7 @@
 
 package org.granitepowered.granite.util;
 
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCChatComponent;
-import org.granitepowered.granite.mc.MCEntityArrow;
-import org.granitepowered.granite.mc.MCEntityEgg;
-import org.granitepowered.granite.mc.MCEntityLargeFireball;
-import org.granitepowered.granite.mc.MCEntityLivingBase;
-import org.granitepowered.granite.mc.MCEntitySmallFireball;
-import org.granitepowered.granite.mc.MCGameProfile;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCMerchantRecipe;
-import org.granitepowered.granite.mc.MCPacketBlockChange;
-import org.granitepowered.granite.mc.MCPacketChat;
-import org.granitepowered.granite.mc.MCPacketParticles;
-import org.granitepowered.granite.mc.MCPacketTitle;
-import org.granitepowered.granite.mc.MCPacketTitleType;
-import org.granitepowered.granite.mc.MCPotionEffect;
-import org.granitepowered.granite.mc.MCRotations;
-import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.mc.*;
 
 import java.util.UUID;
 
@@ -56,6 +38,8 @@ public class Instantiator {
     public interface InstantiatorInterface {
 
         MCBlockPos newBlockPos(int x, int y, int z);
+
+        MCBlockRailBase newBlockRailBase(boolean powered);
 
         MCEntityArrow newEntityArrow(MCWorld world, MCEntityLivingBase shooter, float something);
 
@@ -74,7 +58,7 @@ public class Instantiator {
         MCMerchantRecipe newMerchantRecipe(MCItemStack firstSellingItem, MCItemStack secondSellingItem, MCItemStack buyingItem, int uses,
                                            int maxUses);
 
-        MCPacketChat newPacketChat(MCChatComponent chatComponent, byte type);
+        MCPacketChat newPacketChat(MCIChatComponent chatComponent, byte type);
 
         MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
 
@@ -83,7 +67,7 @@ public class Instantiator {
 
         MCPacketTitle newPacketTitle(int fadeIn, int stay, int fadeOut);
 
-        MCPacketTitle newPacketTitle(MCPacketTitleType type, MCChatComponent component);
+        MCPacketTitle newPacketTitle(MCPacketTitleType type, MCIChatComponent component);
 
         MCPotionEffect newPotionEffect(int id, int effectDuration, int effectAmplifier, boolean ambient, boolean showParticles);
 

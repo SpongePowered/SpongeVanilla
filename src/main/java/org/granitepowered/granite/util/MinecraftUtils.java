@@ -34,11 +34,7 @@ import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.block.GraniteBlockProperty;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.block.GraniteBlockType;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.entity.GraniteEntityEnderCrystal;
-import org.granitepowered.granite.impl.entity.GraniteEntityExperienceOrb;
-import org.granitepowered.granite.impl.entity.GraniteEntityFallingBlock;
-import org.granitepowered.granite.impl.entity.GraniteEntityItem;
+import org.granitepowered.granite.impl.entity.*;
 import org.granitepowered.granite.impl.entity.explosive.GraniteEntityPrimedTNT;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityArmorStand;
@@ -70,15 +66,14 @@ import org.granitepowered.granite.impl.world.GraniteWorldBorder;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCChatComponent;
+import org.granitepowered.granite.mc.MCIChatComponent;
 import org.granitepowered.granite.mc.MCInterface;
 import org.granitepowered.granite.mc.MCRotations;
 import org.spongepowered.api.text.message.Message;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class MinecraftUtils {
 
@@ -153,9 +148,9 @@ public class MinecraftUtils {
         return composite.obj;
     }
 
-    public static MCChatComponent graniteToMinecraftChatComponent(Message message) {
+    public static MCIChatComponent graniteToMinecraftChatComponent(Message message) {
         String json = Granite.getInstance().getGson().toJson(message, GraniteMessage.class);
-        return (MCChatComponent) Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
+        return (MCIChatComponent) Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
     }
 
     public static MCBlockPos graniteToMinecraftBlockPos(Vector3i vector) {
@@ -166,7 +161,7 @@ public class MinecraftUtils {
         return (Enum) clazz.getEnumConstants()[number];
     }
 
-    public static Message minecraftToGraniteMessage(MCChatComponent deathComponent) {
+    public static Message minecraftToGraniteMessage(MCIChatComponent deathComponent) {
         String json = (String) Mappings.invokeStatic("IChatComponent$Serializer", "componentToJson", deathComponent);
         return Granite.getInstance().getGson().fromJson(json, GraniteMessage.class);
     }

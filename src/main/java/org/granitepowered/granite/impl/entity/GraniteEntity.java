@@ -23,9 +23,6 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -43,6 +40,9 @@ import org.spongepowered.api.world.World;
 
 import java.util.EnumSet;
 import java.util.UUID;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteEntity<T extends MCEntity> extends Composite<T> implements Entity {
 
@@ -113,12 +113,14 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public Vector3d getVelocity() {
-        throw new NotImplementedException("");
+        return new Vector3d(obj.fieldGet$motionX(), obj.fieldGet$motionY(), obj.fieldGet$motionZ());
     }
 
     @Override
     public void setVelocity(Vector3d vector3d) {
-        throw new NotImplementedException("");
+        obj.fieldSet$motionX(vector3d.getX());
+        obj.fieldSet$motionY(vector3d.getY());
+        obj.fieldSet$motionZ(vector3d.getZ());
     }
 
     @Override

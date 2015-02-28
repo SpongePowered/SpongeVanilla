@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.block.data;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCChatComponent;
+import org.granitepowered.granite.mc.MCIChatComponent;
 import org.granitepowered.granite.mc.MCTileEntitySign;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.data.Sign;
@@ -47,9 +47,9 @@ public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements 
     public Message[] getLines() {
         Message[] ret = new Message[4];
 
-        MCChatComponent[] fieldGet$signText = obj.fieldGet$signText();
+        MCIChatComponent[] fieldGet$signText = obj.fieldGet$signText();
         for (int i = 0; i < fieldGet$signText.length; i++) {
-            MCChatComponent component = fieldGet$signText[i];
+            MCIChatComponent component = fieldGet$signText[i];
             ret[i] = MinecraftUtils.minecraftToGraniteMessage(component);
         }
 

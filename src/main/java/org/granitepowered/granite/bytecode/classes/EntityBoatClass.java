@@ -23,11 +23,7 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CallbackInfo;
-import org.granitepowered.granite.bytecode.CodeInsertionMode;
-import org.granitepowered.granite.bytecode.Insert;
-import org.granitepowered.granite.bytecode.Position;
+import org.granitepowered.granite.bytecode.*;
 import org.granitepowered.granite.impl.entity.vehicle.GraniteEntityBoat;
 import org.granitepowered.granite.mc.MCEntityBoat;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
@@ -43,12 +39,9 @@ public class EntityBoatClass extends BytecodeClass {
     public void moveOnLand(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
         if (boat.obj.fieldGet$onGround() && boat.canMoveOnLand()) {
-            double motionX = boat.obj.fieldGet$motionX();
-            double motionY = boat.obj.fieldGet$motionY();
-            double motionZ = boat.obj.fieldGet$motionZ();
-            boat.obj.fieldSet$motionX(motionX /= 0.5);
-            boat.obj.fieldSet$motionY(motionY /= 0.5);
-            boat.obj.fieldSet$motionZ(motionZ /= 0.5);
+            boat.obj.fieldSet$motionX(boat.obj.fieldGet$motionX() / 0.5);
+            boat.obj.fieldSet$motionY(boat.obj.fieldGet$motionY() / 0.5);
+            boat.obj.fieldSet$motionZ(boat.obj.fieldGet$motionZ() / 0.5);
         }
     }
 

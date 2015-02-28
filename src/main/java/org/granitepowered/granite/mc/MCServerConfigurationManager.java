@@ -36,5 +36,5 @@ public interface MCServerConfigurationManager extends MCInterface {
 
     List<MCEntityPlayerMP> fieldGet$playerEntityList();
 
-    void sendChatMsg(MCChatComponent message);
+    void sendChatMsg(MCIChatComponent message);
 }
