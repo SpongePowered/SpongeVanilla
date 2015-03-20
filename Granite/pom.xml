@@ -67,6 +67,8 @@
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeapi</artifactId>
             <version>${api.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../SpongeAPI/build/libs/spongeapi-${api.version}.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -139,6 +141,24 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.flowpowered</groupId>
+            <artifactId>flow-math</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ninja.leaping.configurate</groupId>
+            <artifactId>configurate-hocon</artifactId>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 
