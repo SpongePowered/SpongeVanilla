@@ -23,12 +23,23 @@
 
 package org.granitepowered.granite.impl.entity.projectile.fireball;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.mc.MCEntitySmallFireball;
-import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
+import org.spongepowered.api.entity.projectile.explosive.fireball.SmallFireball;
 
 public class GraniteSmallFireball extends GraniteFireball<MCEntitySmallFireball> implements SmallFireball {
 
     public GraniteSmallFireball(MCEntitySmallFireball obj) {
         super(obj);
+    }
+
+    @Override
+    public int getExplosionPower() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setExplosionPower(int i) {
+        throw new NotImplementedException("");
     }
 }

@@ -23,23 +23,27 @@
 
 package org.granitepowered.granite.impl.item.inventory;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
+import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCBlock;
 import org.granitepowered.granite.mc.MCItem;
 import org.granitepowered.granite.mc.MCItemStack;
+import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.item.Enchantment;
+import org.spongepowered.api.item.ItemDataTransactionResult;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.data.ItemData;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.item.properties.ItemProperty;
+import org.spongepowered.api.service.persistence.InvalidDataException;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 
-import java.util.Map;
+import java.util.Collection;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteItemStack extends Composite<MCItemStack> implements ItemStack {
 
@@ -85,16 +89,6 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     }
 
     @Override
-    public short getDamage() {
-        return (short) obj.fieldGet$itemDamage();
-    }
-
-    @Override
-    public void setDamage(short damage) {
-        obj.fieldSet$itemDamage(damage);
-    }
-
-    @Override
     public int getQuantity() {
         return obj.fieldGet$stackSize();
     }
@@ -119,31 +113,32 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     }
 
     @Override
-    public Map<Enchantment, Integer> getEnchantments() {
-        // TODO: NBT API
+    public <T extends ItemData<T>> ItemDataTransactionResult setItemData(T t) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public boolean isEnchanted() {
-        return obj.isItemEnchanted();
-    }
-
-    @Override
-    public void setEnchantment(Enchantment enchant, int level) {
-        // TODO: NBT API
+    public <T extends ItemData<T>> Optional<T> getOrCreateItemData(Class<T> aClass) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public void removeEnchantment(Enchantment enchant) {
-        // TODO: NBT API
+    public Collection<ItemProperty<?, ?>> getProperties() {
         throw new NotImplementedException("");
     }
 
     @Override
-    public int getEnchantment(Enchantment enchant) {
-        // TODO: NBT API
+    public Collection<ItemData<?>> getItemData() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean vaildateData(DataContainer dataContainer) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setRawData(DataContainer dataContainer) throws InvalidDataException {
         throw new NotImplementedException("");
     }
 
@@ -158,8 +153,12 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     }
 
     @Override
-    public void serialize(DataSource source) {
-        // TODO: Persistence API
+    public Collection<AttributeModifier> getAttributeModifiers() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public <T> Optional<T> getData(Class<T> aClass) {
         throw new NotImplementedException("");
     }
 }

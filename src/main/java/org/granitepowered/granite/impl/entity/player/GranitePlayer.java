@@ -23,10 +23,6 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
-import static org.granitepowered.granite.util.MinecraftUtils.graniteToMinecraftChatComponent;
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -40,12 +36,7 @@ import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCPacket;
-import org.granitepowered.granite.mc.MCPacketTitleType;
-import org.granitepowered.granite.mc.MCRegistryNamespaced;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.GameProfile;
@@ -54,11 +45,12 @@ import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
+import org.spongepowered.api.entity.player.tab.TabList;
 import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.entity.projectile.Egg;
 import org.spongepowered.api.entity.projectile.Projectile;
-import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
-import org.spongepowered.api.entity.projectile.fireball.SmallFireball;
+import org.spongepowered.api.entity.projectile.explosive.fireball.LargeFireball;
+import org.spongepowered.api.entity.projectile.explosive.fireball.SmallFireball;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Carrier;
@@ -71,7 +63,6 @@ import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.SubjectCollection;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.permission.context.Context;
-import org.spongepowered.api.service.persistence.DataSource;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.chat.ChatTypes;
@@ -80,17 +71,14 @@ import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.text.title.Titles;
 import org.spongepowered.api.util.Tristate;
 import org.spongepowered.api.util.command.CommandSource;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
+import org.spongepowered.api.world.Location;
 
 import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
+import static org.granitepowered.granite.util.MinecraftUtils.*;
 
 public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> implements Player {
 
@@ -106,13 +94,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
-    public boolean getAllowFlight() {
-        return obj.fieldGet$capabilities().fieldGet$allowFlying();
-    }
-
-    @Override
-    public void setAllowFlight(boolean allowFlight) {
-        obj.fieldGet$capabilities().fieldSet$allowFlying(allowFlight);
+    public void setDisplayName(@Nullable Message message) {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -189,6 +172,11 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     @Override
     public PlayerConnection getConnection() {
         throw new NotImplementedException("");
+    }
+
+    @Override
+    public TabList getTabList() {
+        return null;
     }
 
     @Override
@@ -289,6 +277,16 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
+    public Optional<Location> getBedLocation() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setBedLocation(@Nullable Location location) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public Optional<Player> getPlayer() {
         return Optional.of((Player) this);
     }
@@ -341,7 +339,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-                data = item.getDamage();
+                //data = item.getDamage();
             } else if (type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId()
                        || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
                 // Only block types are allowed
@@ -353,7 +351,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
-                    data = item.getDamage();
+                    //data = item.getDamage();
                 }
             }
 
@@ -482,33 +480,48 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
-    public float getHunger() {
+    public double getExhaustion() {
         return obj.fieldGet$foodStats().fieldGet$foodLevel();
     }
 
     @Override
-    public void setHunger(float hunger) {
-        obj.fieldGet$foodStats().fieldSet$foodLevel((int) hunger);
+    public void setExhaustion(double exhaustion) {
+        obj.fieldGet$foodStats().fieldSet$foodLevel((int) exhaustion);
     }
 
     @Override
-    public float getSaturation() {
+    public double getSaturation() {
         return obj.fieldGet$foodStats().fieldGet$foodSaturationLevel();
     }
 
     @Override
-    public void setSaturation(float saturation) {
-        obj.fieldGet$foodStats().fieldSet$foodSaturationLevel(saturation);
+    public void setSaturation(double saturation) {
+        obj.fieldGet$foodStats().fieldSet$foodSaturationLevel((float) saturation);
     }
 
     @Override
-    public int getExperience() {
-        return (int) obj.fieldGet$experience();
+    public double getFoodLevel() {
+        throw new NotImplementedException("");
     }
 
     @Override
-    public void setExperience(int experience) {
-        obj.fieldSet$experience((float) experience);
+    public void setFoodLevel(double v) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getExperienceSinceLevel() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setExperienceSinceLevel(int i) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public int getExperienceBetweenLevels() {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -522,13 +535,33 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     @Override
-    public int getTotalExperinece() {
+    public int getTotalExperience() {
         return obj.fieldGet$experienceTotal();
     }
 
     @Override
     public void setTotalExperience(int totalExperience) {
         obj.fieldSet$experienceTotal((int) totalExperience);
+    }
+
+    @Override
+    public boolean isSneaking() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setSneaking(boolean b) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public boolean isFlying() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setFlying(boolean b) {
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -612,12 +645,6 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     }
 
     public DataContainer toContainer() {
-        // TODO: Persistence API
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public void serialize(DataSource source) {
         // TODO: Persistence API
         throw new NotImplementedException("");
     }

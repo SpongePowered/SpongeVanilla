@@ -26,6 +26,7 @@ package org.granitepowered.granite.impl.item.inventory;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.data.ItemData;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 
@@ -48,15 +49,6 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     }
 
     @Override
-    public ItemStackBuilder damage(int damage) {
-        if (damage < 0) {
-            damage = 0;
-        }
-        this.damage = damage;
-        return this;
-    }
-
-    @Override
     public ItemStackBuilder quantity(int quantity) throws IllegalArgumentException {
         if (quantity < 0) {
             quantity = 0;
@@ -74,9 +66,14 @@ public class GraniteItemStackBuilder implements ItemStackBuilder {
     }
 
     @Override
+    public <T extends ItemData<T>> ItemStackBuilder itemData(T t) throws IllegalArgumentException {
+        throw new NotImplementedException("");
+    }
+
+    @Override
     public ItemStackBuilder fromItemStack(ItemStack itemStack) {
         this.itemType = itemStack.getItem();
-        this.damage = itemStack.getDamage();
+        //this.damage = itemStack.getDamage();
         this.quantity = itemStack.getQuantity();
         return this;
     }

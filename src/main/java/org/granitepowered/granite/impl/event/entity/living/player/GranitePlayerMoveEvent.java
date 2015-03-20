@@ -51,6 +51,11 @@ public class GranitePlayerMoveEvent extends GranitePlayerEvent implements Player
     }
 
     @Override
+    public void setNewLocation(Location location) {
+        this.new_ = location;
+    }
+
+    @Override
     public Vector3f getRotation() {
         throw new NotImplementedException("");
     }

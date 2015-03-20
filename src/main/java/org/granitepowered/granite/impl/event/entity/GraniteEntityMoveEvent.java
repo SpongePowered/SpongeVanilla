@@ -32,7 +32,7 @@ import org.spongepowered.api.world.Location;
 public class GraniteEntityMoveEvent extends GraniteEntityEvent implements EntityMoveEvent {
 
     private final Location old;
-    private final Location new_;
+    private Location new_;
 
     public GraniteEntityMoveEvent(GraniteEntity entity, Location old, Location new_) {
         super(entity);
@@ -48,6 +48,11 @@ public class GraniteEntityMoveEvent extends GraniteEntityEvent implements Entity
     @Override
     public Location getNewLocation() {
         return new_;
+    }
+
+    @Override
+    public void setNewLocation(Location location) {
+        this.new_ = location;
     }
 
     @Override

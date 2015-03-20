@@ -26,8 +26,8 @@ package org.granitepowered.granite.impl.entity.living.animal;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntitySheep;
-import org.spongepowered.api.entity.living.animal.DyeColor;
 import org.spongepowered.api.entity.living.animal.Sheep;
+import org.spongepowered.api.item.DyeColor;
 
 public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> implements Sheep {
 
@@ -48,7 +48,8 @@ public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> imple
 
     @Override
     public DyeColor getColor() {
-        return Granite.instance.getGameRegistry().dyeColors.get((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 15);
+        int color = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 15;
+        return (DyeColor) Granite.instance.getGameRegistry().dyeColors.values().toArray()[color];
     }
 
     @Override

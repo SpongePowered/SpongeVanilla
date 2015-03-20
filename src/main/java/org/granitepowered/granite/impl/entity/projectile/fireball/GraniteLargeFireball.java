@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.projectile.fireball;
 
 import org.granitepowered.granite.mc.MCEntityLargeFireball;
-import org.spongepowered.api.entity.projectile.fireball.LargeFireball;
+import org.spongepowered.api.entity.projectile.explosive.fireball.LargeFireball;
 
 public class GraniteLargeFireball extends GraniteFireball<MCEntityLargeFireball> implements LargeFireball {
 

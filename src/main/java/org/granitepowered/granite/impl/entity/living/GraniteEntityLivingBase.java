@@ -23,9 +23,6 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -37,6 +34,8 @@ import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCDamageSource;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.granitepowered.granite.mc.MCPotion;
+import org.spongepowered.api.attribute.Attribute;
+import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.player.Player;
@@ -47,6 +46,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends GraniteEntity<T> implements Living {
 
@@ -243,6 +245,46 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public void setInvisibleTo(Player player, boolean b) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Double> getAttributeValue(Attribute attribute) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public double getBase(Attribute attribute) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setBase(Attribute attribute, double v) throws IllegalArgumentException {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<AttributeModifier> getAllModifiers() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void addModifier(AttributeModifier attributeModifier) throws IllegalArgumentException {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void addModifiers(Iterable<AttributeModifier> iterable) throws IllegalArgumentException {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public List<AttributeModifier> getModifiersFor(Attribute attribute) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void removeModifier(AttributeModifier attributeModifier) {
         throw new NotImplementedException("");
     }
 }

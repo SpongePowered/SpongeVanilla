@@ -24,17 +24,14 @@
 package org.granitepowered.granite.impl.service.persistence.data;
 
 import com.google.common.base.Optional;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.service.persistence.DataSerializable;
+import org.spongepowered.api.service.persistence.SerializationService;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.service.persistence.data.DataQuery;
 import org.spongepowered.api.service.persistence.data.DataView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GraniteDataView implements DataView {
 
@@ -329,10 +326,17 @@ public class GraniteDataView implements DataView {
     }
 
     @Override
-    public <T extends DataSerializable> Optional<T> getSerializable(DataQuery dataQuery, Class<T> aClass) {
-        if (get(dataQuery).isPresent() && aClass.isInstance(get(dataQuery).get())) {
-            return Optional.fromNullable((T) get(dataQuery).orNull());
-        }
-        return Optional.absent();
+    public Optional<List<DataView>> getViewList(DataQuery dataQuery) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public <T extends DataSerializable> Optional<T> getSerializable(DataQuery dataQuery, Class<T> aClass, SerializationService serializationService) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public <T extends DataSerializable> Optional<List<T>> getSerializableList(DataQuery dataQuery, Class<T> aClass, SerializationService serializationService) {
+        throw new NotImplementedException("");
     }
 }

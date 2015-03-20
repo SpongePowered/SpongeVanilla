@@ -28,13 +28,13 @@ import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCPotion;
 import org.granitepowered.granite.mc.MCPotionEffect;
-import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
-import org.spongepowered.api.service.persistence.DataSource;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 public class GranitePotionEffect extends Composite<MCPotionEffect> implements PotionEffect {
 
@@ -61,18 +61,8 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
     }
 
     @Override
-    public void setDuration(int duration) {
-        obj.fieldSet$duration(duration);
-    }
-
-    @Override
     public int getAmplifier() {
         return obj.fieldGet$amplifier();
-    }
-
-    @Override
-    public void setAmplifier(int amplifier) {
-        obj.fieldSet$amplifier(amplifier);
     }
 
     @Override
@@ -81,18 +71,8 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
     }
 
     @Override
-    public void setAmbient(boolean ambient) {
-        obj.fieldSet$isAmbient(ambient);
-    }
-
-    @Override
     public boolean getShowParticles() {
         return obj.fieldGet$showParticles();
-    }
-
-    @Override
-    public void setShowParticles(boolean particles) {
-        obj.fieldSet$showParticles(particles);
     }
 
     @Override
@@ -102,8 +82,7 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
     }
 
     @Override
-    public void serialize(DataSource source) {
-        // TODO: Persistence API
+    public Collection<AttributeModifier> getAttributeModifiers() {
         throw new NotImplementedException("");
     }
 }

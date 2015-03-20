@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.impl;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -40,16 +38,7 @@ import org.granitepowered.granite.impl.entity.player.gamemode.GraniteGameMode;
 import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.item.merchant.GraniteTradeOfferBuilder;
-import org.granitepowered.granite.impl.meta.GraniteCareer;
-import org.granitepowered.granite.impl.meta.GraniteHorseColor;
-import org.granitepowered.granite.impl.meta.GraniteHorseStyle;
-import org.granitepowered.granite.impl.meta.GraniteHorseVariant;
-import org.granitepowered.granite.impl.meta.GraniteNotePitch;
-import org.granitepowered.granite.impl.meta.GraniteOcelotType;
-import org.granitepowered.granite.impl.meta.GraniteProfession;
-import org.granitepowered.granite.impl.meta.GraniteRabbitType;
-import org.granitepowered.granite.impl.meta.GraniteSkeletonType;
-import org.granitepowered.granite.impl.meta.GraniteSkullType;
+import org.granitepowered.granite.impl.meta.*;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
 import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.status.GraniteFavicon;
@@ -58,46 +47,28 @@ import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteDimensionType;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCBiomeGenBase;
-import org.granitepowered.granite.mc.MCBlock;
-import org.granitepowered.granite.mc.MCEnchantment;
-import org.granitepowered.granite.mc.MCEnumArt;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCInterface;
-import org.granitepowered.granite.mc.MCItem;
-import org.granitepowered.granite.mc.MCPotion;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.attribute.Attribute;
+import org.spongepowered.api.attribute.AttributeBuilder;
+import org.spongepowered.api.attribute.AttributeModifierBuilder;
+import org.spongepowered.api.attribute.Operation;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.meta.BannerPatternShape;
-import org.spongepowered.api.block.meta.BannerPatternShapes;
-import org.spongepowered.api.block.meta.NotePitch;
-import org.spongepowered.api.block.meta.NotePitches;
-import org.spongepowered.api.block.meta.SkullType;
-import org.spongepowered.api.block.meta.SkullTypes;
+import org.spongepowered.api.block.meta.*;
 import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
+import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.hanging.art.Art;
 import org.spongepowered.api.entity.hanging.art.Arts;
-import org.spongepowered.api.entity.living.animal.DyeColor;
-import org.spongepowered.api.entity.living.animal.DyeColors;
-import org.spongepowered.api.entity.living.animal.HorseColor;
-import org.spongepowered.api.entity.living.animal.HorseColors;
-import org.spongepowered.api.entity.living.animal.HorseStyle;
-import org.spongepowered.api.entity.living.animal.HorseStyles;
-import org.spongepowered.api.entity.living.animal.HorseVariant;
-import org.spongepowered.api.entity.living.animal.HorseVariants;
-import org.spongepowered.api.entity.living.animal.OcelotType;
-import org.spongepowered.api.entity.living.animal.OcelotTypes;
-import org.spongepowered.api.entity.living.animal.RabbitType;
-import org.spongepowered.api.entity.living.animal.RabbitTypes;
+import org.spongepowered.api.entity.living.animal.*;
 import org.spongepowered.api.entity.living.monster.SkeletonType;
 import org.spongepowered.api.entity.living.monster.SkeletonTypes;
 import org.spongepowered.api.entity.living.villager.Career;
@@ -106,10 +77,7 @@ import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.living.villager.Professions;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
 import org.spongepowered.api.entity.player.gamemode.GameModes;
-import org.spongepowered.api.item.Enchantment;
-import org.spongepowered.api.item.Enchantments;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.*;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.item.recipe.RecipeRegistry;
@@ -123,7 +91,9 @@ import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.biome.BiomeTypes;
+import org.spongepowered.api.world.difficulty.Difficulty;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -131,16 +101,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-import javax.imageio.ImageIO;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteGameRegistry implements GameRegistry {
 
@@ -1182,6 +1146,101 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public RecipeRegistry getRecipeRegistry() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<Difficulty> getDifficulties() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Difficulty> getDifficulty(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<EntityInteractionType> getEntityInteractionTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<EntityInteractionType> getEntityInteractionType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Attribute> getAttribute(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<Attribute> getAttributes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Operation> getOperation(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<Operation> getOperations() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public AttributeModifierBuilder getAttributeModifierBuilder() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public AttributeBuilder getAttributeBuilder() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<CoalType> getCoalType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<CoalType> getCoalTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<Fish> getFishType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<Fish> getFishTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<CookedFish> getCookedFishType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<CookedFish> getCookedFishTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Optional<GoldenApple> getGoldenAppleType(String s) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Collection<GoldenApple> getGoldenAppleTypes() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public FireworkEffectBuilder getFireworkEffectBuilder() {
         throw new NotImplementedException("");
     }
 }

@@ -23,11 +23,13 @@
 
 package org.granitepowered.granite.impl.meta;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mc.MCEnumDyeColor;
-import org.spongepowered.api.entity.living.animal.DyeColor;
-import org.spongepowered.api.service.persistence.DataSource;
+import org.spongepowered.api.item.DyeColor;
 import org.spongepowered.api.service.persistence.data.DataContainer;
+
+import java.awt.*;
 
 public class GraniteDyeColor extends Composite<MCEnumDyeColor> implements DyeColor {
 
@@ -41,12 +43,12 @@ public class GraniteDyeColor extends Composite<MCEnumDyeColor> implements DyeCol
     }
 
     @Override
-    public DataContainer toContainer() {
-        return null;
+    public Color getColor() {
+        throw new NotImplementedException("");
     }
 
     @Override
-    public void serialize(DataSource dataSource) {
-
+    public DataContainer toContainer() {
+        return null;
     }
 }

@@ -23,26 +23,17 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerPlaceBlockEvent;
 import org.granitepowered.granite.impl.world.GraniteWorld;
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCEnumFacing;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCPacket;
-import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.util.Instantiator;
-import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.block.BlockSnapshot;
+import org.granitepowered.granite.mc.*;
+import org.spongepowered.api.block.BlockState;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class ItemStackClass extends BytecodeClass {
 
@@ -60,16 +51,16 @@ public class ItemStackClass extends BytecodeClass {
         GranitePlayer player = wrap(mcPlayer);
         GraniteWorld world = wrap(mcWorld);
 
-        BlockLoc clickedLoc = world.getBlock(posClicked.fieldGet$x(), posClicked.fieldGet$y(), posClicked.fieldGet$z());
+        BlockState clickedBlock = world.getBlock(posClicked.fieldGet$x(), posClicked.fieldGet$y(), posClicked.fieldGet$z());
 
         MCBlockPos posPlaced = posClicked;
-        if (!unwrap((GraniteBlockState) clickedLoc.getState()).fieldGet$block().isReplaceable(mcWorld, posClicked)) {
+        if (!unwrap((GraniteBlockState) clickedBlock).fieldGet$block().isReplaceable(mcWorld, posClicked)) {
             posPlaced = posClicked.offset(face, 1);
         }
 
-        BlockLoc loc = world.getBlock(posPlaced.fieldGet$x(), posPlaced.fieldGet$y(), posPlaced.fieldGet$z());
+        BlockState loc = world.getBlock(posPlaced.fieldGet$x(), posPlaced.fieldGet$y(), posPlaced.fieldGet$z());
 
-        BlockSnapshot oldSnapshot = loc.getSnapshot();
+        /*BlockSnapshot oldSnapshot = loc.getSnapshot();
         // TODO: Send PR to Sponge devs with hitX, hitY, hitZ (args[4 - 6])
 
         boolean ret = (boolean) info.callback();
@@ -90,8 +81,8 @@ public class ItemStackClass extends BytecodeClass {
                 player.obj.fieldGet$playerNetServerHandler().sendPacket(placedUpdate);
             }
             return !event.isCancelled();
-        } else {
-            return ret;
-        }
+        } else {*/
+        return loc;
+
     }
 }

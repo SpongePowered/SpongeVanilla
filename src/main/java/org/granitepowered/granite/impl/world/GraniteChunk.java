@@ -23,8 +23,7 @@
 
 package org.granitepowered.granite.impl.world;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
+import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -33,20 +32,23 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mc.MCChunk;
 import org.granitepowered.granite.mc.MCChunkProvider;
 import org.granitepowered.granite.mc.MCEntity;
 import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.biome.BiomeType;
+import org.spongepowered.api.world.weather.Weather;
 
 import java.util.Collection;
 import java.util.Set;
+
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteChunk extends Composite<MCChunk> implements Chunk {
 
@@ -102,29 +104,23 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     }
 
     @Override
-    public BiomeType getBiome(Vector3i vector3i) {
-        return getWorld().getBiome(toWorldCoordinates(vector3i.toDouble()).toInt());
+    public BlockState getBlock(Vector3i vector3i) {
+        return null;
     }
 
     @Override
-    public void setBiome(Vector3i vector3i, BiomeType biomeType) {
-        int x = vector3i.getX() % 16;
-        int z = vector3i.getZ() % 16;
-        int idx = z << 4 | x;
-
-        byte id = (byte) (((GraniteBiomeType) biomeType).obj.fieldGet$biomeID() % 256);
-
-        obj.fieldGet$blockBiomeArray()[idx] = id;
+    public BlockState getBlock(int x, int y, int z) {
+        return getBlock(new Vector3i(x, y, z));
     }
 
     @Override
-    public BlockLoc getBlock(Vector3d vector3d) {
-        return getBlock(toWorldCoordinates(vector3d));
+    public void setBlock(Vector3i vector3i, BlockState blockState) {
+
     }
 
     @Override
-    public BlockLoc getBlock(int x, int y, int z) {
-        return getBlock(new Vector3d(x, y, z));
+    public void setBlock(int i, int i1, int i2, BlockState blockState) {
+
     }
 
     @Override
@@ -189,5 +185,60 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
 
     public MCChunkProvider getChunkProvider() {
         return getWorld().obj.fieldGet$chunkProvider();
+    }
+
+    @Override
+    public BlockLoc getFullBlock(Vector3i vector3i) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public BlockLoc getFullBlock(int i, int i1, int i2) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public BiomeType getBiome(Vector2i vector2i) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public BiomeType getBiome(int i, int i1) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setBiome(Vector2i vector2i, BiomeType biomeType) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void setBiome(int i, int i1, BiomeType biomeType) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public Weather getWeather() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public long getRemainingDuration() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public long getRunningDuration() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void forecast(Weather weather) {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public void forecast(Weather weather, long l) {
+        throw new NotImplementedException("");
     }
 }

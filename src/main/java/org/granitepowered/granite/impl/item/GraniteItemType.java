@@ -23,6 +23,7 @@
 
 package org.granitepowered.granite.impl.item;
 
+import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
@@ -30,6 +31,7 @@ import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCItem;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.properties.ItemProperty;
 import org.spongepowered.api.text.translation.Translation;
 
 public class GraniteItemType<T extends MCItem> extends Composite<T> implements ItemType {
@@ -57,13 +59,8 @@ public class GraniteItemType<T extends MCItem> extends Composite<T> implements I
     }
 
     @Override
-    public boolean isDamageable() {
+    public <T extends ItemProperty<?, ?>> Optional<T> getDefaultProperty(Class<T> aClass) {
         throw new NotImplementedException("");
-    }
-
-    @Override
-    public int getMaxDamage() {
-        return obj.fieldGet$maxDamage();
     }
 
     @Override

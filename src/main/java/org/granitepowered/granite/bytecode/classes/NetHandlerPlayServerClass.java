@@ -23,11 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
-import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -36,22 +33,17 @@ import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerChatEvent;
-import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerInteractBlockEvent;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerMoveEvent;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
-import org.granitepowered.granite.mc.MCPacket;
-import org.granitepowered.granite.mc.MCPacketChatMessage;
-import org.granitepowered.granite.mc.MCPacketPlayer;
-import org.granitepowered.granite.mc.MCPacketPlayerBlockPlacement;
-import org.granitepowered.granite.mc.MCPacketPlayerDigging;
+import org.granitepowered.granite.mc.*;
 import org.spongepowered.api.block.BlockLoc;
-import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.Location;
 
 import java.lang.reflect.Constructor;
+
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class NetHandlerPlayServerClass extends BytecodeClass {
 
@@ -88,10 +80,10 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
                                                                                  packet.fieldGet$position().fieldGet$y(),
                                                                                  packet.fieldGet$position().fieldGet$z())));
 
-        GranitePlayerInteractBlockEvent
+        /*GranitePlayerInteractBlockEvent
                 event =
                 new GranitePlayerInteractBlockEvent(player, EntityInteractionType.LEFT_CLICK, Optional.<Vector3f>absent(), loc);
-        Granite.getInstance().getEventManager().post(event);
+        Granite.getInstance().getEventManager().post(event);*/
         return info.callback();
     }
 
@@ -111,10 +103,10 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
                                                                                  packet.fieldGet$position().fieldGet$z())));
         Vector3f globalHitPoint = new Vector3f(loc.getX(), loc.getY(), loc.getZ()).add(localHitPoint);
 
-        GranitePlayerInteractBlockEvent
+        /*GranitePlayerInteractBlockEvent
                 event =
                 new GranitePlayerInteractBlockEvent(player, EntityInteractionType.RIGHT_CLICK, Optional.of(globalHitPoint), loc);
-        Granite.getInstance().getEventManager().post(event);
+        Granite.getInstance().getEventManager().post(event);*/
         return info.callback();
     }
 
