@@ -74,7 +74,7 @@ public class GraniteEntityTameable<T extends MCEntityTameable> extends GraniteEn
 
     @Override
     public Optional<Tamer> getOwner() {
-        return Optional.fromNullable((Tamer) Granite.getInstance().getServer()
+        return Optional.fromNullable((Tamer) Granite.getInstance().getServer().get()
                 .getPlayer((String) obj.fieldGet$dataWatcher().getWatchedObject(21).fieldGet$watchedObject()));
     }
 

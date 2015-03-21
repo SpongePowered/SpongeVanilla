@@ -27,17 +27,8 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.base.Throwables;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigObject;
-import com.typesafe.config.ConfigParseOptions;
-import com.typesafe.config.ConfigSyntax;
-import com.typesafe.config.ConfigValue;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import com.typesafe.config.*;
+import javassist.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.util.ReflectionUtils;
@@ -72,38 +63,39 @@ public class Mappings {
     static ClassPool pool;
 
     private static void downloadMappings(File mappingsFile, String url, HttpRequest req) {
-        Granite.instance.getLogger().warn("Downloading from " + url);
-        if (req.code() == 404) {
-            //throw new RuntimeException("GitHub 404 error whilst trying to download");
-        } else if (req.code() == 200) {
+        Granite.getInstance().getLogger().warn("Downloading from " + url);
+        if (req.code() == 200) {
             req.receive(mappingsFile);
-            Granite.instance.getServerConfig().set("latest-mappings-etag", req.eTag());
-            Granite.instance.getServerConfig().save();
+            Granite.getInstance().getServerConfig().set("latest-mappings-etag", req.eTag());
+            Granite.getInstance().getServerConfig().save();
+        } else {
+            Granite.getInstance().getLogger().error("There is a problem connecting to GitHub to download Mappings.");
+            System.exit(0);
         }
     }
 
     public static void load() {
         try {
-            File mappingsFile = new File(Granite.instance.getServerConfig().getMappingsFile().getAbsolutePath());
+            File mappingsFile = new File(Granite.getInstance().getServerConfig().getMappingsFile().getAbsolutePath());
             String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/sponge/1.8.3.json";
             try {
                 HttpRequest req = HttpRequest.get(url);
 
-                if (Granite.instance.getServerConfig().getAutomaticMappingsUpdating()) {
-                    Granite.instance.getLogger().info("Querying Granite for updates");
+                if (Granite.getInstance().getServerConfig().getAutomaticMappingsUpdating()) {
+                    Granite.getInstance().getLogger().info("Querying Granite for updates");
                     if (!mappingsFile.exists()) {
-                        Granite.instance.getLogger().warn("Could not find mappings.json");
+                        Granite.getInstance().getLogger().warn("Could not find mappings.json");
                         downloadMappings(mappingsFile, url, req);
-                    } else if (!Objects.equals(req.eTag(), Granite.instance.getServerConfig().getLatestMappingsEtag())) {
-                        Granite.instance.getLogger().info("Update found");
+                    } else if (!Objects.equals(req.eTag(), Granite.getInstance().getServerConfig().getLatestMappingsEtag())) {
+                        Granite.getInstance().getLogger().info("Update found");
                         downloadMappings(mappingsFile, url, req);
                     }
                 }
             } catch (HttpRequest.HttpRequestException e) {
-                Granite.instance.getLogger().warn("Could not reach Granite mappings, falling back to local");
+                Granite.getInstance().getLogger().warn("Could not reach Granite mappings, falling back to local");
 
                 if (!mappingsFile.exists()) {
-                    Granite.instance.getLogger()
+                    Granite.getInstance().getLogger()
                             .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
                     Throwables.propagate(e);
                 } else {

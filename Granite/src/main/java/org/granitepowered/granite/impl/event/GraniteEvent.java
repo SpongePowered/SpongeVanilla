@@ -26,10 +26,11 @@ package org.granitepowered.granite.impl.event;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.event.GameEvent;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.callback.CallbackList;
 
-public class GraniteEvent implements Event {
+public class GraniteEvent implements Event, GameEvent {
 
     public boolean isModifiable;
     public boolean isCancellable;
@@ -64,7 +65,8 @@ public class GraniteEvent implements Event {
         this.cancelled = cancel;
     }
 
+    @Override
     public Game getGame() {
-        return Granite.getInstance().getServer();
+        return Granite.getInstance();
     }
 }

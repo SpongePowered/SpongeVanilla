@@ -33,14 +33,14 @@ import org.granitepowered.granite.impl.service.event.GraniteEventManager;
 import org.granitepowered.granite.impl.service.scheduler.GraniteScheduler;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.service.scheduler.Scheduler;
 
-import java.io.File;
-
 import javax.inject.Provider;
+import java.io.File;
 
 public class GraniteGuiceModule extends AbstractModule {
 
@@ -50,7 +50,8 @@ public class GraniteGuiceModule extends AbstractModule {
 
         bind(Granite.class).in(Scopes.SINGLETON);
 
-        bind(Game.class).toProvider(GraniteServerProvider.class).in(Scopes.SINGLETON);
+        bind(Game.class).toProvider(GraniteProvider.class).in(Scopes.SINGLETON);
+        bind(Server.class).toProvider(GraniteServerProvider.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);
         bind(GameRegistry.class).to(GraniteGameRegistry.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(GraniteEventManager.class).in(Scopes.SINGLETON);
@@ -59,14 +60,23 @@ public class GraniteGuiceModule extends AbstractModule {
     }
 
     /**
-     * Provides GraniteServer. This is used instead of <code>to(GraniteServer.class)</code>
+     * Provides Granite. This is used instead of <code>to(Granite.class)</code>
      * because otherwise it would be immediately loaded by Guice and then class rewriting
      * would fail.
      */
-    private static class GraniteServerProvider implements Provider<Game> {
+    private static class GraniteProvider implements Provider<Game> {
 
         @Override
         public Game get() {
+            return new Granite();
+        }
+
+    }
+
+    private static class GraniteServerProvider implements Provider<Server> {
+
+        @Override
+        public Server get() {
             return new GraniteServer();
         }
 

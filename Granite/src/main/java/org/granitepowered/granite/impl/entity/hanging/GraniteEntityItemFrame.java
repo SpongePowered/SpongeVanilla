@@ -51,7 +51,7 @@ public class GraniteEntityItemFrame extends GraniteEntityHanging<MCEntityItemFra
 
     @Override
     public Rotation getItemRotation() {
-        return Granite.instance.getGameRegistry().rotations.get(obj.fieldGet$dataWatcher().getWatchedObject(9).fieldGet$watchedObject());
+        return Granite.getInstance().getRegistry().getRotationFromDegree((int) obj.fieldGet$dataWatcher().getWatchedObject(9).fieldGet$watchedObject()).get();
     }
 
     @Override

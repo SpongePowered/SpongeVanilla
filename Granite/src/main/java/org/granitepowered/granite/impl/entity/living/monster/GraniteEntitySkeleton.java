@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.entity.living.monster;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntitySkeleton;
 import org.granitepowered.granite.util.MinecraftUtils;
@@ -46,7 +45,8 @@ public class GraniteEntitySkeleton extends GraniteEntityMonster<MCEntitySkeleton
 
     @Override
     public SkeletonType getSkeletonType() {
-        return Granite.instance.getGameRegistry().skeletonTypes.get(obj.fieldGet$dataWatcher().getWatchedObject(13).fieldGet$watchedObject());
+        //return Granite.getInstance().getRegistry().skeletonTypes.get(obj.fieldGet$dataWatcher().getWatchedObject(13).fieldGet$watchedObject());
+        throw new NotImplementedException("");
     }
 
     @Override

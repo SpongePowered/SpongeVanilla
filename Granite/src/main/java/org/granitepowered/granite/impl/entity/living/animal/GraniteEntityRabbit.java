@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.animal;
 
-import org.granitepowered.granite.Granite;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityRabbit;
 import org.spongepowered.api.entity.living.animal.Rabbit;
@@ -38,7 +38,8 @@ public class GraniteEntityRabbit extends GraniteEntityAnimal<MCEntityRabbit> imp
 
     @Override
     public RabbitType getRabbitType() {
-        return Granite.instance.getGameRegistry().rabbitTypes.get(obj.fieldGet$dataWatcher().getWatchedObject(18).fieldGet$watchedObject());
+        //return Granite.instance.getGameRegistry().rabbitTypes.get(obj.fieldGet$dataWatcher().getWatchedObject(18).fieldGet$watchedObject());
+        throw new NotImplementedException("");
     }
 
     @Override

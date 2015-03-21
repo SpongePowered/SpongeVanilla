@@ -25,6 +25,7 @@ package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.*;
+import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerJoinEvent;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
@@ -61,7 +62,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
         MCEntityPlayerMP player = (MCEntityPlayerMP) info.getArguments()[1];
 
         MCGameProfile newProfile = player.fieldGet$gameProfile();
-        MCGameProfile oldProfile = Granite.getInstance().getServer().obj.fieldGet$playerCache().getProfileByUUID(newProfile.fieldGet$id());
+        MCGameProfile oldProfile = ((GraniteServer) Granite.getInstance().getServer().get()).obj.fieldGet$playerCache().getProfileByUUID(newProfile.fieldGet$id());
 
         String oldName = oldProfile == null ? newProfile.fieldGet$name() : oldProfile.fieldGet$name();
 
@@ -77,7 +78,7 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
         }
 
         GranitePlayerJoinEvent event = new GranitePlayerJoinEvent((GranitePlayer) wrap(player), joinMessage);
-        Granite.getInstance().getServer().getEventManager().post(event);
+        Granite.getInstance().getEventManager().post(event);
 
         this.joinMessage.set(MinecraftUtils.graniteToMinecraftChatComponent(event.getJoinMessage()));
         return info.callback(info.getArguments()[0], info.getArguments()[1]);

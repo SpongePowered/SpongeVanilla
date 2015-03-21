@@ -80,7 +80,7 @@ public class GraniteEntityItem extends GraniteEntity<MCEntityItem> implements It
     @Override
     public Optional<User> getThrower() {
         // TODO: make get for offline player
-        return Optional.<User>fromNullable(Granite.getInstance().getServer().getPlayer(obj.fieldGet$thrower()).orNull());
+        return Optional.<User>fromNullable(Granite.getInstance().getServer().get().getPlayer(obj.fieldGet$thrower()).orNull());
     }
 
     @Override

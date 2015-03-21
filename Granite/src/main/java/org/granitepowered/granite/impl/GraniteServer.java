@@ -23,14 +23,11 @@
 
 package org.granitepowered.granite.impl;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
@@ -39,20 +36,10 @@ import org.granitepowered.granite.mc.MCServer;
 import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.util.MinecraftUtils;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.MinecraftVersion;
-import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.net.ChannelListener;
 import org.spongepowered.api.net.ChannelRegistrationException;
-import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.service.command.CommandService;
-import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
-import org.spongepowered.api.service.scheduler.SynchronousScheduler;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.World;
@@ -60,80 +47,17 @@ import org.spongepowered.api.world.gen.WorldGenerator;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-public class GraniteServer extends Composite<MCServer> implements Game, Server {
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-    public static String version;
+public class GraniteServer extends Composite<MCServer> implements Server {
+
+    static String version;
 
     public GraniteServer() {
         super(Mappings.getClass("DedicatedServer"), new Class[]{File.class}, new File("worlds/"));
         obj.startServerThread();
-    }
-
-    @Override
-    public Platform getPlatform() {
-        return Platform.SERVER;
-    }
-
-    @Override
-    public Optional<Server> getServer() {
-        return Optional.of((Server) this);
-    }
-
-    @Override
-    public PluginManager getPluginManager() {
-        return Granite.instance.getPluginManager();
-    }
-
-    @Override
-    public EventManager getEventManager() {
-        return Granite.instance.getEventManager();
-    }
-
-    @Override
-    public GameRegistry getRegistry() {
-        return Granite.instance.getGameRegistry();
-    }
-
-    @Override
-    public ServiceManager getServiceManager() {
-        return Granite.instance.getServiceManager();
-    }
-
-    @Override
-    public SynchronousScheduler getSyncScheduler() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public AsynchronousScheduler getAsyncScheduler() {
-        throw new NotImplementedException("");
-    }
-
-    @Override
-    public CommandService getCommandDispatcher() {
-        return Granite.instance.getCommandService();
-    }
-
-    @Override
-    public String getApiVersion() {
-        return "Sponge" + Granite.instance.getApiVersion();
-    }
-
-    @Override
-    public String getImplementationVersion() {
-        return "Granite " + Granite.instance.getVersion();
-    }
-
-    @Override
-    public MinecraftVersion getMinecraftVersion() {
-        return Granite.instance.getMinecraftVersion();
     }
 
     @Override

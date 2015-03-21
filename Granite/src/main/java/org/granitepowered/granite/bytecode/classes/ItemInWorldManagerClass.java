@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -43,6 +41,8 @@ import org.granitepowered.granite.util.Instantiator;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 public class ItemInWorldManagerClass extends BytecodeClass {
 
     public ItemInWorldManagerClass() {
@@ -60,7 +60,7 @@ public class ItemInWorldManagerClass extends BytecodeClass {
         GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
 
         GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
-        Granite.getInstance().getServer().getEventManager().post(event);
+        Granite.getInstance().getEventManager().post(event);
 
         if (!event.isCancelled()) {
             return info.callback(info.getArguments());

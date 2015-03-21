@@ -194,7 +194,7 @@ public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
 
         @Override
         public Material itemType(ItemType item) {
-            this.item = Granite.getInstance().getGameRegistry().getItemBuilder().itemType(item).build();
+            this.item = Granite.getInstance().getRegistry().getItemBuilder().itemType(item).build();
             return this;
         }
 

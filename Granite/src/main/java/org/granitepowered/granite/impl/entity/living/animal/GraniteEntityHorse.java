@@ -25,7 +25,6 @@ package org.granitepowered.granite.impl.entity.living.animal;
 
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityHorse;
 import org.granitepowered.granite.mc.MCItemStack;
@@ -47,8 +46,8 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public HorseStyle getStyle() {
-        return Granite.getInstance().getGameRegistry().horseStyles
-                .get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
+        //return Granite.getInstance().getGameRegistry().horseStyles.get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -58,8 +57,8 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public HorseColor getColor() {
-        return Granite.getInstance().getGameRegistry().horseColors
-                .get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
+        //return Granite.getInstance().getGameRegistry().horseColors.get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -69,7 +68,8 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public HorseVariant getVariant() {
-        return Granite.getInstance().getGameRegistry().horseVariants.get(obj.fieldGet$dataWatcher().getWatchedObject(19).fieldGet$watchedObject());
+        //return Granite.getInstance().getGameRegistry().horseVariants.get(obj.fieldGet$dataWatcher().getWatchedObject(19).fieldGet$watchedObject());
+        throw new NotImplementedException("");
     }
 
     @Override

@@ -166,7 +166,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerArts() {
-        Granite.instance.getLogger().info("Registering Arts");
+        Granite.getInstance().getLogger().info("Registering Arts");
 
         List<MCEnumArt> mcEnumArts = Arrays.asList((MCEnumArt[]) Mappings.getClass("EnumArt").getEnumConstants());
         for (Field field : Arts.class.getDeclaredFields()) {
@@ -191,7 +191,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerBannerPatternShapes() {
-        Granite.instance.getLogger().info("Registering Banner Shapes");
+        Granite.getInstance().getLogger().info("Registering Banner Shapes");
 
         Object[] enums = Mappings.getClass("EnumBannerPattern").getEnumConstants();
         Field[] fields = BannerPatternShapes.class.getFields();
@@ -212,7 +212,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerBiomes() {
-        Granite.instance.getLogger().info("Registering Biomes");
+        Granite.getInstance().getLogger().info("Registering Biomes");
 
         try {
             Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
@@ -257,7 +257,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerBlocks() {
-        Granite.instance.getLogger().info("Registering Blocks");
+        Granite.getInstance().getLogger().info("Registering Blocks");
 
         for (Field field : BlockTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -280,7 +280,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerDimensions() {
-        Granite.instance.getLogger().info("Registering Dimensions");
+        Granite.getInstance().getLogger().info("Registering Dimensions");
 
         for (Field field : DimensionTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -315,7 +315,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerDyeColors() {
-        Granite.instance.getLogger().info("Registering Dye Colors");
+        Granite.getInstance().getLogger().info("Registering Dye Colors");
 
         Object[] enums = Mappings.getClass("EnumDyeColor").getEnumConstants();
         Field[] fields = DyeColors.class.getFields();
@@ -336,7 +336,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerEnchantments() {
-        Granite.instance.getLogger().info("Registering Enchantments");
+        Granite.getInstance().getLogger().info("Registering Enchantments");
 
         for (Field field : Enchantments.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -360,7 +360,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerGameModes() {
-        Granite.instance.getLogger().info("Registering default GameModes");
+        Granite.getInstance().getLogger().info("Registering default GameModes");
 
         for (Field field : GameModes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -382,7 +382,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerGameRules() {
-        Granite.instance.getLogger().info("Registering default GameRules");
+        Granite.getInstance().getLogger().info("Registering default GameRules");
         MCGameRules gameRules = Instantiator.get().newGameRules();
         String[] rules = gameRules.getRules();
         for (String rule : rules) {
@@ -394,7 +394,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerHorseColors() {
-        Granite.instance.getLogger().info("Registering Horse Colors");
+        Granite.getInstance().getLogger().info("Registering Horse Colors");
 
         for (int i = 0; i < HorseColors.class.getDeclaredFields().length; i++) {
             Field field = HorseColors.class.getDeclaredFields()[i];
@@ -415,7 +415,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerHorseStyles() {
-        Granite.instance.getLogger().info("Registering Horse Styles");
+        Granite.getInstance().getLogger().info("Registering Horse Styles");
 
         for (int i = 0; i < HorseStyles.class.getDeclaredFields().length; i++) {
             Field field = HorseStyles.class.getDeclaredFields()[i];
@@ -436,7 +436,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerHorseVariants() {
-        Granite.instance.getLogger().info("Registering Horse Variants");
+        Granite.getInstance().getLogger().info("Registering Horse Variants");
 
         for (int i = 0; i < HorseVariants.class.getDeclaredFields().length; i++) {
             Field field = HorseVariants.class.getDeclaredFields()[i];
@@ -457,7 +457,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerItems() {
-        Granite.instance.getLogger().info("Registering Items");
+        Granite.getInstance().getLogger().info("Registering Items");
 
         for (Field field : ItemTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -480,7 +480,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerNotePitches() {
-        Granite.instance.getLogger().info("Registering Ocelots");
+        Granite.getInstance().getLogger().info("Registering Ocelots");
 
         for (int i = 0; i < NotePitches.class.getDeclaredFields().length; i++) {
             Field field = NotePitches.class.getDeclaredFields()[i];
@@ -501,7 +501,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerOcelots() {
-        Granite.instance.getLogger().info("Registering Ocelots");
+        Granite.getInstance().getLogger().info("Registering Ocelots");
 
         for (int i = 0; i < OcelotTypes.class.getDeclaredFields().length; i++) {
             Field field = OcelotTypes.class.getDeclaredFields()[i];
@@ -522,7 +522,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerParticleTypes() {
-        Granite.instance.getLogger().info("Registering ParticleTypes");
+        Granite.getInstance().getLogger().info("Registering ParticleTypes");
 
         List<GraniteParticleType> types = new ArrayList<>();
         types.add(new GraniteParticleType("EXPLOSION_NORMAL", true));
@@ -588,7 +588,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerPotionEffects() {
-        Granite.instance.getLogger().info("Registering PotionEffects");
+        Granite.getInstance().getLogger().info("Registering PotionEffects");
 
         try {
             Class potionClass = Mappings.getClass("Potion");
@@ -632,7 +632,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerProfessionsAndCareers() {
-        Granite.instance.getLogger().info("Registering Professions and Careers");
+        Granite.getInstance().getLogger().info("Registering Professions and Careers");
 
         for (int i = 0; i < Professions.class.getDeclaredFields().length; i++) {
             Field field = Professions.class.getDeclaredFields()[i];
@@ -712,7 +712,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerRabbits() {
-        Granite.instance.getLogger().info("Registering Rabbits");
+        Granite.getInstance().getLogger().info("Registering Rabbits");
 
         for (int i = 0; i < RabbitTypes.class.getDeclaredFields().length; i++) {
             Field field = RabbitTypes.class.getDeclaredFields()[i];
@@ -733,7 +733,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerRotations() {
-        Granite.instance.getLogger().info("Registering Rotations");
+        Granite.getInstance().getLogger().info("Registering Rotations");
 
         int angle = 0;
         Field[] fields = Rotations.class.getDeclaredFields();
@@ -756,7 +756,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerSkeletons() {
-        Granite.instance.getLogger().info("Registering Skeletons");
+        Granite.getInstance().getLogger().info("Registering Skeletons");
 
         for (int i = 0; i < SkeletonTypes.class.getDeclaredFields().length; i++) {
             Field field = SkeletonTypes.class.getDeclaredFields()[i];
@@ -777,7 +777,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerSkullTypes() {
-        Granite.instance.getLogger().info("Registering Skulls");
+        Granite.getInstance().getLogger().info("Registering Skulls");
 
         for (int i = 0; i < SkullTypes.class.getDeclaredFields().length; i++) {
             Field field = SkullTypes.class.getDeclaredFields()[i];

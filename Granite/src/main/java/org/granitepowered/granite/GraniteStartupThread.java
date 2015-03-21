@@ -33,17 +33,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
 import org.granitepowered.granite.bytecode.classes.*;
-import org.granitepowered.granite.impl.GraniteMinecraftVersion;
-import org.granitepowered.granite.impl.GraniteServer;
 import org.granitepowered.granite.impl.event.state.*;
 import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
+import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.effect.particle.ParticleTypes;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.text.action.GraniteTextActionFactory;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
@@ -89,8 +87,8 @@ public class GraniteStartupThread extends Thread {
 
     public void run() {
         Injector injector = Guice.createInjector(new GraniteGuiceModule());
-        Granite.instance = injector.getInstance(Granite.class);
-        Granite.instance.logger = LoggerFactory.getLogger("Granite");
+        Granite.setInstance(injector.getInstance(Granite.class));
+        Granite.getInstance().setLogger(LoggerFactory.getLogger("Granite"));
 
         try {
             Properties versionProp = new Properties();
@@ -99,12 +97,12 @@ public class GraniteStartupThread extends Thread {
                 try {
                     versionProp.load(versionIn);
 
-                    serverVersion = versionProp.getProperty("server", "UNKNOWN");
-                    apiVersion = versionProp.getProperty("api", "UNKNOWN");
+                    this.serverVersion = versionProp.getProperty("server", "UNKNOWN");
+                    this.apiVersion = versionProp.getProperty("api", "UNKNOWN");
 
                     String build = versionProp.getProperty("build");
                     if (build != null && !build.equals("NA")) {
-                        buildNumber = build;
+                        this.buildNumber = build;
                     }
                 } catch (IOException ignored) {
                 } finally {
@@ -114,21 +112,21 @@ public class GraniteStartupThread extends Thread {
                     }
                 }
             }
-            Granite.instance.getLogger()
-                    .info("Starting Granite version " + serverVersion + " build " + buildNumber + " implementing API version " + apiVersion);
+            Granite.getInstance().getLogger()
+                    .info("Starting Granite implementationVersion " + this.serverVersion + " build " + this.buildNumber + " implementing API implementationVersion " + this.apiVersion);
 
-            Granite.instance.version = serverVersion;
-            Granite.instance.apiVersion = apiVersion;
+            Granite.getInstance().setImplementationVersion(this.serverVersion);
+            Granite.getInstance().setApiVersion(this.apiVersion);
 
-            Granite.instance.serverConfig = new ServerConfig();
-            Granite.instance.classPool = ClassPool.getDefault();
+            Granite.getInstance().setServerConfig(new ServerConfig());
+            Granite.getInstance().setClassPool(ClassPool.getDefault());
 
-            Granite.instance.eventManager.post(new GraniteConstructionEvent());
+            Granite.getInstance().getEventManager().post(new GraniteConstructionEvent());
 
-            Granite.instance.classesDir = new File("classes/");
-            Granite.instance.classesDir.mkdirs();
+            Granite.getInstance().setClassesDir(new File("classes/"));
+            Granite.getInstance().getClassesDir().mkdirs();
 
-            Granite.instance.createGson();
+            Granite.getInstance().createGson();
 
             loadMinecraftToClassPool();
 
@@ -142,48 +140,48 @@ public class GraniteStartupThread extends Thread {
 
             postLoadClasses();
 
-            Granite.instance.gameRegistry.register();
+            //TODO: Create new Registering Class with hard coded sounds (even though i hate hard coding soo uch);
 
             injectSpongeFields();
 
-            Granite.instance.pluginManager.loadPlugins();
+            ((GranitePluginManager) Granite.getInstance().getPluginManager()).loadPlugins();
 
-            Granite.instance.server = (GraniteServer) injector.getInstance(Game.class);
+            Granite.getInstance().setServer(injector.getInstance(Server.class));
 
-            Granite.instance.eventManager.post(new GranitePreInitializationEvent());
-            Granite.instance.eventManager.post(new GraniteInitializationEvent());
-            Granite.instance.eventManager.post(new GranitePostInitializationEvent());
-            Granite.instance.eventManager.post(new GraniteLoadCompleteEvent());
+            Granite.getInstance().getEventManager().post(new GranitePreInitializationEvent());
+            Granite.getInstance().getEventManager().post(new GraniteInitializationEvent());
+            Granite.getInstance().getEventManager().post(new GranitePostInitializationEvent());
+            Granite.getInstance().getEventManager().post(new GraniteLoadCompleteEvent());
 
             Date date = new Date();
             String day = new SimpleDateFormat("dd").format(date);
             String month = new SimpleDateFormat("MM").format(date);
             String year = new SimpleDateFormat("yyyy").format(date);
             if (Objects.equals(day + month, "0101")) {
-                Granite.instance.getLogger().info("HAPPY NEW YEAR!");
+                Granite.getInstance().getLogger().info("HAPPY NEW YEAR!");
             }
             if (Objects.equals(day + month, "2208")) {
-                Granite.instance.getLogger().info("Happy Birthday Voltasalt!");
+                Granite.getInstance().getLogger().info("Happy Birthday Voltasalt!");
             }
             if (Objects.equals(day + month, "0709")) {
                 String start = "2014";
-                Granite.instance.getLogger()
+                Granite.getInstance().getLogger()
                         .info("Happy Birthday Granite! Granite is " + Integer.toString(Integer.parseInt(year) - Integer.parseInt(start)) + " today!");
             }
             if (Objects.equals(day + month, "2310")) {
-                Granite.instance.getLogger().info("Happy Birthday AzureusNation!");
+                Granite.getInstance().getLogger().info("Happy Birthday AzureusNation!");
             }
             if (Objects.equals(day + month, "3110")) {
-                Granite.instance.getLogger().info("Happy Halloween!");
+                Granite.getInstance().getLogger().info("Happy Halloween!");
             }
             if (Objects.equals(day + month, "2412")) {
-                Granite.instance.getLogger().info("Santa is getting ready!");
+                Granite.getInstance().getLogger().info("Santa is getting ready!");
             }
             if (Objects.equals(day + month, "2512")) {
-                Granite.instance.getLogger().info("Merry Christmas/Happy Holidays!");
+                Granite.getInstance().getLogger().info("Merry Christmas/Happy Holidays!");
             }
             if (Objects.equals(day + month, "3112")) {
-                Granite.instance.getLogger().info("New Years Eve. Make way for " + Integer.toString(Integer.parseInt(year) + 1) + "!");
+                Granite.getInstance().getLogger().info("New Years Eve. Make way for " + Integer.toString(Integer.parseInt(year) + 1) + "!");
             }
         } catch (Throwable t) {
             Granite.error("We did a REALLY BIG boo-boo :'(", t);
@@ -195,7 +193,7 @@ public class GraniteStartupThread extends Thread {
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
 
-            method.invoke(ClassLoader.getSystemClassLoader(), Granite.instance.getClassesDir().toURI().toURL());
+            method.invoke(ClassLoader.getSystemClassLoader(), Granite.getInstance().getClassesDir().toURI().toURL());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
             Throwables.propagate(e);
         }
@@ -206,7 +204,7 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void injectSpongeFields() {
-        Granite.instance.getLogger().info("Injecting Sponge fields");
+        Granite.getInstance().getLogger().info("Injecting Sponge fields");
 
         injectConstant(Messages.class, "factory", new GraniteMessageFactory());
         injectConstant(TextStyles.class, "factory", new GraniteTextFormatFactory());
@@ -216,16 +214,14 @@ public class GraniteStartupThread extends Thread {
         injectConstant(Titles.class, "factory", new GraniteTitleFactory());
 
         injectEnumConstants(TextColors.class, GraniteTextColor.class);
+        injectEnumConstants(ChatTypes.class, GraniteChatType.class);
 
         Map<String, TextStyle.Base> styles = new HashMap<>();
         for (Map.Entry<String, TextStyle.Base> entry : GraniteTextFormatFactory.styles.entrySet()) {
             styles.put(entry.getKey().toUpperCase(), entry.getValue());
         }
-
         injectConstants(TextStyles.class, styles);
-        injectEnumConstants(ChatTypes.class, GraniteChatType.class);
-
-        injectConstants(ParticleTypes.class, Granite.getInstance().getGameRegistry().particleTypes);
+        //injectConstants(ParticleTypes.class, Granite.getInstance().getRegistry().particleTypes);
     }
 
     private void injectEnumConstants(Class<?> destination, Class<? extends Enum> source) {
@@ -252,7 +248,7 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void modifyBytecode() {
-        File buildNumberFile = new File(Granite.instance.getClassesDir(), "buildnumber.txt");
+        File buildNumberFile = new File(Granite.getInstance().getClassesDir(), "buildnumber.txt");
         try {
             modifier = new BytecodeModifier();
 
@@ -281,26 +277,26 @@ public class GraniteStartupThread extends Thread {
 
             if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || !Objects
                     .equals(FileUtils.readFileToString(buildNumberFile), buildNumber)) {
-                Granite.instance.getLogger().info("Modifying bytecode");
+                Granite.getInstance().getLogger().info("Modifying bytecode");
 
-                if (Granite.instance.classesDir.exists()) {
-                    File oldClassesDir = new File(Granite.instance.classesDir.getParentFile(), Granite.instance.classesDir.getName() + "_old");
+                if (Granite.getInstance().getClassesDir().exists()) {
+                    File oldClassesDir = new File(Granite.getInstance().getClassesDir().getParentFile(), Granite.getInstance().getClassesDir().getName() + "_old");
 
                     if (oldClassesDir.exists()) {
                         forceDeleteFolder(oldClassesDir);
                     }
 
-                    FileUtils.moveDirectory(Granite.instance.classesDir, oldClassesDir);
+                    FileUtils.moveDirectory(Granite.getInstance().getClassesDir(), oldClassesDir);
                     forceDeleteFolder(oldClassesDir);
                 }
 
                 try {
-                    JarFile file = new JarFile("minecraft_server." + Granite.instance.getMinecraftVersion().getName().split(" ")[1] + ".jar");
+                    JarFile file = new JarFile("minecraft_server." + Granite.getInstance().getMinecraftVersion().getName().split(" ")[1] + ".jar");
                     Enumeration<JarEntry> entries = file.entries();
                     while (entries.hasMoreElements()) {
                         JarEntry entry = entries.nextElement();
 
-                        File f = new File(Granite.instance.getClassesDir() + java.io.File.separator + entry.getName());
+                        File f = new File(Granite.getInstance().getClassesDir() + java.io.File.separator + entry.getName());
 
                         if (entry.isDirectory()) {
                             f.mkdirs();
@@ -318,7 +314,7 @@ public class GraniteStartupThread extends Thread {
                     Throwables.propagate(e);
                 }
             } else {
-                Granite.instance.getLogger().info("Found pre-modified bytecode in classes/, loading that");
+                Granite.getInstance().getLogger().info("Found pre-modified bytecode in classes/, loading that");
             }
         } catch (IOException e) {
             Throwables.propagate(e);
@@ -326,7 +322,7 @@ public class GraniteStartupThread extends Thread {
     }
 
     private void bootstrap() {
-        Granite.instance.getLogger().info("Bootstrapping Minecraft");
+        Granite.getInstance().getLogger().info("Bootstrapping Minecraft");
 
         Mappings.invokeStatic("Bootstrap", "register");
     }
@@ -336,22 +332,24 @@ public class GraniteStartupThread extends Thread {
         File minecraftJar = new File("minecraft_server." + version + ".jar");
 
         if (!minecraftJar.exists()) {
-            Granite.instance.getLogger().warn("Could not find Minecraft .jar, downloading");
+            Granite.getInstance().getLogger().warn("Could not find Minecraft .jar, downloading");
             HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/" + version + "/minecraft_server." + version + ".jar");
             if (req.code() == 404) {
                 throw new RuntimeException("404 error whilst trying to download Minecraft");
             } else if (req.code() == 200) {
                 req.receive(minecraftJar);
-                Granite.instance.getLogger().info("Minecraft Downloaded");
+                Granite.getInstance().getLogger().info("Minecraft Downloaded");
             }
         }
 
         String minecraftVersion = minecraftJar.getName().replace("minecraft_server.", "Minecraft ").replace(".jar", "");
-        Granite.instance.minecraftVersion = new GraniteMinecraftVersion(minecraftVersion, 47);
-        Granite.instance.getLogger().info("Loading " + minecraftVersion);
+
+        //TODO: Register minecraft version after minecraft has loaded so there no linger needs to be any hard coded information.
+
+        Granite.getInstance().getLogger().info("Loading " + minecraftVersion);
 
         try {
-            Granite.getInstance().classPool.insertClassPath(minecraftJar.getName());
+            Granite.getInstance().getClassPool().insertClassPath(minecraftJar.getName());
         } catch (NotFoundException e) {
             Throwables.propagate(e);
         }
@@ -362,7 +360,7 @@ public class GraniteStartupThread extends Thread {
             FileUtils.deleteDirectory(folder);
         } catch (IOException e) {
             if (e.getMessage().startsWith("Unable to delete directory")) {
-                Granite.instance.getLogger().info("Unable to delete old classes, retrying in one second");
+                Granite.getInstance().getLogger().info("Unable to delete old classes, retrying in one second");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {

@@ -40,14 +40,14 @@ public class GraniteEntityEnderman extends GraniteEntityMonster<MCEntityEnderman
 
     @Override
     public Optional<BlockState> getCarriedBlock() {
-        GraniteBlockType blockType = (GraniteBlockType) Granite.instance.getGameRegistry().blockTypes.get("air");
+        GraniteBlockType blockType = (GraniteBlockType) Granite.getInstance().getRegistry().getBlock("air").get();
         return Optional.fromNullable((BlockState) MinecraftUtils
                 .wrap(blockType.obj.getStateFromId((short) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 65535)));
     }
 
     @Override
     public void setCarriedBlock(BlockState carriedBlock) {
-        GraniteBlockType blockType = (GraniteBlockType) Granite.instance.getGameRegistry().blockTypes.get("air");
+        GraniteBlockType blockType = (GraniteBlockType) Granite.getInstance().getRegistry().getBlock("air").get();
         obj.fieldGet$dataWatcher().updateObject(16, (short) (
                 blockType.obj.getStateId(MinecraftUtils.unwrap((GraniteBlockState) carriedBlock).fieldGet$block().fieldGet$defaultBlockState())
                 & 65535));

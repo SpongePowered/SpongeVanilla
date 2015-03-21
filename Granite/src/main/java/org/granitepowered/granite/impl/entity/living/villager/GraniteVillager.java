@@ -24,9 +24,7 @@
 package org.granitepowered.granite.impl.entity.living.villager;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityAgeable;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.item.merchant.GraniteTradeOffer;
@@ -37,7 +35,6 @@ import org.granitepowered.granite.mc.MCMerchantRecipe;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.villager.Career;
-import org.spongepowered.api.entity.living.villager.Profession;
 import org.spongepowered.api.entity.living.villager.Villager;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.types.CarriedInventory;
@@ -70,8 +67,8 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
     // TODO: Make Tidier and smaller
     @Override
     public Career getCareer() {
-        int professionId = Math.max((int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() % 5, 0);
-        List<Profession> professions = ImmutableList.copyOf(Granite.instance.getGameRegistry().professions.values());
+        /*int professionId = Math.max((int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() % 5, 0);
+        List<Profession> professions = ImmutableList.copyOf(Granite.getInstance().getRegistry().professions.values());
         Career villagerCareer = null;
         for (Profession profession : professions) {
             if (((GraniteMeta) profession).getType() == professionId) {
@@ -83,7 +80,8 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
                 }
             }
         }
-        return villagerCareer;
+        return villagerCareer;*/
+        throw new NotImplementedException("");
     }
 
     @Override

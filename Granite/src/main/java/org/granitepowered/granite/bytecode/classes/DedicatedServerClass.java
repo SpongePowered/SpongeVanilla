@@ -24,18 +24,8 @@
 package org.granitepowered.granite.bytecode.classes;
 
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.bytecode.BytecodeClass;
-import org.granitepowered.granite.bytecode.CallbackInfo;
-import org.granitepowered.granite.bytecode.CodeInsertionMode;
-import org.granitepowered.granite.bytecode.Insert;
-import org.granitepowered.granite.bytecode.Position;
-import org.granitepowered.granite.bytecode.Proxy;
-import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
-import org.granitepowered.granite.impl.event.state.GraniteServerAboutToStartEvent;
-import org.granitepowered.granite.impl.event.state.GraniteServerStartedEvent;
-import org.granitepowered.granite.impl.event.state.GraniteServerStartingEvent;
-import org.granitepowered.granite.impl.event.state.GraniteServerStoppedEvent;
-import org.granitepowered.granite.impl.event.state.GraniteServerStoppingEvent;
+import org.granitepowered.granite.bytecode.*;
+import org.granitepowered.granite.impl.event.state.*;
 
 public class DedicatedServerClass extends BytecodeClass {
 
@@ -76,7 +66,8 @@ public class DedicatedServerClass extends BytecodeClass {
 
     @Proxy(methodName = "tick")
     public void tick(ProxyCallbackInfo info) throws Throwable {
-        Granite.getInstance().getScheduler().tick();
+        // TODO: This is no longer know as a Scheduler and there are now 2 types of schedulers.
+        //Granite.getInstance().getScheduler().tick();
 
         info.callback();
     }

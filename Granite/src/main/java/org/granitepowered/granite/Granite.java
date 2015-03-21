@@ -23,16 +23,13 @@
 
 package org.granitepowered.granite;
 
+import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javassist.ClassPool;
-import org.granitepowered.granite.impl.GraniteGameRegistry;
-import org.granitepowered.granite.impl.GraniteServer;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.granitepowered.granite.impl.service.event.GraniteEventManager;
-import org.granitepowered.granite.impl.service.scheduler.GraniteScheduler;
 import org.granitepowered.granite.impl.text.action.GraniteTextAction;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.mappings.Mappings;
@@ -41,55 +38,67 @@ import org.granitepowered.granite.util.json.ItemStackJson;
 import org.granitepowered.granite.util.json.MessageJson;
 import org.granitepowered.granite.util.json.TextActionJson;
 import org.slf4j.Logger;
-import org.spongepowered.api.MinecraftVersion;
+import org.spongepowered.api.*;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
+import org.spongepowered.api.service.scheduler.Scheduler;
+import org.spongepowered.api.service.scheduler.SynchronousScheduler;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+@NonnullByDefault
+public class Granite implements Game {
 
-public class Granite {
+    private static Granite instance;
 
-    public static Granite instance;
-    final GranitePluginManager pluginManager;
-    final GraniteGameRegistry gameRegistry;
-    final GraniteEventManager eventManager;
-    final CommandService commandService;
-    final ServiceManager serviceManager;
-    final GraniteScheduler scheduler;
+    private PluginManager pluginManager;
+    private GameRegistry gameRegistry;
+    private EventManager eventManager;
+    private CommandService commandService;
+    private ServiceManager serviceManager;
+    private Scheduler scheduler;
     // Not injected directly; initialization is done after classes are rewritten
-    GraniteServer server;
-    String version;
-    String apiVersion;
-    MinecraftVersion minecraftVersion;
-    ServerConfig serverConfig;
-    ClassPool classPool;
-    Logger logger;
-    Gson gson;
-    File classesDir;
+    private Server server;
+    private String implementationVersion;
+    private String apiVersion;
+    private MinecraftVersion minecraftVersion;
+    private ServerConfig serverConfig;
+    private ClassPool classPool;
+    private Logger logger;
+    private Gson gson;
+    private File classesDir;
+
+    public Granite() {
+
+    }
 
     @Inject
-    public Granite(GranitePluginManager pluginManager,
-                   GraniteGameRegistry gameRegistry,
-                   GraniteEventManager eventManager, GraniteScheduler scheduler) {
+    public Granite(PluginManager pluginManager, GameRegistry gameRegistry, EventManager eventManager, Scheduler scheduler, String implementationVersion) {
         this.pluginManager = pluginManager;
         this.gameRegistry = gameRegistry;
         this.eventManager = eventManager;
         this.scheduler = scheduler;
         this.serviceManager = new SimpleServiceManager(pluginManager);
         this.commandService = new SimpleCommandService(pluginManager);
-        version = "UNKNOWN";
+        this.implementationVersion = implementationVersion;
+        instance = this;
     }
 
     public static Granite getInstance() {
         return instance;
+    }
+
+    public static void setInstance(Granite granite) {
+        instance = granite;
     }
 
     public static void error(String message, Throwable t) {
@@ -123,11 +132,91 @@ public class Granite {
 
         t.setStackTrace(newStackTrace.toArray(new StackTraceElement[newStackTrace.size()]));
 
-        instance.logger.error(message, t);
+        getInstance().getLogger().error(message, t);
     }
 
     public static void error(Throwable t) {
         error("We did a boo-boo :'(", t);
+    }
+
+    @Override
+    public String getApiVersion() {
+        return this.apiVersion;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
+
+    @Override
+    public String getImplementationVersion() {
+        return this.implementationVersion;
+    }
+
+    public void setImplementationVersion(String implementationVersion) {
+        this.implementationVersion = implementationVersion;
+    }
+
+    @Override
+    public MinecraftVersion getMinecraftVersion() {
+        return this.minecraftVersion;
+    }
+
+    @Override
+    public PluginManager getPluginManager() {
+        return this.pluginManager;
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.SERVER;
+    }
+
+    @Override
+    public Optional<Server> getServer() {
+        return Optional.of(this.server);
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+    @Override
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+
+    @Override
+    public GameRegistry getRegistry() {
+        return this.gameRegistry;
+    }
+
+    @Override
+    public ServiceManager getServiceManager() {
+        return this.serviceManager;
+    }
+
+    @Override
+    public SynchronousScheduler getSyncScheduler() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public AsynchronousScheduler getAsyncScheduler() {
+        throw new NotImplementedException("");
+    }
+
+    @Override
+    public CommandService getCommandDispatcher() {
+        return this.commandService;
+    }
+
+    public ServerConfig getServerConfig() {
+        return this.serverConfig;
+    }
+
+    public void setServerConfig(ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
     }
 
     public void createGson() {
@@ -140,36 +229,12 @@ public class Granite {
         gson = builder.create();
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public String getApiVersion() {
-        return apiVersion;
-    }
-
-    public MinecraftVersion getMinecraftVersion() {
-        return minecraftVersion;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public ServerConfig getServerConfig() {
-        return serverConfig;
-    }
-
-    public GraniteGameRegistry getGameRegistry() {
-        return gameRegistry;
-    }
-
     public Logger getLogger() {
         return logger;
     }
 
-    public GraniteServer getServer() {
-        return server;
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 
     public Gson getGson() {
@@ -180,23 +245,15 @@ public class Granite {
         return classPool;
     }
 
+    public void setClassPool(ClassPool classPool) {
+        this.classPool = classPool;
+    }
+
     public File getClassesDir() {
         return classesDir;
     }
 
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    public ServiceManager getServiceManager() {
-        return serviceManager;
-    }
-
-    public CommandService getCommandService() {
-        return commandService;
-    }
-
-    public GraniteScheduler getScheduler() {
-        return scheduler;
+    public void setClassesDir(File classesDir) {
+        this.classesDir = classesDir;
     }
 }
