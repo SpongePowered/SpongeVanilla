@@ -43,7 +43,7 @@ public class GraniteStatusClient extends Composite<MCNetworkManager> implements 
 
     @Override
     public InetSocketAddress getAddress() {
-        return (InetSocketAddress) obj.fieldGet$socketAddress();
+        return (InetSocketAddress) obj.socketAddress;
     }
 
     @Override

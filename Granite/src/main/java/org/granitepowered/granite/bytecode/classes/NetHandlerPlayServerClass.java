@@ -58,7 +58,7 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         processOnServerThread((MCPacket) info.getArguments()[0], info.getCaller());
 
         MCPacketChatMessage packet = (MCPacketChatMessage) info.getArguments()[0];
-        String messageString = packet.fieldGet$message();
+        String messageString = packet.message;
         Message message = Messages.builder(messageString).build();
 
         GranitePlayer p = wrap(info.getCaller().fieldGet$playerEntity());
@@ -76,9 +76,9 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         MCPacketPlayerDigging packet = (MCPacketPlayerDigging) info.getArguments()[0];
         BlockLoc
                 loc =
-                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$position().fieldGet$x(),
-                                                                                 packet.fieldGet$position().fieldGet$y(),
-                                                                                 packet.fieldGet$position().fieldGet$z())));
+                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.position.x,
+                        packet.position.y,
+                        packet.position.z)));
 
         /*GranitePlayerInteractBlockEvent
                 event =
@@ -94,13 +94,13 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         GranitePlayer player = wrap(info.getCaller().fieldGet$playerEntity());
         MCPacketPlayerBlockPlacement packet = (MCPacketPlayerBlockPlacement) info.getArguments()[0];
 
-        Vector3f localHitPoint = new Vector3f(packet.fieldGet$facingX(), packet.fieldGet$facingY(), packet.fieldGet$facingZ());
+        Vector3f localHitPoint = new Vector3f(packet.facingX, packet.facingY, packet.facingZ);
 
         BlockLoc
                 loc =
-                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.fieldGet$position().fieldGet$x(),
-                                                                                 packet.fieldGet$position().fieldGet$y(),
-                                                                                 packet.fieldGet$position().fieldGet$z())));
+                new GraniteBlockLoc(new Location(player.getWorld(), new Vector3d(packet.position.x,
+                        packet.position.y,
+                        packet.position.z)));
         Vector3f globalHitPoint = new Vector3f(loc.getX(), loc.getY(), loc.getZ()).add(localHitPoint);
 
         /*GranitePlayerInteractBlockEvent
@@ -121,8 +121,8 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
         MCPacketPlayer packet = (MCPacketPlayer) info.getArguments()[0];
 
         // If setting position (for some reason MCP doesn't wanna name the field correctly)
-        if (packet.fieldGet$isPosition()) {
-            new_ = new_.add(packet.fieldGet$x(), packet.fieldGet$y(), packet.fieldGet$z());
+        if (packet.isPosition) {
+            new_ = new_.add(packet.x, packet.y, packet.z);
         } else {
             new_ = new_.add(old.getPosition());
         }
@@ -157,6 +157,6 @@ public class NetHandlerPlayServerClass extends BytecodeClass {
     public void processOnServerThread(MCPacket packet, MCNetHandlerPlayServer netHandlerPlayServer) {
         Mappings.invokeStatic(
                 "PacketThreadUtil", "processOnServerThread",
-                packet, netHandlerPlayServer, netHandlerPlayServer.fieldGet$playerEntity().fieldGet$worldObj());
+                packet, netHandlerPlayServer, netHandlerPlayServer.fieldGet$playerEntity().worldObj);
     }
 }

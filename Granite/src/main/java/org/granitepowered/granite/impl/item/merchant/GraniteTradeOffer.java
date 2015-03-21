@@ -38,32 +38,32 @@ public class GraniteTradeOffer extends Composite<MCMerchantRecipe> implements Tr
 
     @Override
     public ItemStack getFirstBuyingItem() {
-        return MinecraftUtils.wrap(obj.fieldGet$firstItemToBuy());
+        return MinecraftUtils.wrap(obj.firstItemToBuy);
     }
 
     @Override
     public boolean hasSecondItem() {
-        return obj.fieldGet$secondItemToBuy() != null;
+        return obj.secondItemToBuy != null;
     }
 
     @Override
     public Optional<ItemStack> getSecondBuyingItem() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.fieldGet$secondItemToBuy()));
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.secondItemToBuy));
     }
 
     @Override
     public ItemStack getSellingItem() {
-        return MinecraftUtils.wrap(obj.fieldGet$itemToSell());
+        return MinecraftUtils.wrap(obj.itemToSell);
     }
 
     @Override
     public int getUses() {
-        return obj.fieldGet$uses();
+        return obj.uses;
     }
 
     @Override
     public int getMaxUses() {
-        return obj.fieldGet$maxUses();
+        return obj.maxUses;
     }
 
     @Override
@@ -73,6 +73,6 @@ public class GraniteTradeOffer extends Composite<MCMerchantRecipe> implements Tr
 
     @Override
     public boolean doesGrantExperience() {
-        return obj.fieldGet$grantExperience();
+        return obj.grantExperience;
     }
 }

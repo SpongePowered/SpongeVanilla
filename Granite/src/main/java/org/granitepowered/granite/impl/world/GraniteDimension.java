@@ -42,7 +42,7 @@ public class GraniteDimension extends Composite<MCWorldProvider> implements Dime
 
     @Override
     public int getDimensionId() {
-        return obj.fieldGet$dimensionId();
+        return obj.dimensionId;
     }
 
     @Override
@@ -67,17 +67,17 @@ public class GraniteDimension extends Composite<MCWorldProvider> implements Dime
 
     @Override
     public boolean doesWaterEvaporate() {
-        return obj.fieldGet$isHellWorld();
+        return obj.isHellWorld;
     }
 
     @Override
     public void setWaterEvaporates(boolean isHellWorld) {
-        obj.fieldSet$isHellWorld(isHellWorld);
+        obj.isHellWorld = isHellWorld;
     }
 
     @Override
     public boolean hasSky() {
-        return !obj.fieldGet$hasNoSky();
+        return !obj.hasNoSky;
     }
 
     @Override

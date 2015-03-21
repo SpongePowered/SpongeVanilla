@@ -65,8 +65,8 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
 
     public GraniteChunk(MCChunk obj) {
         super(obj);
-        x = obj.fieldGet$xPosition();
-        z = obj.fieldGet$zPosition();
+        x = obj.xPosition;
+        z = obj.zPosition;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     @Override
     public boolean unloadChunk() {
         getChunkProvider().dropChunk(x, z);
-        return getChunkProvider().fieldGet$droppedChunksSet().contains(obj);
+        return getChunkProvider().droppedChunksSet.contains(obj);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     @Override
     public Collection<Entity> getEntities() {
         ImmutableSet.Builder<Entity> entities = ImmutableSet.builder();
-        for (Set mcEntitySet : obj.fieldGet$entityLists()) {
+        for (Set mcEntitySet : obj.entityLists) {
             for (Object entity : mcEntitySet) {
                 entities.add((Entity) wrap((MCEntity) entity));
             }
@@ -175,7 +175,7 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     }
 
     public GraniteWorld getWorld() {
-        return wrap(obj.fieldGet$worldObj());
+        return wrap(obj.worldObj);
     }
 
     public Vector3d toWorldCoordinates(Vector3d chunkCoordinates) {
@@ -184,7 +184,7 @@ public class GraniteChunk extends Composite<MCChunk> implements Chunk {
     }
 
     public MCChunkProvider getChunkProvider() {
-        return getWorld().obj.fieldGet$chunkProvider();
+        return getWorld().obj.chunkProvider;
     }
 
     @Override

@@ -38,65 +38,65 @@ public class EntityBoatClass extends BytecodeClass {
     @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "Entity#moveEntity"))
     public void moveOnLand(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
-        if (boat.obj.fieldGet$onGround() && boat.canMoveOnLand()) {
-            boat.obj.fieldSet$motionX(boat.obj.fieldGet$motionX() / 0.5);
-            boat.obj.fieldSet$motionY(boat.obj.fieldGet$motionY() / 0.5);
-            boat.obj.fieldSet$motionZ(boat.obj.fieldGet$motionZ() / 0.5);
+        if (boat.obj.onGround && boat.canMoveOnLand()) {
+            boat.obj.motionX = (boat.obj.motionX / 0.5);
+            boat.obj.motionY = (boat.obj.motionY / 0.5);
+            boat.obj.motionZ = (boat.obj.motionZ / 0.5);
         }
     }
 
     @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "java.lang.Math#sqrt", index = 0))
     public void beforeMotionModify(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
-        boat.setInitialDisplacement(Math.sqrt(boat.obj.fieldGet$motionX() * boat.obj.fieldGet$motionX() + boat.obj.fieldGet$motionZ() * boat.obj.fieldGet$motionX()));
+        boat.setInitialDisplacement(Math.sqrt(boat.obj.motionX * boat.obj.motionX + boat.obj.motionZ * boat.obj.motionX));
     }
 
     @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "java.lang.Math#sqrt", index = 1))
     public void beforeLimitSpeed(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
-        boat.setTempMotionX(boat.obj.fieldGet$motionX());
-        boat.setTempMotionZ(boat.obj.fieldGet$motionZ());
-        boat.setTempSpeedMultiplier(boat.obj.fieldGet$speedMultiplier());
+        boat.setTempMotionX(boat.obj.motionX);
+        boat.setTempMotionZ(boat.obj.motionZ);
+        boat.setTempSpeedMultiplier(boat.obj.speedMultiplier);
     }
 
     @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.FIELD, value = "onGround", index = 1))
     public void afterLimitSpeed(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
-        boat.obj.fieldSet$motionX(boat.getTempMotionX());
-        boat.obj.fieldSet$motionZ(boat.getTempMotionZ());
-        boat.obj.fieldSet$speedMultiplier(boat.getTempSpeedMultiplier());
-        double displacement = Math.sqrt(boat.obj.fieldGet$motionX() * boat.obj.fieldGet$motionX() + boat.obj.fieldGet$motionZ() * boat.obj.fieldGet$motionZ());
+        boat.obj.motionX = boat.getTempMotionX();
+        boat.obj.motionZ = boat.getTempMotionZ();
+        boat.obj.speedMultiplier = boat.getTempSpeedMultiplier();
+        double displacement = Math.sqrt(boat.obj.motionX * boat.obj.motionX + boat.obj.motionZ * boat.obj.motionZ);
 
-        if (displacement > boat.obj.fieldGet$speedMultiplier()) {
+        if (displacement > boat.obj.speedMultiplier) {
             double ratio = boat.getMaxSpeed() / displacement;
-            boat.obj.fieldSet$motionX(boat.obj.fieldGet$motionX() * ratio);
-            boat.obj.fieldSet$motionZ(boat.obj.fieldGet$motionZ() * ratio);
+            boat.obj.motionX = (boat.obj.motionX * ratio);
+            boat.obj.motionZ = (boat.obj.motionZ * ratio);
             displacement = boat.getMaxSpeed();
         }
 
-        if ((displacement> boat.getInitialDisplacement()) && (boat.obj.fieldGet$speedMultiplier() < boat.getMaxSpeed())) {
-            boat.obj.fieldSet$speedMultiplier(boat.obj.fieldGet$speedMultiplier() + ((boat.getMaxSpeed() - boat.obj.fieldGet$speedMultiplier()) / boat.getMaxSpeed() * 100));
-            boat.obj.fieldSet$speedMultiplier(Math.min(boat.obj.fieldGet$speedMultiplier(), boat.getMaxSpeed()));
+        if ((displacement > boat.getInitialDisplacement()) && (boat.obj.speedMultiplier < boat.getMaxSpeed())) {
+            boat.obj.speedMultiplier = (boat.obj.speedMultiplier + ((boat.getMaxSpeed() - boat.obj.speedMultiplier) / boat.getMaxSpeed() * 100));
+            boat.obj.speedMultiplier = (Math.min(boat.obj.speedMultiplier, boat.getMaxSpeed()));
         } else {
-            boat.obj.fieldSet$speedMultiplier(boat.obj.fieldGet$speedMultiplier() - ((boat.obj.fieldGet$speedMultiplier() - 0.07) / boat.getMaxSpeed() * 100));
-            boat.obj.fieldSet$speedMultiplier(Math.max(boat.obj.fieldGet$speedMultiplier(), 0.07));
+            boat.obj.speedMultiplier = (boat.obj.speedMultiplier - ((boat.obj.speedMultiplier - 0.07) / boat.getMaxSpeed() * 100));
+            boat.obj.speedMultiplier = (Math.max(boat.obj.speedMultiplier, 0.07));
         }
     }
 
     @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.FIELD, value = "riddenByEntity", index = 0))
     public void customDeceleration(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
-        if (!(boat.obj.fieldGet$riddenByEntity() instanceof MCEntityLivingBase)) {
-            double deceleration = boat.obj.fieldGet$riddenByEntity() == null ? boat.getUnoccupiedDeceleration() : boat.getOccupiedDeceleration();
-            boat.obj.fieldSet$motionX(boat.obj.fieldGet$motionX() * deceleration);
-            boat.obj.fieldSet$motionZ(boat.obj.fieldGet$motionZ() * deceleration);
+        if (!(boat.obj.riddenByEntity instanceof MCEntityLivingBase)) {
+            double deceleration = boat.obj.riddenByEntity == null ? boat.getUnoccupiedDeceleration() : boat.getOccupiedDeceleration();
+            boat.obj.motionX = (boat.obj.motionX * deceleration);
+            boat.obj.motionZ = (boat.obj.motionZ * deceleration);
 
-            if (boat.obj.fieldGet$motionX() < 0.00005) {
-                boat.obj.fieldSet$motionX(0.0);
+            if (boat.obj.motionX < 0.00005D) {
+                boat.obj.motionX = 0.0D;
             }
 
-            if (boat.obj.fieldGet$motionZ() < 0.00005) {
-                boat.obj.fieldSet$motionZ(0.0);
+            if (boat.obj.motionZ < 0.00005) {
+                boat.obj.motionZ = 0.0D;
             }
         }
     }

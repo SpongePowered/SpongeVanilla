@@ -26,15 +26,19 @@ package org.granitepowered.granite.mc;
 @Implement(name = "WorldBorder")
 public class MCWorldBorder implements MC {
 
+    public double startDiameter;
+    public double centerX;
+    public double centerZ;
+    public int warningTime;
+    public int warningDistance;
+    public double damageBuffer;
+    public double damageAmount;
+
     public double getDiameter() {
         return Double.parseDouble(null);
     }
 
     public void setDiameter(double size) {
-    }
-
-    public double fieldGet$startDiameter() {
-        return Double.parseDouble(null);
     }
 
     public void setTargetAndTime(double newSize, double newEndSize, long time) {
@@ -44,40 +48,16 @@ public class MCWorldBorder implements MC {
         return Long.parseLong(null);
     }
 
-    public double fieldGet$centerX() {
-        return Double.parseDouble(null);
-    }
-
-    public double fieldGet$centerZ() {
-        return Double.parseDouble(null);
-    }
-
     public void setCenter(double x, double z) {
-    }
-
-    public int fieldGet$warningTime() {
-        return Integer.parseInt(null);
     }
 
     public void setWarningTime(int ticks) {
     }
 
-    public int fieldGet$warningDistance() {
-        return Integer.parseInt(null);
-    }
-
     public void setWarningDistance(int blocks) {
     }
 
-    public double fieldGet$damageBuffer() {
-        return Double.parseDouble(null);
-    }
-
     public void setDamageBuffer(int buffer) {
-    }
-
-    public double fieldGet$damageAmount() {
-        return Double.parseDouble(null);
     }
 
     public void setDamageAmount(int damage) {

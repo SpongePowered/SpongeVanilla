@@ -45,7 +45,7 @@ public class GraniteEntityDragon extends GraniteEntityLiving<MCEntityDragon> imp
     @Override
     public Set<EnderDragonPart> getParts() {
         Set<EnderDragonPart> enderDragonParts = new TreeSet<>();
-        for (MCEntityDragonPart dragonPart : obj.fieldGet$dragonPartArray()) {
+        for (MCEntityDragonPart dragonPart : obj.dragonPartArray) {
             enderDragonParts.add((EnderDragonPart) MinecraftUtils.wrap(dragonPart));
         }
         return enderDragonParts;
@@ -53,11 +53,11 @@ public class GraniteEntityDragon extends GraniteEntityLiving<MCEntityDragon> imp
 
     @Override
     public Optional<EnderCrystal> getHealingCrystal() {
-        return Optional.fromNullable((EnderCrystal) MinecraftUtils.wrap(obj.fieldGet$healingEnderCrystal()));
+        return Optional.fromNullable((EnderCrystal) MinecraftUtils.wrap(obj.healingEnderCrystal));
     }
 
     @Override
     public void setHealingCrystal(EnderCrystal enderCrystal) {
-        obj.fieldSet$healingEnderCrystal(MinecraftUtils.unwrap((GraniteEntityEnderCrystal) enderCrystal));
+        obj.healingEnderCrystal = MinecraftUtils.unwrap((GraniteEntityEnderCrystal) enderCrystal);
     }
 }

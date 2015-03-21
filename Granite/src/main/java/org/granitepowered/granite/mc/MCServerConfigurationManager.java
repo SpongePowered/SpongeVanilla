@@ -28,20 +28,11 @@ import java.util.List;
 @Implement(name = "ServerConfigurationManager")
 public class MCServerConfigurationManager implements MC {
 
-    public boolean fieldGet$whitelistEnforced() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean whitelistEnforced;
 
-    public void fieldSet$whitelistEnforced(boolean value) {
-    }
+    public int maxPlayers;
 
-    public int fieldGet$maxPlayers() {
-        return Integer.parseInt(null);
-    }
-
-    public List<MCEntityPlayerMP> fieldGet$playerEntityList() {
-        return null;
-    }
+    public List<MCEntityPlayerMP> playerEntityList;
 
     public void sendChatMsg(MCIChatComponent message) {
     }

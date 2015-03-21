@@ -34,7 +34,7 @@ public class GraniteEntitySlime<T extends MCEntitySlime> extends GraniteEntityMo
 
     @Override
     public int getSize() {
-        return (int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
+        return (int) obj.dataWatcher.getWatchedObject(16).watchedObject;
     }
 
     @Override

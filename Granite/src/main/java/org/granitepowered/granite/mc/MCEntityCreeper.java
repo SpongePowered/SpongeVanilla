@@ -26,29 +26,13 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityCreeper")
 public class MCEntityCreeper extends MCEntityMob {
 
-    public int fieldGet$explosionRadius() {
-        return Integer.parseInt(null);
-    }
+    public int explosionRadius;
 
-    public void fieldSet$explosionRadius(int explosionRadius) {
-    }
+    public int fuseTime;
 
-    public int fieldGet$fuseTime() {
-        return Integer.parseInt(null);
-    }
+    public int lastActiveTime;
 
-    public void fieldSet$fuseTime(int fuseTime) {
-    }
-
-    public int fieldGet$lastActiveTime() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$lastActiveTime(int lastActiveTime) {
-    }
-
-    public void fieldSet$timeSinceIgnited(int timeSinceIgnited) {
-    }
+    public int timeSinceIgnited;
 
     public void detonate() {
     }

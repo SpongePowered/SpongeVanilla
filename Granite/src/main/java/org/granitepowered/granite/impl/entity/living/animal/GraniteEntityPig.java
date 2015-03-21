@@ -34,11 +34,11 @@ public class GraniteEntityPig extends GraniteEntityAnimal<MCEntityPig> implement
 
     @Override
     public boolean isSaddled() {
-        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
+        return ((byte) obj.dataWatcher.getWatchedObject(16).watchedObject & 1) != 0;
     }
 
     @Override
     public void setSaddled(boolean saddled) {
-        obj.fieldGet$dataWatcher().updateObject(16, saddled ? (byte) 1 : (byte) 0);
+        obj.dataWatcher.updateObject(16, saddled ? (byte) 1 : (byte) 0);
     }
 }

@@ -42,22 +42,22 @@ public class GraniteBiomeType extends Composite<MCBiomeGenBase> implements Biome
 
     @Override
     public double getTemperature() {
-        return obj.fieldGet$temperature();
+        return obj.temperature;
     }
 
     @Override
     public double getHumidity() {
-        return obj.fieldGet$rainFall();
+        return obj.rainFall;
     }
 
     @Override
     public float getMinHeight() {
-        return obj.fieldGet$minHeight();
+        return obj.minHeight;
     }
 
     @Override
     public float getMaxHeight() {
-        return obj.fieldGet$maxHeight();
+        return obj.maxHeight;
     }
 
     @Override

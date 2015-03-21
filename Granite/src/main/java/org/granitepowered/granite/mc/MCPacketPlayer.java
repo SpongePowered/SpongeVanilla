@@ -26,31 +26,17 @@ package org.granitepowered.granite.mc;
 @Implement(name = "C03PacketPlayer")
 public class MCPacketPlayer extends MCPacket {
 
-    public double fieldGet$x() {
-        return Double.parseDouble(null);
-    }
+    public double x;
 
-    public double fieldGet$y() {
-        return Double.parseDouble(null);
-    }
+    public double y;
 
-    public double fieldGet$z() {
-        return Double.parseDouble(null);
-    }
+    public double z;
 
-    public float fieldGet$yaw() {
-        return Float.parseFloat(null);
-    }
+    public float yaw;
 
-    public float fieldGet$pitch() {
-        return Float.parseFloat(null);
-    }
+    public float pitch;
 
-    public boolean fieldGet$isPosition() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean isPosition;
 
-    public boolean fieldGet$rotating() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean rotating;
 }

@@ -167,7 +167,7 @@ public class MinecraftUtils {
     }
 
     public static Vector3f minecraftToGraniteRotations(MCRotations mcRotations) {
-        return new Vector3f(mcRotations.fieldGet$x(), mcRotations.fieldGet$y(), mcRotations.fieldGet$z());
+        return new Vector3f(mcRotations.x, mcRotations.y, mcRotations.z);
     }
 
     public static MCRotations graniteToMinecraftRotations(Vector3f vector3f) {

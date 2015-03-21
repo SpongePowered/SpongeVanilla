@@ -34,12 +34,12 @@ public class GraniteEntityIronGolem extends GraniteEntityGolem<MCEntityIronGolem
 
     @Override
     public boolean isPlayerCreated() {
-        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
+        return ((byte) obj.dataWatcher.getWatchedObject(16).watchedObject & 1) != 0;
     }
 
     @Override
     public void setPlayerCreated(boolean playerCreated) {
-        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, (byte) (playerCreated ? (object | 1) : (object & -2)));
+        byte object = (byte) obj.dataWatcher.getWatchedObject(16).watchedObject;
+        obj.dataWatcher.updateObject(16, (byte) (playerCreated ? (object | 1) : (object & -2)));
     }
 }

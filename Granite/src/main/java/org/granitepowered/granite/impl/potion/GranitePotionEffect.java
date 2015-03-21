@@ -52,27 +52,27 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return new GranitePotionEffectType(mcPotions[obj.fieldGet$potionId()]);
+        return new GranitePotionEffectType(mcPotions[obj.potionId]);
     }
 
     @Override
     public int getDuration() {
-        return obj.fieldGet$duration();
+        return obj.duration;
     }
 
     @Override
     public int getAmplifier() {
-        return obj.fieldGet$amplifier();
+        return obj.amplifier;
     }
 
     @Override
     public boolean isAmbient() {
-        return obj.fieldGet$isAmbient();
+        return obj.isAmbient;
     }
 
     @Override
     public boolean getShowParticles() {
-        return obj.fieldGet$showParticles();
+        return obj.showParticles;
     }
 
     @Override

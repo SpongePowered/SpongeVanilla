@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -36,6 +34,8 @@ import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.spongepowered.api.world.Location;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 public class EntityClass extends BytecodeClass {
 
     public EntityClass() {
@@ -46,16 +46,16 @@ public class EntityClass extends BytecodeClass {
     public Object moveEntity(ProxyCallbackInfo<MCEntity> info) throws Throwable {
         if (!(info.getCaller() instanceof MCEntityPlayerMP)) {
             double oldX, oldY, oldZ;
-            oldX = info.getCaller().fieldGet$posX();
-            oldY = info.getCaller().fieldGet$posY();
-            oldZ = info.getCaller().fieldGet$posZ();
+            oldX = info.getCaller().posX;
+            oldY = info.getCaller().posY;
+            oldZ = info.getCaller().posZ;
 
             info.callback();
 
             double newX, newY, newZ;
-            newX = info.getCaller().fieldGet$posX();
-            newY = info.getCaller().fieldGet$posY();
-            newZ = info.getCaller().fieldGet$posZ();
+            newX = info.getCaller().posX;
+            newY = info.getCaller().posY;
+            newZ = info.getCaller().posZ;
 
             if (oldX != newX || oldY != newY || oldZ != newZ) {
                 GraniteEntity entity = wrap(info.getCaller());

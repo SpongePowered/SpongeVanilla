@@ -28,11 +28,7 @@ import java.util.UUID;
 @Implement(name = "GameProfile")
 public class MCGameProfile implements MC {
 
-    public String fieldGet$name() {
-        return null;
-    }
+    public String name;
 
-    public UUID fieldGet$id() {
-        return null;
-    }
+    public UUID id;
 }

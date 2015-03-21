@@ -124,7 +124,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public WorldBorder getWorldBorder() {
-        return new GraniteWorldBorder(obj.fieldGet$worldBorder());
+        return new GraniteWorldBorder(obj.worldBorder);
     }
 
     @Override
@@ -149,17 +149,17 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Dimension getDimension() {
-        return new GraniteDimension(obj.fieldGet$provider());
+        return new GraniteDimension(obj.provider);
     }
 
     @Override
     public long getWorldSeed() {
-        return getMCWorldInfo().fieldGet$randomSeed();
+        return getMCWorldInfo().randomSeed;
     }
 
     @Override
     public void setSeed(long seed) {
-        getMCWorldInfo().fieldSet$randomSeed(seed);
+        getMCWorldInfo().randomSeed = seed;
     }
 
     @Override
@@ -210,7 +210,7 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public Collection<Entity> getEntities() {
-        return Lists.<Entity>newArrayList(Iterables.transform(obj.fieldGet$loadedEntityList(), new MinecraftUtils.WrapFunction<GraniteEntity>()));
+        return Lists.<Entity>newArrayList(Iterables.transform(obj.loadedEntityList, new MinecraftUtils.WrapFunction<GraniteEntity>()));
     }
 
     @Override
@@ -334,11 +334,11 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
     }
 
     public MCWorldInfo getMCWorldInfo() {
-        return obj.fieldGet$worldInfo();
+        return obj.worldInfo;
     }
 
     public MCGameRules getMCGameRules() {
-        return getMCWorldInfo().fieldGet$gameRules();
+        return getMCWorldInfo().gameRules;
     }
 
     @Override

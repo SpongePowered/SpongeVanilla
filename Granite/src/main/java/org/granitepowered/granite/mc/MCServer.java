@@ -26,34 +26,17 @@ package org.granitepowered.granite.mc;
 @Implement(name = "DedicatedServer")
 public class MCServer implements MC {
 
-    public MCWorld[] fieldGet$worldServers() {
-        return null;
-    }
+    public MCWorld[] worldServers;
 
-    public MCServerConfigurationManager fieldGet$serverConfigManager() {
-        return null;
-    }
+    public MCServerConfigurationManager serverConfigManager;
 
-    public boolean fieldGet$onlineMode() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean onlineMode;
 
-    public MCPlayerProfileCache fieldGet$playerCache() {
-        return null;
-    }
+    public MCPlayerProfileCache playerCache;
+    public String hostname;
+    public int serverPort;
+    public String motd;
 
     public void startServerThread() {
-    }
-
-    public String fieldGet$hostname() {
-        return null;
-    }
-
-    public int fieldGet$serverPort() {
-        return Integer.parseInt(null);
-    }
-
-    public String fieldGet$motd() {
-        return null;
     }
 }

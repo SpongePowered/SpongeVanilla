@@ -63,7 +63,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
     public Collection<Player> getOnlinePlayers() {
         Set<Player> players = new HashSet<>();
 
-        for (MCEntityPlayerMP playerEntity : obj.fieldGet$serverConfigManager().fieldGet$playerEntityList()) {
+        for (MCEntityPlayerMP playerEntity : obj.serverConfigManager.playerEntityList) {
             players.add((Player) wrap(playerEntity));
         }
 
@@ -72,7 +72,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
 
     @Override
     public int getMaxPlayers() {
-        return obj.fieldGet$serverConfigManager().fieldGet$maxPlayers();
+        return obj.serverConfigManager.maxPlayers;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
     public Collection<World> getWorlds() {
         return ImmutableList
                 .<World>copyOf(
-                        Iterables.transform(Arrays.asList((MCWorld[]) obj.fieldGet$worldServers()), new MinecraftUtils.WrapFunction<GraniteWorld>()));
+                        Iterables.transform(Arrays.asList((MCWorld[]) obj.worldServers), new MinecraftUtils.WrapFunction<GraniteWorld>()));
     }
 
     @Override
@@ -156,32 +156,32 @@ public class GraniteServer extends Composite<MCServer> implements Server {
 
     @Override
     public void broadcastMessage(Message message) {
-        obj.fieldGet$serverConfigManager().sendChatMsg(MinecraftUtils.graniteToMinecraftChatComponent(message));
+        obj.serverConfigManager.sendChatMsg(MinecraftUtils.graniteToMinecraftChatComponent(message));
     }
 
     @Override
     public Optional<InetSocketAddress> getBoundAddress() {
-        return Optional.fromNullable(new InetSocketAddress(obj.fieldGet$hostname(), obj.fieldGet$serverPort()));
+        return Optional.fromNullable(new InetSocketAddress(obj.hostname, obj.serverPort));
     }
 
     @Override
     public boolean hasWhitelist() {
-        return obj.fieldGet$serverConfigManager().fieldGet$whitelistEnforced();
+        return obj.serverConfigManager.whitelistEnforced;
     }
 
     @Override
     public void setHasWhitelist(boolean whitelisted) {
-        obj.fieldGet$serverConfigManager().fieldSet$whitelistEnforced(whitelisted);
+        obj.serverConfigManager.whitelistEnforced = whitelisted;
     }
 
     @Override
     public boolean getOnlineMode() {
-        return obj.fieldGet$onlineMode();
+        return obj.onlineMode;
     }
 
     @Override
     public Message getMotd() {
-        return Messages.of(obj.fieldGet$motd());
+        return Messages.of(obj.motd);
     }
 
     @Override

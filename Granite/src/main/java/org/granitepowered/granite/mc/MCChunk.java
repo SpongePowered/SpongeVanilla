@@ -28,23 +28,13 @@ import java.util.Set;
 @Implement(name = "Chunk")
 public class MCChunk implements MC {
 
-    public int fieldGet$xPosition() {
-        return Integer.parseInt(null);
-    }
+    public int xPosition;
 
-    public int fieldGet$zPosition() {
-        return Integer.parseInt(null);
-    }
+    public int zPosition;
 
-    public MCWorld fieldGet$worldObj() {
-        return null;
-    }
+    public MCWorld worldObj;
 
-    public Set[] fieldGet$entityLists() {
-        return null;
-    }
+    public Set[] entityLists;
 
-    public byte[] fieldGet$blockBiomeArray() {
-        return null;
-    }
+    public byte[] blockBiomeArray;
 }

@@ -26,15 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "C00Handshake")
 public class MCPacketHandshake implements MC {
 
-    public int fieldGet$protocolVersion() {
-        return Integer.parseInt(null);
-    }
+    public int protocolVersion;
 
-    public String fieldGet$ip() {
-        return null;
-    }
+    public String ip;
 
-    public int fieldGet$port() {
-        return Integer.parseInt(null);
-    }
+    public int port;
 }

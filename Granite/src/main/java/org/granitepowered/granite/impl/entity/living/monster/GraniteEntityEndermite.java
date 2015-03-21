@@ -34,11 +34,11 @@ public class GraniteEntityEndermite extends GraniteEntityMonster<MCEntityEndermi
 
     @Override
     public boolean isPlayerCreated() {
-        return obj.fieldGet$playerSpawned();
+        return obj.playerSpawned;
     }
 
     @Override
     public void setPlayerCreated(boolean playerCreated) {
-        obj.fieldSet$playerSpawned(playerCreated);
+        obj.playerSpawned = playerCreated;
     }
 }

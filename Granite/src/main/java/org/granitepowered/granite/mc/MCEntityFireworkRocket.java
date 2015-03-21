@@ -26,10 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityFireworkRocket")
 public class MCEntityFireworkRocket extends MCEntity {
 
-    public int fieldGet$lifetime() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldGet$lifetime(int lifetime) {
-    }
+    public int lifetime;
 }

@@ -26,7 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityDragonPart")
 public class MCEntityDragonPart extends MCEntity {
 
-    public MCEntityDragon fieldGet$entityDragonObj() {
-        return null;
-    }
+    public MCEntityDragon entityDragonObj;
 }

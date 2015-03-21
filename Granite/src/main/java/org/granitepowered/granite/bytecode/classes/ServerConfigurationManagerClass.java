@@ -61,19 +61,19 @@ public class ServerConfigurationManagerClass extends BytecodeClass {
     public Object initializeConnectionToPlayer(ProxyCallbackInfo<MCServerConfigurationManager> info) throws Throwable {
         MCEntityPlayerMP player = (MCEntityPlayerMP) info.getArguments()[1];
 
-        MCGameProfile newProfile = player.fieldGet$gameProfile();
-        MCGameProfile oldProfile = ((GraniteServer) Granite.getInstance().getServer().get()).obj.fieldGet$playerCache().getProfileByUUID(newProfile.fieldGet$id());
+        MCGameProfile newProfile = player.gameProfile;
+        MCGameProfile oldProfile = ((GraniteServer) Granite.getInstance().getServer().get()).obj.playerCache.getProfileByUUID(newProfile.id);
 
-        String oldName = oldProfile == null ? newProfile.fieldGet$name() : oldProfile.fieldGet$name();
+        String oldName = oldProfile == null ? newProfile.name : oldProfile.name;
 
         Message.Translatable joinMessage;
-        if (!newProfile.fieldGet$name().equals(oldName)) {
+        if (!newProfile.name.equals(oldName)) {
             joinMessage =
-                    Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), newProfile.fieldGet$name(), oldName)
+                    Messages.builder(Translations.of("multiplayer.player.joined.renamed").get(), newProfile.name, oldName)
                             .color(TextColors.YELLOW).build();
         } else {
             joinMessage =
-                    Messages.builder(Translations.of("multiplayer.player.joined").get(), newProfile.fieldGet$name()).color(TextColors.YELLOW)
+                    Messages.builder(Translations.of("multiplayer.player.joined").get(), newProfile.name).color(TextColors.YELLOW)
                             .build();
         }
 

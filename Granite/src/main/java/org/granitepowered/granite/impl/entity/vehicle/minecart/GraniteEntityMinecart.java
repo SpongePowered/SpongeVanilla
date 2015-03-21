@@ -22,7 +22,7 @@ public class GraniteEntityMinecart<T extends MCEntityMinecart> extends GraniteEn
 
     @Override
     public boolean isOnRail() {
-        return obj.fieldGet$onGround();
+        return obj.onGround;
     }
 
     @Override
@@ -37,14 +37,14 @@ public class GraniteEntityMinecart<T extends MCEntityMinecart> extends GraniteEn
 
     @Override
     public double getPotentialMaxSpeed() {
-        int x = GenericMath.floor(obj.fieldGet$posX());
-        int y = GenericMath.floor(obj.fieldGet$posY());
-        int z = GenericMath.floor(obj.fieldGet$posZ());
+        int x = GenericMath.floor(obj.posX);
+        int y = GenericMath.floor(obj.posY);
+        int z = GenericMath.floor(obj.posZ);
 
         MCBlockRailBase railBase = Instantiator.get().newBlockRailBase(false);
 
-        if (railBase.isOnRailWorld(obj.fieldGet$worldObj(), Instantiator.get().newBlockPos(x, y - 1, z))) --y;
-        MCBlockState state = obj.fieldGet$worldObj().getBlockState(Instantiator.get().newBlockPos(x, y, z));
+        if (railBase.isOnRailWorld(obj.worldObj, Instantiator.get().newBlockPos(x, y - 1, z))) --y;
+        MCBlockState state = obj.worldObj.getBlockState(Instantiator.get().newBlockPos(x, y, z));
         if (!railBase.isOnRail(state)) return obj.getMaxSpeed();
 
         double railMaxSpeed = 0.4D;
@@ -54,11 +54,6 @@ public class GraniteEntityMinecart<T extends MCEntityMinecart> extends GraniteEn
     @Override
     public boolean doesSlowWhenEmpty() {
         return this.slowWhenEmpty;
-    }
-
-    @Override
-    public void setSlowWhenEmpty(boolean slowWhenEmpty) {
-        this.slowWhenEmpty = slowWhenEmpty;
     }
 
     @Override
@@ -91,6 +86,11 @@ public class GraniteEntityMinecart<T extends MCEntityMinecart> extends GraniteEn
 
     public boolean isSlowWhenEmpty() {
         return slowWhenEmpty;
+    }
+
+    @Override
+    public void setSlowWhenEmpty(boolean slowWhenEmpty) {
+        this.slowWhenEmpty = slowWhenEmpty;
     }
 
     public Vector3d getAirborneMod() {

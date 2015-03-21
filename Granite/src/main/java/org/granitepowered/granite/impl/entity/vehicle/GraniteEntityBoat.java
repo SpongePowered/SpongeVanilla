@@ -29,7 +29,7 @@ import org.spongepowered.api.entity.vehicle.Boat;
 
 public class GraniteEntityBoat extends GraniteEntity<MCEntityBoat> implements Boat {
 
-    private double speedMultiplier = obj.fieldGet$speedMultiplier();
+    private double speedMultiplier = obj.speedMultiplier;
     private boolean moveOnLand = false;
     private double maxSpeed = 0.35D;
     private double occupiedDeceleration = 0D;
@@ -44,13 +44,8 @@ public class GraniteEntityBoat extends GraniteEntity<MCEntityBoat> implements Bo
     }
 
     @Override
-    public void setMoveOnLand(boolean moveOnLand) {
-        this.moveOnLand = moveOnLand;
-    }
-
-    @Override
     public boolean isInWater() {
-        return obj.fieldGet$isInWater();
+        return obj.isInWater;
     }
 
     @Override
@@ -98,6 +93,11 @@ public class GraniteEntityBoat extends GraniteEntity<MCEntityBoat> implements Bo
 
     public boolean isMoveOnLand() {
         return moveOnLand;
+    }
+
+    @Override
+    public void setMoveOnLand(boolean moveOnLand) {
+        this.moveOnLand = moveOnLand;
     }
 
     public double getInitialDisplacement() {

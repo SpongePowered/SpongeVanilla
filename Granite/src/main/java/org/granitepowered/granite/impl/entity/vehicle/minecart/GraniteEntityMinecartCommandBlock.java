@@ -23,23 +23,23 @@ public class GraniteEntityMinecartCommandBlock<T extends MCEntityMinecartCommand
 
     @Override
     public String getCommand() {
-        return obj.fieldGet$commandLogic().fieldGet$commandStored();
+        return obj.commandLogic.commandStored;
     }
 
     @Override
     public void setCommand(String command) {
-        obj.fieldGet$commandLogic().fieldSet$commandStored(command);
-        obj.fieldGet$commandLogic().fieldSet$successCount(0);
+        obj.commandLogic.commandStored = command;
+        obj.commandLogic.successCount = 0;
     }
 
     @Override
     public String getCommandName() {
-        return obj.fieldGet$commandLogic().fieldGet$customName();
+        return obj.commandLogic.customName;
     }
 
     @Override
     public void setCommandName(String commandName) {
-        obj.fieldGet$commandLogic().fieldSet$customName(commandName);
+        obj.commandLogic.customName = commandName;
     }
 
     @Override

@@ -11,11 +11,11 @@ public class GraniteEntityMinecartFurnace extends GraniteEntityMinecartContainer
 
     @Override
     public int getFuel() {
-        return obj.fieldGet$fuel();
+        return obj.fuel;
     }
 
     @Override
     public void setFuel(int fuel) {
-        obj.fieldSet$fuel(fuel);
+        obj.fuel = fuel;
     }
 }

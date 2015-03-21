@@ -174,7 +174,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
             String name = field.getName().toLowerCase().replace("_", "");
             for (MCEnumArt mcEnumArt : mcEnumArts) {
-                if (name.equals(mcEnumArt.fieldGet$name().toLowerCase())) {
+                if (name.equals(mcEnumArt.name.toLowerCase())) {
                     try {
                         Art art = new GraniteArt(mcEnumArt);
                         field.set(null, art);
@@ -239,7 +239,7 @@ public class GraniteGameRegistry implements GameRegistry {
                         name = "mesa_plateau_f";
                     }
 
-                    String biomeName = biome.fieldGet$biomeName().toLowerCase().replace(" ", "_");
+                    String biomeName = biome.biomeName.toLowerCase().replace(" ", "_");
 
                     if (biomeName.equals(name)) {
                         BiomeType biomeType = new GraniteBiomeType(biome);

@@ -47,7 +47,7 @@ public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements 
     public Message[] getLines() {
         Message[] ret = new Message[4];
 
-        MCIChatComponent[] fieldGet$signText = obj.fieldGet$signText();
+        MCIChatComponent[] fieldGet$signText = obj.signText;
         for (int i = 0; i < fieldGet$signText.length; i++) {
             MCIChatComponent component = fieldGet$signText[i];
             ret[i] = MinecraftUtils.minecraftToGraniteMessage(component);
@@ -62,7 +62,7 @@ public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements 
             Message line = lines[i];
 
             if (i < 4) {
-                obj.fieldGet$signText()[i] = MinecraftUtils.graniteToMinecraftChatComponent(line);
+                obj.signText[i] = MinecraftUtils.graniteToMinecraftChatComponent(line);
             }
         }
     }
@@ -72,7 +72,7 @@ public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements 
         if (index >= 4) {
             throw new IndexOutOfBoundsException();
         }
-        return MinecraftUtils.minecraftToGraniteMessage(obj.fieldGet$signText()[index]);
+        return MinecraftUtils.minecraftToGraniteMessage(obj.signText[index]);
     }
 
     @Override
@@ -80,6 +80,6 @@ public class GraniteSign extends GraniteTileEntity<MCTileEntitySign> implements 
         if (index >= 4) {
             throw new IndexOutOfBoundsException();
         }
-        obj.fieldGet$signText()[index] = MinecraftUtils.graniteToMinecraftChatComponent(text);
+        obj.signText[index] = MinecraftUtils.graniteToMinecraftChatComponent(text);
     }
 }

@@ -26,20 +26,11 @@ package org.granitepowered.granite.mc;
 @Implement(name = "WorldProvider")
 public class MCWorldProvider implements MC {
 
-    public int fieldGet$dimensionId() {
-        return Integer.parseInt(null);
-    }
+    public int dimensionId;
 
-    public boolean fieldGet$isHellWorld() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean isHellWorld;
 
-    public void fieldSet$isHellWorld(boolean isHellWorld) {
-    }
-
-    public boolean fieldGet$hasNoSky() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean hasNoSky;
 
     public String getDimensionName() {
         return null;

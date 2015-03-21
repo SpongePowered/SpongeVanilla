@@ -28,6 +28,8 @@ import java.util.Set;
 @Implement(name = "ChunkProviderServer")
 public class MCChunkProvider implements MC {
 
+    public Set<MCChunk> droppedChunksSet;
+
     public MCChunk provideChunk(int x, int z) {
         return null;
     }
@@ -37,9 +39,5 @@ public class MCChunkProvider implements MC {
     }
 
     public void dropChunk(int x, int z) {
-    }
-
-    public Set<MCChunk> fieldGet$droppedChunksSet() {
-        return null;
     }
 }

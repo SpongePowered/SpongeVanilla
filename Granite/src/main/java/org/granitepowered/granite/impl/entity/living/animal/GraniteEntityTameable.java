@@ -40,31 +40,31 @@ public class GraniteEntityTameable<T extends MCEntityTameable> extends GraniteEn
 
     @Override
     public boolean isSitting() {
-        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
+        return ((byte) obj.dataWatcher.getWatchedObject(16).watchedObject & 1) != 0;
     }
 
     @Override
     public void setSitting(boolean sitting) {
-        byte isSitting = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, sitting ? Byte.valueOf((byte) (isSitting | 1)) : Byte.valueOf((byte) (isSitting | -2)));
+        byte isSitting = (byte) obj.dataWatcher.getWatchedObject(16).watchedObject;
+        obj.dataWatcher.updateObject(16, sitting ? Byte.valueOf((byte) (isSitting | 1)) : Byte.valueOf((byte) (isSitting | -2)));
     }
 
     @Override
     public boolean isTamed() {
         if (this instanceof Horse) {
-            return ((int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 2) != 0;
+            return ((int) obj.dataWatcher.getWatchedObject(16).watchedObject & 2) != 0;
         } else {
-            return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 4) != 0;
+            return ((byte) obj.dataWatcher.getWatchedObject(16).watchedObject & 4) != 0;
         }
     }
 
     @Override
     public void setTamed(boolean tamed) {
         if (this instanceof Horse) {
-            obj.fieldGet$dataWatcher().updateObject(2, tamed);
+            obj.dataWatcher.updateObject(2, tamed);
         } else {
-            byte isTamed = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-            obj.fieldGet$dataWatcher().updateObject(16, tamed ? Byte.valueOf((byte) (isTamed | 4)) : Byte.valueOf((byte) (isTamed & -5)));
+            byte isTamed = (byte) obj.dataWatcher.getWatchedObject(16).watchedObject;
+            obj.dataWatcher.updateObject(16, tamed ? Byte.valueOf((byte) (isTamed | 4)) : Byte.valueOf((byte) (isTamed & -5)));
             if (this instanceof Wolf) {
                 // TODO: Add SharedMonsterAttributes (Base health of 8 when false, Base health of 20 when true)
                 // TODO: Set attack damage to 4
@@ -75,12 +75,12 @@ public class GraniteEntityTameable<T extends MCEntityTameable> extends GraniteEn
     @Override
     public Optional<Tamer> getOwner() {
         return Optional.fromNullable((Tamer) Granite.getInstance().getServer().get()
-                .getPlayer((String) obj.fieldGet$dataWatcher().getWatchedObject(21).fieldGet$watchedObject()));
+                .getPlayer((String) obj.dataWatcher.getWatchedObject(21).watchedObject));
     }
 
     @Override
     public void setOwner(Tamer tamer) {
-        obj.fieldGet$dataWatcher().updateObject(21, tamer.getUniqueId().toString());
+        obj.dataWatcher.updateObject(21, tamer.getUniqueId().toString());
         setTamed(true);
     }
 }

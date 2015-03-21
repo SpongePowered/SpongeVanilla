@@ -26,10 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityEndermite")
 public class MCEntityEndermite extends MCEntityMob {
 
-    public boolean fieldGet$playerSpawned() {
-        return Boolean.parseBoolean(null);
-    }
-
-    public void fieldSet$playerSpawned(boolean playerCreated) {
-    }
+    public boolean playerSpawned;
 }

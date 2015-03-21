@@ -26,36 +26,19 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Block")
 public class MCBlock implements MC {
 
-    public MCBlockState fieldGet$defaultBlockState() {
-        return null;
-    }
+    public MCBlockState defaultBlockState;
 
-    public boolean fieldGet$needsRandomTick() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean needsRandomTick;
 
-    public void fieldSet$needsRandomTick(boolean value) {
-    }
+    public int lightValue;
 
-    public int fieldGet$lightValue() {
-        return Integer.parseInt(null);
-    }
+    public float blockHardness;
 
-    public float fieldGet$blockHardness() {
-        return Float.parseFloat(null);
-    }
-
-    public boolean fieldGet$enableStats() {
-        return Boolean.parseBoolean(null);
-
-    }
+    public boolean enableStats;
+    public MCMaterial blockMaterial;
 
     public boolean isSolidFullCube() {
         return Boolean.parseBoolean(null);
-    }
-
-    public MCMaterial fieldGet$blockMaterial() {
-        return null;
     }
 
     public MCBlockState getStateFromMeta(int meta) {

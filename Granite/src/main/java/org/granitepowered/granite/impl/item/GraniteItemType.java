@@ -55,7 +55,7 @@ public class GraniteItemType<T extends MCItem> extends Composite<T> implements I
 
     @Override
     public int getMaxStackQuantity() {
-        return obj.fieldGet$maxStackSize();
+        return obj.maxStackSize;
     }
 
     @Override

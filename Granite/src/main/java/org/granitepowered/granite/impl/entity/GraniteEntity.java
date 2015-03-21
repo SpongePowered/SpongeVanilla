@@ -58,7 +58,7 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean isOnGround() {
-        return obj.fieldGet$onGround();
+        return obj.onGround;
     }
 
     @Override
@@ -73,12 +73,12 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public Location getLocation() {
-        return new Location(getWorld(), new Vector3d(obj.fieldGet$posX(), obj.fieldGet$posY(), obj.fieldGet$posZ()));
+        return new Location(getWorld(), new Vector3d(obj.posX, obj.posY, obj.posZ));
     }
 
     @Override
     public boolean setLocation(Location location) {
-        if (obj.fieldGet$worldObj().fieldGet$provider().fieldGet$dimensionId() != ((GraniteWorld) location.getExtent()).getDimension()
+        if (obj.worldObj.provider.dimensionId != ((GraniteWorld) location.getExtent()).getDimension()
                 .getDimensionId()) {
             obj.travelToDimension(((GraniteWorld) location.getExtent()).getDimension().getDimensionId());
         }
@@ -88,12 +88,12 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean setLocationAndRotation(Location location, Vector3f rotation, EnumSet<RelativePositions> enumSet) {
-        double xToAdd = enumSet.contains(RelativePositions.X) ? obj.fieldGet$posX() : 0;
-        double yToAdd = enumSet.contains(RelativePositions.Y) ? obj.fieldGet$posY() : 0;
-        double zToAdd = enumSet.contains(RelativePositions.Z) ? obj.fieldGet$posZ() : 0;
+        double xToAdd = enumSet.contains(RelativePositions.X) ? obj.posX : 0;
+        double yToAdd = enumSet.contains(RelativePositions.Y) ? obj.posY : 0;
+        double zToAdd = enumSet.contains(RelativePositions.Z) ? obj.posZ : 0;
 
-        double yawToAdd = enumSet.contains(RelativePositions.YAW) ? obj.fieldGet$rotationYaw() : 0;
-        double pitchToAdd = enumSet.contains(RelativePositions.PITCH) ? obj.fieldGet$rotationPitch() : 0;
+        double yawToAdd = enumSet.contains(RelativePositions.YAW) ? obj.rotationYaw : 0;
+        double pitchToAdd = enumSet.contains(RelativePositions.PITCH) ? obj.rotationPitch : 0;
 
         setLocation(location.add(xToAdd, yToAdd, zToAdd));
         setRotation(rotation.add(pitchToAdd, yawToAdd, 0));
@@ -102,40 +102,40 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public Vector3f getRotation() {
-        return new Vector3f(obj.fieldGet$rotationYaw(), obj.fieldGet$rotationPitch(), 0);
+        return new Vector3f(obj.rotationYaw, obj.rotationPitch, 0);
     }
 
     @Override
     public void setRotation(Vector3f vector2f) {
-        obj.fieldSet$rotationYaw(vector2f.getX());
-        obj.fieldSet$rotationPitch(vector2f.getY());
+        obj.rotationYaw = vector2f.getX();
+        obj.rotationPitch = vector2f.getY();
     }
 
     @Override
     public Vector3d getVelocity() {
-        return new Vector3d(obj.fieldGet$motionX(), obj.fieldGet$motionY(), obj.fieldGet$motionZ());
+        return new Vector3d(obj.motionX, obj.motionY, obj.motionZ);
     }
 
     @Override
     public void setVelocity(Vector3d vector3d) {
-        obj.fieldSet$motionX(vector3d.getX());
-        obj.fieldSet$motionY(vector3d.getY());
-        obj.fieldSet$motionZ(vector3d.getZ());
+        obj.motionX = vector3d.getX();
+        obj.motionY = vector3d.getY();
+        obj.motionZ = vector3d.getZ();
     }
 
     @Override
     public World getWorld() {
-        return wrap(obj.fieldGet$worldObj());
+        return wrap(obj.worldObj);
     }
 
     @Override
     public Optional<Entity> getPassenger() {
-        return Optional.fromNullable((Entity) wrap(obj.fieldGet$riddenByEntity()));
+        return Optional.fromNullable((Entity) wrap(obj.riddenByEntity));
     }
 
     @Override
     public Optional<Entity> getVehicle() {
-        return Optional.fromNullable((Entity) wrap(obj.fieldGet$ridingEntity()));
+        return Optional.fromNullable((Entity) wrap(obj.ridingEntity));
     }
 
     @Override
@@ -145,24 +145,24 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public boolean setPassenger(Entity entity) {
-        obj.fieldSet$riddenByEntity((MCEntity) unwrap(entity));
+        obj.riddenByEntity = unwrap(entity);
         return true;
     }
 
     @Override
     public boolean setVehicle(Entity entity) {
-        obj.fieldSet$ridingEntity((MCEntity) unwrap(entity));
+        obj.ridingEntity = unwrap(entity);
         return true;
     }
 
     @Override
     public float getBase() {
-        return obj.fieldGet$width();
+        return obj.width;
     }
 
     @Override
     public float getHeight() {
-        return obj.fieldGet$height();
+        return obj.height;
     }
 
     @Override
@@ -173,29 +173,29 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public int getFireTicks() {
-        return obj.fieldGet$fire();
+        return obj.fire;
     }
 
     @Override
     public void setFireTicks(int ticks) {
-        obj.fieldSet$fire(ticks);
+        obj.fire = ticks;
     }
 
     @Override
     public int getFireDelay() {
-        return obj.fieldGet$fireResistance();
+        return obj.fireResistance;
     }
 
     @Override
     public boolean isPersistent() {
         MCEntityLiving entityLiving = (MCEntityLiving) unwrap(this);
-        return !entityLiving.fieldGet$persistenceRequired();
+        return !entityLiving.persistenceRequired;
     }
 
     @Override
     public void setPersistent(boolean persistent) {
         MCEntityLiving entityLiving = (MCEntityLiving) unwrap(this);
-        entityLiving.fieldSet$persistenceRequired(!persistent);
+        entityLiving.persistenceRequired = !persistent;
     }
 
     @Override
@@ -218,6 +218,6 @@ public class GraniteEntity<T extends MCEntity> extends Composite<T> implements E
 
     @Override
     public UUID getUniqueId() {
-        return obj.fieldGet$entityUniqueID();
+        return obj.entityUniqueID;
     }
 }

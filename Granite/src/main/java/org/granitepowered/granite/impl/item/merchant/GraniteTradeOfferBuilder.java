@@ -95,7 +95,7 @@ public class GraniteTradeOfferBuilder implements TradeOfferBuilder {
                 Instantiator.get().newMerchantRecipe(MinecraftUtils.unwrap((GraniteItemStack) firstBuyingItem),
                                                      MinecraftUtils.unwrap((GraniteItemStack) secondBuyingItem),
                                                      MinecraftUtils.unwrap((GraniteItemStack) sellingItem), useCount, maxUses);
-        recipe.fieldSet$grantExperience(grantExp);
+        recipe.grantExperience = grantExp;
         return new GraniteTradeOffer(recipe);
     }
 

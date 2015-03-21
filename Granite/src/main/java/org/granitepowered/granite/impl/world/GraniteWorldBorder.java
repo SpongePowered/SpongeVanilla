@@ -42,7 +42,7 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public double getDiameter() {
-        return obj.fieldGet$startDiameter();
+        return obj.startDiameter;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public void setDiameter(double endDiameter, long time) {
-        obj.setTargetAndTime((obj.fieldGet$startDiameter()), endDiameter, time);
+        obj.setTargetAndTime((obj.startDiameter), endDiameter, time);
     }
 
     @Override
@@ -72,12 +72,12 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public Vector3d getCenter() {
-        return new Vector3d(new Vector2d(obj.fieldGet$centerX(), obj.fieldGet$centerZ()));
+        return new Vector3d(new Vector2d(obj.centerX, obj.centerZ));
     }
 
     @Override
     public int getWarningTime() {
-        return obj.fieldGet$warningTime();
+        return obj.warningTime;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public int getWarningDistance() {
-        return obj.fieldGet$warningDistance();
+        return obj.warningDistance;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public double getDamageThreshold() {
-        return obj.fieldGet$damageBuffer();
+        return obj.damageBuffer;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class GraniteWorldBorder extends Composite<MCWorldBorder> implements Worl
 
     @Override
     public int getDamageAmount() {
-        return (int) obj.fieldGet$damageAmount();
+        return (int) obj.damageAmount;
     }
 
     @Override

@@ -26,9 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityHanging")
 public class MCEntityHanging extends MCEntity {
 
-    public MCEnumFacing fieldGet$facing() {
-        return null;
-    }
+    public MCEnumFacing facing;
 
     public void setFacing(MCEnumFacing facing) {
     }

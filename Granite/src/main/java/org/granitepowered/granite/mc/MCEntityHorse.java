@@ -26,7 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityHorse")
 public class MCEntityHorse extends MCEntityTameable {
 
-    public MCAnimalChest fieldGet$animalChest() {
-        return null;
-    }
+    public MCAnimalChest animalChest;
 }

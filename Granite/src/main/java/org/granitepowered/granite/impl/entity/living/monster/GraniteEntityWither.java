@@ -40,12 +40,12 @@ public class GraniteEntityWither extends GraniteEntityMonster<MCEntityWither> im
 
     @Override
     public int getInvulnerableTicks() {
-        return (int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject();
+        return (int) obj.dataWatcher.getWatchedObject(20).watchedObject;
     }
 
     @Override
     public void setInvulnerableTicks(int invulnerableTicks) {
-        obj.fieldGet$dataWatcher().updateObject(20, invulnerableTicks);
+        obj.dataWatcher.updateObject(20, invulnerableTicks);
     }
 
     @Override

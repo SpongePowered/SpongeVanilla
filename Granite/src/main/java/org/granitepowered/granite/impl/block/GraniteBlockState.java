@@ -23,9 +23,6 @@
 
 package org.granitepowered.granite.impl.block;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.composite.Composite;
@@ -36,12 +33,10 @@ import org.spongepowered.api.block.BlockProperty;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteBlockState extends Composite<MCBlockState> implements BlockState {
 
@@ -51,7 +46,7 @@ public class GraniteBlockState extends Composite<MCBlockState> implements BlockS
 
     @Override
     public BlockType getType() {
-        return MinecraftUtils.<GraniteBlockType>wrap(obj.fieldGet$block());
+        return MinecraftUtils.<GraniteBlockType>wrap(obj.block);
     }
 
     @Override
@@ -69,7 +64,7 @@ public class GraniteBlockState extends Composite<MCBlockState> implements BlockS
     public Collection<String> getPropertyNames() {
         List<String> names = new ArrayList<>();
         for (MCProperty property : obj.fieldGet$properties().keySet()) {
-            names.add(property.fieldGet$name());
+            names.add(property.name);
         }
         return names;
     }
@@ -108,6 +103,6 @@ public class GraniteBlockState extends Composite<MCBlockState> implements BlockS
     @Override
     @SuppressWarnings("deprecated")
     public byte getDataValue() {
-        return (byte) obj.fieldGet$block().getMetaFromState(obj);
+        return (byte) obj.block.getMetaFromState(obj);
     }
 }

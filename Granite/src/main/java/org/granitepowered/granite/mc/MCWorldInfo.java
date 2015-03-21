@@ -26,22 +26,11 @@ package org.granitepowered.granite.mc;
 @Implement(name = "WorldInfo")
 public class MCWorldInfo implements MC {
 
-    public String fieldGet$levelName() {
-        return null;
-    }
+    public String levelName;
 
-    public MCGameRules fieldGet$gameRules() {
-        return null;
-    }
+    public MCGameRules gameRules;
 
-    public long fieldGet$randomSeed() {
-        return Long.parseLong(null);
-    }
+    public long randomSeed;
 
-    public void fieldSet$randomSeed(long seed) {
-    }
-
-    public int fieldGet$dimension() {
-        return Integer.parseInt(null);
-    }
+    public int dimension;
 }

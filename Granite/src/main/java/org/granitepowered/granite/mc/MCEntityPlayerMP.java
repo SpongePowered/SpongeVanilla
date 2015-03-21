@@ -26,31 +26,17 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityPlayerMP")
 public class MCEntityPlayerMP extends MCEntityPlayer {
 
-    public MCPlayerCapabilities fieldGet$capabilities() {
-        return null;
-    }
+    public MCPlayerCapabilities capabilities;
 
-    public MCFoodStats fieldGet$foodStats() {
-        return null;
-    }
+    public MCFoodStats foodStats;
 
-    public MCGameProfile fieldGet$gameProfile() {
-        return null;
-    }
+    public MCGameProfile gameProfile;
 
-    public MCContainer fieldGet$openContainer() {
-        return null;
-    }
+    public MCContainer openContainer;
 
-    public String fieldGet$translator() {
-        return null;
-    }
+    public String translator;
 
-    public MCInventoryPlayer fieldGet$inventory() {
-        return null;
-    }
+    public MCInventoryPlayer inventory;
 
-    public MCNetHandlerPlayServer fieldGet$playerNetServerHandler() {
-        return null;
-    }
+    public MCNetHandlerPlayServer playerNetServerHandler;
 }

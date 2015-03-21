@@ -28,91 +28,43 @@ import java.util.UUID;
 @Implement(name = "Entity")
 public class MCEntity implements MC {
 
-    public boolean fieldGet$onGround() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean onGround;
 
-    public double fieldGet$posX() {
-        return Double.parseDouble(null);
-    }
+    public double posX;
 
-    public double fieldGet$posY() {
-        return Double.parseDouble(null);
-    }
+    public double posY;
 
-    public double fieldGet$posZ() {
-        return Double.parseDouble(null);
-    }
+    public double posZ;
 
-    public MCEntity fieldGet$riddenByEntity() {
-        return null;
-    }
+    public MCEntity riddenByEntity;
 
-    public MCEntity fieldGet$ridingEntity() {
-        return null;
-    }
+    public MCEntity ridingEntity;
 
-    public void fieldSet$riddenByEntity(MCEntity entity) {
-    }
+    public float width;
 
-    public void fieldSet$ridingEntity(MCEntity entity) {
-    }
+    public float height;
 
-    public float fieldGet$width() {
-        return Float.parseFloat(null);
-    }
+    public boolean isDead;
 
-    public float fieldGet$height() {
-        return Float.parseFloat(null);
-    }
+    public int fire;
 
-    public boolean fieldGet$isDead() {
-        return Boolean.parseBoolean(null);
-    }
+    public UUID entityUniqueID;
 
-    public int fieldGet$fire() {
-        return Integer.parseInt(null);
-    }
+    public int fireResistance;
 
-    public void fieldSet$fire(int ticks) {
-    }
+    public MCWorld worldObj;
 
-    public UUID fieldGet$entityUniqueID() {
-        return null;
-    }
+    public int hurtResistantTime;
 
-    public int fieldGet$fireResistance() {
-        return Integer.parseInt(null);
-    }
+    public float rotationYaw;
 
-    public MCWorld fieldGet$worldObj() {
-        return null;
-    }
+    public float rotationPitch;
 
-    public int fieldGet$hurtResistantTime() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$hurtResistantTime(int ticks) {
-    }
-
-    public float fieldGet$rotationYaw() {
-        return Float.parseFloat(null);
-    }
-
-    public void fieldSet$rotationYaw(float yaw) {
-    }
-
-    public float fieldGet$rotationPitch() {
-        return Float.parseFloat(null);
-    }
-
-    public void fieldSet$rotationPitch(float pitch) {
-    }
-
-    public MCDataWatcher fieldGet$dataWatcher() {
-        return null;
-    }
+    public MCDataWatcher dataWatcher;
+    public boolean isInWater;
+    public double motionX;
+    public double motionY;
+    public double motionZ;
 
     public void mountEntity(MCEntity other) {
     }
@@ -150,30 +102,5 @@ public class MCEntity implements MC {
     }
 
     public void travelToDimension(int dimensionId) {
-    }
-
-    public boolean fieldGet$isInWater() {
-        return Boolean.parseBoolean(null);
-    }
-
-    public double fieldGet$motionX() {
-        return Double.parseDouble(null);
-    }
-
-    public void fieldSet$motionX(double motionX) {
-    }
-
-    public double fieldGet$motionY() {
-        return Double.parseDouble(null);
-    }
-
-    public void fieldSet$motionY(double motionY) {
-    }
-
-    public double fieldGet$motionZ() {
-        return Double.parseDouble(null);
-    }
-
-    public void fieldSet$motionZ(double motionZ) {
     }
 }

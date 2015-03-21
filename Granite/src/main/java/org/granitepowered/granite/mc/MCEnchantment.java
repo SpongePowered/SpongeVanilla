@@ -26,13 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Enchantment")
 public class MCEnchantment implements MC {
 
-    public String fieldGet$name() {
-        return null;
-    }
+    public String name;
 
-    public int fieldGet$weight() {
-        return Integer.parseInt(null);
-    }
+    public int weight;
 
     public int getMinLevel() {
         return Integer.parseInt(null);

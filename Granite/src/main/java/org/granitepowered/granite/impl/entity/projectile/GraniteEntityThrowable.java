@@ -23,12 +23,11 @@
 
 package org.granitepowered.granite.impl.entity.projectile;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
-import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.granitepowered.granite.mc.MCEntityThrowable;
 import org.spongepowered.api.entity.projectile.source.ProjectileSource;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public abstract class GraniteEntityThrowable<T extends MCEntityThrowable> extends GraniteProjectile<T> {
 
@@ -43,6 +42,6 @@ public abstract class GraniteEntityThrowable<T extends MCEntityThrowable> extend
 
     @Override
     public void setShooter(ProjectileSource shooter) {
-        obj.fieldSet$thrower((MCEntityLivingBase) unwrap(shooter));
+        obj.thrower = unwrap(shooter);
     }
 }

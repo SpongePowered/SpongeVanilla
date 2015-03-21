@@ -26,9 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Material")
 public class MCMaterial implements MC {
 
-    public boolean fieldGet$requiresNoTool() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean requiresNoTool;
 
     public boolean blocksMovement() {
         return Boolean.parseBoolean(null);

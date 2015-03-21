@@ -69,7 +69,7 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public double getHealth() {
-        return (float) obj.fieldGet$dataWatcher().getWatchedObject(6).fieldGet$watchedObject();
+        return (float) obj.dataWatcher.getWatchedObject(6).watchedObject;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
         } else if (health > 20) {
             health = 20;
         }
-        obj.fieldGet$dataWatcher().updateObject(6, (float) health);
+        obj.dataWatcher.updateObject(6, (float) health);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public void removePotionEffect(PotionEffectType potionEffectType) {
-        obj.removePotionEffect(((MCPotion) unwrap(potionEffectType)).fieldGet$id());
+        obj.removePotionEffect(((MCPotion) unwrap(potionEffectType)).id);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public List<PotionEffect> getPotionEffects() {
-        Map potions = obj.fieldGet$activePotions();
+        Map potions = obj.activePotions;
         List<PotionEffect> potionEffects = new ArrayList<>();
         for (Object object : potions.values()) {
             potionEffects.add(new GranitePotionEffect(object));
@@ -133,13 +133,13 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public Optional<Living> getLastAttacker() {
-        MCEntityLivingBase living = obj.fieldGet$lastAttacker();
+        MCEntityLivingBase living = obj.lastAttacker;
         return Optional.fromNullable((Living) wrap(living));
     }
 
     @Override
     public void setLastAttacker(Living lastAttacker) {
-        obj.fieldSet$lastAttacker((MCEntityLivingBase) unwrap(lastAttacker));
+        obj.lastAttacker = unwrap(lastAttacker);
     }
 
     @Override
@@ -175,32 +175,32 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public double getLastDamage() {
-        return obj.fieldGet$lastDamage();
+        return obj.lastDamage;
     }
 
     @Override
     public void setLastDamage(double damage) {
-        obj.fieldSet$lastDamage((float) damage);
+        obj.lastDamage = ((float) damage);
     }
 
     @Override
     public int getInvulnerabilityTicks() {
-        return obj.fieldGet$hurtResistantTime();
+        return obj.hurtResistantTime;
     }
 
     @Override
     public void setInvulnerabilityTicks(int ticks) {
-        obj.fieldSet$hurtResistantTime(ticks);
+        obj.hurtResistantTime = ticks;
     }
 
     @Override
     public int getMaxInvulnerabilityTicks() {
-        return obj.fieldGet$maxHurtResistantTime() / 2;
+        return obj.maxHurtResistantTime / 2;
     }
 
     @Override
     public void setMaxInvulnerabilityTicks(int ticks) {
-        obj.fieldSet$maxHurtResistantTime(ticks * 2);
+        obj.maxHurtResistantTime = (ticks * 2);
     }
 
     @Override
@@ -225,17 +225,17 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public boolean isInvisible() {
-        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(0).fieldGet$watchedObject() & 1 << 5) != 0;
+        return ((byte) obj.dataWatcher.getWatchedObject(0).watchedObject & 1 << 5) != 0;
     }
 
     @Override
     public void setInvisible(boolean invisible) {
         if (this instanceof ArmorStand) {
             GraniteEntityArmorStand armorStand = (GraniteEntityArmorStand) this;
-            armorStand.obj.fieldSet$canInteract(invisible);
+            armorStand.obj.canInteract = invisible;
         }
-        byte object = (byte) obj.fieldGet$dataWatcher().getWatchedObject(0).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(0, (byte) (invisible ? (object | 1 << 5) : (object & ~(1 << 5))));
+        byte object = (byte) obj.dataWatcher.getWatchedObject(0).watchedObject;
+        obj.dataWatcher.updateObject(0, (byte) (invisible ? (object | 1 << 5) : (object & ~(1 << 5))));
     }
 
     @Override

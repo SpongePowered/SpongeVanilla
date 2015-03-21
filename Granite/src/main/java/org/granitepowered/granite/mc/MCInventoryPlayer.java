@@ -26,15 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "InventoryPlayer")
 public class MCInventoryPlayer implements MC {
 
-    public MCItemStack[] fieldGet$mainInventory() {
-        return null;
-    }
+    public MCItemStack[] mainInventory;
 
-    public MCItemStack[] fieldGet$armorInventory() {
-        return null;
-    }
+    public MCItemStack[] armorInventory;
 
-    public int fieldGet$currentItem() {
-        return Integer.parseInt(null);
-    }
+    public int currentItem;
 }

@@ -26,11 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "MinecraftProtocolVersionIdentifier")
 public class MCMinecraftProtocolVersionIdentifier implements MC {
 
-    public String fieldGet$name() {
-        return null;
-    }
+    public String name;
 
-    public int fieldGet$protocol() {
-        return Integer.parseInt(null);
-    }
+    public int protocol;
 }

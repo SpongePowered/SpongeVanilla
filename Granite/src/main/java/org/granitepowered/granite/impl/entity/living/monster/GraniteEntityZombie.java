@@ -43,12 +43,12 @@ public class GraniteEntityZombie<T extends MCEntityZombie> extends GraniteEntity
 
     @Override
     public boolean isVillagerZombie() {
-        return (byte) obj.fieldGet$dataWatcher().getWatchedObject(13).fieldGet$watchedObject() == 1;
+        return (byte) obj.dataWatcher.getWatchedObject(13).watchedObject == 1;
     }
 
     @Override
     public void setVillagerZombie(boolean villager) {
-        obj.fieldGet$dataWatcher().updateObject(13, villager ? (byte) 1 : (byte) 0);
+        obj.dataWatcher.updateObject(13, villager ? (byte) 1 : (byte) 0);
     }
 
     @Override
@@ -73,17 +73,17 @@ public class GraniteEntityZombie<T extends MCEntityZombie> extends GraniteEntity
 
     @Override
     public boolean isBaby() {
-        return (byte) obj.fieldGet$dataWatcher().getWatchedObject(12).fieldGet$watchedObject() == 1;
+        return (byte) obj.dataWatcher.getWatchedObject(12).watchedObject == 1;
     }
 
     @Override
     public boolean canBreed() {
-        return obj.fieldGet$attributeMap().getAttributeInstance(obj.fieldGet$reinforcementsAttribute()).getAttributeValue() > 0;
+        return obj.attributeMap.getAttributeInstance(obj.reinforcementsAttribute).getAttributeValue() > 0;
     }
 
     @Override
     public void setBreeding(boolean breeding) {
-        obj.fieldGet$attributeMap().getAttributeInstance(obj.fieldGet$reinforcementsAttribute())
+        obj.attributeMap.getAttributeInstance(obj.reinforcementsAttribute)
                 .setBaseValue(breeding ? new Random().nextDouble() * 0.10000000149011612D : 0);
     }
 
@@ -94,52 +94,52 @@ public class GraniteEntityZombie<T extends MCEntityZombie> extends GraniteEntity
 
     @Override
     public Optional<ItemStack> getHelmet() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.fieldGet$equipment()[4]));
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.equipment[4]));
     }
 
     @Override
     public void setHelmet(ItemStack itemStack) {
-        obj.fieldGet$equipment()[4] = MinecraftUtils.unwrap(itemStack);
+        obj.equipment[4] = MinecraftUtils.unwrap(itemStack);
     }
 
     @Override
     public Optional<ItemStack> getChestplate() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.fieldGet$equipment()[3]));
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.equipment[3]));
     }
 
     @Override
     public void setChestplate(ItemStack itemStack) {
-        obj.fieldGet$equipment()[3] = MinecraftUtils.unwrap(itemStack);
+        obj.equipment[3] = MinecraftUtils.unwrap(itemStack);
     }
 
     @Override
     public Optional<ItemStack> getLeggings() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.fieldGet$equipment()[2]));
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.equipment[2]));
     }
 
     @Override
     public void setLeggings(ItemStack itemStack) {
-        obj.fieldGet$equipment()[2] = MinecraftUtils.unwrap(itemStack);
+        obj.equipment[2] = MinecraftUtils.unwrap(itemStack);
     }
 
     @Override
     public Optional<ItemStack> getBoots() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.fieldGet$equipment()[1]));
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.equipment[1]));
     }
 
     @Override
     public void setBoots(ItemStack itemStack) {
-        obj.fieldGet$equipment()[1] = MinecraftUtils.unwrap(itemStack);
+        obj.equipment[1] = MinecraftUtils.unwrap(itemStack);
     }
 
     @Override
     public Optional<ItemStack> getItemInHand() {
-        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.fieldGet$equipment()[0]));
+        return Optional.fromNullable((ItemStack) MinecraftUtils.wrap(obj.equipment[0]));
     }
 
     @Override
     public void setItemInHand(ItemStack itemStack) {
-        obj.fieldGet$equipment()[0] = MinecraftUtils.unwrap(itemStack);
+        obj.equipment[0] = MinecraftUtils.unwrap(itemStack);
     }
 
     @Override

@@ -26,7 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "C07PacketPlayerDigging")
 public class MCPacketPlayerDigging extends MCPacket {
 
-    public MCBlockPos fieldGet$position() {
-        return null;
-    }
+    public MCBlockPos position;
 }

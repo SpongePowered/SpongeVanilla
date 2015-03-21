@@ -35,11 +35,11 @@ public class GraniteBannerPatternShape extends Composite<MCEnumBannerPattern> im
 
     @Override
     public String getName() {
-        return obj.fieldGet$name();
+        return obj.name;
     }
 
     @Override
     public String getId() {
-        return obj.fieldGet$id();
+        return obj.id;
     }
 }

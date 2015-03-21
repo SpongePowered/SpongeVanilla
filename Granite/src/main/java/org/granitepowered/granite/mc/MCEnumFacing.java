@@ -27,7 +27,5 @@ package org.granitepowered.granite.mc;
 public enum MCEnumFacing implements MC {
     ;
 
-    public MCVec3i fieldGet$directionVec() {
-        return null;
-    }
+    public MCVec3i directionVec;
 }

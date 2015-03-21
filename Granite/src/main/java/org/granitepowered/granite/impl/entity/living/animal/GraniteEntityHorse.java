@@ -52,7 +52,7 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public void setStyle(HorseStyle horseStyle) {
-        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) getColor()).getType() & 0xFF | ((GraniteMeta) horseStyle).getType() << 8);
+        obj.dataWatcher.updateObject(20, ((GraniteMeta) getColor()).getType() & 0xFF | ((GraniteMeta) horseStyle).getType() << 8);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public void setColor(HorseColor horseColor) {
-        obj.fieldGet$dataWatcher().updateObject(20, ((GraniteMeta) horseColor).getType() & 0xFF | ((GraniteMeta) getStyle()).getType() << 8);
+        obj.dataWatcher.updateObject(20, ((GraniteMeta) horseColor).getType() & 0xFF | ((GraniteMeta) getStyle()).getType() << 8);
     }
 
     @Override
@@ -74,21 +74,21 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public void setVariant(HorseVariant horseVariant) {
-        obj.fieldGet$dataWatcher().updateObject(19, ((GraniteMeta) horseVariant).getType());
+        obj.dataWatcher.updateObject(19, ((GraniteMeta) horseVariant).getType());
     }
 
     @Override
     public Optional<ItemStack> getSaddle() {
-        ItemStack itemStack = MinecraftUtils.wrap(obj.fieldGet$animalChest().fieldGet$inventoryContents()[0]);
+        ItemStack itemStack = MinecraftUtils.wrap(obj.animalChest.inventoryContents[0]);
         return Optional.fromNullable(itemStack);
     }
 
     @Override
     public void setSaddle(ItemStack itemStack) {
         if (itemStack.getItem() == ItemTypes.SADDLE) {
-            MCItemStack[] inventory = obj.fieldGet$animalChest().fieldGet$inventoryContents();
+            MCItemStack[] inventory = obj.animalChest.inventoryContents;
             inventory[0] = MinecraftUtils.unwrap(itemStack);
-            obj.fieldGet$animalChest().fieldSet$inventoryContents(inventory);
+            obj.animalChest.inventoryContents = inventory;
         }
     }
 

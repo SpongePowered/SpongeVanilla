@@ -37,12 +37,12 @@ public class GraniteEntityWitch extends GraniteEntityMonster<MCEntityWitch> impl
 
     @Override
     public boolean isAggressive() {
-        return (byte) obj.fieldGet$dataWatcher().getWatchedObject(21).fieldGet$watchedObject() == 1;
+        return (byte) obj.dataWatcher.getWatchedObject(21).watchedObject == 1;
     }
 
     @Override
     public void setAggressive(boolean aggressive) {
-        obj.fieldGet$dataWatcher().updateObject(21, aggressive ? (byte) 1 : (byte) 0);
+        obj.dataWatcher.updateObject(21, aggressive ? (byte) 1 : (byte) 0);
     }
 
     @Override

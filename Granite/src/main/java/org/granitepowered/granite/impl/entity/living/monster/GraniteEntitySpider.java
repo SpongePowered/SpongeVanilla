@@ -34,6 +34,6 @@ public class GraniteEntitySpider<T extends MCEntitySpider> extends GraniteEntity
 
     @Override
     public boolean isClimbing() {
-        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 1) != 0;
+        return ((byte) obj.dataWatcher.getWatchedObject(16).watchedObject & 1) != 0;
     }
 }

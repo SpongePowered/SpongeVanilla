@@ -23,13 +23,12 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
-import org.granitepowered.granite.mc.MCBlockState;
 import org.granitepowered.granite.mc.MCEntityFallingBlock;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.FallingBlock;
+
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteEntityFallingBlock extends GraniteEntity<MCEntityFallingBlock> implements FallingBlock {
 
@@ -39,51 +38,51 @@ public class GraniteEntityFallingBlock extends GraniteEntity<MCEntityFallingBloc
 
     @Override
     public double getFallDamagePerBlock() {
-        return obj.fieldGet$fallHurtAmount();
+        return obj.fallHurtAmount;
     }
 
     @Override
-    public void setFallDamagePerBlock(double v) {
-        obj.fieldSet$fallHurtAmount((float) v);
+    public void setFallDamagePerBlock(double fallDamagePerBlock) {
+        obj.fallHurtAmount = (float) fallDamagePerBlock;
     }
 
     @Override
     public double getMaxFallDamage() {
-        return obj.fieldGet$fallHurtMax();
+        return obj.fallHurtMax;
     }
 
     @Override
-    public void setMaxFallDamage(double v) {
-        obj.fieldSet$fallHurtMax((int) v);
+    public void setMaxFallDamage(double maxFallDamage) {
+        obj.fallHurtMax = (int) maxFallDamage;
     }
 
     @Override
     public BlockState getBlockState() {
-        return wrap(obj.fieldGet$block());
+        return wrap(obj.block);
     }
 
     @Override
     public void setBlockState(BlockState blockState) {
-        obj.fieldSet$block((MCBlockState) unwrap(blockState));
+        obj.block = unwrap(blockState);
     }
 
     @Override
     public boolean getCanPlaceAsBlock() {
-        return obj.fieldGet$canPlaceAsBlock();
+        return obj.canPlaceAsBlock;
     }
 
     @Override
-    public void setCanPlaceAsBlock(boolean b) {
-        obj.fieldSet$canPlaceAsBlock(b);
+    public void setCanPlaceAsBlock(boolean placeAsBlock) {
+        obj.canPlaceAsBlock = (placeAsBlock);
     }
 
     @Override
     public boolean getCanDropAsItem() {
-        return obj.fieldGet$shouldDropItem();
+        return obj.shouldDropItem;
     }
 
     @Override
-    public void setCanDropAsItem(boolean b) {
-        obj.fieldSet$shouldDropItem(b);
+    public void setCanDropAsItem(boolean dropAsItem) {
+        obj.shouldDropItem = dropAsItem;
     }
 }

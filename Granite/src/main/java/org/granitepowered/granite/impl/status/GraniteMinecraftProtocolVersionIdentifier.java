@@ -37,12 +37,12 @@ public class GraniteMinecraftProtocolVersionIdentifier extends Composite<MCMinec
 
     @Override
     public int getProtocol() {
-        return obj.fieldGet$protocol();
+        return obj.protocol;
     }
 
     @Override
     public String getName() {
-        return obj.fieldGet$name();
+        return obj.name;
     }
 
     @Override

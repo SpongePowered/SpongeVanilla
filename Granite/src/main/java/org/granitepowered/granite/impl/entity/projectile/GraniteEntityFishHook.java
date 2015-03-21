@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.entity.projectile;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityFishHook;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
@@ -43,12 +42,12 @@ public class GraniteEntityFishHook extends GraniteEntity<MCEntityFishHook> imple
 
     @Override
     public Optional<Entity> getHookedEntity() {
-        return Optional.fromNullable((Entity) MinecraftUtils.wrap(obj.fieldGet$caughtEntity()));
+        return Optional.fromNullable((Entity) MinecraftUtils.wrap(obj.caughtEntity));
     }
 
     @Override
     public void setHookedEntity(Entity entity) {
-        obj.fieldSet$caughtEntity((MCEntity) MinecraftUtils.unwrap(entity));
+        obj.caughtEntity = MinecraftUtils.unwrap(entity);
     }
 
     @Override

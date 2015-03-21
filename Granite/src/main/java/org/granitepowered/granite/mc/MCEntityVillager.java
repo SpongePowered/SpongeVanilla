@@ -26,23 +26,11 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityVillager")
 public class MCEntityVillager extends MCEntityAgeable {
 
-    public boolean fieldGet$isPlaying() {
-        return Boolean.parseBoolean(null);
-    }
+    public boolean isPlaying;
 
-    public void fieldSet$isPlaying(boolean playing) {
-    }
+    public MCEntityPlayer buyingPlayer;
 
-    public MCEntityPlayer fieldGet$buyingPlayer() {
-        return null;
-    }
-
-    public int fieldGet$career() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$career(int career) {
-    }
+    public int career;
 
     public void interact(MCEntityPlayer entityPlayer) {
     }

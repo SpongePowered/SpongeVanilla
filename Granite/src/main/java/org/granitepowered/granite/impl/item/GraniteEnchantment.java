@@ -38,12 +38,12 @@ public class GraniteEnchantment extends Composite<MCEnchantment> implements Ench
 
     @Override
     public String getId() {
-        return "minecraft:" + obj.fieldGet$name();
+        return "minecraft:" + obj.name;
     }
 
     @Override
     public int getWeight() {
-        return obj.fieldGet$weight();
+        return obj.weight;
     }
 
     @Override

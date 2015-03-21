@@ -26,7 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "NetHandlerHandshakeTCP")
 public class MCNetHandlerHandshakeTCP implements MC {
 
-    public MCNetworkManager fieldGet$networkManager() {
-        return null;
-    }
+    public MCNetworkManager networkManager;
 }

@@ -39,7 +39,7 @@ public class GraniteBlockProperty<T extends Comparable<T>> extends Composite<MCP
 
     @Override
     public String getName() {
-        return obj.fieldGet$name();
+        return obj.name;
     }
 
     @Override

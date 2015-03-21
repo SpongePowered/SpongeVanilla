@@ -34,11 +34,11 @@ public class GraniteEntityZombiePigman extends GraniteEntityZombie<MCEntityPigZo
 
     @Override
     public int getAngerLevel() {
-        return obj.fieldGet$angerLevel();
+        return obj.angerLevel;
     }
 
     @Override
     public void setAngerLevel(int angerLevel) {
-        obj.fieldSet$angerLevel(angerLevel);
+        obj.angerLevel = angerLevel;
     }
 }

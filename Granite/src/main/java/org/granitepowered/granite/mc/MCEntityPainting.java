@@ -26,10 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityPapublic inting")
 public class MCEntityPainting extends MCEntityHanging {
 
-    public MCEnumArt fieldGet$art() {
-        return null;
-    }
-
-    public void fieldSet$art(MCEnumArt art) {
-    }
+    public MCEnumArt art;
 }

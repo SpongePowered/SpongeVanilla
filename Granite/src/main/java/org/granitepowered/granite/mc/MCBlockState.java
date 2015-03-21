@@ -28,9 +28,7 @@ import com.google.common.collect.ImmutableMap;
 @Implement(name = "BlockState")
 public class MCBlockState implements MC {
 
-    public MCBlock fieldGet$block() {
-        return null;
-    }
+    public MCBlock block;
 
     public ImmutableMap<MCProperty, Comparable> fieldGet$properties() {
         return null;

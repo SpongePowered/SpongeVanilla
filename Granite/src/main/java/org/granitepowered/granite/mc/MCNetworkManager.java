@@ -28,7 +28,5 @@ import java.net.SocketAddress;
 @Implement(name = "NetworkManager")
 public class MCNetworkManager implements MC {
 
-    public SocketAddress fieldGet$socketAddress() {
-        return null;
-    }
+    public SocketAddress socketAddress;
 }

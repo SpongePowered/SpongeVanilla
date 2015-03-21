@@ -51,6 +51,6 @@ public class GraniteEntityRabbit extends GraniteEntityAnimal<MCEntityRabbit> imp
             setCustomName(Translations.of("entity.KillerBunny.name").toString());
         }
 
-        obj.fieldGet$dataWatcher().updateObject(18, (byte) (type << 8));
+        obj.dataWatcher.updateObject(18, (byte) (type << 8));
     }
 }

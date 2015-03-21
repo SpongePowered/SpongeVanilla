@@ -26,15 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityTNTPrimed")
 public class MCPrimedTNT extends MCEntity {
 
-    public MCEntityLiving fieldGet$tntTriggeredBy() {
-        return null;
-    }
+    public MCEntityLiving tntTriggeredBy;
 
-    public int fieldGet$fuse() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$fuse(int ticks) {
-    }
-
+    public int fuse;
 }

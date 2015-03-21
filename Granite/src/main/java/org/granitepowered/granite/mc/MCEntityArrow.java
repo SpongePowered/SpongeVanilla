@@ -26,24 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityArrow")
 public class MCEntityArrow extends MCEntity {
 
-    public MCEntity fieldGet$shootingEntity() {
-        return null;
-    }
+    public MCEntity shootingEntity;
 
-    public void fieldSet$shootingEntity(MCEntity entity) {
-    }
+    public int knockbackStrength;
 
-    public int fieldGet$knockbackStrength() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$knockbackStrength(int knockback) {
-    }
-
-    public double fieldGet$damage() {
-        return Double.parseDouble(null);
-    }
-
-    public void fieldSet$damage(double damage) {
-    }
+    public double damage;
 }

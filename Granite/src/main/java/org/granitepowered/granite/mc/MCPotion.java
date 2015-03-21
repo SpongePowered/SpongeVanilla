@@ -26,15 +26,10 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Potion")
 public class MCPotion implements MC {
 
-    public int fieldGet$id() {
-        return Integer.parseInt(null);
-    }
+    public int id;
+    public String name;
 
     public boolean isInstant() {
         return Boolean.parseBoolean(null);
-    }
-
-    public String fieldGet$name() {
-        return null;
     }
 }

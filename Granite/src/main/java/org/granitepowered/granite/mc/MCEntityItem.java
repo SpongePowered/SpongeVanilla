@@ -28,26 +28,11 @@ import org.spongepowered.api.item.inventory.ItemStack;
 @Implement(name = "EntityItem")
 public class MCEntityItem extends MCEntity {
 
-    public int fieldGet$age() {
-        return Integer.parseInt(null);
-    }
+    public int age;
 
-    public void fieldSet$age(int age) {
-    }
+    public int delayBeforeCanPickup;
 
-    public int fieldGet$delayBeforeCanPickup() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$delayBeforeCanPickup(int delay) {
-    }
-
-    public String fieldGet$thrower() {
-        return null;
-    }
-
-    public void fieldSet$thrower(String thrower) {
-    }
+    public String thrower;
 
     public ItemStack getEntityItem() {
         return null;

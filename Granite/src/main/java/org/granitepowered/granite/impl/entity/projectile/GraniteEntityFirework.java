@@ -37,12 +37,12 @@ public class GraniteEntityFirework extends GraniteEntity<MCEntityFireworkRocket>
 
     @Override
     public int getFuseDuration() {
-        return obj.fieldGet$lifetime();
+        return obj.lifetime;
     }
 
     @Override
     public void setFuseDuration(int duration) {
-        obj.fieldGet$lifetime(duration);
+        obj.lifetime = duration;
     }
 
     @Override

@@ -26,11 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityXPOrb")
 public class MCEntityXPOrb extends MCEntity {
 
-    public int fieldGet$xpValue() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$xpValue(int experience) {
-    }
-
+    public int xpValue;
 }

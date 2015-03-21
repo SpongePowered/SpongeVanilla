@@ -24,7 +24,6 @@
 package org.granitepowered.granite.impl.entity.living;
 
 import com.google.common.base.Optional;
-import org.granitepowered.granite.mc.MCEntity;
 import org.granitepowered.granite.mc.MCEntityLiving;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
@@ -38,50 +37,50 @@ public class GraniteEntityLiving<T extends MCEntityLiving> extends GraniteEntity
 
     @Override
     public boolean isPersistent() {
-        return obj.fieldGet$persistenceRequired();
+        return obj.persistenceRequired;
     }
 
     @Override
     public void setPersistent(boolean persistent) {
-        obj.fieldSet$persistenceRequired(persistent);
+        obj.persistenceRequired = persistent;
     }
 
     public boolean getCanPickupItems() {
-        return obj.fieldGet$canPickUpLoot();
+        return obj.canPickUpLoot;
     }
 
     @Override
     public void setCanPickupItems(boolean canPickupItems) {
-        obj.fieldSet$canPickUpLoot(canPickupItems);
+        obj.canPickUpLoot = canPickupItems;
     }
 
     @Override
     public boolean isLeashed() {
-        return obj.fieldGet$isLeashed();
+        return obj.isLeashed;
     }
 
     @Override
     public void setLeashed(boolean leashed) {
-        obj.fieldSet$isLeashed(leashed);
+        obj.isLeashed = leashed;
     }
 
     @Override
     public Optional<Entity> getLeashHolder() {
-        return Optional.fromNullable((Entity) MinecraftUtils.wrap(obj.fieldGet$leashedToEntity()));
+        return Optional.fromNullable((Entity) MinecraftUtils.wrap(obj.leashedToEntity));
     }
 
     @Override
     public void setLeashHolder(Entity entity) {
-        obj.setLeashedToEntity((MCEntity) MinecraftUtils.unwrap(entity), true);
+        obj.leashedToEntity = MinecraftUtils.unwrap(entity);
     }
 
     @Override
     public boolean isAiEnabled() {
-        return (int) obj.fieldGet$dataWatcher().getWatchedObject(15).fieldGet$watchedObject() == 0;
+        return (int) obj.dataWatcher.getWatchedObject(15).watchedObject == 0;
     }
 
     @Override
     public void setAiEnabled(boolean ai) {
-        obj.fieldGet$dataWatcher().updateObject(15, (byte) (ai ? 1 : 0));
+        obj.dataWatcher.updateObject(15, (byte) (ai ? 1 : 0));
     }
 }

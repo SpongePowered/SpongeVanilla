@@ -35,23 +35,23 @@ public class GraniteEntityEyeOfEnder extends GraniteEntityThrowable<MCEntityEnde
 
     @Override
     public Vector3d getTargetedLocation() {
-        return new Vector3d(obj.fieldGet$targetX(), obj.fieldGet$targetY(), obj.fieldGet$targetZ());
+        return new Vector3d(obj.targetX, obj.targetY, obj.targetZ);
     }
 
     @Override
     public void setTargetedLocation(Vector3d vector3d) {
-        obj.fieldSet$targetX(vector3d.getX());
-        obj.fieldSet$targetY(vector3d.getY());
-        obj.fieldSet$targetZ(vector3d.getZ());
+        obj.targetX = vector3d.getX();
+        obj.targetY = vector3d.getY();
+        obj.targetZ = vector3d.getZ();
     }
 
     @Override
     public boolean doesShatterOnDrop() {
-        return obj.fieldGet$shatterOrDrop();
+        return obj.shatterOrDrop;
     }
 
     @Override
     public void setShatterOnDrop(boolean shatter) {
-        obj.fieldSet$shatterOrDrop(shatter);
+        obj.shatterOrDrop = shatter;
     }
 }

@@ -41,7 +41,7 @@ public class GraniteEntityItemFrame extends GraniteEntityHanging<MCEntityItemFra
     @Override
     public Optional<ItemStack> getItem() {
         return Optional
-                .fromNullable((ItemStack) MinecraftUtils.wrap((MCItemStack) obj.fieldGet$dataWatcher().getWatchedObject(8).fieldGet$watchedObject()));
+                .fromNullable((ItemStack) MinecraftUtils.wrap((MCItemStack) obj.dataWatcher.getWatchedObject(8).watchedObject));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class GraniteEntityItemFrame extends GraniteEntityHanging<MCEntityItemFra
 
     @Override
     public Rotation getItemRotation() {
-        return Granite.getInstance().getRegistry().getRotationFromDegree((int) obj.fieldGet$dataWatcher().getWatchedObject(9).fieldGet$watchedObject()).get();
+        return Granite.getInstance().getRegistry().getRotationFromDegree((int) obj.dataWatcher.getWatchedObject(9).watchedObject).get();
     }
 
     @Override

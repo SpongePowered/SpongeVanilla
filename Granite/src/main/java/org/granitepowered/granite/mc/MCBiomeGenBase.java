@@ -26,27 +26,13 @@ package org.granitepowered.granite.mc;
 @Implement(name = "BiomeGenBase")
 public class MCBiomeGenBase implements MC {
 
-    public float fieldGet$temperature() {
-        return Float.parseFloat(null);
-    }
+    public float temperature;
 
-    public float fieldGet$minHeight() {
-        return Float.parseFloat(null);
-    }
+    public float minHeight;
 
-    public float fieldGet$maxHeight() {
-        return Float.parseFloat(null);
-    }
+    public float maxHeight;
 
-    public int fieldGet$biomeID() {
-        return Integer.parseInt(null);
-    }
+    public String biomeName;
 
-    public String fieldGet$biomeName() {
-        return null;
-    }
-
-    public float fieldGet$rainFall() {
-        return Float.parseFloat(null);
-    }
+    public float rainFall;
 }

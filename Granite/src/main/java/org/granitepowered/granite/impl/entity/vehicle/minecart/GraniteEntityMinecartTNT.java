@@ -21,12 +21,12 @@ public class GraniteEntityMinecartTNT extends GraniteEntityMinecart<MCEntityMine
 
     @Override
     public int getFuseDuration() {
-        return obj.fieldGet$fuse();
+        return obj.fuse;
     }
 
     @Override
     public void setFuseDuration(int fuseDuration) {
-        obj.fieldSet$fuse(fuseDuration);
+        obj.fuse = fuseDuration;
     }
 
     @Override

@@ -28,11 +28,7 @@ public enum MCEnumBannerPattern implements MC {
 
     ;
 
-    public String fieldGet$name() {
-        return null;
-    }
+    public String name;
 
-    public String fieldGet$id() {
-        return null;
-    }
+    public String id;
 }

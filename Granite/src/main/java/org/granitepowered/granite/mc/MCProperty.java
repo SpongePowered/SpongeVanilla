@@ -28,9 +28,7 @@ import java.util.Collection;
 @Implement(name = "PropertyHelper")
 public class MCProperty implements MC {
 
-    public String fieldGet$name() {
-        return null;
-    }
+    public String name;
 
     public Collection<Comparable<?>> getAllowedValues() {
         return null;

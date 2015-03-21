@@ -85,7 +85,7 @@ public class GranitePotionBuilder implements PotionEffectBuilder {
     @Override
     public PotionEffect build() throws IllegalStateException {
         return new GranitePotionEffect(Instantiator.get().newPotionEffect(
-                ((MCPotion) MinecraftUtils.unwrap(potionEffectType)).fieldGet$id(),
+                ((MCPotion) MinecraftUtils.unwrap(potionEffectType)).id,
                 duration, amplifier, ambience, particles
         ));
     }

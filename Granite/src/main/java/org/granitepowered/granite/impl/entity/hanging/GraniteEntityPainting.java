@@ -25,7 +25,6 @@ package org.granitepowered.granite.impl.entity.hanging;
 
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.mc.MCEntityPainting;
-import org.granitepowered.granite.mc.MCEnumArt;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.hanging.Painting;
 import org.spongepowered.api.entity.hanging.art.Art;
@@ -38,11 +37,11 @@ public class GraniteEntityPainting extends GraniteEntityHanging<MCEntityPainting
 
     @Override
     public Art getArt() {
-        return new GraniteArt(obj.fieldGet$art());
+        return new GraniteArt(obj.art);
     }
 
     @Override
     public void setArt(Art art) {
-        obj.fieldSet$art((MCEnumArt) MinecraftUtils.unwrap(art));
+        obj.art = MinecraftUtils.unwrap(art);
     }
 }

@@ -35,16 +35,16 @@ public class GraniteArt extends Composite<MCEnumArt> implements Art {
 
     @Override
     public int getHeight() {
-        return obj.fieldGet$height();
+        return obj.height;
     }
 
     @Override
     public int getWidth() {
-        return obj.fieldGet$width();
+        return obj.width;
     }
 
     @Override
     public String getName() {
-        return obj.fieldGet$name();
+        return obj.name;
     }
 }

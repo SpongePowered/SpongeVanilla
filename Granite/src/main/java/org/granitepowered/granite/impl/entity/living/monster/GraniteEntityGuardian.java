@@ -34,12 +34,12 @@ public class GraniteEntityGuardian extends GraniteEntityMonster<MCEntityGuardian
 
     @Override
     public boolean isElder() {
-        return ((int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 4) != 0;
+        return ((int) obj.dataWatcher.getWatchedObject(16).watchedObject & 4) != 0;
     }
 
     @Override
     public void setElder(boolean elder) {
-        int object = (int) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, elder ? (object | 4) : (object & ~4));
+        int object = (int) obj.dataWatcher.getWatchedObject(16).watchedObject;
+        obj.dataWatcher.updateObject(16, elder ? (object | 4) : (object & ~4));
     }
 }

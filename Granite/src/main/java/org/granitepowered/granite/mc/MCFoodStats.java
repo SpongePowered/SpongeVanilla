@@ -26,17 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "FoodStats")
 public class MCFoodStats implements MC {
 
-    public int fieldGet$foodLevel() {
-        return Integer.parseInt(null);
-    }
+    public int foodLevel;
 
-    public void fieldSet$foodLevel(int food) {
-    }
-
-    public float fieldGet$foodSaturationLevel() {
-        return Float.parseFloat(null);
-    }
-
-    public void fieldSet$foodSaturationLevel(float saturation) {
-    }
+    public float foodSaturationLevel;
 }

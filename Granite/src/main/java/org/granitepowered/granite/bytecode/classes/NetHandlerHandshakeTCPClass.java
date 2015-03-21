@@ -40,10 +40,10 @@ public class NetHandlerHandshakeTCPClass extends BytecodeClass {
 
     @Proxy(methodName = "processHandshake")
     public Object processHandshake(ProxyCallbackInfo<MCNetHandlerHandshakeTCP> info) throws Throwable {
-        ConnectionInfo connectionInfo = (GraniteStatusClient) MinecraftUtils.wrap(info.getCaller().fieldGet$networkManager());
+        ConnectionInfo connectionInfo = (GraniteStatusClient) MinecraftUtils.wrap(info.getCaller().networkManager);
         MCPacketHandshake packetHandshake = ((MCPacketHandshake) info.getArguments()[0]);
-        connectionInfo.setVersion(packetHandshake.fieldGet$protocolVersion());
-        connectionInfo.setVirtualHost(packetHandshake.fieldGet$ip(), packetHandshake.fieldGet$port());
+        connectionInfo.setVersion(packetHandshake.protocolVersion);
+        connectionInfo.setVirtualHost(packetHandshake.ip, packetHandshake.port);
         return info.callback();
     }
 }

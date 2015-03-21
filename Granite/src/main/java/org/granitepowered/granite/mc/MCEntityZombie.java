@@ -26,9 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityZombie")
 public class MCEntityZombie extends MCEntityMob {
 
-    public MCBaseAttribute fieldGet$reinforcementsAttribute() {
-        return null;
-    }
+    public MCBaseAttribute reinforcementsAttribute;
 
     public void setChild(boolean child) {
     }

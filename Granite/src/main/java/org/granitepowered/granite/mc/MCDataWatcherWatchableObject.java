@@ -26,7 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "DataWatcher$WatchableObject")
 public class MCDataWatcherWatchableObject {
 
-    public Object fieldGet$watchedObject() {
-        return null;
-    }
+    public Object watchedObject;
 }

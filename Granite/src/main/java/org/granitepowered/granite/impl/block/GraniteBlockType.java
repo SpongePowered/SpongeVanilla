@@ -23,8 +23,6 @@
 
 package org.granitepowered.granite.impl.block;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
@@ -36,6 +34,8 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.text.translation.Translation;
+
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
@@ -59,7 +59,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public BlockState getDefaultState() {
-        return wrap(obj.fieldGet$defaultBlockState());
+        return wrap(obj.defaultBlockState);
     }
 
     @Override
@@ -70,12 +70,12 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean getTickRandomly() {
-        return obj.fieldGet$needsRandomTick();
+        return obj.needsRandomTick;
     }
 
     @Override
     public void setTickRandomly(boolean tickRandomly) {
-        obj.fieldSet$needsRandomTick(tickRandomly);
+        obj.needsRandomTick = tickRandomly;
     }
 
     @Override
@@ -95,12 +95,12 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean areStatisticsEnabled() {
-        return obj.fieldGet$enableStats();
+        return obj.enableStats;
     }
 
     @Override
     public float getEmittedLight() {
-        return obj.fieldGet$lightValue();
+        return obj.lightValue;
     }
 
     @Override

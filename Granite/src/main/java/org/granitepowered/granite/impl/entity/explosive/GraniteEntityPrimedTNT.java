@@ -23,13 +23,13 @@
 
 package org.granitepowered.granite.impl.entity.explosive;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.google.common.base.Optional;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mc.MCPrimedTNT;
 import org.spongepowered.api.entity.explosive.PrimedTNT;
 import org.spongepowered.api.entity.living.Living;
+
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteEntityPrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
 
@@ -39,17 +39,17 @@ public class GraniteEntityPrimedTNT extends GraniteEntity<MCPrimedTNT> implement
 
     @Override
     public Optional<Living> getDetonator() {
-        return Optional.fromNullable((Living) wrap(obj.fieldGet$tntTriggeredBy()));
+        return Optional.fromNullable((Living) wrap(obj.tntTriggeredBy));
     }
 
     @Override
     public int getFuseDuration() {
-        return obj.fieldGet$fuse();
+        return obj.fuse;
     }
 
     @Override
     public void setFuseDuration(int ticks) {
-        obj.fieldSet$fuse(ticks);
+        obj.fuse = ticks;
     }
 
     @Override

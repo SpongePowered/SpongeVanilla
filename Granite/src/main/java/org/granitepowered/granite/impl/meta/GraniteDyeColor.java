@@ -39,7 +39,7 @@ public class GraniteDyeColor extends Composite<MCEnumDyeColor> implements DyeCol
 
     @Override
     public String getName() {
-        return obj.fieldGet$name();
+        return obj.name;
     }
 
     @Override

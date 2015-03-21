@@ -28,16 +28,10 @@ public enum MCEnumArt implements MC {
 
     ;
 
-    public int fieldGet$width() {
-        return Integer.parseInt(null);
-    }
+    public int width;
 
-    public int fieldGet$height() {
-        return Integer.parseInt(null);
-    }
+    public int height;
 
-    public String fieldGet$name() {
-        return null;
-    }
+    public String name;
 
 }

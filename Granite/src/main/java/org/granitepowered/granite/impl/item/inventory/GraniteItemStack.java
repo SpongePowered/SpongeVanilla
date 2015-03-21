@@ -90,7 +90,7 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
 
     @Override
     public int getQuantity() {
-        return obj.fieldGet$stackSize();
+        return obj.stackSize;
     }
 
     @Override
@@ -98,12 +98,12 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
         if (quantity > getMaxStackQuantity()) {
             quantity = getMaxStackQuantity();
         }
-        obj.fieldSet$stackSize(quantity);
+        obj.stackSize = quantity;
     }
 
     @Override
     public int getMaxStackQuantity() {
-        return getMCItem().fieldGet$maxStackSize();
+        return getMCItem().maxStackSize;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     }
 
     public MCItem getMCItem() {
-        return obj.fieldGet$item();
+        return obj.item;
     }
 
     @Override

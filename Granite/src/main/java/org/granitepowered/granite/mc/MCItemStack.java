@@ -26,23 +26,11 @@ package org.granitepowered.granite.mc;
 @Implement(name = "ItemStack")
 public class MCItemStack implements MC {
 
-    public int fieldGet$stackSize() {
-        return Integer.parseInt(null);
-    }
+    public int stackSize;
 
-    public void fieldSet$stackSize(int size) {
-    }
+    public int itemDamage;
 
-    public int fieldGet$itemDamage() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$itemDamage(int damage) {
-    }
-
-    public MCItem fieldGet$item() {
-        return null;
-    }
+    public MCItem item;
 
     public boolean isItemEnchanted() {
         return Boolean.parseBoolean(null);

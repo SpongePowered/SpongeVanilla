@@ -51,14 +51,14 @@ public class ItemStackClass extends BytecodeClass {
         GranitePlayer player = wrap(mcPlayer);
         GraniteWorld world = wrap(mcWorld);
 
-        BlockState clickedBlock = world.getBlock(posClicked.fieldGet$x(), posClicked.fieldGet$y(), posClicked.fieldGet$z());
+        BlockState clickedBlock = world.getBlock(posClicked.x, posClicked.y, posClicked.z);
 
         MCBlockPos posPlaced = posClicked;
-        if (!unwrap((GraniteBlockState) clickedBlock).fieldGet$block().isReplaceable(mcWorld, posClicked)) {
+        if (!unwrap((GraniteBlockState) clickedBlock).block.isReplaceable(mcWorld, posClicked)) {
             posPlaced = posClicked.offset(face, 1);
         }
 
-        BlockState loc = world.getBlock(posPlaced.fieldGet$x(), posPlaced.fieldGet$y(), posPlaced.fieldGet$z());
+        BlockState loc = world.getBlock(posPlaced.x, posPlaced.y, posPlaced.z);
 
         /*BlockSnapshot oldSnapshot = loc.getSnapshot();
         // TODO: Send PR to Sponge devs with hitX, hitY, hitZ (args[4 - 6])

@@ -26,10 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "PlayerCapabilities")
 public class MCPlayerCapabilities implements MC {
 
-    public boolean fieldGet$allowFlying() {
-        return Boolean.parseBoolean(null);
-    }
-
-    public void fieldSet$allowFlying(boolean allowFlight) {
-    }
+    public boolean allowFlying;
 }

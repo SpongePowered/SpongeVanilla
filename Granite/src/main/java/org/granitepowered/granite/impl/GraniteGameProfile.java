@@ -39,7 +39,7 @@ public class GraniteGameProfile extends Composite<MCGameProfile> implements Game
 
     @Override
     public String getName() {
-        return obj.fieldGet$name();
+        return obj.name;
     }
 
     @Override
@@ -49,6 +49,6 @@ public class GraniteGameProfile extends Composite<MCGameProfile> implements Game
 
     @Override
     public UUID getUniqueId() {
-        return obj.fieldGet$id();
+        return obj.id;
     }
 }

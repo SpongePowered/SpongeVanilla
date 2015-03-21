@@ -26,10 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityLargeFireball")
 public class MCEntityLargeFireball extends MCEntityFireball {
 
-    public int fieldGet$explosionSize() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$explosionSize(int explosionPower) {
-    }
+    public int explosionSize;
 }

@@ -43,13 +43,12 @@ public abstract class GraniteTileEntity<T extends MCTileEntity> extends Composit
 
     @Override
     public World getWorld() {
-        return wrap(obj.fieldGet$worldObj());
+        return wrap(obj.worldObj);
     }
 
     @Override
     public BlockLoc getBlock() {
-        return new GraniteBlockLoc(new Location(getWorld(), new Vector3d(obj.fieldGet$pos().fieldGet$x(), obj.fieldGet$pos().fieldGet$y(),
-                                                                         obj.fieldGet$pos().fieldGet$z())));
+        return new GraniteBlockLoc(new Location(getWorld(), new Vector3d(obj.pos.x, obj.pos.y, obj.pos.z)));
     }
 
     @Override

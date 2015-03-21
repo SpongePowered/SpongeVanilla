@@ -45,46 +45,46 @@ public class GraniteEntityItem extends GraniteEntity<MCEntityItem> implements It
 
     @Override
     public int getPickupDelay() {
-        return obj.fieldGet$delayBeforeCanPickup();
+        return obj.delayBeforeCanPickup;
     }
 
     @Override
-    public void setPickupDelay(int i) {
-        obj.fieldSet$delayBeforeCanPickup(i);
+    public void setPickupDelay(int pickupDelay) {
+        obj.delayBeforeCanPickup = pickupDelay;
     }
 
     @Override
     public void setInfinitePickupDelay() {
-        obj.fieldSet$delayBeforeCanPickup(32767);
+        obj.delayBeforeCanPickup = 32767;
     }
 
     @Override
     public int getDespawnTime() {
-        return obj.fieldGet$age() == -32768 ? -1 : 6000 - obj.fieldGet$age();
+        return obj.age == -32768 ? -1 : 6000 - obj.age;
     }
 
     @Override
-    public void setDespawnTime(int i) {
-        if (i == -1) {
-            obj.fieldSet$age(-32768);
+    public void setDespawnTime(int despawnTime) {
+        if (despawnTime == -1) {
+            obj.age = -32768;
         } else {
-            obj.fieldSet$age(6000 - i);
+            obj.age = (6000 - despawnTime);
         }
     }
 
     @Override
     public void setInfiniteDespawnTime() {
-        obj.fieldSet$age(-32768);
+        obj.age = -32768;
     }
 
     @Override
     public Optional<User> getThrower() {
         // TODO: make get for offline player
-        return Optional.<User>fromNullable(Granite.getInstance().getServer().get().getPlayer(obj.fieldGet$thrower()).orNull());
+        return Optional.<User>fromNullable(Granite.getInstance().getServer().get().getPlayer(obj.thrower).orNull());
     }
 
     @Override
     public void setThrower(User user) {
-        obj.fieldSet$thrower(user.getName());
+        obj.thrower = user.getName();
     }
 }

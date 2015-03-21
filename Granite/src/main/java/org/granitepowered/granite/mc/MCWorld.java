@@ -28,25 +28,15 @@ import java.util.List;
 @Implement(name = "WorldServer")
 public class MCWorld implements MC {
 
-    public MCWorldInfo fieldGet$worldInfo() {
-        return null;
-    }
+    public MCWorldInfo worldInfo;
 
-    public MCWorldBorder fieldGet$worldBorder() {
-        return null;
-    }
+    public MCWorldBorder worldBorder;
 
-    public List<MCEntity> fieldGet$loadedEntityList() {
-        return null;
-    }
+    public List<MCEntity> loadedEntityList;
 
-    public MCChunkProvider fieldGet$chunkProvider() {
-        return null;
-    }
+    public MCChunkProvider chunkProvider;
 
-    public MCWorldProvider fieldGet$provider() {
-        return null;
-    }
+    public MCWorldProvider provider;
 
     public boolean spawnEntityInWorld(MCEntity entity) {
         return Boolean.parseBoolean(null);

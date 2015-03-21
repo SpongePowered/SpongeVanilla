@@ -23,10 +23,6 @@
 
 package org.granitepowered.granite.impl.block;
 
-import static org.granitepowered.granite.util.MinecraftUtils.graniteToMinecraftBlockPos;
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
@@ -35,13 +31,7 @@ import org.granitepowered.granite.impl.block.data.GraniteSign;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCBlock;
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCBlockState;
-import org.granitepowered.granite.mc.MCEnumFacing;
-import org.granitepowered.granite.mc.MCItem;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCMaterial;
+import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.block.BlockLoc;
@@ -54,10 +44,11 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.annotation.Nullable;
+import static org.granitepowered.granite.util.MinecraftUtils.*;
 
 public class GraniteBlockLoc implements BlockLoc {
 
@@ -150,8 +141,8 @@ public class GraniteBlockLoc implements BlockLoc {
         for (MCEnumFacing enumFacing : enums) {
             Vector3d
                     vector3d =
-                    new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(),
-                                 enumFacing.fieldGet$directionVec().fieldGet$z());
+                    new Vector3d(enumFacing.directionVec.x, enumFacing.directionVec.y,
+                            enumFacing.directionVec.z);
             if (getWorld().isFacePowered(getMCBlockPos(), enumFacing)) {
                 for (Direction direction : Direction.values()) {
                     if (vector3d.equals(direction.toVector3d())) {
@@ -171,8 +162,8 @@ public class GraniteBlockLoc implements BlockLoc {
         for (MCEnumFacing enumFacing : enumFacings) {
             Vector3d
                     vector3d =
-                    new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(),
-                                 enumFacing.fieldGet$directionVec().fieldGet$z());
+                    new Vector3d(enumFacing.directionVec.x, enumFacing.directionVec.y,
+                            enumFacing.directionVec.z);
             if (getWorld().isFacePowered(getMCBlockPos().offset(enumFacing, 1), enumFacing)) {
                 for (Direction direction : Direction.values()) {
                     if (vector3d.equals(direction.toVector3d())) {
@@ -186,7 +177,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public boolean isPassable() {
-        return !getMCBlock().fieldGet$blockMaterial().blocksMovement();
+        return !getMCBlock().blockMaterial.blocksMovement();
     }
 
     @Override
@@ -218,11 +209,11 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public int getDigTimeWith(@Nullable ItemStack itemStack) {
-        float hardness = getMCBlock().fieldGet$blockHardness();
-        MCMaterial material = getMCBlock().fieldGet$blockMaterial();
+        float hardness = getMCBlock().blockHardness;
+        MCMaterial material = getMCBlock().blockMaterial;
         boolean
                 canHarvest =
-                material.fieldGet$requiresNoTool() || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCBlock());
+                material.requiresNoTool || itemStack != null && ((MCItemStack) unwrap(itemStack)).canHarvestBlock(getMCBlock());
 
         float strength = 1.0F;
         if (itemStack != null) {
@@ -246,7 +237,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminance() {
-        return (byte) getMCBlock().fieldGet$lightValue();
+        return (byte) getMCBlock().lightValue;
     }
 
     @Override

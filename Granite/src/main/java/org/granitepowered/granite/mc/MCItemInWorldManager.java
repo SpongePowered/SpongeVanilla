@@ -26,11 +26,7 @@ package org.granitepowered.granite.mc;
 @Implement(name = "ItemInWorldManager")
 public class MCItemInWorldManager implements MC {
 
-    public MCWorld fieldGet$theWorld() {
-        return null;
-    }
+    public MCWorld theWorld;
 
-    public MCEntityPlayerMP fieldGet$thisPlayerMP() {
-        return null;
-    }
+    public MCEntityPlayerMP thisPlayerMP;
 }

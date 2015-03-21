@@ -26,24 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Vec3i")
 public class MCVec3i implements MC {
 
-    public int fieldGet$x() {
-        return Integer.parseInt(null);
-    }
+    public int x;
 
-    public void fieldSet$x(int x) {
-    }
+    public int y;
 
-    public int fieldGet$y() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$y(int y) {
-    }
-
-    public int fieldGet$z() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$z(int z) {
-    }
+    public int z;
 }

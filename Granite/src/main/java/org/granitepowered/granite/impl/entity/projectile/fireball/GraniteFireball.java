@@ -26,7 +26,6 @@ package org.granitepowered.granite.impl.entity.projectile.fireball;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.projectile.GraniteProjectile;
 import org.granitepowered.granite.mc.MCEntityFireball;
-import org.granitepowered.granite.mc.MCEntityLivingBase;
 import org.spongepowered.api.entity.projectile.explosive.fireball.Fireball;
 import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 
@@ -49,12 +48,12 @@ public abstract class GraniteFireball<T extends MCEntityFireball> extends Granit
 
     @Override
     public ProjectileSource getShooter() {
-        return wrap(obj.fieldGet$shootingEntity());
+        return wrap(obj.shootingEntity);
     }
 
     @Override
     public void setShooter(ProjectileSource shooter) {
-        obj.fieldSet$shootingEntity((MCEntityLivingBase) unwrap(shooter));
+        obj.shootingEntity = unwrap(shooter);
     }
 
     @Override

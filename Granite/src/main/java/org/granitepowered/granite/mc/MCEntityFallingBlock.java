@@ -26,38 +26,13 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityFallingBlock")
 public class MCEntityFallingBlock extends MCEntity {
 
-    public float fieldGet$fallHurtAmount() {
-        return Float.parseFloat(null);
-    }
+    public float fallHurtAmount;
 
-    public void fieldSet$fallHurtAmount(float amount) {
-    }
+    public int fallHurtMax;
 
-    public int fieldGet$fallHurtMax() {
-        return Integer.parseInt(null);
-    }
+    public boolean canPlaceAsBlock;
 
-    public void fieldSet$fallHurtMax(int amount) {
-    }
+    public boolean shouldDropItem;
 
-    public boolean fieldGet$canPlaceAsBlock() {
-        return Boolean.parseBoolean(null);
-    }
-
-    public void fieldSet$canPlaceAsBlock(boolean canPlace) {
-    }
-
-    public boolean fieldGet$shouldDropItem() {
-        return Boolean.parseBoolean(null);
-    }
-
-    public void fieldSet$shouldDropItem(boolean drop) {
-    }
-
-    public MCBlockState fieldGet$block() {
-        return null;
-    }
-
-    public void fieldSet$block(MCBlockState state) {
-    }
+    public MCBlockState block;
 }

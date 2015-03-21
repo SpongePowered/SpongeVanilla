@@ -26,15 +26,10 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Item")
 public class MCItem implements MC {
 
+    public int maxStackSize;
+    public int maxDamage;
+
     public float getStrVsBlock(MCItemStack itemStack, MCBlock block) {
         return Float.parseFloat(null);
-    }
-
-    public int fieldGet$maxStackSize() {
-        return Integer.parseInt(null);
-    }
-
-    public int fieldGet$maxDamage() {
-        return Integer.parseInt(null);
     }
 }

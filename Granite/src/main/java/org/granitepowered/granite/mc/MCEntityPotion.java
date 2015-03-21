@@ -26,10 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "EntityPotion")
 public class MCEntityPotion extends MCEntityThrowable {
 
-    public MCItemStack fieldGet$potionDamage() {
-        return null;
-    }
-
-    public void fieldSet$potionDamage(MCItemStack itemStack) {
-    }
+    public MCItemStack potionDamage;
 }

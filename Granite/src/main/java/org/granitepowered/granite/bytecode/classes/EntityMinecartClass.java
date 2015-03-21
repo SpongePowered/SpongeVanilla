@@ -19,14 +19,14 @@ public class EntityMinecartClass extends BytecodeClass {
     @Proxy(methodName = "applyDrag")
     public void applyDrag(ProxyCallbackInfo<MCEntityMinecart> info) {
         GraniteEntityMinecart minecart = MinecraftUtils.wrap(info.getCaller());
-        if (info.getCaller().fieldGet$riddenByEntity() != null || !minecart.isSlowWhenEmpty()) {
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionX() * 1.0D);
-            info.getCaller().fieldSet$motionY(info.getCaller().fieldGet$motionY() * 0.0D);
-            info.getCaller().fieldSet$motionZ(info.getCaller().fieldGet$motionZ() * 1.0D);
+        if (info.getCaller().riddenByEntity != null || !minecart.isSlowWhenEmpty()) {
+            info.getCaller().motionX = (info.getCaller().motionX * 1.0D);
+            info.getCaller().motionY = (info.getCaller().motionY * 0.0D);
+            info.getCaller().motionZ = (info.getCaller().motionZ * 1.0D);
         } else {
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionX() * 0.96D);
-            info.getCaller().fieldSet$motionY(info.getCaller().fieldGet$motionY() * 0.0D);
-            info.getCaller().fieldSet$motionZ(info.getCaller().fieldGet$motionZ() * 0.96D);
+            info.getCaller().motionX = (info.getCaller().motionX * 0.96D);
+            info.getCaller().motionY = (info.getCaller().motionY * 0.0D);
+            info.getCaller().motionZ = (info.getCaller().motionZ * 0.96D);
         }
     }
 
@@ -35,13 +35,13 @@ public class EntityMinecartClass extends BytecodeClass {
         GraniteEntityMinecart minecart = MinecraftUtils.wrap(info.getCaller());
 
         double drag = 0.94999998807907104D;
-        if (info.getCaller().fieldGet$onGround()) {
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionX() / drag);
-            info.getCaller().fieldSet$motionY(info.getCaller().fieldGet$motionY() / drag);
-            info.getCaller().fieldSet$motionZ(info.getCaller().fieldGet$motionZ() / drag);
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionX() * minecart.getAirborneMod().getX());
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionY() * minecart.getAirborneMod().getY());
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionZ() * minecart.getAirborneMod().getZ());
+        if (info.getCaller().onGround) {
+            info.getCaller().motionX = (info.getCaller().motionX / drag);
+            info.getCaller().motionY = (info.getCaller().motionY / drag);
+            info.getCaller().motionZ = (info.getCaller().motionZ / drag);
+            info.getCaller().motionX = (info.getCaller().motionX * minecart.getAirborneMod().getX());
+            info.getCaller().motionX = (info.getCaller().motionY * minecart.getAirborneMod().getY());
+            info.getCaller().motionX = (info.getCaller().motionZ * minecart.getAirborneMod().getZ());
         }
     }
 
@@ -49,13 +49,13 @@ public class EntityMinecartClass extends BytecodeClass {
     public void implementCustomDerailedDeceleration(CallbackInfo<MCEntityMinecart> info) {
         GraniteEntityMinecart minecart = MinecraftUtils.wrap(info.getCaller());
 
-        if (info.getCaller().fieldGet$onGround()) {
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionX() / 0.5D);
-            info.getCaller().fieldSet$motionY(info.getCaller().fieldGet$motionY() / 0.5D);
-            info.getCaller().fieldSet$motionZ(info.getCaller().fieldGet$motionZ() / 0.5D);
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionX() * minecart.getDerailedMod().getX());
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionY() * minecart.getDerailedMod().getY());
-            info.getCaller().fieldSet$motionX(info.getCaller().fieldGet$motionZ() * minecart.getDerailedMod().getZ());
+        if (info.getCaller().onGround) {
+            info.getCaller().motionX = (info.getCaller().motionX / 0.5D);
+            info.getCaller().motionY = (info.getCaller().motionY / 0.5D);
+            info.getCaller().motionZ = (info.getCaller().motionZ / 0.5D);
+            info.getCaller().motionX = (info.getCaller().motionX * minecart.getDerailedMod().getX());
+            info.getCaller().motionX = (info.getCaller().motionY * minecart.getDerailedMod().getY());
+            info.getCaller().motionX = (info.getCaller().motionZ * minecart.getDerailedMod().getZ());
         }
     }
 }

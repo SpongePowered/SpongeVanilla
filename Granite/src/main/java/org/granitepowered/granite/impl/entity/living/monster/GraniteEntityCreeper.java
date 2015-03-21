@@ -34,44 +34,44 @@ public class GraniteEntityCreeper extends GraniteEntityMonster<MCEntityCreeper> 
 
     @Override
     public boolean isPowered() {
-        return (byte) obj.fieldGet$dataWatcher().getWatchedObject(17).fieldGet$watchedObject() == 1;
+        return (byte) obj.dataWatcher.getWatchedObject(17).watchedObject == 1;
     }
 
     @Override
     public void setPowered(boolean powered) {
-        obj.fieldGet$dataWatcher().updateObject(17, powered ? (byte) 1 : (byte) 0);
+        obj.dataWatcher.updateObject(17, powered ? (byte) 1 : (byte) 0);
     }
 
     @Override
     public int getExplosionRadius() {
-        return obj.fieldGet$explosionRadius();
+        return obj.explosionRadius;
     }
 
     @Override
     public void setExplosionRadius(int explosionRadius) {
-        obj.fieldSet$explosionRadius(explosionRadius);
+        obj.explosionRadius = explosionRadius;
     }
 
     @Override
     public void ignite() {
-        obj.fieldGet$dataWatcher().updateObject(18, (byte) 1);
+        obj.dataWatcher.updateObject(18, (byte) 1);
     }
 
     @Override
     public void ignite(int fuseTime) {
-        obj.fieldSet$lastActiveTime(0);
-        obj.fieldSet$fuseTime(fuseTime);
+        obj.lastActiveTime = 0;
+        obj.fuseTime = fuseTime;
         ignite();
     }
 
     @Override
     public int getFuseDuration() {
-        return obj.fieldGet$fuseTime() - obj.fieldGet$lastActiveTime();
+        return obj.fuseTime - obj.lastActiveTime;
     }
 
     @Override
     public void setFuseDuration(int fuseDuration) {
-        obj.fieldSet$timeSinceIgnited(obj.fieldGet$fuseTime() - fuseDuration);
+        obj.timeSinceIgnited = (obj.fuseTime - fuseDuration);
     }
 
     @Override

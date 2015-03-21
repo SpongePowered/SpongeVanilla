@@ -28,30 +28,15 @@ import java.util.Map;
 @Implement(name = "EntityLivingBase")
 public class MCEntityLivingBase extends MCEntity {
 
-    public MCEntityLivingBase fieldGet$lastAttacker() {
-        return null;
-    }
+    public MCEntityLivingBase lastAttacker;
 
-    public void fieldSet$lastAttacker(MCEntityLivingBase living) {
-    }
+    public float lastDamage;
 
-    public float fieldGet$lastDamage() {
-        return Float.parseFloat(null);
-    }
+    public int maxHurtResistantTime;
 
-    public void fieldSet$lastDamage(float damage) {
-    }
-
-    public int fieldGet$maxHurtResistantTime() {
-        return Integer.parseInt(null);
-    }
-
-    public void fieldSet$maxHurtResistantTime(int halfTicks) {
-    }
-
-    public MCCombatTracker fieldGet$_combatTracker() {
-        return null;
-    }
+    public MCCombatTracker combatTracker;
+    public Map activePotions;
+    public MCBaseAttributeMap attributeMap;
 
     public void damageEntity(MCDamageSource source, float amount) {
     }
@@ -64,13 +49,5 @@ public class MCEntityLivingBase extends MCEntity {
     }
 
     public void removePotionEffect(int potionId) {
-    }
-
-    public Map fieldGet$activePotions() {
-        return null;
-    }
-
-    public MCBaseAttributeMap fieldGet$attributeMap() {
-        return null;
     }
 }

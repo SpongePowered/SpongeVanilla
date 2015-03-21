@@ -52,11 +52,11 @@ public class ItemInWorldManagerClass extends BytecodeClass {
     @Proxy(methodName = "handleRightClick")
     public Object handleRightClick(ProxyCallbackInfo<MCItemInWorldManager> info) throws Throwable {
         MCBlockPos mcBlockPos = (MCBlockPos) info.getArguments()[0];
-        Vector3d pos = new Vector3d(mcBlockPos.fieldGet$x(), mcBlockPos.fieldGet$y(), mcBlockPos.fieldGet$z());
+        Vector3d pos = new Vector3d(mcBlockPos.x, mcBlockPos.y, mcBlockPos.z);
 
-        GranitePlayer player = wrap(info.getCaller().fieldGet$thisPlayerMP());
+        GranitePlayer player = wrap(info.getCaller().thisPlayerMP);
 
-        GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(info.getCaller().fieldGet$theWorld()), pos));
+        GraniteBlockLoc loc = new GraniteBlockLoc(new Location((GraniteWorld) wrap(info.getCaller().theWorld), pos));
         GraniteBlockSnapshot next = new GraniteBlockSnapshot((GraniteBlockState) BlockTypes.AIR.getDefaultState());
 
         GranitePlayerBreakBlockEvent event = new GranitePlayerBreakBlockEvent(loc, player, next);
@@ -65,8 +65,8 @@ public class ItemInWorldManagerClass extends BytecodeClass {
         if (!event.isCancelled()) {
             return info.callback(info.getArguments());
         } else {
-            MCPacket packet = Instantiator.get().newPacketBlockChange(info.getCaller().fieldGet$theWorld(), mcBlockPos);
-            player.obj.fieldGet$playerNetServerHandler().sendPacket(packet);
+            MCPacket packet = Instantiator.get().newPacketBlockChange(info.getCaller().theWorld, mcBlockPos);
+            player.obj.playerNetServerHandler.sendPacket(packet);
             return false;
         }
     }

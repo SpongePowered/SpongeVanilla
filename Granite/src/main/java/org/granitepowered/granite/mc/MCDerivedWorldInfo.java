@@ -26,7 +26,5 @@ package org.granitepowered.granite.mc;
 @Implement(name = "DerivedWorldInfo")
 public class MCDerivedWorldInfo {
 
-    public MCWorldInfo fieldGet$theWorldInfo() {
-        return null;
-    }
+    public MCWorldInfo theWorldInfo;
 }

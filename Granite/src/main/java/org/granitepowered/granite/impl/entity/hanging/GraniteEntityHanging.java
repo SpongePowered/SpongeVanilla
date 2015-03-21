@@ -38,11 +38,8 @@ public class GraniteEntityHanging<T extends MCEntityHanging> extends GraniteEnti
 
     @Override
     public Direction getHangingDirection() {
-        MCEnumFacing enumFacing = obj.fieldGet$facing();
-        Vector3d
-                vector3d =
-                new Vector3d(enumFacing.fieldGet$directionVec().fieldGet$x(), enumFacing.fieldGet$directionVec().fieldGet$y(),
-                             enumFacing.fieldGet$directionVec().fieldGet$z());
+        MCEnumFacing enumFacing = obj.facing;
+        Vector3d vector3d = new Vector3d(enumFacing.directionVec.x, enumFacing.directionVec.y, enumFacing.directionVec.z);
         return Direction.getClosest(vector3d);
     }
 
@@ -50,10 +47,10 @@ public class GraniteEntityHanging<T extends MCEntityHanging> extends GraniteEnti
     @Override
     public void setHangingDirection(Direction direction, boolean b) {
         Vector3d directionVector = direction.toVector3d();
-        MCEnumFacing enumFacing = obj.fieldGet$facing();
-        enumFacing.fieldGet$directionVec().fieldSet$x((int) directionVector.getX());
-        enumFacing.fieldGet$directionVec().fieldSet$y((int) directionVector.getY());
-        enumFacing.fieldGet$directionVec().fieldSet$z((int) directionVector.getZ());
+        MCEnumFacing enumFacing = obj.facing;
+        enumFacing.directionVec.x = (int) directionVector.getX();
+        enumFacing.directionVec.y = (int) directionVector.getY();
+        enumFacing.directionVec.z = (int) directionVector.getZ();
         obj.setFacing(enumFacing);
     }
 }

@@ -37,6 +37,6 @@ public class GraniteEntityDragonPart extends GraniteEntity<MCEntityDragonPart> i
 
     @Override
     public EnderDragon getParent() {
-        return (EnderDragon) MinecraftUtils.wrap(obj.fieldGet$entityDragonObj());
+        return (EnderDragon) MinecraftUtils.wrap(obj.entityDragonObj);
     }
 }

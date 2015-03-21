@@ -99,7 +99,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public Locale getLocale() {
-        String translator = this.obj.fieldGet$translator().replace("_", "-");
+        String translator = this.obj.translator.replace("_", "-");
         return Locale.forLanguageTag(translator);
     }
 
@@ -181,59 +181,59 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public Optional<ItemStack> getHelmet() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[3]));
+        return Optional.fromNullable((ItemStack) wrap(obj.inventory.armorInventory[3]));
     }
 
     @Override
     public void setHelmet(@Nullable ItemStack helmet) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[3] = helmet == null ? null : (MCItemStack) unwrap(helmet);
+        obj.inventory.armorInventory[3] = helmet == null ? null : (MCItemStack) unwrap(helmet);
     }
 
     @Override
     public Optional<ItemStack> getChestplate() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[2]));
+        return Optional.fromNullable((ItemStack) wrap(obj.inventory.armorInventory[2]));
     }
 
     @Override
     public void setChestplate(@Nullable ItemStack chestplate) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[2] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
+        obj.inventory.armorInventory[2] = chestplate == null ? null : (MCItemStack) unwrap(chestplate);
     }
 
     @Override
     public Optional<ItemStack> getLeggings() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[1]));
+        return Optional.fromNullable((ItemStack) wrap(obj.inventory.armorInventory[1]));
     }
 
     @Override
     public void setLeggings(@Nullable ItemStack leggings) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[1] = leggings == null ? null : (MCItemStack) unwrap(leggings);
+        obj.inventory.armorInventory[1] = leggings == null ? null : (MCItemStack) unwrap(leggings);
     }
 
     @Override
     public Optional<ItemStack> getBoots() {
-        return Optional.fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$armorInventory()[0]));
+        return Optional.fromNullable((ItemStack) wrap(obj.inventory.armorInventory[0]));
     }
 
     @Override
     public void setBoots(@Nullable ItemStack boots) {
-        obj.fieldGet$inventory().fieldGet$armorInventory()[0] = boots == null ? null : (MCItemStack) unwrap(boots);
+        obj.inventory.armorInventory[0] = boots == null ? null : (MCItemStack) unwrap(boots);
     }
 
     @Override
     public Optional<ItemStack> getItemInHand() {
         return Optional
-                .fromNullable((ItemStack) wrap(obj.fieldGet$inventory().fieldGet$mainInventory()[obj.fieldGet$inventory().fieldGet$currentItem()]));
+                .fromNullable((ItemStack) wrap(obj.inventory.mainInventory[obj.inventory.currentItem]));
     }
 
     @Override
     public void setItemInHand(@Nullable ItemStack itemInHand) {
-        MCItemStack[] itemStack = obj.fieldGet$inventory().fieldGet$mainInventory();
-        itemStack[obj.fieldGet$inventory().fieldGet$currentItem()] = unwrap(itemInHand);
+        MCItemStack[] itemStack = obj.inventory.mainInventory;
+        itemStack[obj.inventory.currentItem] = unwrap(itemInHand);
     }
 
     @Override
     public GameProfile getProfile() {
-        return wrap(obj.fieldGet$gameProfile());
+        return wrap(obj.gameProfile);
     }
 
     @Override
@@ -347,7 +347,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
                     try {
                         id =
                                 ((MCRegistryNamespaced) Mappings.getField("Block", "blockRegistry").get(null))
-                                        .getIDForObject(((GraniteItemBlock) itemType).obj.fieldGet$block());
+                                        .getIDForObject(((GraniteItemBlock) itemType).obj.block);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -374,7 +374,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             }
 
             if (size == 0f) {
-                obj.fieldGet$playerNetServerHandler()
+                obj.playerNetServerHandler
                         .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             }
@@ -385,7 +385,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             Color color1 = ((GraniteParticleType.Colorable) type).getDefaultColor();
 
             if (color0.equals(color1)) {
-                obj.fieldGet$playerNetServerHandler()
+                obj.playerNetServerHandler
                         .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             }
@@ -402,7 +402,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             float note = ((GraniteParticleEffect.Note) particleEffect).getNote();
 
             if (note == 0f) {
-                obj.fieldGet$playerNetServerHandler()
+                obj.playerNetServerHandler
                         .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             }
@@ -421,7 +421,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             }
 
             if (mx == 0f && my == 0f && mz == 0f) {
-                obj.fieldGet$playerNetServerHandler()
+                obj.playerNetServerHandler
                         .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
                 return;
             } else {
@@ -433,7 +433,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
         // Is this check necessary?
         if (f0 == 0f && f1 == 0f && f2 == 0f) {
-            obj.fieldGet$playerNetServerHandler()
+            obj.playerNetServerHandler
                     .sendPacket(Instantiator.get().newPacketParticles(internal, true, px, py, pz, ox, oy, oz, 0f, count, extra));
             return;
         }
@@ -457,7 +457,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
         }
 
         for (MCPacket packet : packets) {
-            obj.fieldGet$playerNetServerHandler().sendPacket(packet);
+            obj.playerNetServerHandler.sendPacket(packet);
         }
     }
 
@@ -481,22 +481,22 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public double getExhaustion() {
-        return obj.fieldGet$foodStats().fieldGet$foodLevel();
+        return obj.foodStats.foodLevel;
     }
 
     @Override
     public void setExhaustion(double exhaustion) {
-        obj.fieldGet$foodStats().fieldSet$foodLevel((int) exhaustion);
+        obj.foodStats.foodLevel = (int) exhaustion;
     }
 
     @Override
     public double getSaturation() {
-        return obj.fieldGet$foodStats().fieldGet$foodSaturationLevel();
+        return obj.foodStats.foodSaturationLevel;
     }
 
     @Override
     public void setSaturation(double saturation) {
-        obj.fieldGet$foodStats().fieldSet$foodSaturationLevel((float) saturation);
+        obj.foodStats.foodSaturationLevel = (float) saturation;
     }
 
     @Override
@@ -526,22 +526,22 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public int getLevel() {
-        return obj.fieldGet$experienceLevel();
+        return obj.experienceLevel;
     }
 
     @Override
     public void setLevel(int level) {
-        obj.fieldSet$experienceLevel(level);
+        obj.experienceLevel = level;
     }
 
     @Override
     public int getTotalExperience() {
-        return obj.fieldGet$experienceTotal();
+        return obj.experienceTotal;
     }
 
     @Override
     public void setTotalExperience(int totalExperience) {
-        obj.fieldSet$experienceTotal((int) totalExperience);
+        obj.experienceTotal = totalExperience;
     }
 
     @Override
@@ -566,7 +566,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public boolean isViewingInventory() {
-        return obj.fieldGet$openContainer() != null;
+        return obj.openContainer != null;
     }
 
     @Override
@@ -588,19 +588,19 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
     public <T extends Projectile> T launchProjectile(Class<T> projectileClass) {
         MCEntity entity = null;
         if (projectileClass.isAssignableFrom(Arrow.class)) {
-            entity = Instantiator.get().newEntityArrow(obj.fieldGet$worldObj(), obj, 2);
+            entity = Instantiator.get().newEntityArrow(obj.worldObj, obj, 2);
         } else if (projectileClass.isAssignableFrom(Egg.class)) {
-            entity = Instantiator.get().newEntityEgg(obj.fieldGet$worldObj(), obj);
+            entity = Instantiator.get().newEntityEgg(obj.worldObj, obj);
         } else if (projectileClass.isAssignableFrom(SmallFireball.class)) {
-            entity = Instantiator.get().newEntitySmallFireball(obj.fieldGet$worldObj(), obj, 0, 0, 0);
+            entity = Instantiator.get().newEntitySmallFireball(obj.worldObj, obj, 0, 0, 0);
             entity.setPositionAndUpdate(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
         } else if (projectileClass.isAssignableFrom(LargeFireball.class)) {
-            entity = Instantiator.get().newEntityLargeFireball(obj.fieldGet$worldObj(), obj, 0, 0, 0);
+            entity = Instantiator.get().newEntityLargeFireball(obj.worldObj, obj, 0, 0, 0);
             entity.setPositionAndUpdate(getEyeLocation().getX(), getEyeLocation().getY(), getEyeLocation().getZ());
         } else {
             throw new NotImplementedException("");
         }
-        obj.fieldGet$worldObj().spawnEntityInWorld(entity);
+        obj.worldObj.spawnEntityInWorld(entity);
         return (T) wrap(entity);
     }
 
@@ -641,7 +641,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
         }
 
         MCPacket packet = Instantiator.get().newPacketChat(graniteToMinecraftChatComponent(message), (byte) ((GraniteChatType) type).getId());
-        obj.fieldGet$playerNetServerHandler().sendPacket(packet);
+        obj.playerNetServerHandler.sendPacket(packet);
     }
 
     public DataContainer toContainer() {

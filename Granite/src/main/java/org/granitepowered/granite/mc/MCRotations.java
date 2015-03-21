@@ -26,15 +26,9 @@ package org.granitepowered.granite.mc;
 @Implement(name = "Rotations")
 public class MCRotations implements MC {
 
-    public float fieldGet$x() {
-        return Float.parseFloat(null);
-    }
+    public float x;
 
-    public float fieldGet$y() {
-        return Float.parseFloat(null);
-    }
+    public float y;
 
-    public float fieldGet$z() {
-        return Float.parseFloat(null);
-    }
+    public float z;
 }

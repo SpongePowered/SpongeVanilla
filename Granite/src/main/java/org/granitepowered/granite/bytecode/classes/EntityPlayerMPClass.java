@@ -70,7 +70,7 @@ public class EntityPlayerMPClass extends BytecodeClass {
         GranitePlayer player = new GranitePlayer(info.getCaller());
         MCDamageSource source = (MCDamageSource) info.getArguments()[0];
 
-        MCIChatComponent deathComponent = info.getCaller().fieldGet$_combatTracker().getDeathMessage();
+        MCIChatComponent deathComponent = info.getCaller().combatTracker.getDeathMessage();
         Message deathMessage = MinecraftUtils.minecraftToGraniteMessage(deathComponent);
 
         GranitePlayerDeathEvent deathEvent = new GranitePlayerDeathEvent(player, source, deathMessage);

@@ -37,13 +37,13 @@ public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> imple
 
     @Override
     public boolean isSheared() {
-        return ((byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject() & 16) != 0;
+        return ((byte) obj.dataWatcher.getWatchedObject(16).watchedObject & 16) != 0;
     }
 
     @Override
     public void setSheared(boolean sheared) {
-        byte isSheared = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, (byte) (sheared ? isSheared | 16 : isSheared & -17));
+        byte isSheared = (byte) obj.dataWatcher.getWatchedObject(16).watchedObject;
+        obj.dataWatcher.updateObject(16, (byte) (sheared ? isSheared | 16 : isSheared & -17));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class GraniteEntitySheep extends GraniteEntityAnimal<MCEntitySheep> imple
 
     @Override
     public void setColor(DyeColor dyeColor) {
-        byte currentColor = (byte) obj.fieldGet$dataWatcher().getWatchedObject(16).fieldGet$watchedObject();
-        obj.fieldGet$dataWatcher().updateObject(16, ((byte) (currentColor & 240 | ((GraniteMeta) dyeColor).getType()) & 15));
+        byte currentColor = (byte) obj.dataWatcher.getWatchedObject(16).watchedObject;
+        obj.dataWatcher.updateObject(16, ((byte) (currentColor & 240 | ((GraniteMeta) dyeColor).getType()) & 15));
     }
 }

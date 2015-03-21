@@ -47,17 +47,17 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
 
     @Override
     public boolean isPlaying() {
-        return obj.fieldGet$isPlaying();
+        return obj.isPlaying;
     }
 
     @Override
     public void setPlaying(boolean playing) {
-        obj.fieldSet$isPlaying(playing);
+        obj.isPlaying = playing;
     }
 
     @Override
     public boolean isTrading() {
-        return obj.fieldGet$buyingPlayer() != null;
+        return obj.buyingPlayer != null;
     }
 
     // TODO: Make Tidier and smaller
@@ -82,13 +82,13 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
 
     @Override
     public void setCareer(Career career) {
-        obj.fieldGet$dataWatcher().updateObject(16, ((GraniteMeta) career.getProfession()).getType());
-        obj.fieldSet$career(((GraniteMeta) career).getType());
+        obj.dataWatcher.updateObject(16, ((GraniteMeta) career.getProfession()).getType());
+        obj.career = (((GraniteMeta) career).getType());
     }
 
     @Override
     public Optional<Human> getCustomer() {
-        return Optional.fromNullable((Human) MinecraftUtils.wrap(obj.fieldGet$buyingPlayer()));
+        return Optional.fromNullable((Human) MinecraftUtils.wrap(obj.buyingPlayer));
     }
 
     @Override
