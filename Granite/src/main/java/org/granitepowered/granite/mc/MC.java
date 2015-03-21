@@ -23,6 +23,6 @@
 
 package org.granitepowered.granite.mc;
 
-public interface MCInterface {
+public interface MC {
 
 }

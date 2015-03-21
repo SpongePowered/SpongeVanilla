@@ -24,21 +24,33 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityEnderEye")
-public interface MCEntityEnderEye extends MCEntityThrowable {
+public class MCEntityEnderEye extends MCEntityThrowable {
 
-    double fieldGet$targetX();
+    public double fieldGet$targetX() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$targetX(double x);
+    public void fieldSet$targetX(double x) {
+    }
 
-    double fieldGet$targetY();
+    public double fieldGet$targetY() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$targetY(double y);
+    public void fieldSet$targetY(double y) {
+    }
 
-    double fieldGet$targetZ();
+    public double fieldGet$targetZ() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$targetZ(double z);
+    public void fieldSet$targetZ(double z) {
+    }
 
-    boolean fieldGet$shatterOrDrop();
+    public boolean fieldGet$shatterOrDrop() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$shatterOrDrop(boolean shatter);
+    public void fieldSet$shatterOrDrop(boolean shatter) {
+    }
 }

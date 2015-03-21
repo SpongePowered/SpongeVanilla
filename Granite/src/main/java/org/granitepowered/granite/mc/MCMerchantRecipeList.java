@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "MerchantRecipeList")
-public interface MCMerchantRecipeList extends MCInterface {
+public class MCMerchantRecipeList implements MC {
 
 }

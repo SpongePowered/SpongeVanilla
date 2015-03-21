@@ -24,37 +24,62 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "WorldBorder")
-public interface MCWorldBorder extends MCInterface {
+public class MCWorldBorder implements MC {
 
-    double getDiameter();
+    public double getDiameter() {
+        return Double.parseDouble(null);
+    }
 
-    void setDiameter(double size);
+    public void setDiameter(double size) {
+    }
 
-    double fieldGet$startDiameter();
+    public double fieldGet$startDiameter() {
+        return Double.parseDouble(null);
+    }
 
-    void setTargetAndTime(double newSize, double newEndSize, long time);
+    public void setTargetAndTime(double newSize, double newEndSize, long time) {
+    }
 
-    long getTimeRemaining();
+    public long getTimeRemaining() {
+        return Long.parseLong(null);
+    }
 
-    double fieldGet$centerX();
+    public double fieldGet$centerX() {
+        return Double.parseDouble(null);
+    }
 
-    double fieldGet$centerZ();
+    public double fieldGet$centerZ() {
+        return Double.parseDouble(null);
+    }
 
-    void setCenter(double x, double z);
+    public void setCenter(double x, double z) {
+    }
 
-    int fieldGet$warningTime();
+    public int fieldGet$warningTime() {
+        return Integer.parseInt(null);
+    }
 
-    void setWarningTime(int ticks);
+    public void setWarningTime(int ticks) {
+    }
 
-    int fieldGet$warningDistance();
+    public int fieldGet$warningDistance() {
+        return Integer.parseInt(null);
+    }
 
-    void setWarningDistance(int blocks);
+    public void setWarningDistance(int blocks) {
+    }
 
-    double fieldGet$damageBuffer();
+    public double fieldGet$damageBuffer() {
+        return Double.parseDouble(null);
+    }
 
-    void setDamageBuffer(int buffer);
+    public void setDamageBuffer(int buffer) {
+    }
 
-    double fieldGet$damageAmount();
+    public double fieldGet$damageAmount() {
+        return Double.parseDouble(null);
+    }
 
-    void setDamageAmount(int damage);
+    public void setDamageAmount(int damage) {
+    }
 }

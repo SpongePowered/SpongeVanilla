@@ -199,7 +199,7 @@ public class GraniteGameRegistry implements GameRegistry {
             ReflectionUtils.forceAccessible(fields[i]);
 
             try {
-                BannerPatternShape bannerPatternShape = wrap((MCInterface) enums[i]);
+                BannerPatternShape bannerPatternShape = wrap((MC) enums[i]);
                 fields[i].set(null, bannerPatternShape);
                 bannerPatternShapes.put(bannerPatternShape.getName(), bannerPatternShape);
                 if (Main.debugLog) {
@@ -323,7 +323,7 @@ public class GraniteGameRegistry implements GameRegistry {
             ReflectionUtils.forceAccessible(fields[i]);
 
             try {
-                DyeColor dyeColor = wrap((MCInterface) enums[i]);
+                DyeColor dyeColor = wrap((MC) enums[i]);
                 fields[i].set(null, dyeColor);
                 dyeColors.put(dyeColor.getName(), dyeColor);
                 if (Main.debugLog) {

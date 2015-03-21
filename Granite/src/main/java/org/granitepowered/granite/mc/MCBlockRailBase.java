@@ -1,9 +1,13 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "BlockRailBase")
-public interface MCBlockRailBase extends MCBlock {
+public class MCBlockRailBase extends MCBlock {
 
-    boolean isOnRailWorld(MCWorld world, MCBlockPos blockPos);
+    public boolean isOnRailWorld(MCWorld world, MCBlockPos blockPos) {
+        return Boolean.parseBoolean(null);
+    }
 
-    boolean isOnRail(MCBlockState blockState);
+    public boolean isOnRail(MCBlockState blockState) {
+        return Boolean.parseBoolean(null);
+    }
 }

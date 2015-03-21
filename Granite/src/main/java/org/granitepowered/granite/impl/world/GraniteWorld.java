@@ -82,12 +82,13 @@ public class GraniteWorld extends Composite<MCWorld> implements World {
 
     @Override
     public String getName() {
-        String name = getMCWorldInfo().fieldGet$levelName();
+        /*String name = getMCWorldInfo().fieldGet$levelName();
         if (name == null) {
             MCWorldInfo parentWorldInfo = ((MCDerivedWorldInfo) getMCWorldInfo()).fieldGet$theWorldInfo();
             return parentWorldInfo.fieldGet$levelName() + (getDimension().getDimensionId() == 1 ? "_the_end" : "_nether");
         }
-        return name;
+        return name;*/
+        throw new NotImplementedException("");
     }
 
     @Override

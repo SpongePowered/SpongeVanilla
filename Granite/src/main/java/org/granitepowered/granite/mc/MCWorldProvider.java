@@ -24,17 +24,28 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "WorldProvider")
-public interface MCWorldProvider extends MCInterface {
+public class MCWorldProvider implements MC {
 
-    int fieldGet$dimensionId();
+    public int fieldGet$dimensionId() {
+        return Integer.parseInt(null);
+    }
 
-    boolean fieldGet$isHellWorld();
+    public boolean fieldGet$isHellWorld() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$isHellWorld(boolean isHellWorld);
+    public void fieldSet$isHellWorld(boolean isHellWorld) {
+    }
 
-    boolean fieldGet$hasNoSky();
+    public boolean fieldGet$hasNoSky() {
+        return Boolean.parseBoolean(null);
+    }
 
-    String getDimensionName();
+    public String getDimensionName() {
+        return null;
+    }
 
-    int getAverageGroundLevel();
+    public int getAverageGroundLevel() {
+        return Integer.parseInt(null);
+    }
 }

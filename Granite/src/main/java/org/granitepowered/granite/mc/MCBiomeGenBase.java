@@ -24,17 +24,29 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "BiomeGenBase")
-public interface MCBiomeGenBase extends MCInterface {
+public class MCBiomeGenBase implements MC {
 
-    float fieldGet$temperature();
+    public float fieldGet$temperature() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$minHeight();
+    public float fieldGet$minHeight() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$maxHeight();
+    public float fieldGet$maxHeight() {
+        return Float.parseFloat(null);
+    }
 
-    int fieldGet$biomeID();
+    public int fieldGet$biomeID() {
+        return Integer.parseInt(null);
+    }
 
-    String fieldGet$biomeName();
+    public String fieldGet$biomeName() {
+        return null;
+    }
 
-    float fieldGet$rainFall();
+    public float fieldGet$rainFall() {
+        return Float.parseFloat(null);
+    }
 }

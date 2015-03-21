@@ -24,19 +24,31 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "ItemStack")
-public interface MCItemStack extends MCInterface {
+public class MCItemStack implements MC {
 
-    int fieldGet$stackSize();
+    public int fieldGet$stackSize() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$stackSize(int size);
+    public void fieldSet$stackSize(int size) {
+    }
 
-    int fieldGet$itemDamage();
+    public int fieldGet$itemDamage() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$itemDamage(int damage);
+    public void fieldSet$itemDamage(int damage) {
+    }
 
-    MCItem fieldGet$item();
+    public MCItem fieldGet$item() {
+        return null;
+    }
 
-    boolean isItemEnchanted();
+    public boolean isItemEnchanted() {
+        return Boolean.parseBoolean(null);
+    }
 
-    boolean canHarvestBlock(MCBlock block);
+    public boolean canHarvestBlock(MCBlock block) {
+        return Boolean.parseBoolean(null);
+    }
 }

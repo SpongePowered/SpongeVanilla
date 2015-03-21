@@ -26,19 +26,30 @@ package org.granitepowered.granite.mc;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 @Implement(name = "EntityItem")
-public interface MCEntityItem extends MCInterface, MCEntity {
+public class MCEntityItem extends MCEntity {
 
-    int fieldGet$age();
+    public int fieldGet$age() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$age(int age);
+    public void fieldSet$age(int age) {
+    }
 
-    int fieldGet$delayBeforeCanPickup();
+    public int fieldGet$delayBeforeCanPickup() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$delayBeforeCanPickup(int delay);
+    public void fieldSet$delayBeforeCanPickup(int delay) {
+    }
 
-    String fieldGet$thrower();
+    public String fieldGet$thrower() {
+        return null;
+    }
 
-    void fieldSet$thrower(String thrower);
+    public void fieldSet$thrower(String thrower) {
+    }
 
-    ItemStack getEntityItem();
+    public ItemStack getEntityItem() {
+        return null;
+    }
 }

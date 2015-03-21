@@ -24,23 +24,37 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "PotionEffect")
-public interface MCPotionEffect extends MCInterface {
+public class MCPotionEffect implements MC {
 
-    int fieldGet$potionId();
+    public int fieldGet$potionId() {
+        return Integer.parseInt(null);
+    }
 
-    int fieldGet$duration();
+    public int fieldGet$duration() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$duration(int duration);
+    public void fieldSet$duration(int duration) {
+    }
 
-    int fieldGet$amplifier();
+    public int fieldGet$amplifier() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$amplifier(int amplifier);
+    public void fieldSet$amplifier(int amplifier) {
+    }
 
-    boolean fieldGet$isAmbient();
+    public boolean fieldGet$isAmbient() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$isAmbient(boolean ambient);
+    public void fieldSet$isAmbient(boolean ambient) {
+    }
 
-    boolean fieldGet$showParticles();
+    public boolean fieldGet$showParticles() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$showParticles(boolean particles);
+    public void fieldSet$showParticles(boolean particles) {
+    }
 }

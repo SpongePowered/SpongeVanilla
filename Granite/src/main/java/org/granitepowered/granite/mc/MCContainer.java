@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Container")
-public interface MCContainer extends MCInterface {
+public class MCContainer implements MC {
 
 }

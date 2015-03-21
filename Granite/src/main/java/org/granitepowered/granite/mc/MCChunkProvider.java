@@ -26,13 +26,20 @@ package org.granitepowered.granite.mc;
 import java.util.Set;
 
 @Implement(name = "ChunkProviderServer")
-public interface MCChunkProvider extends MCInterface {
+public class MCChunkProvider implements MC {
 
-    MCChunk provideChunk(int x, int z);
+    public MCChunk provideChunk(int x, int z) {
+        return null;
+    }
 
-    boolean chunkExists(int x, int z);
+    public boolean chunkExists(int x, int z) {
+        return Boolean.parseBoolean(null);
+    }
 
-    void dropChunk(int x, int z);
+    public void dropChunk(int x, int z) {
+    }
 
-    Set<MCChunk> fieldGet$droppedChunksSet();
+    public Set<MCChunk> fieldGet$droppedChunksSet() {
+        return null;
+    }
 }

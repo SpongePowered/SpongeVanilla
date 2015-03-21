@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "IChatComponent")
-public interface MCIChatComponent extends MCInterface {
+public interface MCIChatComponent extends MC {
 
 }

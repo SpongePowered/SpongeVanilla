@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "BaseAttributeMap")
-public interface MCBaseAttributeMap extends MCInterface {
+public class MCBaseAttributeMap implements MC {
 
-    MCModifiableAttributeInstance getAttributeInstance(MCBaseAttribute attributeInstance);
+    public MCModifiableAttributeInstance getAttributeInstance(MCBaseAttribute attributeInstance) {
+        return null;
+    }
 }

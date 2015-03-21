@@ -1,7 +1,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityMinecartCommandBlock")
-public interface MCEntityMinecartCommandBlock extends MCEntityMinecart {
+public class MCEntityMinecartCommandBlock extends MCEntityMinecart {
 
-    MCCommandBlockLogic fieldGet$commandLogic();
+    public MCCommandBlockLogic fieldGet$commandLogic() {
+        return null;
+    }
 }

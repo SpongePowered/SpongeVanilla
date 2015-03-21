@@ -26,15 +26,23 @@ package org.granitepowered.granite.mc;
 import java.util.List;
 
 @Implement(name = "ServerConfigurationManager")
-public interface MCServerConfigurationManager extends MCInterface {
+public class MCServerConfigurationManager implements MC {
 
-    boolean fieldGet$whitelistEnforced();
+    public boolean fieldGet$whitelistEnforced() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$whitelistEnforced(boolean value);
+    public void fieldSet$whitelistEnforced(boolean value) {
+    }
 
-    int fieldGet$maxPlayers();
+    public int fieldGet$maxPlayers() {
+        return Integer.parseInt(null);
+    }
 
-    List<MCEntityPlayerMP> fieldGet$playerEntityList();
+    public List<MCEntityPlayerMP> fieldGet$playerEntityList() {
+        return null;
+    }
 
-    void sendChatMsg(MCIChatComponent message);
+    public void sendChatMsg(MCIChatComponent message) {
+    }
 }

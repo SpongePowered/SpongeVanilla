@@ -24,9 +24,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityBoat")
-public interface MCEntityBoat extends MCEntity {
+public class MCEntityBoat extends MCEntity {
 
-    double fieldGet$speedMultiplier();
+    public double fieldGet$speedMultiplier() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$speedMultiplier(double speed);
+    public void fieldSet$speedMultiplier(double speed) {
+    }
 }

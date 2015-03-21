@@ -24,12 +24,17 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "GameRules")
-public interface MCGameRules extends MCInterface {
+public class MCGameRules implements MC {
 
-    String getGameRuleStringValue(String name);
+    public String getGameRuleStringValue(String name) {
+        return null;
+    }
 
-    void setOrCreateGameRule(String key, String value);
+    public void setOrCreateGameRule(String key, String value) {
+    }
 
-    String[] getRules();
+    public String[] getRules() {
+        return null;
+    }
 
 }

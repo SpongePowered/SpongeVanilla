@@ -24,11 +24,17 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Potion")
-public interface MCPotion extends MCInterface {
+public class MCPotion implements MC {
 
-    int fieldGet$id();
+    public int fieldGet$id() {
+        return Integer.parseInt(null);
+    }
 
-    boolean isInstant();
+    public boolean isInstant() {
+        return Boolean.parseBoolean(null);
+    }
 
-    String fieldGet$name();
+    public String fieldGet$name() {
+        return null;
+    }
 }

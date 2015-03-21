@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityRabbit")
-public interface MCEntityRabbit extends MCEntityTameable {
+public class MCEntityRabbit extends MCEntityTameable {
 
 }

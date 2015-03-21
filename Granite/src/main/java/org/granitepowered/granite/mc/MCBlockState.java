@@ -26,11 +26,17 @@ package org.granitepowered.granite.mc;
 import com.google.common.collect.ImmutableMap;
 
 @Implement(name = "BlockState")
-public interface MCBlockState extends MCInterface {
+public class MCBlockState implements MC {
 
-    MCBlock fieldGet$block();
+    public MCBlock fieldGet$block() {
+        return null;
+    }
 
-    ImmutableMap<MCProperty, Comparable> fieldGet$properties();
+    public ImmutableMap<MCProperty, Comparable> fieldGet$properties() {
+        return null;
+    }
 
-    MCBlockState withProperty(MCProperty property, Comparable value);
+    public MCBlockState withProperty(MCProperty property, Comparable value) {
+        return null;
+    }
 }

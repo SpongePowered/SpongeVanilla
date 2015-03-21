@@ -24,7 +24,8 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntitySkeleton")
-public interface MCEntitySkeleton extends MCEntityMob {
+public class MCEntitySkeleton extends MCEntityMob {
 
-    void setSkeletonType(int type);
+    public void setSkeletonType(int type) {
+    }
 }

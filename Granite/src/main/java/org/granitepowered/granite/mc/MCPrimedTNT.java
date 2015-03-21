@@ -24,12 +24,17 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityTNTPrimed")
-public interface MCPrimedTNT extends MCInterface, MCEntity {
+public class MCPrimedTNT extends MCEntity {
 
-    MCEntityLiving fieldGet$tntTriggeredBy();
+    public MCEntityLiving fieldGet$tntTriggeredBy() {
+        return null;
+    }
 
-    int fieldGet$fuse();
+    public int fieldGet$fuse() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$fuse(int ticks);
+    public void fieldSet$fuse(int ticks) {
+    }
 
 }

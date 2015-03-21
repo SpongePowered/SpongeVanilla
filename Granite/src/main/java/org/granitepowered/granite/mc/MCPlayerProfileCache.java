@@ -26,7 +26,9 @@ package org.granitepowered.granite.mc;
 import java.util.UUID;
 
 @Implement(name = "PlayerProfileCache")
-public interface MCPlayerProfileCache extends MCInterface {
+public class MCPlayerProfileCache implements MC {
 
-    MCGameProfile getProfileByUUID(UUID uuid);
+    public MCGameProfile getProfileByUUID(UUID uuid) {
+        return null;
+    }
 }

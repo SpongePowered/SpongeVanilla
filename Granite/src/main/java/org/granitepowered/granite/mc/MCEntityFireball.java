@@ -24,9 +24,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityFireball")
-public interface MCEntityFireball extends MCEntity {
+public class MCEntityFireball extends MCEntity {
 
-    MCEntityLivingBase fieldGet$shootingEntity();
+    public MCEntityLivingBase fieldGet$shootingEntity() {
+        return null;
+    }
 
-    void fieldSet$shootingEntity(MCEntityLivingBase shootingEntity);
+    public void fieldSet$shootingEntity(MCEntityLivingBase shootingEntity) {
+    }
 }

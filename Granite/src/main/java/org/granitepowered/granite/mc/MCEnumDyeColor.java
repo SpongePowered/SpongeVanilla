@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EnumDyeColor")
-public interface MCEnumDyeColor extends MCInterface {
+public class MCEnumDyeColor implements MC {
 
-    String fieldGet$name();
+    public String fieldGet$name() {
+        return null;
+    }
 }

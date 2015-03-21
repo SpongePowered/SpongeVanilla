@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityExpBottle")
-public interface MCEntityExpBottle extends MCEntityThrowable {
+public class MCEntityExpBottle extends MCEntityThrowable {
 
 }

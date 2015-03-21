@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "C01PacketChatMessage")
-public interface MCPacketChatMessage extends MCPacket {
+public class MCPacketChatMessage extends MCPacket {
 
-    String fieldGet$message();
+    public String fieldGet$message() {
+        return null;
+    }
 }

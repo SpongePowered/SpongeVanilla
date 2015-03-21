@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "S02PacketChat")
-public interface MCPacketChat extends MCPacket {
+public class MCPacketChat extends MCPacket {
 
 }

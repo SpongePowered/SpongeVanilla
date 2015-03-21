@@ -24,9 +24,13 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "MinecraftProtocolVersionIdentifier")
-public interface MCMinecraftProtocolVersionIdentifier extends MCInterface {
+public class MCMinecraftProtocolVersionIdentifier implements MC {
 
-    String fieldGet$name();
+    public String fieldGet$name() {
+        return null;
+    }
 
-    int fieldGet$protocol();
+    public int fieldGet$protocol() {
+        return Integer.parseInt(null);
+    }
 }

@@ -65,9 +65,9 @@ import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.impl.world.GraniteWorldBorder;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
 import org.granitepowered.granite.mappings.Mappings;
+import org.granitepowered.granite.mc.MC;
 import org.granitepowered.granite.mc.MCBlockPos;
 import org.granitepowered.granite.mc.MCIChatComponent;
-import org.granitepowered.granite.mc.MCInterface;
 import org.granitepowered.granite.mc.MCRotations;
 import org.spongepowered.api.text.message.Message;
 
@@ -120,7 +120,7 @@ public class MinecraftUtils {
             .build();
 
     @Nonnull
-    public static <T extends Composite> T wrap(MCInterface obj) {
+    public static <T extends Composite> T wrap(MC obj) {
         if (obj == null) {
             return null;
         }
@@ -140,11 +140,11 @@ public class MinecraftUtils {
         }
     }
 
-    public static <T extends MCInterface> T unwrap(Object composite) {
+    public static <T extends MC> T unwrap(Object composite) {
         return (T) unwrap((Composite<?>) composite);
     }
 
-    public static <T extends MCInterface> T unwrap(Composite<T> composite) {
+    public static <T extends MC> T unwrap(Composite<T> composite) {
         return composite.obj;
     }
 
@@ -174,11 +174,11 @@ public class MinecraftUtils {
         return Instantiator.get().newRotations(vector3f.getX(), vector3f.getY(), vector3f.getZ());
     }
 
-    public static class WrapFunction<T extends Composite> implements Function<MCInterface, T> {
+    public static class WrapFunction<T extends Composite> implements Function<MC, T> {
 
         @Nullable
         @Override
-        public T apply(@Nullable MCInterface input) {
+        public T apply(@Nullable MC input) {
             return wrap(input);
         }
     }

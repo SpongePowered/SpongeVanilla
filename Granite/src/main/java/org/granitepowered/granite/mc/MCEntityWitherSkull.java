@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityWitherSkull")
-public interface MCEntityWitherSkull extends MCEntityFireball {
+public class MCEntityWitherSkull extends MCEntityFireball {
 
 }

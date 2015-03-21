@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntitySnowball")
-public interface MCEntitySnowball extends MCEntityThrowable {
+public class MCEntitySnowball extends MCEntityThrowable {
 
 }

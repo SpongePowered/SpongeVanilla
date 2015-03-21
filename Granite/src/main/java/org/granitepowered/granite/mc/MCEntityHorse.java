@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityHorse")
-public interface MCEntityHorse extends MCEntityTameable {
+public class MCEntityHorse extends MCEntityTameable {
 
-    MCAnimalChest fieldGet$animalChest();
+    public MCAnimalChest fieldGet$animalChest() {
+        return null;
+    }
 }

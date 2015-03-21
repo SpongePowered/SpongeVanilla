@@ -24,11 +24,16 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityDragon")
-public interface MCEntityDragon extends MCEntityLiving {
+public class MCEntityDragon extends MCEntityLiving {
 
-    MCEntityEnderCrystal fieldGet$healingEnderCrystal();
+    public MCEntityEnderCrystal fieldGet$healingEnderCrystal() {
+        return null;
+    }
 
-    void fieldSet$healingEnderCrystal(MCEntityEnderCrystal healingCrystal);
+    public void fieldSet$healingEnderCrystal(MCEntityEnderCrystal healingCrystal) {
+    }
 
-    MCEntityDragonPart[] fieldGet$dragonPartArray();
+    public MCEntityDragonPart[] fieldGet$dragonPartArray() {
+        return null;
+    }
 }

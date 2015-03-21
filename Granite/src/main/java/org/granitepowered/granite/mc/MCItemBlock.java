@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "ItemBlock")
-public interface MCItemBlock extends MCItem {
+public class MCItemBlock extends MCItem {
 
-    MCBlock fieldGet$block();
+    public MCBlock fieldGet$block() {
+        return null;
+    }
 }

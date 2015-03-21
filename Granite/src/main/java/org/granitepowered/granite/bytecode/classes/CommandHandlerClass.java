@@ -29,7 +29,7 @@ import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.event.message.GraniteCommandEvent;
-import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MC;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.util.command.CommandSource;
 
@@ -55,7 +55,7 @@ public class CommandHandlerClass extends BytecodeClass {
         String commandName = commandArgs[0];
         commandArgs = Arrays.copyOfRange(commandArgs, 1, commandArgs.length);
 
-        CommandSource sender = wrap((MCInterface) info.getArguments()[0]);
+        CommandSource sender = wrap((MC) info.getArguments()[0]);
 
         GraniteCommandEvent event = new GraniteCommandEvent(commandName, StringUtils.join(commandArgs, " "), sender);
         Granite.getInstance().getEventManager().post(event);

@@ -26,31 +26,51 @@ package org.granitepowered.granite.mc;
 import java.util.Map;
 
 @Implement(name = "EntityLivingBase")
-public interface MCEntityLivingBase extends MCEntity {
+public class MCEntityLivingBase extends MCEntity {
 
-    MCEntityLivingBase fieldGet$lastAttacker();
+    public MCEntityLivingBase fieldGet$lastAttacker() {
+        return null;
+    }
 
-    void fieldSet$lastAttacker(MCEntityLivingBase living);
+    public void fieldSet$lastAttacker(MCEntityLivingBase living) {
+    }
 
-    float fieldGet$lastDamage();
+    public float fieldGet$lastDamage() {
+        return Float.parseFloat(null);
+    }
 
-    void fieldSet$lastDamage(float damage);
+    public void fieldSet$lastDamage(float damage) {
+    }
 
-    int fieldGet$maxHurtResistantTime();
+    public int fieldGet$maxHurtResistantTime() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$maxHurtResistantTime(int halfTicks);
+    public void fieldSet$maxHurtResistantTime(int halfTicks) {
+    }
 
-    MCCombatTracker fieldGet$_combatTracker();
+    public MCCombatTracker fieldGet$_combatTracker() {
+        return null;
+    }
 
-    void damageEntity(MCDamageSource source, float amount);
+    public void damageEntity(MCDamageSource source, float amount) {
+    }
 
-    float getMaxHealth();
+    public float getMaxHealth() {
+        return Float.parseFloat(null);
+    }
 
-    void addPotionEffect(MCPotionEffect potionEffect);
+    public void addPotionEffect(MCPotionEffect potionEffect) {
+    }
 
-    void removePotionEffect(int potionId);
+    public void removePotionEffect(int potionId) {
+    }
 
-    Map fieldGet$activePotions();
+    public Map fieldGet$activePotions() {
+        return null;
+    }
 
-    MCBaseAttributeMap fieldGet$attributeMap();
+    public MCBaseAttributeMap fieldGet$attributeMap() {
+        return null;
+    }
 }

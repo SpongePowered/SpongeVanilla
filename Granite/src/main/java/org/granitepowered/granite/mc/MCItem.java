@@ -24,11 +24,17 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Item")
-public interface MCItem extends MCInterface {
+public class MCItem implements MC {
 
-    float getStrVsBlock(MCItemStack itemStack, MCBlock block);
+    public float getStrVsBlock(MCItemStack itemStack, MCBlock block) {
+        return Float.parseFloat(null);
+    }
 
-    int fieldGet$maxStackSize();
+    public int fieldGet$maxStackSize() {
+        return Integer.parseInt(null);
+    }
 
-    int fieldGet$maxDamage();
+    public int fieldGet$maxDamage() {
+        return Integer.parseInt(null);
+    }
 }

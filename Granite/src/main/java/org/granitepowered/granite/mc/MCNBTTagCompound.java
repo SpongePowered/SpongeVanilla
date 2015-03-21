@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "NBTTagCompound")
-public interface MCNBTTagCompound extends MCInterface {
+public class MCNBTTagCompound implements MC {
 
 }

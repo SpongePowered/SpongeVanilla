@@ -26,9 +26,13 @@ package org.granitepowered.granite.mc;
 import java.util.Collection;
 
 @Implement(name = "PropertyHelper")
-public interface MCProperty extends MCInterface {
+public class MCProperty implements MC {
 
-    String fieldGet$name();
+    public String fieldGet$name() {
+        return null;
+    }
 
-    Collection<Comparable<?>> getAllowedValues();
+    public Collection<Comparable<?>> getAllowedValues() {
+        return null;
+    }
 }

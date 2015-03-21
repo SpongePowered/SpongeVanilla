@@ -24,7 +24,8 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntitySlime")
-public interface MCEntitySlime extends MCEntityMob {
+public class MCEntitySlime extends MCEntityMob {
 
-    void setSlimeSize(int size);
+    public void setSlimeSize(int size) {
+    }
 }

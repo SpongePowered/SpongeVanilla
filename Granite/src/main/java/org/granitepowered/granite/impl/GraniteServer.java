@@ -33,7 +33,6 @@ import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.MCEntityPlayerMP;
 import org.granitepowered.granite.mc.MCServer;
-import org.granitepowered.granite.mc.MCServerConfigurationManager;
 import org.granitepowered.granite.mc.MCWorld;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Server;
@@ -64,7 +63,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
     public Collection<Player> getOnlinePlayers() {
         Set<Player> players = new HashSet<>();
 
-        for (MCEntityPlayerMP playerEntity : getSCM().fieldGet$playerEntityList()) {
+        for (MCEntityPlayerMP playerEntity : obj.fieldGet$serverConfigManager().fieldGet$playerEntityList()) {
             players.add((Player) wrap(playerEntity));
         }
 
@@ -73,7 +72,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
 
     @Override
     public int getMaxPlayers() {
-        return getSCM().fieldGet$maxPlayers();
+        return obj.fieldGet$serverConfigManager().fieldGet$maxPlayers();
     }
 
     @Override
@@ -157,7 +156,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
 
     @Override
     public void broadcastMessage(Message message) {
-        getSCM().sendChatMsg(MinecraftUtils.graniteToMinecraftChatComponent(message));
+        obj.fieldGet$serverConfigManager().sendChatMsg(MinecraftUtils.graniteToMinecraftChatComponent(message));
     }
 
     @Override
@@ -167,12 +166,12 @@ public class GraniteServer extends Composite<MCServer> implements Server {
 
     @Override
     public boolean hasWhitelist() {
-        return getSCM().fieldGet$whitelistEnforced();
+        return obj.fieldGet$serverConfigManager().fieldGet$whitelistEnforced();
     }
 
     @Override
-    public void setHasWhitelist(boolean b) {
-        getSCM().fieldSet$whitelistEnforced(b);
+    public void setHasWhitelist(boolean whitelisted) {
+        obj.fieldGet$serverConfigManager().fieldSet$whitelistEnforced(whitelisted);
     }
 
     @Override
@@ -188,10 +187,6 @@ public class GraniteServer extends Composite<MCServer> implements Server {
     @Override
     public void shutdown(Message kickMessage) {
         throw new NotImplementedException("");
-    }
-
-    private MCServerConfigurationManager getSCM() {
-        return obj.fieldGet$serverConfigManager();
     }
 
     @Override

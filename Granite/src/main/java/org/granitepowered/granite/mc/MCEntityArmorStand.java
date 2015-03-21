@@ -24,11 +24,15 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityArmorStand")
-public interface MCEntityArmorStand extends MCEntityLivingBase {
+public class MCEntityArmorStand extends MCEntityLivingBase {
 
-    MCItemStack getEquipmentInSlot(int slot);
+    public MCItemStack getEquipmentInSlot(int slot) {
+        return null;
+    }
 
-    void setCurrentItemOrArmor(int slot, MCItemStack itemStack);
+    public void setCurrentItemOrArmor(int slot, MCItemStack itemStack) {
+    }
 
-    void fieldSet$canInteract(boolean interact);
+    public void fieldSet$canInteract(boolean interact) {
+    }
 }

@@ -27,11 +27,8 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityAgeable;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.granitepowered.granite.impl.item.merchant.GraniteTradeOffer;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
 import org.granitepowered.granite.mc.MCEntityVillager;
-import org.granitepowered.granite.mc.MCInterface;
-import org.granitepowered.granite.mc.MCMerchantRecipe;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.villager.Career;
@@ -40,7 +37,6 @@ import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.types.CarriedInventory;
 import org.spongepowered.api.item.merchant.TradeOffer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> implements Villager {
@@ -102,27 +98,30 @@ public class GraniteVillager extends GraniteEntityAgeable<MCEntityVillager> impl
 
     @Override
     public List<TradeOffer> getOffers() {
-        ArrayList recipes = (ArrayList) obj.fieldGet$buyingList();
+        /*ArrayList recipes = (ArrayList) obj.fieldGet$buyingList();
         List<TradeOffer> tradeOffers = new ArrayList<>();
         for (Object recipe : recipes) {
-            tradeOffers.add((GraniteTradeOffer) MinecraftUtils.wrap((MCInterface) recipe));
+            tradeOffers.add((GraniteTradeOffer) MinecraftUtils.wrap((MC) recipe));
         }
-        return tradeOffers;
+        return tradeOffers;*/
+        throw new NotImplementedException("");
     }
 
     @Override
     public void setOffers(List<TradeOffer> list) {
-        ArrayList recipes = (ArrayList) obj.fieldGet$buyingList();
+        /*ArrayList recipes = (ArrayList) obj.fieldGet$buyingList();
         recipes.clear();
         for (TradeOffer recipe : list) {
             recipes.add(MinecraftUtils.unwrap(recipe));
-        }
+        }*/
+        throw new NotImplementedException("");
     }
 
     @Override
     public void addOffer(TradeOffer tradeOffer) {
-        ArrayList<MCMerchantRecipe> recipes = (ArrayList<MCMerchantRecipe>) obj.fieldGet$buyingList();
-        recipes.add((MCMerchantRecipe) MinecraftUtils.unwrap(tradeOffer));
+        /*ArrayList<MCMerchantRecipe> recipes = (ArrayList<MCMerchantRecipe>) obj.fieldGet$buyingList();
+        recipes.add((MCMerchantRecipe) MinecraftUtils.unwrap(tradeOffer));*/
+        throw new NotImplementedException("");
     }
 
     @Override

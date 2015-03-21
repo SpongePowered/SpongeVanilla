@@ -24,11 +24,15 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityZombie")
-public interface MCEntityZombie extends MCEntityMob {
+public class MCEntityZombie extends MCEntityMob {
 
-    MCBaseAttribute fieldGet$reinforcementsAttribute();
+    public MCBaseAttribute fieldGet$reinforcementsAttribute() {
+        return null;
+    }
 
-    void setChild(boolean child);
+    public void setChild(boolean child) {
+    }
 
-    void setScale(float scale);
+    public void setScale(float scale) {
+    }
 }

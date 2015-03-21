@@ -24,9 +24,11 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityItemFrame")
-public interface MCEntityItemFrame extends MCEntityHanging {
+public class MCEntityItemFrame extends MCEntityHanging {
 
-    void setDisplayedItem(MCItemStack itemStack);
+    public void setDisplayedItem(MCItemStack itemStack) {
+    }
 
-    void setItemRotation(int angle);
+    public void setItemRotation(int angle) {
+    }
 }

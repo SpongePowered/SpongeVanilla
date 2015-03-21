@@ -24,22 +24,38 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Enchantment")
-public interface MCEnchantment extends MCInterface {
+public class MCEnchantment implements MC {
 
-    String fieldGet$name();
+    public String fieldGet$name() {
+        return null;
+    }
 
-    int fieldGet$weight();
+    public int fieldGet$weight() {
+        return Integer.parseInt(null);
+    }
 
-    int getMinLevel();
+    public int getMinLevel() {
+        return Integer.parseInt(null);
+    }
 
-    int getMaxLevel();
+    public int getMaxLevel() {
+        return Integer.parseInt(null);
+    }
 
-    int getMinEnchantability(int level);
+    public int getMinEnchantability(int level) {
+        return Integer.parseInt(null);
+    }
 
-    int getMaxEnchantability(int level);
+    public int getMaxEnchantability(int level) {
+        return Integer.parseInt(null);
+    }
 
-    boolean canApply(MCItemStack itemStack);
+    public boolean canApply(MCItemStack itemStack) {
+        return Boolean.parseBoolean(null);
+    }
 
-    boolean canApplyTogether(MCEnchantment enchantment);
+    public boolean canApplyTogether(MCEnchantment enchantment) {
+        return Boolean.parseBoolean(null);
+    }
 
 }

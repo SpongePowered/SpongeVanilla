@@ -24,17 +24,26 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityPlayer")
-public interface MCEntityPlayer extends MCEntityLivingBase {
+public class MCEntityPlayer extends MCEntityLivingBase {
 
-    int fieldGet$experienceLevel();
+    public int fieldGet$experienceLevel() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$experienceLevel(int level);
+    public void fieldSet$experienceLevel(int level) {
+    }
 
-    int fieldGet$experienceTotal();
+    public int fieldGet$experienceTotal() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$experienceTotal(int experienceTotal);
+    public void fieldSet$experienceTotal(int experienceTotal) {
+    }
 
-    float fieldGet$experience();
+    public float fieldGet$experience() {
+        return Float.parseFloat(null);
+    }
 
-    void fieldSet$experience(float experience);
+    public void fieldSet$experience(float experience) {
+    }
 }

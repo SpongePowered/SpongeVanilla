@@ -1,15 +1,23 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "CommandBlockLogic")
-public interface MCCommandBlockLogic extends MCInterface {
+public class MCCommandBlockLogic implements MC {
 
-    String fieldGet$commandStored();
+    public String fieldGet$commandStored() {
+        return null;
+    }
 
-    void fieldSet$commandStored(String command);
+    public void fieldSet$commandStored(String command) {
+    }
 
-    String fieldGet$customName();
+    public String fieldGet$customName() {
+        return null;
+    }
 
-    void fieldSet$customName(String name);
+    public void fieldSet$customName(String name) {
+    }
 
-    int fieldSet$successCount(int count);
+    public int fieldSet$successCount(int count) {
+        return Integer.parseInt(null);
+    }
 }

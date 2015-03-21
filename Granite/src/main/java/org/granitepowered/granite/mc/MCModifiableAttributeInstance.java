@@ -24,9 +24,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "ModifiableAttributeInstance")
-public interface MCModifiableAttributeInstance {
+public class MCModifiableAttributeInstance {
 
-    void setBaseValue(double value);
+    public void setBaseValue(double value) {
+    }
 
-    double getAttributeValue();
+    public double getAttributeValue() {
+        return Double.parseDouble(null);
+    }
 }

@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntitySmallFireball")
-public interface MCEntitySmallFireball extends MCEntityFireball {
+public class MCEntitySmallFireball extends MCEntityFireball {
 
 }

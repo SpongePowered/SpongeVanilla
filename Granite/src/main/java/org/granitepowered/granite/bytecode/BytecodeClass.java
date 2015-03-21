@@ -25,15 +25,7 @@ package org.granitepowered.granite.bytecode;
 
 import com.google.common.base.Defaults;
 import com.google.common.base.Throwables;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CodeConverter;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.MethodInfo;
@@ -47,7 +39,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.Implement;
-import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MC;
 import org.granitepowered.granite.util.ReflectionUtils;
 
 import java.io.IOException;
@@ -55,14 +47,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class BytecodeClass {
 
@@ -298,7 +283,7 @@ public class BytecodeClass {
         });
     }
 
-    public void implement(Class<? extends MCInterface> mcInterface) {
+    public void implement(Class<? extends MC> mcInterface) {
         try {
             CtClass ctMcInterface = pool.get(mcInterface.getName());
 
@@ -432,7 +417,7 @@ public class BytecodeClass {
                             CtClass constructorParameterType = loopConstructor.getParameterTypes()[i];
                             CtClass instantiatorParameterType = parameterTypes[i];
 
-                            if (instantiatorParameterType.subtypeOf(ClassPool.getDefault().get(MCInterface.class.getName()))) {
+                            if (instantiatorParameterType.subtypeOf(ClassPool.getDefault().get(MC.class.getName()))) {
                                 instantiatorParameterType =
                                         Mappings.getCtClass(((Implement) instantiatorParameterType.getAnnotation(Implement.class)).name());
                             }

@@ -24,15 +24,24 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "WorldInfo")
-public interface MCWorldInfo extends MCInterface {
+public class MCWorldInfo implements MC {
 
-    String fieldGet$levelName();
+    public String fieldGet$levelName() {
+        return null;
+    }
 
-    MCGameRules fieldGet$gameRules();
+    public MCGameRules fieldGet$gameRules() {
+        return null;
+    }
 
-    long fieldGet$randomSeed();
+    public long fieldGet$randomSeed() {
+        return Long.parseLong(null);
+    }
 
-    void fieldSet$randomSeed(long seed);
+    public void fieldSet$randomSeed(long seed) {
+    }
 
-    int fieldGet$dimension();
+    public int fieldGet$dimension() {
+        return Integer.parseInt(null);
+    }
 }

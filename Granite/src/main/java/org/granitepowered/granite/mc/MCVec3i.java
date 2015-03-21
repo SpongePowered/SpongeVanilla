@@ -24,17 +24,26 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Vec3i")
-public interface MCVec3i extends MCInterface {
+public class MCVec3i implements MC {
 
-    int fieldGet$x();
+    public int fieldGet$x() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$x(int x);
+    public void fieldSet$x(int x) {
+    }
 
-    int fieldGet$y();
+    public int fieldGet$y() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$y(int y);
+    public void fieldSet$y(int y) {
+    }
 
-    int fieldGet$z();
+    public int fieldGet$z() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$z(int z);
+    public void fieldSet$z(int z) {
+    }
 }

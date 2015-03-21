@@ -38,7 +38,6 @@ import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.mc.*;
 import org.granitepowered.granite.util.Instantiator;
-import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleTypes;
@@ -116,7 +115,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public void sendTitle(Title title) {
-        if (title.isReset() || title.isClear()) {
+        /*if (title.isReset() || title.isClear()) {
             MCPacketTitleType
                     type =
                     (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
@@ -146,7 +145,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
             obj.fieldGet$playerNetServerHandler().sendPacket(packet);
-        }
+        }*/
+        throw new NotImplementedException("");
     }
 
     @Override

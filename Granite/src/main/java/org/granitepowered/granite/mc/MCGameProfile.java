@@ -26,9 +26,13 @@ package org.granitepowered.granite.mc;
 import java.util.UUID;
 
 @Implement(name = "GameProfile")
-public interface MCGameProfile extends MCInterface {
+public class MCGameProfile implements MC {
 
-    String fieldGet$name();
+    public String fieldGet$name() {
+        return null;
+    }
 
-    UUID fieldGet$id();
+    public UUID fieldGet$id() {
+        return null;
+    }
 }

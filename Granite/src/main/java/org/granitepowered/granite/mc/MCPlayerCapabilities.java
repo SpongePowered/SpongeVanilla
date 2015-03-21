@@ -24,9 +24,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "PlayerCapabilities")
-public interface MCPlayerCapabilities extends MCInterface {
+public class MCPlayerCapabilities implements MC {
 
-    boolean fieldGet$allowFlying();
+    public boolean fieldGet$allowFlying() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$allowFlying(boolean allowFlight);
+    public void fieldSet$allowFlying(boolean allowFlight) {
+    }
 }

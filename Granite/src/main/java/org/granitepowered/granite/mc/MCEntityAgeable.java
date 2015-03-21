@@ -24,11 +24,15 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityAgeable")
-public interface MCEntityAgeable extends MCEntityCreature {
+public class MCEntityAgeable extends MCEntityCreature {
 
-    int getGrowingAge();
+    public int getGrowingAge() {
+        return Integer.parseInt(null);
+    }
 
-    void setGrowingAge(int age);
+    public void setGrowingAge(int age) {
+    }
 
-    void setScaleForAge(boolean scaleForAge);
+    public void setScaleForAge(boolean scaleForAge) {
+    }
 }

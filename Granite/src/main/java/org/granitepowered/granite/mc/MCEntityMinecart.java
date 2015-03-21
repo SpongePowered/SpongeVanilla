@@ -1,7 +1,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityMinecart")
-public interface MCEntityMinecart extends MCEntity {
+public class MCEntityMinecart extends MCEntity {
 
-    double getMaxSpeed();
+    public double getMaxSpeed() {
+        return Double.parseDouble(null);
+    }
 }

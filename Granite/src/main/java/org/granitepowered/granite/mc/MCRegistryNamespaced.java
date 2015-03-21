@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "RegistryNamespaced")
-public interface MCRegistryNamespaced extends MCVec3i {
+public class MCRegistryNamespaced extends MCVec3i {
 
-    int getIDForObject(Object obj);
+    public int getIDForObject(Object obj) {
+        return Integer.parseInt(null);
+    }
 }

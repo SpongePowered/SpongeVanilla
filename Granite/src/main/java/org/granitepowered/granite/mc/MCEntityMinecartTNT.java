@@ -1,9 +1,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityMinecartTNT")
-public interface MCEntityMinecartTNT extends MCEntityMinecart {
+public class MCEntityMinecartTNT extends MCEntityMinecart {
 
-    int fieldGet$fuse();
+    public int fieldGet$fuse() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$fuse(int fuse);
+    public void fieldSet$fuse(int fuse) {
+    }
 }

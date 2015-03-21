@@ -24,19 +24,30 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityVillager")
-public interface MCEntityVillager extends MCEntityAgeable {
+public class MCEntityVillager extends MCEntityAgeable {
 
-    boolean fieldGet$isPlaying();
+    public boolean fieldGet$isPlaying() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$isPlaying(boolean playing);
+    public void fieldSet$isPlaying(boolean playing) {
+    }
 
-    MCEntityPlayer fieldGet$buyingPlayer();
+    public MCEntityPlayer fieldGet$buyingPlayer() {
+        return null;
+    }
 
-    int fieldGet$career();
+    public int fieldGet$career() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$career(int career);
+    public void fieldSet$career(int career) {
+    }
 
-    void interact(MCEntityPlayer entityPlayer);
+    public void interact(MCEntityPlayer entityPlayer) {
+    }
 
-    MCMerchantRecipeList fieldGet$buyingList();
+    public MCMerchantRecipeList fieldGet$buyingList() {
+        return null;
+    }
 }

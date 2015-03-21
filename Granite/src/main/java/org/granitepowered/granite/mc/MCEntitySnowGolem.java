@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntitySnowGolem")
-public interface MCEntitySnowGolem extends MCEntityGolem {
+public class MCEntitySnowGolem extends MCEntityGolem {
 
 }

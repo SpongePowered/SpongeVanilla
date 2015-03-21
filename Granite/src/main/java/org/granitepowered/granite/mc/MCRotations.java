@@ -24,11 +24,17 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Rotations")
-public interface MCRotations extends MCInterface {
+public class MCRotations implements MC {
 
-    float fieldGet$x();
+    public float fieldGet$x() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$y();
+    public float fieldGet$y() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$z();
+    public float fieldGet$z() {
+        return Float.parseFloat(null);
+    }
 }

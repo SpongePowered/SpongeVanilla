@@ -24,13 +24,19 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityFishHook")
-public interface MCEntityFishHook extends MCEntity {
+public class MCEntityFishHook extends MCEntity {
 
-    MCEntityPlayer fieldGet$angler();
+    public MCEntityPlayer fieldGet$angler() {
+        return null;
+    }
 
-    void fieldSet$angler(MCEntityPlayer player);
+    public void fieldSet$angler(MCEntityPlayer player) {
+    }
 
-    MCEntity fieldGet$caughtEntity();
+    public MCEntity fieldGet$caughtEntity() {
+        return null;
+    }
 
-    void fieldSet$caughtEntity(MCEntity entity);
+    public void fieldSet$caughtEntity(MCEntity entity) {
+    }
 }

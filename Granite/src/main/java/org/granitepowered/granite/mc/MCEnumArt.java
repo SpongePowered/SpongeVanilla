@@ -24,12 +24,20 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EnumArt")
-public interface MCEnumArt extends MCInterface {
+public enum MCEnumArt implements MC {
 
-    int fieldGet$width();
+    ;
 
-    int fieldGet$height();
+    public int fieldGet$width() {
+        return Integer.parseInt(null);
+    }
 
-    String fieldGet$name();
+    public int fieldGet$height() {
+        return Integer.parseInt(null);
+    }
+
+    public String fieldGet$name() {
+        return null;
+    }
 
 }

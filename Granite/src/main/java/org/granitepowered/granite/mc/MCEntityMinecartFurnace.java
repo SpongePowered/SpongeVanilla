@@ -1,9 +1,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityMinecartFurnace")
-public interface MCEntityMinecartFurnace extends MCEntityMinecartContainer {
+public class MCEntityMinecartFurnace extends MCEntityMinecartContainer {
 
-    int fieldGet$fuel();
+    public int fieldGet$fuel() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$fuel(int fuel);
+    public void fieldSet$fuel(int fuel) {
+    }
 }

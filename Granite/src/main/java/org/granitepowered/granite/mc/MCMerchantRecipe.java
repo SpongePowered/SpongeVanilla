@@ -24,19 +24,32 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "MerchantRecipe")
-public interface MCMerchantRecipe extends MCInterface {
+public class MCMerchantRecipe implements MC {
 
-    MCItemStack fieldGet$firstItemToBuy();
+    public MCItemStack fieldGet$firstItemToBuy() {
+        return null;
+    }
 
-    MCItemStack fieldGet$secondItemToBuy();
+    public MCItemStack fieldGet$secondItemToBuy() {
+        return null;
+    }
 
-    MCItemStack fieldGet$itemToSell();
+    public MCItemStack fieldGet$itemToSell() {
+        return null;
+    }
 
-    int fieldGet$uses();
+    public int fieldGet$uses() {
+        return Integer.parseInt(null);
+    }
 
-    int fieldGet$maxUses();
+    public int fieldGet$maxUses() {
+        return Integer.parseInt(null);
+    }
 
-    boolean fieldGet$grantExperience();
+    public boolean fieldGet$grantExperience() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$grantExperience(boolean grant);
+    public void fieldSet$grantExperience(boolean grant) {
+    }
 }

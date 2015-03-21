@@ -23,10 +23,13 @@
 
 package org.granitepowered.granite.mc;
 
-@Implement(name = "EntityPainting")
-public interface MCEntityPainting extends MCEntityHanging {
+@Implement(name = "EntityPapublic inting")
+public class MCEntityPainting extends MCEntityHanging {
 
-    MCEnumArt fieldGet$art();
+    public MCEnumArt fieldGet$art() {
+        return null;
+    }
 
-    void fieldSet$art(MCEnumArt art);
+    public void fieldSet$art(MCEnumArt art) {
+    }
 }

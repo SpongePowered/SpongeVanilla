@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "BaseAttribute")
-public interface MCBaseAttribute extends MCInterface {
+public class MCBaseAttribute implements MC {
 
 }

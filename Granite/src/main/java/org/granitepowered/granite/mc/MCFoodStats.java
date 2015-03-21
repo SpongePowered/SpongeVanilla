@@ -24,13 +24,19 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "FoodStats")
-public interface MCFoodStats extends MCInterface {
+public class MCFoodStats implements MC {
 
-    int fieldGet$foodLevel();
+    public int fieldGet$foodLevel() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$foodLevel(int food);
+    public void fieldSet$foodLevel(int food) {
+    }
 
-    float fieldGet$foodSaturationLevel();
+    public float fieldGet$foodSaturationLevel() {
+        return Float.parseFloat(null);
+    }
 
-    void fieldSet$foodSaturationLevel(float saturation);
+    public void fieldSet$foodSaturationLevel(float saturation) {
+    }
 }

@@ -26,7 +26,9 @@ package org.granitepowered.granite.mc;
 import java.net.SocketAddress;
 
 @Implement(name = "NetworkManager")
-public interface MCNetworkManager extends MCInterface {
+public class MCNetworkManager implements MC {
 
-    SocketAddress fieldGet$socketAddress();
+    public SocketAddress fieldGet$socketAddress() {
+        return null;
+    }
 }

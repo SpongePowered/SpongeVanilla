@@ -24,7 +24,9 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "CombatTracker")
-public interface MCCombatTracker extends MCEntityLiving {
+public class MCCombatTracker extends MCEntityLiving {
 
-    MCIChatComponent getDeathMessage();
+    public MCIChatComponent getDeathMessage() {
+        return null;
+    }
 }

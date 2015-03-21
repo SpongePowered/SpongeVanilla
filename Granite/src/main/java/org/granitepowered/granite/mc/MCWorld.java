@@ -26,35 +26,64 @@ package org.granitepowered.granite.mc;
 import java.util.List;
 
 @Implement(name = "WorldServer")
-public interface MCWorld extends MCInterface {
+public class MCWorld implements MC {
 
-    MCWorldInfo fieldGet$worldInfo();
+    public MCWorldInfo fieldGet$worldInfo() {
+        return null;
+    }
 
-    MCWorldBorder fieldGet$worldBorder();
+    public MCWorldBorder fieldGet$worldBorder() {
+        return null;
+    }
 
-    List<MCEntity> fieldGet$loadedEntityList();
+    public List<MCEntity> fieldGet$loadedEntityList() {
+        return null;
+    }
 
-    MCChunkProvider fieldGet$chunkProvider();
+    public MCChunkProvider fieldGet$chunkProvider() {
+        return null;
+    }
 
-    MCWorldProvider fieldGet$provider();
+    public MCWorldProvider fieldGet$provider() {
+        return null;
+    }
 
-    boolean spawnEntityInWorld(MCEntity entity);
+    public boolean spawnEntityInWorld(MCEntity entity) {
+        return Boolean.parseBoolean(null);
+    }
 
-    MCBlockState getBlockState(MCBlockPos blockPos);
+    public MCBlockState getBlockState(MCBlockPos blockPos) {
+        return null;
+    }
 
-    boolean setBlockState(MCBlockPos blockPos, MCBlockState blockState);
+    public boolean setBlockState(MCBlockPos blockPos, MCBlockState blockState) {
+        return Boolean.parseBoolean(null);
+    }
 
-    int getLightFor(Enum source, MCBlockPos blockPos);
+    public int getLightFor(Enum source, MCBlockPos blockPos) {
+        return Integer.parseInt(null);
+    }
 
-    boolean isPowered(MCBlockPos blockPos);
+    public boolean isPowered(MCBlockPos blockPos) {
+        return Boolean.parseBoolean(null);
+    }
 
-    boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing);
+    public boolean isFacePowered(MCBlockPos blockPos, MCEnumFacing enumFacing) {
+        return Boolean.parseBoolean(null);
+    }
 
-    int isIndirectlyPowered(MCBlockPos blockPos);
+    public int isIndirectlyPowered(MCBlockPos blockPos) {
+        return Integer.parseInt(null);
+    }
 
-    MCBiomeGenBase getBiomeGenForCoords(MCBlockPos blockPos);
+    public MCBiomeGenBase getBiomeGenForCoords(MCBlockPos blockPos) {
+        return null;
+    }
 
-    void playSoundEffect(double x, double y, double z, String soundName, float volume, float pitch);
+    public void playSoundEffect(double x, double y, double z, String soundName, float volume, float pitch) {
+    }
 
-    MCTileEntity getTileEntity(MCBlockPos pos);
+    public MCTileEntity getTileEntity(MCBlockPos pos) {
+        return null;
+    }
 }

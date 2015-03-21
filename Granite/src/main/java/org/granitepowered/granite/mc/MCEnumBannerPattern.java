@@ -24,9 +24,15 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EnumBannerPattern")
-public interface MCEnumBannerPattern extends MCInterface {
+public enum MCEnumBannerPattern implements MC {
 
-    String fieldGet$name();
+    ;
 
-    String fieldGet$id();
+    public String fieldGet$name() {
+        return null;
+    }
+
+    public String fieldGet$id() {
+        return null;
+    }
 }

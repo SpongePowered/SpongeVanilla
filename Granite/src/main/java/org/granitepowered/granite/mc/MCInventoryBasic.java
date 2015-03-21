@@ -24,9 +24,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "InventoryBasic")
-public interface MCInventoryBasic {
+public class MCInventoryBasic {
 
-    MCItemStack[] fieldGet$inventoryContents();
+    public MCItemStack[] fieldGet$inventoryContents() {
+        return null;
+    }
 
-    void fieldSet$inventoryContents(MCItemStack[] inventory);
+    public void fieldSet$inventoryContents(MCItemStack[] inventory) {
+    }
 }

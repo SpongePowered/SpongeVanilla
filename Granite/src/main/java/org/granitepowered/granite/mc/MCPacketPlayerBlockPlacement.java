@@ -24,13 +24,21 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "C08PacketPlayerBlockPlacement")
-public interface MCPacketPlayerBlockPlacement extends MCPacket {
+public class MCPacketPlayerBlockPlacement extends MCPacket {
 
-    MCBlockPos fieldGet$position();
+    public MCBlockPos fieldGet$position() {
+        return null;
+    }
 
-    float fieldGet$facingX();
+    public float fieldGet$facingX() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$facingY();
+    public float fieldGet$facingY() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$facingZ();
+    public float fieldGet$facingZ() {
+        return Float.parseFloat(null);
+    }
 }

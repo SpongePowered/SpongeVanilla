@@ -24,9 +24,12 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityPigZombie")
-public interface MCEntityPigZombie extends MCEntityZombie {
+public class MCEntityPigZombie extends MCEntityZombie {
 
-    int fieldGet$angerLevel();
+    public int fieldGet$angerLevel() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$angerLevel(int anger);
+    public void fieldSet$angerLevel(int anger) {
+    }
 }

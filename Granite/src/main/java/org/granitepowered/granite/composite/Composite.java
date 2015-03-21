@@ -24,14 +24,14 @@
 package org.granitepowered.granite.composite;
 
 import com.google.common.base.Throwables;
-import org.granitepowered.granite.mc.MCInterface;
+import org.granitepowered.granite.mc.MC;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Composite<T extends MCInterface> {
+public abstract class Composite<T extends MC> {
 
     public static Map<Class<? extends Composite>, Map<Object, Composite>> instanceMap = new HashMap<>();
     public T obj;
@@ -52,7 +52,7 @@ public abstract class Composite<T extends MCInterface> {
         }
     }
 
-    public static <T extends Composite> T new_(MCInterface parent, Class<T> compositeType) {
+    public static <T extends Composite> T new_(MC parent, Class<T> compositeType) {
         if (!instanceMap.containsKey(compositeType)) {
             instanceMap.put(compositeType, new HashMap<Object, Composite>());
         }

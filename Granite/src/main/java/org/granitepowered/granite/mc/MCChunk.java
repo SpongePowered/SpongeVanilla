@@ -26,15 +26,25 @@ package org.granitepowered.granite.mc;
 import java.util.Set;
 
 @Implement(name = "Chunk")
-public interface MCChunk extends MCInterface {
+public class MCChunk implements MC {
 
-    int fieldGet$xPosition();
+    public int fieldGet$xPosition() {
+        return Integer.parseInt(null);
+    }
 
-    int fieldGet$zPosition();
+    public int fieldGet$zPosition() {
+        return Integer.parseInt(null);
+    }
 
-    MCWorld fieldGet$worldObj();
+    public MCWorld fieldGet$worldObj() {
+        return null;
+    }
 
-    Set[] fieldGet$entityLists();
+    public Set[] fieldGet$entityLists() {
+        return null;
+    }
 
-    byte[] fieldGet$blockBiomeArray();
+    public byte[] fieldGet$blockBiomeArray() {
+        return null;
+    }
 }

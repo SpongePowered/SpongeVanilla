@@ -24,33 +24,61 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "Block")
-public interface MCBlock extends MCInterface {
+public class MCBlock implements MC {
 
-    MCBlockState fieldGet$defaultBlockState();
+    public MCBlockState fieldGet$defaultBlockState() {
+        return null;
+    }
 
-    boolean fieldGet$needsRandomTick();
+    public boolean fieldGet$needsRandomTick() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$needsRandomTick(boolean value);
+    public void fieldSet$needsRandomTick(boolean value) {
+    }
 
-    int fieldGet$lightValue();
+    public int fieldGet$lightValue() {
+        return Integer.parseInt(null);
+    }
 
-    float fieldGet$blockHardness();
+    public float fieldGet$blockHardness() {
+        return Float.parseFloat(null);
+    }
 
-    boolean fieldGet$enableStats();
+    public boolean fieldGet$enableStats() {
+        return Boolean.parseBoolean(null);
 
-    boolean isSolidFullCube();
+    }
 
-    MCMaterial fieldGet$blockMaterial();
+    public boolean isSolidFullCube() {
+        return Boolean.parseBoolean(null);
+    }
 
-    MCBlockState getStateFromMeta(int meta);
+    public MCMaterial fieldGet$blockMaterial() {
+        return null;
+    }
 
-    MCBlockState getStateFromId(int id);
+    public MCBlockState getStateFromMeta(int meta) {
+        return null;
+    }
 
-    int getStateId(MCBlockState blockState);
+    public MCBlockState getStateFromId(int id) {
+        return null;
+    }
 
-    int getMetaFromState(MCBlockState state);
+    public int getStateId(MCBlockState blockState) {
+        return Integer.parseInt(null);
+    }
 
-    String getUnlocalizedName();
+    public int getMetaFromState(MCBlockState state) {
+        return Integer.parseInt(null);
+    }
 
-    boolean isReplaceable(MCWorld world, MCBlockPos pos);
+    public String getUnlocalizedName() {
+        return null;
+    }
+
+    public boolean isReplaceable(MCWorld world, MCBlockPos pos) {
+        return Boolean.parseBoolean(null);
+    }
 }

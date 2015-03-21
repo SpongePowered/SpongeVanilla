@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "S2APacketParticles")
-public interface MCPacketParticles extends MCPacket {
+public class MCPacketParticles extends MCPacket {
 
 }

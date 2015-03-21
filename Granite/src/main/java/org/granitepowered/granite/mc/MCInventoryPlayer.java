@@ -24,11 +24,17 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "InventoryPlayer")
-public interface MCInventoryPlayer extends MCInterface {
+public class MCInventoryPlayer implements MC {
 
-    MCItemStack[] fieldGet$mainInventory();
+    public MCItemStack[] fieldGet$mainInventory() {
+        return null;
+    }
 
-    MCItemStack[] fieldGet$armorInventory();
+    public MCItemStack[] fieldGet$armorInventory() {
+        return null;
+    }
 
-    int fieldGet$currentItem();
+    public int fieldGet$currentItem() {
+        return Integer.parseInt(null);
+    }
 }

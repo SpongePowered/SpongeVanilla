@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityEnderCrystal")
-public interface MCEntityEnderCrystal extends MCEntity {
+public class MCEntityEnderCrystal extends MCEntity {
 
 }

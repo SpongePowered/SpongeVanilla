@@ -24,23 +24,37 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityLiving")
-public interface MCEntityLiving extends MCEntityLivingBase {
+public class MCEntityLiving extends MCEntityLivingBase {
 
-    MCItemStack[] fieldGet$equipment();
+    public MCItemStack[] fieldGet$equipment() {
+        return null;
+    }
 
-    boolean fieldGet$isLeashed();
+    public boolean fieldGet$isLeashed() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$isLeashed(boolean leashed);
+    public void fieldSet$isLeashed(boolean leashed) {
+    }
 
-    MCEntity fieldGet$leashedToEntity();
+    public MCEntity fieldGet$leashedToEntity() {
+        return null;
+    }
 
-    void setLeashedToEntity(MCEntity entityIn, boolean sendAttachNotification);
+    public void setLeashedToEntity(MCEntity entityIn, boolean sendAttachNotification) {
+    }
 
-    boolean fieldGet$canPickUpLoot();
+    public boolean fieldGet$canPickUpLoot() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$canPickUpLoot(boolean value);
+    public void fieldSet$canPickUpLoot(boolean value) {
+    }
 
-    boolean fieldGet$persistenceRequired();
+    public boolean fieldGet$persistenceRequired() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void fieldSet$persistenceRequired(boolean persistence);
+    public void fieldSet$persistenceRequired(boolean persistence) {
+    }
 }

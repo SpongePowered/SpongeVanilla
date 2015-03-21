@@ -24,6 +24,6 @@
 package org.granitepowered.granite.mc;
 
 @Implement(name = "EntityBat")
-public interface MCEntityBat extends MCEntityAmbientCreature {
+public class MCEntityBat extends MCEntityAmbientCreature {
 
 }

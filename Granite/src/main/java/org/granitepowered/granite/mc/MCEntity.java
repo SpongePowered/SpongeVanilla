@@ -26,87 +26,154 @@ package org.granitepowered.granite.mc;
 import java.util.UUID;
 
 @Implement(name = "Entity")
-public interface MCEntity extends MCInterface {
+public class MCEntity implements MC {
 
-    boolean fieldGet$onGround();
+    public boolean fieldGet$onGround() {
+        return Boolean.parseBoolean(null);
+    }
 
-    double fieldGet$posX();
+    public double fieldGet$posX() {
+        return Double.parseDouble(null);
+    }
 
-    double fieldGet$posY();
+    public double fieldGet$posY() {
+        return Double.parseDouble(null);
+    }
 
-    double fieldGet$posZ();
+    public double fieldGet$posZ() {
+        return Double.parseDouble(null);
+    }
 
-    MCEntity fieldGet$riddenByEntity();
+    public MCEntity fieldGet$riddenByEntity() {
+        return null;
+    }
 
-    MCEntity fieldGet$ridingEntity();
+    public MCEntity fieldGet$ridingEntity() {
+        return null;
+    }
 
-    void fieldSet$riddenByEntity(MCEntity entity);
+    public void fieldSet$riddenByEntity(MCEntity entity) {
+    }
 
-    void fieldSet$ridingEntity(MCEntity entity);
+    public void fieldSet$ridingEntity(MCEntity entity) {
+    }
 
-    float fieldGet$width();
+    public float fieldGet$width() {
+        return Float.parseFloat(null);
+    }
 
-    float fieldGet$height();
+    public float fieldGet$height() {
+        return Float.parseFloat(null);
+    }
 
-    boolean fieldGet$isDead();
+    public boolean fieldGet$isDead() {
+        return Boolean.parseBoolean(null);
+    }
 
-    int fieldGet$fire();
+    public int fieldGet$fire() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$fire(int ticks);
+    public void fieldSet$fire(int ticks) {
+    }
 
-    UUID fieldGet$entityUniqueID();
+    public UUID fieldGet$entityUniqueID() {
+        return null;
+    }
 
-    int fieldGet$fireResistance();
+    public int fieldGet$fireResistance() {
+        return Integer.parseInt(null);
+    }
 
-    MCWorld fieldGet$worldObj();
+    public MCWorld fieldGet$worldObj() {
+        return null;
+    }
 
-    int fieldGet$hurtResistantTime();
+    public int fieldGet$hurtResistantTime() {
+        return Integer.parseInt(null);
+    }
 
-    void fieldSet$hurtResistantTime(int ticks);
+    public void fieldSet$hurtResistantTime(int ticks) {
+    }
 
-    float fieldGet$rotationYaw();
+    public float fieldGet$rotationYaw() {
+        return Float.parseFloat(null);
+    }
 
-    void fieldSet$rotationYaw(float yaw);
+    public void fieldSet$rotationYaw(float yaw) {
+    }
 
-    float fieldGet$rotationPitch();
+    public float fieldGet$rotationPitch() {
+        return Float.parseFloat(null);
+    }
 
-    void fieldSet$rotationPitch(float pitch);
+    public void fieldSet$rotationPitch(float pitch) {
+    }
 
-    MCDataWatcher fieldGet$dataWatcher();
+    public MCDataWatcher fieldGet$dataWatcher() {
+        return null;
+    }
 
-    void mountEntity(MCEntity other);
+    public void mountEntity(MCEntity other) {
+    }
 
-    float getEyeHeight();
+    public float getEyeHeight() {
+        return Float.parseFloat(null);
+    }
 
-    int getAir();
+    public int getAir() {
+        return Integer.parseInt(null);
+    }
 
-    void setAir(int air);
+    public void setAir(int air) {
+    }
 
-    String getCustomNameTag();
+    public String getCustomNameTag() {
+        return null;
+    }
 
-    void setCustomNameTag(String tag);
+    public void setCustomNameTag(String tag) {
+    }
 
-    boolean getAlwaysRenderNameTag();
+    public boolean getAlwaysRenderNameTag() {
+        return Boolean.parseBoolean(null);
+    }
 
-    void setAlwaysRenderNameTag(boolean value);
+    public void setAlwaysRenderNameTag(boolean value) {
+    }
 
-    String getName();
+    public String getName() {
+        return null;
+    }
 
-    void setPositionAndUpdate(double x, double y, double z);
+    public void setPositionAndUpdate(double x, double y, double z) {
+    }
 
-    void travelToDimension(int dimensionId);
+    public void travelToDimension(int dimensionId) {
+    }
 
-    boolean fieldGet$isInWater();
+    public boolean fieldGet$isInWater() {
+        return Boolean.parseBoolean(null);
+    }
 
-    double fieldGet$motionX();
+    public double fieldGet$motionX() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$motionX(double motionX);
+    public void fieldSet$motionX(double motionX) {
+    }
 
-    double fieldGet$motionY();
+    public double fieldGet$motionY() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$motionY(double motionY);
+    public void fieldSet$motionY(double motionY) {
+    }
 
-    double fieldGet$motionZ();
+    public double fieldGet$motionZ() {
+        return Double.parseDouble(null);
+    }
 
-    void fieldSet$motionZ(double motionZ);
+    public void fieldSet$motionZ(double motionZ) {
+    }
 }
