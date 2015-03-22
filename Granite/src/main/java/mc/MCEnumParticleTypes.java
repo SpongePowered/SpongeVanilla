@@ -21,9 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package mc;
 
-@Implement(name = "IChatComponent")
-public interface MCIChatComponent extends MC {
-
+public enum MCEnumParticleTypes {
 }

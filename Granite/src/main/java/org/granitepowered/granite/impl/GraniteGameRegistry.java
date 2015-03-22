@@ -28,8 +28,11 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import mc.MC;
+import mc.MCEnumArt;
+import mc.MCEnumBannerPattern;
+import mc.MCGameRules;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.Main;
@@ -37,7 +40,6 @@ import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffectBuil
 import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
 import org.granitepowered.granite.impl.entity.player.gamemode.GraniteGameMode;
-import org.granitepowered.granite.impl.item.GraniteEnchantment;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStackBuilder;
 import org.granitepowered.granite.impl.item.merchant.GraniteTradeOfferBuilder;
 import org.granitepowered.granite.impl.meta.GraniteCareer;
@@ -51,21 +53,8 @@ import org.granitepowered.granite.impl.meta.GraniteRabbitType;
 import org.granitepowered.granite.impl.meta.GraniteSkeletonType;
 import org.granitepowered.granite.impl.meta.GraniteSkullType;
 import org.granitepowered.granite.impl.potion.GranitePotionBuilder;
-import org.granitepowered.granite.impl.potion.GranitePotionEffectType;
 import org.granitepowered.granite.impl.status.GraniteFavicon;
 import org.granitepowered.granite.impl.util.GraniteRotation;
-import org.granitepowered.granite.impl.world.GraniteDimension;
-import org.granitepowered.granite.impl.world.GraniteDimensionType;
-import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MC;
-import mc.MCBiomeGenBase;
-import mc.MCBlock;
-import mc.MCEnchantment;
-import mc.MCEnumArt;
-import mc.MCGameRules;
-import mc.MCItem;
-import mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.GameDictionary;
@@ -76,7 +65,6 @@ import org.spongepowered.api.attribute.AttributeBuilder;
 import org.spongepowered.api.attribute.AttributeModifierBuilder;
 import org.spongepowered.api.attribute.Operation;
 import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.meta.BannerPatternShape;
 import org.spongepowered.api.block.meta.BannerPatternShapes;
 import org.spongepowered.api.block.meta.NotePitch;
@@ -112,9 +100,7 @@ import org.spongepowered.api.entity.player.gamemode.GameModes;
 import org.spongepowered.api.item.CoalType;
 import org.spongepowered.api.item.CookedFish;
 import org.spongepowered.api.item.DyeColor;
-import org.spongepowered.api.item.DyeColors;
 import org.spongepowered.api.item.Enchantment;
-import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.FireworkEffectBuilder;
 import org.spongepowered.api.item.Fish;
 import org.spongepowered.api.item.GoldenApple;
@@ -125,14 +111,11 @@ import org.spongepowered.api.item.merchant.TradeOfferBuilder;
 import org.spongepowered.api.item.recipe.RecipeRegistry;
 import org.spongepowered.api.potion.PotionEffectBuilder;
 import org.spongepowered.api.potion.PotionEffectType;
-import org.spongepowered.api.potion.PotionEffectTypes;
 import org.spongepowered.api.status.Favicon;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
 import org.spongepowered.api.world.DimensionType;
-import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.biome.BiomeType;
-import org.spongepowered.api.world.biome.BiomeTypes;
 import org.spongepowered.api.world.difficulty.Difficulty;
 
 import java.awt.Color;
@@ -145,8 +128,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -215,15 +196,15 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerArts() {
         Granite.getInstance().getLogger().info("Registering Arts");
 
-        List<MCEnumArt> mcEnumArts = Arrays.asList((MCEnumArt[]) Mappings.getClass("EnumArt").getEnumConstants());
+        List<MCEnumArt> enumArts = Arrays.asList(MCEnumArt.class.getEnumConstants());
         for (Field field : Arts.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
 
             String name = field.getName().toLowerCase().replace("_", "");
-            for (MCEnumArt mcEnumArt : mcEnumArts) {
-                if (name.equals(mcEnumArt.name.toLowerCase())) {
+            for (MCEnumArt enumArt : enumArts) {
+                if (name.equals(enumArt.name.toLowerCase())) {
                     try {
-                        Art art = new GraniteArt(mcEnumArt);
+                        Art art = new GraniteArt(enumArt);
                         field.set(null, art);
                         arts.put(name, art);
                         if (Main.debugLog) {
@@ -240,7 +221,7 @@ public class GraniteGameRegistry implements GameRegistry {
     private void registerBannerPatternShapes() {
         Granite.getInstance().getLogger().info("Registering Banner Shapes");
 
-        Object[] enums = Mappings.getClass("EnumBannerPattern").getEnumConstants();
+        Object[] enums = MCEnumBannerPattern.class.getEnumConstants();
         Field[] fields = BannerPatternShapes.class.getFields();
         for (int i = 0; i < enums.length; i++) {
             ReflectionUtils.forceAccessible(fields[i]);
@@ -259,19 +240,19 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerBiomes() {
-        Granite.getInstance().getLogger().info("Registering Biomes");
+        /*Granite.getInstance().getLogger().info("Registering Biomes");
 
         try {
-            Class biomeGenBaseClass = Mappings.getClass("BiomeGenBase");
+            Class biomeGenBaseClass = MCBiomeGenBase.class;
             Field biomeList = Mappings.getField(biomeGenBaseClass, "biomeList");
-            ArrayList<MCBiomeGenBase> biomesGenBase = Lists.newArrayList((MCBiomeGenBase[]) biomeList.get(biomeGenBaseClass));
+            ArrayList<BiomeGenBase> biomesGenBase = Lists.newArrayList((BiomeGenBase[]) biomeList.get(biomeGenBaseClass));
             biomesGenBase.removeAll(Collections.singleton(null));
 
             for (Field field : BiomeTypes.class.getDeclaredFields()) {
                 ReflectionUtils.forceAccessible(field);
 
                 String name = field.getName().toLowerCase();
-                for (MCBiomeGenBase biome : biomesGenBase) {
+                for (BiomeGenBase biome : biomesGenBase) {
 
                     if (name.equals("sky")) {
                         name = "the_end";
@@ -300,11 +281,11 @@ public class GraniteGameRegistry implements GameRegistry {
             }
         } catch (IllegalAccessException e) {
             Granite.error(e);
-        }
+        }*/
     }
 
     private void registerBlocks() {
-        Granite.getInstance().getLogger().info("Registering Blocks");
+        /*Granite.getInstance().getLogger().info("Registering Blocks");
 
         for (Field field : BlockTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -323,11 +304,11 @@ public class GraniteGameRegistry implements GameRegistry {
             } catch (IllegalAccessException e) {
                 Throwables.propagate(e);
             }
-        }
+        }*/
     }
 
     private void registerDimensions() {
-        Granite.getInstance().getLogger().info("Registering Dimensions");
+        /*Granite.getInstance().getLogger().info("Registering Dimensions");
 
         for (Field field : DimensionTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -338,15 +319,15 @@ public class GraniteGameRegistry implements GameRegistry {
             try {
                 switch (name) {
                     case "overworld":
-                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderSurface").newInstance()));
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(WorldProviderSurface.class.newInstance()));
                         registered = true;
                         break;
                     case "nether":
-                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderHell").newInstance()));
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(WorldProviderHell.class.newInstance()));
                         registered = true;
                         break;
                     case "end":
-                        dimensionType = new GraniteDimensionType(new GraniteDimension(Mappings.getClass("WorldProviderEnd").newInstance()));
+                        dimensionType = new GraniteDimensionType(new GraniteDimension(WorldProviderEnd.class.newInstance()));
                         registered = true;
                         break;
                 }
@@ -358,13 +339,13 @@ public class GraniteGameRegistry implements GameRegistry {
             } catch (IllegalAccessException | InstantiationException e) {
                 Granite.error(e);
             }
-        }
+        }*/
     }
 
     private void registerDyeColors() {
-        Granite.getInstance().getLogger().info("Registering Dye Colors");
+        /*Granite.getInstance().getLogger().info("Registering Dye Colors");
 
-        Object[] enums = Mappings.getClass("EnumDyeColor").getEnumConstants();
+        Object[] enums = EnumDyeColor.class.getEnumConstants();
         Field[] fields = DyeColors.class.getFields();
         for (int i = 0; i < enums.length; i++) {
             ReflectionUtils.forceAccessible(fields[i]);
@@ -379,11 +360,11 @@ public class GraniteGameRegistry implements GameRegistry {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     private void registerEnchantments() {
-        Granite.getInstance().getLogger().info("Registering Enchantments");
+        /*Granite.getInstance().getLogger().info("Registering Enchantments");
 
         for (Field field : Enchantments.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -403,7 +384,7 @@ public class GraniteGameRegistry implements GameRegistry {
                 Throwables.propagate(e);
             }
 
-        }
+        }*/
     }
 
     private void registerGameModes() {
@@ -504,7 +485,7 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerItems() {
-        Granite.getInstance().getLogger().info("Registering Items");
+        /*Granite.getInstance().getLogger().info("Registering Items");
 
         for (Field field : ItemTypes.class.getDeclaredFields()) {
             ReflectionUtils.forceAccessible(field);
@@ -523,7 +504,7 @@ public class GraniteGameRegistry implements GameRegistry {
             } catch (IllegalAccessException e) {
                 Throwables.propagate(e);
             }
-        }
+        }*/
     }
 
     private void registerNotePitches() {
@@ -635,10 +616,10 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     private void registerPotionEffects() {
-        Granite.getInstance().getLogger().info("Registering PotionEffects");
+        /*Granite.getInstance().getLogger().info("Registering PotionEffects");
 
         try {
-            Class potionClass = Mappings.getClass("Potion");
+            Class potionClass = Potion.class;
             Field potionTypes = Mappings.getField(potionClass, "potionTypes");
             ArrayList<MCPotion> mcPotions = Lists.newArrayList((MCPotion[]) potionTypes.get(potionClass));
             mcPotions.removeAll(Collections.singleton(null));
@@ -674,7 +655,7 @@ public class GraniteGameRegistry implements GameRegistry {
 
         } catch (IllegalAccessException e) {
             Throwables.propagate(e);
-        }
+        }*/
 
     }
 

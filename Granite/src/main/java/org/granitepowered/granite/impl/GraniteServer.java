@@ -29,13 +29,12 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import mc.MCDedicatedServer;
+import mc.MCEntityPlayerMP;
+import mc.MCWorldServer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.world.GraniteWorld;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MCEntityPlayerMP;
-import mc.MCDedicatedServer;
-import mc.MCWorldServer;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
@@ -60,7 +59,7 @@ public class GraniteServer extends Composite<MCDedicatedServer> implements Serve
     static String version;
 
     public GraniteServer() {
-        super(Mappings.getClass("DedicatedServer"), new Class[]{File.class}, new File("worlds/"));
+        super(MCDedicatedServer.class, new Class[]{File.class}, new File("worlds/"));
         obj.startServerThread();
     }
 

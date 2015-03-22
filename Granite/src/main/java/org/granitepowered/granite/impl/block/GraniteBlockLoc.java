@@ -30,20 +30,19 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.block.data.GraniteSign;
-import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.impl.world.GraniteWorld;
-import org.granitepowered.granite.mappings.Mappings;
 import mc.MCBlock;
 import mc.MCBlockPos;
 import mc.MCBlockState;
+import mc.MCEnchantmentHelper;
 import mc.MCEnumFacing;
+import mc.MCEnumSkyBlock;
 import mc.MCItem;
 import mc.MCItemStack;
 import mc.MCMaterial;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.block.data.GraniteSign;
+import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.util.MinecraftUtils;
-import org.granitepowered.granite.util.ReflectionUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -119,7 +118,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminanceFromGround() {
-        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getMCBlockPos());
+        return (byte) getWorld().obj.getLightFor(MCEnumSkyBlock.class.getEnumConstants()[1], getMCBlockPos());
     }
 
     @Override
@@ -146,7 +145,7 @@ public class GraniteBlockLoc implements BlockLoc {
     @Override
     public Collection<Direction> getPoweredFaces() {
         Collection<Direction> directions = new ArrayList<>();
-        MCEnumFacing[] enums = (MCEnumFacing[]) ReflectionUtils.getClassByName("EnumFacing").getEnumConstants();
+        MCEnumFacing[] enums = MCEnumFacing.class.getEnumConstants();
         for (MCEnumFacing enumFacing : enums) {
             Vector3d
                     vector3d =
@@ -167,7 +166,7 @@ public class GraniteBlockLoc implements BlockLoc {
     @Override
     public Collection<Direction> getIndirectlyPoweredFaces() {
         Collection<Direction> directions = new ArrayList<>();
-        MCEnumFacing[] enumFacings = (MCEnumFacing[]) ReflectionUtils.getClassByName("EnumFacing").getEnumConstants();
+        MCEnumFacing[] enumFacings = MCEnumFacing.class.getEnumConstants();
         for (MCEnumFacing enumFacing : enumFacings) {
             Vector3d
                     vector3d =
@@ -196,7 +195,7 @@ public class GraniteBlockLoc implements BlockLoc {
 
     @Override
     public byte getLuminanceFromSky() {
-        return (byte) getWorld().obj.getLightFor((Enum) Mappings.getClass("EnumSkyBlock").getEnumConstants()[1], getMCBlockPos());
+        return (byte) getWorld().obj.getLightFor(MCEnumSkyBlock.class.getEnumConstants()[1], getMCBlockPos());
     }
 
     @Override
@@ -231,7 +230,7 @@ public class GraniteBlockLoc implements BlockLoc {
         }
 
         if (strength > 2.0F) {
-            int efficiencyModifier = (int) Mappings.invokeStatic("EnchantmentHelper", "getEnchantmentLevel", 32, ((GraniteItemStack) itemStack).obj);
+            int efficiencyModifier = MCEnchantmentHelper.getEnchantmentLevel(32, (MCItemStack) unwrap(itemStack));
 
             if (efficiencyModifier > 0) {
                 strength += efficiencyModifier * efficiencyModifier + 1;

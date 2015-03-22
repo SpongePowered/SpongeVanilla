@@ -23,32 +23,23 @@
 
 package org.granitepowered.granite.util.json;
 
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
-import com.google.common.base.Throwables;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import org.granitepowered.granite.Granite;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MCEntity;
-import mc.MCWorldServer;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 
 public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializer<GraniteEntity> {
 
     // Can't be bothered to wrap the proper methods so doing string manipulation
     @Override
     public GraniteEntity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        String nbtString = json.getAsString();
+        /*String nbtString = json.getAsString();
         nbtString = nbtString.replaceAll("\\{", "");
         nbtString = nbtString.replaceAll("\\}", "");
 
@@ -79,12 +70,13 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
             entity.setCustomNameTag(name);
         }
 
-        return wrap(entity);
+        return wrap(entity);*/
+        throw new NotImplementedException("");
     }
 
     @Override
     public JsonElement serialize(GraniteEntity src, Type typeOfSrc, JsonSerializationContext context) {
-        String id = src.getUniqueId().toString();
+        /*String id = src.getUniqueId().toString();
         try {
             Map<Class<?>, String> map = (Map<Class<?>, String>) Mappings.getField("EntityList", "classToStringMapping").get(null);
             String type = map.get(src.obj.getClass());
@@ -94,6 +86,7 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
         } catch (IllegalAccessException e) {
             Throwables.propagate(e);
         }
-        return null;
+        return null;*/
+        throw new NotImplementedException("");
     }
 }

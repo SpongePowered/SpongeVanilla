@@ -30,25 +30,17 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.effect.particle.GraniteParticleEffect;
-import org.granitepowered.granite.impl.effect.particle.GraniteParticleType;
-import org.granitepowered.granite.impl.item.GraniteItemBlock;
-import org.granitepowered.granite.impl.item.GraniteItemType;
-import org.granitepowered.granite.impl.text.chat.GraniteChatType;
-import org.granitepowered.granite.impl.text.message.GraniteMessage;
-import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
-import org.granitepowered.granite.mappings.Mappings;
 import mc.MCEntity;
 import mc.MCEntityPlayerMP;
 import mc.MCItemStack;
 import mc.MCPacket;
-import mc.MCRegistryNamespaced;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.text.chat.GraniteChatType;
+import org.granitepowered.granite.impl.text.message.GraniteMessage;
+import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.util.Instantiator;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.effect.particle.ParticleEffect;
-import org.spongepowered.api.effect.particle.ParticleTypes;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.entity.player.gamemode.GameMode;
@@ -58,8 +50,6 @@ import org.spongepowered.api.entity.projectile.Egg;
 import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.entity.projectile.explosive.fireball.LargeFireball;
 import org.spongepowered.api.entity.projectile.explosive.fireball.SmallFireball;
-import org.spongepowered.api.item.ItemBlock;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -80,13 +70,11 @@ import org.spongepowered.api.util.Tristate;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -130,7 +118,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
         /*if (title.isReset() || title.isClear()) {
             MCPacketTitleType
                     type =
-                    (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), title.isReset() ? 4 : 3);
+                    (MCPacketTitleType) MinecraftUtils.enumValue(S45PacketTitle$Type.class, title.isReset() ? 4 : 3);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, null);
             obj.fieldGet$playerNetServerHandler().sendPacket(packet);
@@ -146,14 +134,14 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
         }
 
         if (title.getTitle().isPresent()) {
-            MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 0);
+            MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(S45PacketTitle$Type.class, 0);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getTitle().get()));
             obj.fieldGet$playerNetServerHandler().sendPacket(packet);
         }
 
         if (title.getTitle().isPresent()) {
-            MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(Mappings.getClass("S45PacketTitle$Type"), 1);
+            MCPacketTitleType type = (MCPacketTitleType) MinecraftUtils.enumValue(S45PacketTitle$Type.class, 1);
 
             MCPacket packet = Instantiator.get().newPacketTitle(type, MinecraftUtils.graniteToMinecraftChatComponent(title.getSubtitle().get()));
             obj.fieldGet$playerNetServerHandler().sendPacket(packet);
@@ -310,12 +298,12 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
     @Override
     public void spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
-        // TODO: Radius is currently ignored, fix this
+        /*// TODO: Radius is currently ignored, fix this
         GraniteParticleType type = (GraniteParticleType) particleEffect.getType();
 
         Vector3f offset = particleEffect.getOffset();
 
-        Enum internal = (Enum) Mappings.getClass("EnumParticleTypes").getEnumConstants()[type.getId()];
+        Enum internal = MCEnumParticleTypes.class.getEnumConstants()[type.getId()];
 
         int count = particleEffect.getCount();
         int[] extra = new int[0];
@@ -346,8 +334,8 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
             if (type.getId() == ((GraniteParticleType) ParticleTypes.ITEM_CRACK).getId()) {
                 try {
                     id =
-                            ((MCRegistryNamespaced) Mappings.getField("Item", "itemRegistry").get(null))
-                                    .getIDForObject(((GraniteItemType) itemType).obj);
+                            ((MCRegistryNamespaced) Mappings.getField("Item", "itemRegistry").get(null)).getIDForObject(((GraniteItemType)
+                            itemType).obj);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -470,7 +458,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
 
         for (MCPacket packet : packets) {
             obj.playerNetServerHandler.sendPacket(packet);
-        }
+        }*/
     }
 
     @Override

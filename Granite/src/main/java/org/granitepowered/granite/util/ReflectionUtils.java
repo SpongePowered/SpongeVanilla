@@ -29,8 +29,8 @@ import com.google.common.collect.ImmutableBiMap;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.mappings.Mappings;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -129,38 +129,6 @@ public class ReflectionUtils {
         return clazz;
     }
 
-    public static Class<?> getClassByName(String name) {
-        boolean array = name.endsWith("[]");
-        name = name.replaceAll("\\[\\]", "");
-
-        Class<?> clazz = null;
-
-        for (Class<?> primitive : ctPrimitives.keySet()) {
-            if (Objects.equals(primitive.getName(), name)) {
-                clazz = primitive;
-            }
-        }
-
-        if (name.split("\\.").length == 1 && !name.toLowerCase().equals(name)) {
-            clazz = Mappings.getClass(name);
-        }
-
-        try {
-            clazz = Class.forName(name);
-        } catch (ClassNotFoundException ignored) {
-        }
-
-        try {
-            clazz = Class.forName("java.lang." + name);
-        } catch (ClassNotFoundException ignored) {
-        }
-
-        if (array) {
-            clazz = Array.newInstance(clazz, 0).getClass();
-        }
-        return clazz;
-    }
-
     public static CtClass getCtClassByName(String name) {
         boolean array = name.endsWith("[]");
         name = name.replaceAll("\\[\\]", "");
@@ -173,9 +141,9 @@ public class ReflectionUtils {
             }
         }
 
-        if (name.split("\\.").length == 1 && !name.toLowerCase().equals(name)) {
+        /*if (name.split("\\.").length == 1 && !name.toLowerCase().equals(name)) {
             clazz = Mappings.getCtClass(name);
-        }
+        }*/
 
         try {
             clazz = Granite.getInstance().getClassPool().get(name);
@@ -241,7 +209,7 @@ public class ReflectionUtils {
     }
 
     public static CtMethod getCtMethod(String clazz, String method) {
-        try {
+        /*try {
             return Mappings.getCtMethod(clazz, method);
         } catch (Mappings.MappingNotFoundException e) {
             CtClass clazzz = getCtClassByName(clazz);
@@ -261,6 +229,7 @@ public class ReflectionUtils {
             } catch (NotFoundException e1) {
                 throw Throwables.propagate(e1);
             }
-        }
+        }*/
+        throw new NotImplementedException("");
     }
 }

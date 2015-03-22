@@ -27,12 +27,11 @@ import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mappings.Mappings;
 import mc.MCBlock;
 import mc.MCItem;
 import mc.MCItemStack;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.composite.Composite;
 import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemDataTransactionResult;
@@ -72,7 +71,7 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     }
 
     public GraniteItemStack(MCItem item, int amount, int damage) {
-        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Item"), int.class, int.class}, item, amount, damage);
+        super(ItemStack.class, new Class[]{MCItem.class, int.class, int.class}, item, amount, damage);
     }
 
     public GraniteItemStack(MCBlock block, int amount) {
@@ -80,7 +79,7 @@ public class GraniteItemStack extends Composite<MCItemStack> implements ItemStac
     }
 
     public GraniteItemStack(MCBlock block, int amount, int damage) {
-        super(Mappings.getClass("ItemStack"), new Class[]{Mappings.getClass("Block"), int.class, int.class}, block, amount, damage);
+        super(ItemStack.class, new Class[]{MCBlock.class, int.class, int.class}, block, amount, damage);
     }
 
     @Override

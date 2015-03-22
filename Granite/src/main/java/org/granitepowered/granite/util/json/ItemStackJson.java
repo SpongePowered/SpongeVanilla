@@ -23,20 +23,14 @@
 
 package org.granitepowered.granite.util.json;
 
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
-
-import com.google.common.base.Throwables;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MCItemStack;
-import mc.MCNBTTagCompound;
 
 import java.lang.reflect.Type;
 
@@ -44,20 +38,21 @@ public class ItemStackJson implements JsonSerializer<GraniteItemStack>, JsonDese
 
     @Override
     public GraniteItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        String nbtString = json.getAsString();
+        /*String nbtString = json.getAsString();
         MCNBTTagCompound nbt = (MCNBTTagCompound) Mappings.invokeStatic("JsonToNBT", "parseStringToTag", nbtString);
 
-        return wrap((MCItemStack) Mappings.invokeStatic("ItemStack", "loadItemStackFromNBT", nbt));
+        return wrap((MCItemStack) Mappings.invokeStatic("ItemStack", "loadItemStackFromNBT", nbt));*/
+        throw new NotImplementedException("");
     }
 
     @Override
     public JsonElement serialize(GraniteItemStack src, Type typeOfSrc, JsonSerializationContext context) {
-        try {
-            Object nbt = Mappings.invoke(src.obj, "writeToNBT", Mappings.getClass("NBTTagCompound").newInstance());
+        /*try {
+            Object nbt = Mappings.invoke(src.obj, "writeToNBT", NBTTagCompound.class.newInstance());
             return new JsonPrimitive(nbt.toString());
         } catch (InstantiationException | IllegalAccessException e) {
             Throwables.propagate(e);
-        }
+        }*/
         return null;
     }
 }
