@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityPapublic inting")
 public class MCEntityPainting extends MCEntityHanging {
 
     public MCEnumArt art;

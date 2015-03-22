@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityBlaze")
 public class MCEntityBlaze extends MCEntityMob {
 
 }

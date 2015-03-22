@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityLightningBolt")
 public class MCEntityLightningBolt extends MCEntityWeatherEffect {
 
 }

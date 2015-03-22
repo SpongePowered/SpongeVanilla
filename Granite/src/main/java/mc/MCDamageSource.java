@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "DamageSource")
 public class MCDamageSource implements MC {
 
     public MCEntity getSourceOfDamage() {

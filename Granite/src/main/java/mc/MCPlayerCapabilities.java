@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "PlayerCapabilities")
 public class MCPlayerCapabilities implements MC {
 
     public boolean allowFlying;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "NetHandlerPlayServer")
 public class MCNetHandlerPlayServer implements MC {
 
     public void sendPacket(MCPacket packet) {

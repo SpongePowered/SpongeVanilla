@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "PotionEffect")
 public class MCPotionEffect implements MC {
 
     public int potionId;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "ItemStack")
 public class MCItemStack implements MC {
 
     public int stackSize;

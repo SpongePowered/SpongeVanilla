@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Block")
 public class MCBlock implements MC {
 
     public static Object blockRegistry;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityOcelot")
 public class MCEntityOcelot extends MCEntityTameable {
 
 }

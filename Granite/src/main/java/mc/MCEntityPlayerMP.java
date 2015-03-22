@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityPlayerMP")
 public class MCEntityPlayerMP extends MCEntityPlayer {
 
     public MCPlayerCapabilities capabilities;

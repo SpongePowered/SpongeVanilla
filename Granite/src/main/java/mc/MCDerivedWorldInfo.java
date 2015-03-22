@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "DerivedWorldInfo")
 public class MCDerivedWorldInfo {
 
     public MCWorldInfo theWorldInfo;

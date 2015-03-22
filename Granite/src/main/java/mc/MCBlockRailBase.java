@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "BlockRailBase")
 public class MCBlockRailBase extends MCBlock {
 
     public boolean isOnRailWorld(MCWorldServer world, MCBlockPos blockPos) {

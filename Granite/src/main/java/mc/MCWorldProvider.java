@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "WorldProvider")
 public class MCWorldProvider implements MC {
 
     public int dimensionId;

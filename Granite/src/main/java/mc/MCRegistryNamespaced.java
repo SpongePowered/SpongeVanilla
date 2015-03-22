@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "RegistryNamespaced")
 public class MCRegistryNamespaced extends MCVec3i {
 
     public int getIDForObject(Object obj) {

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntitySpider")
 public class MCEntitySpider extends MCEntityMob {
 
 }

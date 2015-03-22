@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntitySnowGolem")
 public class MCEntitySnowGolem extends MCEntityGolem {
 
 }

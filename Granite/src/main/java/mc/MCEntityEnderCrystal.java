@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityEnderCrystal")
 public class MCEntityEnderCrystal extends MCEntity {
 
 }

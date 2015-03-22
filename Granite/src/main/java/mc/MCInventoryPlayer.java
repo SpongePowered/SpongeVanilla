@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "InventoryPlayer")
 public class MCInventoryPlayer implements MC {
 
     public MCItemStack[] mainInventory;

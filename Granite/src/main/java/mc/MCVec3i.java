@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Vec3i")
 public class MCVec3i implements MC {
 
     public int x;

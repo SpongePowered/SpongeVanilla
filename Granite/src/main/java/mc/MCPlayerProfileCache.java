@@ -25,7 +25,6 @@ package mc;
 
 import java.util.UUID;
 
-@Implement(name = "PlayerProfileCache")
 public class MCPlayerProfileCache implements MC {
 
     public MCGameProfile getProfileByUUID(UUID uuid) {

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Item")
 public class MCItem implements MC {
 
     public int maxStackSize;

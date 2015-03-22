@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityItemFrame")
 public class MCEntityItemFrame extends MCEntityHanging {
 
     public void setDisplayedItem(MCItemStack itemStack) {

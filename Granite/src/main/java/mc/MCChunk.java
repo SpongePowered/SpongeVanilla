@@ -25,7 +25,6 @@ package mc;
 
 import java.util.Set;
 
-@Implement(name = "Chunk")
 public class MCChunk implements MC {
 
     public int xPosition;

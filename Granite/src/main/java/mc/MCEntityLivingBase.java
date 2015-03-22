@@ -25,7 +25,6 @@ package mc;
 
 import java.util.Map;
 
-@Implement(name = "EntityLivingBase")
 public class MCEntityLivingBase extends MCEntity {
 
     public MCEntityLivingBase lastAttacker;

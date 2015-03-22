@@ -28,8 +28,7 @@ import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javassist.ClassPool;
-import javassist.NotFoundException;
-import org.apache.commons.io.FileUtils;
+import mc.Bootstrap;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
 import org.granitepowered.granite.impl.event.state.GraniteLoadCompleteEvent;
@@ -37,40 +36,28 @@ import org.granitepowered.granite.impl.event.state.GranitePostInitializationEven
 import org.granitepowered.granite.impl.event.state.GranitePreInitializationEvent;
 import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
-import org.granitepowered.granite.impl.text.chat.GraniteChatType;
-import org.granitepowered.granite.impl.text.format.GraniteTextColor;
-import org.granitepowered.granite.util.ReflectionUtils;
-import mc.MCBootstrap;
+import org.granitepowered.granite.loader.DeobfuscatorTransformer;
+import org.granitepowered.granite.loader.GraniteTweaker;
+import org.granitepowered.granite.loader.Mappings;
+import org.granitepowered.granite.loader.MappingsLoader;
+import org.granitepowered.granite.loader.MinecraftLoader;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.text.action.GraniteTextActionFactory;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.chat.ChatTypes;
-import org.spongepowered.api.text.chat.GraniteChatTypeFactory;
-import org.spongepowered.api.text.format.GraniteTextFormatFactory;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyle;
-import org.spongepowered.api.text.format.TextStyles;
-import org.spongepowered.api.text.message.GraniteMessageFactory;
-import org.spongepowered.api.text.message.Messages;
-import org.spongepowered.api.text.title.GraniteTitleFactory;
-import org.spongepowered.api.text.title.Titles;
-import org.spongepowered.api.text.translation.GraniteTranslationFactory;
-import org.spongepowered.api.text.translation.Translations;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
 public class GraniteStartup extends Thread {
+
     String[] args;
+
+    Mappings mappings;
+    File minecraftJar;
 
     String serverVersion;
     String apiVersion;
@@ -79,6 +66,10 @@ public class GraniteStartup extends Thread {
     public GraniteStartup(String[] args) {
         this.args = args;
         this.setName("Granite Startup");
+    }
+
+    public static void main(String[] args) {
+        new GraniteStartup(args).run();
     }
 
     public void run() {
@@ -120,22 +111,24 @@ public class GraniteStartup extends Thread {
 
             Granite.getInstance().getEventManager().post(new GraniteConstructionEvent());
 
-            Granite.getInstance().setClassesDir(new File("classes/"));
-            Granite.getInstance().getClassesDir().mkdirs();
-
             Granite.getInstance().createGson();
 
             loadMinecraft();
 
+            loadMappings();
+
+            DeobfuscatorTransformer.mappings = mappings;
+            DeobfuscatorTransformer.minecraftJar = minecraftJar;
+            DeobfuscatorTransformer.init();
+
             bootstrap();
 
-            //TODO: Create new Registering Class with hard coded sounds (even though i hate hard coding soo uch);
-
-            injectSpongeFields();
+            // TODO: Create new Registering Class with hard coded sounds (even though i hate hard coding soo much);
 
             ((GranitePluginManager) Granite.getInstance().getPluginManager()).loadPlugins();
 
-            Granite.getInstance().setServer(injector.getInstance(Server.class));
+            // TODO: Set the Server instance
+            //Granite.getInstance().setServer();
 
             Granite.getInstance().getEventManager().post(new GranitePreInitializationEvent());
             Granite.getInstance().getEventManager().post(new GraniteInitializationEvent());
@@ -177,63 +170,62 @@ public class GraniteStartup extends Thread {
         }
     }
 
-    private void injectSpongeFields() {
-        Granite.getInstance().getLogger().info("Injecting Sponge fields");
-
-        injectConstant(Messages.class, "factory", new GraniteMessageFactory());
-        injectConstant(TextStyles.class, "factory", new GraniteTextFormatFactory());
-        injectConstant(TextActions.class, "factory", new GraniteTextActionFactory());
-        injectConstant(Translations.class, "factory", new GraniteTranslationFactory());
-        injectConstant(ChatTypes.class, "factory", new GraniteChatTypeFactory());
-        injectConstant(Titles.class, "factory", new GraniteTitleFactory());
-
-        injectEnumConstants(TextColors.class, GraniteTextColor.class);
-        injectEnumConstants(ChatTypes.class, GraniteChatType.class);
-
-        Map<String, TextStyle.Base> styles = new HashMap<>();
-        for (Map.Entry<String, TextStyle.Base> entry : GraniteTextFormatFactory.styles.entrySet()) {
-            styles.put(entry.getKey().toUpperCase(), entry.getValue());
-        }
-        injectConstants(TextStyles.class, styles);
-        //injectConstants(ParticleTypes.class, Granite.getInstance().getRegistry().particleTypes);
-    }
-
-    private void injectEnumConstants(Class<?> destination, Class<? extends Enum> source) {
-        for (Enum constant : source.getEnumConstants()) {
-            injectConstant(destination, constant.name(), constant);
-        }
-    }
-
-    private void injectConstants(Class<?> clazz, Map<String, ?> objects) {
-        for (Map.Entry<String, ?> entry : objects.entrySet()) {
-            injectConstant(clazz, entry.getKey(), entry.getValue());
-        }
-    }
-
-    private void injectConstant(Class<?> clazz, String name, Object value) {
-        try {
-            Field f = clazz.getDeclaredField(name);
-            ReflectionUtils.forceAccessible(f);
-
-            f.set(null, value);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Throwables.propagate(e);
-        }
-    }
-
     private void bootstrap() {
         Granite.getInstance().getLogger().info("Bootstrapping Minecraft");
 
-        MCBootstrap.register();
+        Bootstrap.register();
+    }
+
+    private void downloadMappings(File mappingsFile, String url, HttpRequest req) {
+        Granite.getInstance().getLogger().warn("Downloading mappings from " + url);
+        if (req.code() == 404) {
+            throw new RuntimeException("GitHub 404 error whilst trying to download mappings");
+        } else if (req.code() == 200) {
+            req.receive(mappingsFile);
+            Granite.getInstance().getServerConfig().set("latest-mappings-etag", req.eTag());
+            Granite.getInstance().getServerConfig().save();
+        }
+    }
+
+    private void loadMappings() {
+        File mappingsFile = new File(Granite.getInstance().getServerConfig().getMappingsFile().getAbsolutePath());
+        String url = "https://raw.githubusercontent.com/GraniteTeam/GraniteMappings/mixin/1.8.3.json";
+        try {
+            HttpRequest req = HttpRequest.get(url);
+
+            if (Granite.getInstance().getServerConfig().getAutomaticMappingsUpdating()) {
+                Granite.getInstance().getLogger().info("Querying Granite for updates");
+                if (!mappingsFile.exists()) {
+                    Granite.getInstance().getLogger().warn("Could not find mappings.json");
+                    downloadMappings(mappingsFile, url, req);
+                } else if (!Objects.equals(req.eTag(), Granite.getInstance().getServerConfig().getLatestMappingsEtag())) {
+                    Granite.getInstance().getLogger().info("Update found");
+                    downloadMappings(mappingsFile, url, req);
+                }
+            }
+        } catch (HttpRequest.HttpRequestException e) {
+            Granite.getInstance().getLogger().warn("Could not reach Granite mappings, falling back to local");
+
+            if (!mappingsFile.exists()) {
+                Granite.getInstance().getLogger()
+                        .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called "
+                                + "\"mappings.json\"");
+                Throwables.propagate(e);
+            } else {
+                Granite.error(e);
+            }
+        }
+        mappings = MappingsLoader.load(mappingsFile);
     }
 
     private void loadMinecraft() {
         String version = "1.8.3";
-        File minecraftJar = new File("minecraft_server." + version + ".jar");
+        minecraftJar = new File("minecraft_server." + version + ".jar");
 
         if (!minecraftJar.exists()) {
             Granite.getInstance().getLogger().warn("Could not find Minecraft .jar, downloading");
-            HttpRequest req =
+            HttpRequest
+                    req =
                     HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/" + version + "/minecraft_server." + version + ".jar");
             if (req.code() == 404) {
                 throw new RuntimeException("404 error whilst trying to download Minecraft");
@@ -245,30 +237,11 @@ public class GraniteStartup extends Thread {
 
         String minecraftVersion = minecraftJar.getName().replace("minecraft_server.", "Minecraft ").replace(".jar", "");
 
-        //TODO: Register minecraft version after minecraft has loaded so there no linger needs to be any hard coded information.
-
-        Granite.getInstance().getLogger().info("Loading " + minecraftVersion);
-
+        MinecraftLoader.createPool(minecraftJar);
         try {
-            Granite.getInstance().getClassPool().insertClassPath(minecraftJar.getName());
-        } catch (NotFoundException e) {
-            Throwables.propagate(e);
-        }
-    }
-
-    private void forceDeleteFolder(File folder) {
-        try {
-            FileUtils.deleteDirectory(folder);
-        } catch (IOException e) {
-            if (e.getMessage().startsWith("Unable to delete directory")) {
-                Granite.getInstance().getLogger().info("Unable to delete old classes, retrying in one second");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                forceDeleteFolder(folder);
-            }
+            GraniteTweaker.loader.addURL(minecraftJar.toURI().toURL());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityMinecart")
 public class MCEntityMinecart extends MCEntity {
 
     public double getMaxSpeed() {

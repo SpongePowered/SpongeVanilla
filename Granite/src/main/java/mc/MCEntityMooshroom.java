@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityMooshroom")
 public class MCEntityMooshroom extends MCEntityCow {
 
 }

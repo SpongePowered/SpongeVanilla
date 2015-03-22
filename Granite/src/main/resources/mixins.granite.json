@@ -1,0 +1,6 @@
+{
+    "package": "org.granitepowered.granite.mixin",
+    "required": true,
+    "mixins": [
+    ]
+}

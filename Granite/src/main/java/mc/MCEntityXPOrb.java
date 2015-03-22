@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityXPOrb")
 public class MCEntityXPOrb extends MCEntity {
 
     public int xpValue;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "S45PacketTitle$Type")
 public class MCPacketTitleType extends MCPacket {
 
 }

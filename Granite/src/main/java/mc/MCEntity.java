@@ -25,7 +25,6 @@ package mc;
 
 import java.util.UUID;
 
-@Implement(name = "Entity")
 public class MCEntity implements MC {
 
     public boolean onGround;

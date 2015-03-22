@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "NBTTagCompound")
 public class MCNBTTagCompound implements MC {
 
 }

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityPigZombie")
 public class MCEntityPigZombie extends MCEntityZombie {
 
     public int angerLevel;

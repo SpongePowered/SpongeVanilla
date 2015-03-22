@@ -25,7 +25,6 @@ package mc;
 
 import com.google.common.collect.ImmutableMap;
 
-@Implement(name = "BlockState")
 public class MCBlockState implements MC {
 
     public MCBlock block;

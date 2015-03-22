@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityLiving")
 public class MCEntityLiving extends MCEntityLivingBase {
 
     public MCItemStack[] equipment;

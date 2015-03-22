@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "CommandBlockLogic")
 public class MCCommandBlockLogic implements MC {
 
     public String commandStored;

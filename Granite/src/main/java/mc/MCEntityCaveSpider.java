@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityCaveSpider")
 public class MCEntityCaveSpider extends MCEntitySpider {
 
 }

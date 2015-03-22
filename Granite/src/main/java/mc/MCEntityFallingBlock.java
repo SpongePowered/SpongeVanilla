@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityFallingBlock")
 public class MCEntityFallingBlock extends MCEntity {
 
     public float fallHurtAmount;

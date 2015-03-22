@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "InventoryBasic")
 public class MCInventoryBasic {
 
     public MCItemStack[] inventoryContents;

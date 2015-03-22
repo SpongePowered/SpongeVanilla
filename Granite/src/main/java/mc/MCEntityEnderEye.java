@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityEnderEye")
 public class MCEntityEnderEye extends MCEntityThrowable {
 
     public double targetX;

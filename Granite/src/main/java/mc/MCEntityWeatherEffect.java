@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityWeatherEffect")
 public class MCEntityWeatherEffect extends MCEntity {
 
 }

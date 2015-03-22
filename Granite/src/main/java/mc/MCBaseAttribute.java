@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "BaseAttribute")
 public class MCBaseAttribute implements MC {
 
 }

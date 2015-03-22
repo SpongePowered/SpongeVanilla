@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityEgg")
 public class MCEntityEgg extends MCEntityThrowable {
 
 }

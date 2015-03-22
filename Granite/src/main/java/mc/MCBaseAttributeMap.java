@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "BaseAttributeMap")
 public class MCBaseAttributeMap implements MC {
 
     public MCModifiableAttributeInstance getAttributeInstance(MCBaseAttribute attributeInstance) {

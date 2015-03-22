@@ -25,7 +25,6 @@ package mc;
 
 import java.util.UUID;
 
-@Implement(name = "GameProfile")
 public class MCGameProfile implements MC {
 
     public String name;

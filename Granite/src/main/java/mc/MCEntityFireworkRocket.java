@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityFireworkRocket")
 public class MCEntityFireworkRocket extends MCEntity {
 
     public int lifetime;

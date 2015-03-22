@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Packet")
 public class MCPacket implements MC {
 
 }

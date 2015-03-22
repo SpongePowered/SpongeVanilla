@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityExpBottle")
 public class MCEntityExpBottle extends MCEntityThrowable {
 
 }

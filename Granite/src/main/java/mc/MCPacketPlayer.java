@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "C03PacketPlayer")
 public class MCPacketPlayer extends MCPacket {
 
     public double x;

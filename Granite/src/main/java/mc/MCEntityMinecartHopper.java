@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityMinecartHopper")
 public class MCEntityMinecartHopper extends MCEntityMinecartContainer {
 
 }

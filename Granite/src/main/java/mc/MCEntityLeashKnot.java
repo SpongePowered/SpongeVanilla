@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityLeashKnot")
 public class MCEntityLeashKnot extends MCEntityHanging {
 
 }

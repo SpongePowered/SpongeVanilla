@@ -23,11 +23,8 @@
 
 package mc;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+public class Bootstrap {
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Implement {
-
-    public String name();
+    public static void register() {
+    }
 }

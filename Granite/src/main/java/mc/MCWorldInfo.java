@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "WorldInfo")
 public class MCWorldInfo implements MC {
 
     public String levelName;

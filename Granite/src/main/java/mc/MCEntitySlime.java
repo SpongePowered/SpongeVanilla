@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntitySlime")
 public class MCEntitySlime extends MCEntityMob {
 
     public void setSlimeSize(int size) {

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "ModifiableAttributeInstance")
 public class MCModifiableAttributeInstance {
 
     public void setBaseValue(double value) {

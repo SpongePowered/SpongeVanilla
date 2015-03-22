@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityGuardian")
 public class MCEntityGuardian extends MCEntityMob {
 
 }

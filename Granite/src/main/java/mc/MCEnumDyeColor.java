@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EnumDyeColor")
 public class MCEnumDyeColor implements MC {
 
     public String name;

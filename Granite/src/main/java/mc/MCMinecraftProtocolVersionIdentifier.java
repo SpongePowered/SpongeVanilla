@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "MinecraftProtocolVersionIdentifier")
 public class MCMinecraftProtocolVersionIdentifier implements MC {
 
     public String name;

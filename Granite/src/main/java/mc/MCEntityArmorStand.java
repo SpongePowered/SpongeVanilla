@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityArmorStand")
 public class MCEntityArmorStand extends MCEntityLivingBase {
 
     public boolean canInteract;

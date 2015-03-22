@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "BiomeGenBase")
 public class MCBiomeGenBase implements MC {
 
     public float temperature;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "S23PacketBlockChange")
 public class MCPacketBlockChange extends MCPacket {
 
 }

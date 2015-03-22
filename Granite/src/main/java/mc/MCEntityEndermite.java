@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityEndermite")
 public class MCEntityEndermite extends MCEntityMob {
 
     public boolean playerSpawned;

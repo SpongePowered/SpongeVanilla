@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Enchantment")
 public class MCEnchantment implements MC {
 
     public String name;

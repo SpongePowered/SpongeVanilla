@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "C07PacketPlayerDigging")
 public class MCPacketPlayerDigging extends MCPacket {
 
     public MCBlockPos position;

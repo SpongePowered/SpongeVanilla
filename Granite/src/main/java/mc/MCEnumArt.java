@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EnumArt")
 public enum MCEnumArt implements MC {
 
     ;

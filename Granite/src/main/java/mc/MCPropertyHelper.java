@@ -25,7 +25,6 @@ package mc;
 
 import java.util.Collection;
 
-@Implement(name = "PropertyHelper")
 public class MCPropertyHelper implements MC {
 
     public String name;

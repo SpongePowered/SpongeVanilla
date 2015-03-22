@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityCreeper")
 public class MCEntityCreeper extends MCEntityMob {
 
     public int explosionRadius;

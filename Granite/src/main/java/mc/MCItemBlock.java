@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "ItemBlock")
 public class MCItemBlock extends MCItem {
 
     public MCBlock block;

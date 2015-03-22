@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityBoat")
 public class MCEntityBoat extends MCEntity {
 
     public double speedMultiplier;

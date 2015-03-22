@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Container")
 public class MCContainer implements MC {
 
 }

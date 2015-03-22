@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "MerchantRecipeList")
 public class MCMerchantRecipeList implements MC {
 
 }

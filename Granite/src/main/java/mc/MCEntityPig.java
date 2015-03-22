@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityPig")
 public class MCEntityPig extends MCEntityAnimal {
 
 }

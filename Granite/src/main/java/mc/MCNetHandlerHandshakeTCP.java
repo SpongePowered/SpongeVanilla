@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "NetHandlerHandshakeTCP")
 public class MCNetHandlerHandshakeTCP implements MC {
 
     public MCNetworkManager networkManager;

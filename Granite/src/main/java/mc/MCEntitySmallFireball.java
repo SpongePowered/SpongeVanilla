@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntitySmallFireball")
 public class MCEntitySmallFireball extends MCEntityFireball {
 
 }

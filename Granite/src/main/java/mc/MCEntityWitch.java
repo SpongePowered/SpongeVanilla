@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityWitch")
 public class MCEntityWitch extends MCEntityMob {
 
 }

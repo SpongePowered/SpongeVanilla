@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityThrowable")
 public class MCEntityThrowable extends MCEntity {
 
     public MCEntityLivingBase thrower;

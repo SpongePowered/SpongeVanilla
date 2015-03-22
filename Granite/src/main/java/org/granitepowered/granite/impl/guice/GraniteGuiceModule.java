@@ -52,7 +52,6 @@ public class GraniteGuiceModule extends AbstractModule {
         bind(Granite.class).in(Scopes.SINGLETON);
 
         bind(Game.class).toProvider(GraniteProvider.class).in(Scopes.SINGLETON);
-        bind(Server.class).toProvider(GraniteServerProvider.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);
         bind(GameRegistry.class).to(GraniteGameRegistry.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(GraniteEventManager.class).in(Scopes.SINGLETON);

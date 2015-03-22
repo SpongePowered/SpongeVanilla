@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityHanging")
 public class MCEntityHanging extends MCEntity {
 
     public MCEnumFacing facing;

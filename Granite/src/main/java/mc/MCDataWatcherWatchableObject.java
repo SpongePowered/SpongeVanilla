@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "DataWatcher$WatchableObject")
 public class MCDataWatcherWatchableObject {
 
     public Object watchedObject;

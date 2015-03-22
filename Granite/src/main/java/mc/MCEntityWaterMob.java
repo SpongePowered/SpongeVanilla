@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityWaterMob")
 public class MCEntityWaterMob extends MCEntityLiving {
 
 }

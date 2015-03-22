@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "AnimalChest")
 public class MCAnimalChest extends MCInventoryBasic {
 
 }

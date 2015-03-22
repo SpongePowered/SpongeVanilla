@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Material")
 public class MCMaterial implements MC {
 
     public boolean requiresNoTool;

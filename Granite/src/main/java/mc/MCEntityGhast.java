@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityGhast")
 public class MCEntityGhast extends MCEntityFlying {
 
 }

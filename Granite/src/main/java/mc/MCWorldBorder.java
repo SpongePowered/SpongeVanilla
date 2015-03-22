@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "WorldBorder")
 public class MCWorldBorder implements MC {
 
     public double startDiameter;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "TileEntitySign")
 public class MCTileEntitySign extends MCTileEntity {
 
     public MCIChatComponent[] signText;

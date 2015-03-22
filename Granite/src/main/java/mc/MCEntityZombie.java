@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityZombie")
 public class MCEntityZombie extends MCEntityMob {
 
     public MCBaseAttribute reinforcementsAttribute;

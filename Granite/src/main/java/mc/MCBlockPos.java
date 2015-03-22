@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "BlockPos")
 public class MCBlockPos extends MCVec3i {
 
     public MCBlockPos offset(MCEnumFacing facing, int amount) {

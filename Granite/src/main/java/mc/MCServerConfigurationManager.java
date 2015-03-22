@@ -25,7 +25,6 @@ package mc;
 
 import java.util.List;
 
-@Implement(name = "ServerConfigurationManager")
 public class MCServerConfigurationManager implements MC {
 
     public boolean whitelistEnforced;

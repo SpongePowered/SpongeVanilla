@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "GameRules")
 public class MCGameRules implements MC {
 
     public String getGameRuleStringValue(String name) {

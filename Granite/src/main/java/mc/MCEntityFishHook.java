@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityFishHook")
 public class MCEntityFishHook extends MCEntity {
 
     public MCEntityPlayer angler;

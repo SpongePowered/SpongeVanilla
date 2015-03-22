@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityLargeFireball")
 public class MCEntityLargeFireball extends MCEntityFireball {
 
     public int explosionSize;

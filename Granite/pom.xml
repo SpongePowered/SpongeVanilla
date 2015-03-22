@@ -57,13 +57,23 @@
         </repository>
 
         <repository>
-            <id>minecraft-libs</id>
-            <url>https://libraries.minecraft.net</url>
+            <id>sonatype-nexus</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
         </repository>
 
         <repository>
-            <id>sonatype-nexus</id>
-            <url>https://oss.sonatype.org/content/groups/public</url>
+            <id>forge</id>
+            <url>http://files.minecraftforge.net/maven</url>
+        </repository>
+
+        <repository>
+            <id>eclipse</id>
+            <url>https://repo.eclipse.org/content/groups/eclipse/</url>
+        </repository>
+
+        <repository>
+            <id>minecraft-libs</id>
+            <url>https://libraries.minecraft.net</url>
         </repository>
     </repositories>
 
@@ -74,6 +84,18 @@
             <version>${api.version}</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/../SpongeAPI/build/libs/spongeapi-${api.version}.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>mixin</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>launchwrapper</artifactId>
+            <version>1.11</version>
         </dependency>
 
         <dependency>
@@ -149,15 +171,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.flowpowered</groupId>
-            <artifactId>flow-math</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>5.0.3</version>
         </dependency>
 
         <dependency>
@@ -167,11 +183,24 @@
         </dependency>
 
         <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>launchwrapper</artifactId>
-            <version>1.11</version>
+            <groupId>com.flowpowered</groupId>
+            <artifactId>flow-math</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
+
 
     <profiles>
         <profile>

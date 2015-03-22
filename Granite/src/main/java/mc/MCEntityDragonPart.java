@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityDragonPart")
 public class MCEntityDragonPart extends MCEntity {
 
     public MCEntityDragon entityDragonObj;

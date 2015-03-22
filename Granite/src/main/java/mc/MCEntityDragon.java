@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityDragon")
 public class MCEntityDragon extends MCEntityLiving {
 
     public MCEntityEnderCrystal healingEnderCrystal;

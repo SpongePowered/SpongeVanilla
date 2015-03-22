@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityMinecartMobSpawner")
 public class MCEntityMinecartMobSpawner extends MCEntityMinecart {
 
 }

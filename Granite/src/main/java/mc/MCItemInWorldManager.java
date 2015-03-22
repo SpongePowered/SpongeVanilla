@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "ItemInWorldManager")
 public class MCItemInWorldManager implements MC {
 
     public MCWorldServer theWorld;

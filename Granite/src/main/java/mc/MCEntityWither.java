@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityWither")
 public class MCEntityWither extends MCEntityMob {
 
 }

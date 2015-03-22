@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityPotion")
 public class MCEntityPotion extends MCEntityThrowable {
 
     public MCItemStack potionDamage;

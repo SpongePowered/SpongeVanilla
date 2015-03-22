@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityArrow")
 public class MCEntityArrow extends MCEntity {
 
     public MCEntity shootingEntity;

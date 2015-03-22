@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EnumFacing")
 public enum MCEnumFacing implements MC {
     ;
 

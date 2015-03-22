@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EnumBannerPattern")
 public enum MCEnumBannerPattern implements MC {
 
     ;

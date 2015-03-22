@@ -25,7 +25,6 @@ package mc;
 
 import java.net.SocketAddress;
 
-@Implement(name = "NetworkManager")
 public class MCNetworkManager implements MC {
 
     public SocketAddress socketAddress;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "Rotations")
 public class MCRotations implements MC {
 
     public float x;

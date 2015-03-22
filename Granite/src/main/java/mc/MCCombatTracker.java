@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "CombatTracker")
 public class MCCombatTracker extends MCEntityLiving {
 
     public MCIChatComponent getDeathMessage() {

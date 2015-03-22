@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "S2APacketParticles")
 public class MCPacketParticles extends MCPacket {
 
 }

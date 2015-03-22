@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "FoodStats")
 public class MCFoodStats implements MC {
 
     public int foodLevel;

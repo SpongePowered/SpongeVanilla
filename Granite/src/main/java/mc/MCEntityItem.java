@@ -25,7 +25,6 @@ package mc;
 
 import org.spongepowered.api.item.inventory.ItemStack;
 
-@Implement(name = "EntityItem")
 public class MCEntityItem extends MCEntity {
 
     public int age;

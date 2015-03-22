@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityAgeable")
 public class MCEntityAgeable extends MCEntityCreature {
 
     public int getGrowingAge() {

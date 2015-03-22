@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "MerchantRecipe")
 public class MCMerchantRecipe implements MC {
 
     public MCItemStack firstItemToBuy;

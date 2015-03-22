@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "DedicatedServer")
 public class MCDedicatedServer implements MC {
 
     public MCWorldServer[] worldServers;

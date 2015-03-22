@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "IChatComponent")
 public interface MCIChatComponent extends MC {
     public class Serializer implements MC {
         public static MCIChatComponent jsonToComponent(String json) {

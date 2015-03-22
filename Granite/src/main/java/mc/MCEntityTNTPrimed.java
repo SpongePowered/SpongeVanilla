@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityTNTPrimed")
 public class MCEntityTNTPrimed extends MCEntity {
 
     public MCEntityLiving tntTriggeredBy;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntitySkeleton")
 public class MCEntitySkeleton extends MCEntityMob {
 
     public void setSkeletonType(int type) {

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "C01PacketChatMessage")
 public class MCPacketChatMessage extends MCPacket {
 
     public String message;

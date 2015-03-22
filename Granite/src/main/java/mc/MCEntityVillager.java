@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityVillager")
 public class MCEntityVillager extends MCEntityAgeable {
 
     public boolean isPlaying;

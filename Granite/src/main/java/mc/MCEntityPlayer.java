@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityPlayer")
 public class MCEntityPlayer extends MCEntityLivingBase {
 
     public int experienceLevel;

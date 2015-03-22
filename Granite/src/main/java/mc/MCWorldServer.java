@@ -25,7 +25,6 @@ package mc;
 
 import java.util.List;
 
-@Implement(name = "WorldServer")
 public class MCWorldServer implements MC {
 
     public MCWorldInfo worldInfo;

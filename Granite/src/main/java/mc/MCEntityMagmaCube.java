@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityMagmaCube")
 public class MCEntityMagmaCube extends MCEntitySlime {
 
 }

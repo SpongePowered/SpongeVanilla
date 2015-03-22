@@ -25,7 +25,6 @@ package mc;
 
 import java.util.Set;
 
-@Implement(name = "ChunkProviderServer")
 public class MCChunkProvider implements MC {
 
     public Set<MCChunk> droppedChunksSet;

@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "C00Handshake")
 public class MCPacketHandshake implements MC {
 
     public int protocolVersion;

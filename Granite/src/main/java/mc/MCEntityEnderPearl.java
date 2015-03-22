@@ -23,7 +23,6 @@
 
 package mc;
 
-@Implement(name = "EntityEnderPearl")
 public class MCEntityEnderPearl extends MCEntityThrowable {
 
 }
