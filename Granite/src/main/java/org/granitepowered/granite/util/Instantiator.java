@@ -23,26 +23,26 @@
 
 package org.granitepowered.granite.util;
 
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCBlockRailBase;
-import org.granitepowered.granite.mc.MCEntityArrow;
-import org.granitepowered.granite.mc.MCEntityEgg;
-import org.granitepowered.granite.mc.MCEntityLargeFireball;
-import org.granitepowered.granite.mc.MCEntityLivingBase;
-import org.granitepowered.granite.mc.MCEntitySmallFireball;
-import org.granitepowered.granite.mc.MCGameProfile;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCIChatComponent;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCMerchantRecipe;
-import org.granitepowered.granite.mc.MCPacketBlockChange;
-import org.granitepowered.granite.mc.MCPacketChat;
-import org.granitepowered.granite.mc.MCPacketParticles;
-import org.granitepowered.granite.mc.MCPacketTitle;
-import org.granitepowered.granite.mc.MCPacketTitleType;
-import org.granitepowered.granite.mc.MCPotionEffect;
-import org.granitepowered.granite.mc.MCRotations;
-import org.granitepowered.granite.mc.MCWorld;
+import mc.MCBlockPos;
+import mc.MCBlockRailBase;
+import mc.MCEntityArrow;
+import mc.MCEntityEgg;
+import mc.MCEntityLargeFireball;
+import mc.MCEntityLivingBase;
+import mc.MCEntitySmallFireball;
+import mc.MCGameProfile;
+import mc.MCGameRules;
+import mc.MCIChatComponent;
+import mc.MCItemStack;
+import mc.MCMerchantRecipe;
+import mc.MCPacketBlockChange;
+import mc.MCPacketChat;
+import mc.MCPacketParticles;
+import mc.MCPacketTitle;
+import mc.MCPacketTitleType;
+import mc.MCPotionEffect;
+import mc.MCRotations;
+import mc.MCWorldServer;
 
 import java.util.UUID;
 
@@ -60,14 +60,14 @@ public class Instantiator {
 
         MCBlockRailBase newBlockRailBase(boolean powered);
 
-        MCEntityArrow newEntityArrow(MCWorld world, MCEntityLivingBase shooter, float something);
+        MCEntityArrow newEntityArrow(MCWorldServer world, MCEntityLivingBase shooter, float something);
 
-        MCEntityEgg newEntityEgg(MCWorld world, MCEntityLivingBase shooter);
+        MCEntityEgg newEntityEgg(MCWorldServer world, MCEntityLivingBase shooter);
 
-        MCEntitySmallFireball newEntitySmallFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2,
+        MCEntitySmallFireball newEntitySmallFireball(MCWorldServer world, MCEntityLivingBase shooter, double something1, double something2,
                 double something3);
 
-        MCEntityLargeFireball newEntityLargeFireball(MCWorld world, MCEntityLivingBase shooter, double something1, double something2,
+        MCEntityLargeFireball newEntityLargeFireball(MCWorldServer world, MCEntityLivingBase shooter, double something1, double something2,
                 double something3);
 
         MCGameProfile newGameProfile(UUID uuid, String name);
@@ -79,7 +79,7 @@ public class Instantiator {
 
         MCPacketChat newPacketChat(MCIChatComponent chatComponent, byte type);
 
-        MCPacketBlockChange newPacketBlockChange(MCWorld world, MCBlockPos pos);
+        MCPacketBlockChange newPacketBlockChange(MCWorldServer world, MCBlockPos pos);
 
         MCPacketParticles newPacketParticles(Enum p_i45977_1_, boolean b, float f, float f2, float f3, float f4, float f5, float f6, float f7, int i_,
                 int... i2);

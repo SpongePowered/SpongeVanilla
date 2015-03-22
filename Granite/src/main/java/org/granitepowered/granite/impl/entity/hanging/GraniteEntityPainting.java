@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.hanging;
 
 import org.granitepowered.granite.impl.entity.hanging.art.GraniteArt;
-import org.granitepowered.granite.mc.MCEntityPainting;
+import mc.MCEntityPainting;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.hanging.Painting;
 import org.spongepowered.api.entity.hanging.art.Art;

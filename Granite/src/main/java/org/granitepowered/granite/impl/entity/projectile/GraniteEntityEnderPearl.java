@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.projectile;
 
-import org.granitepowered.granite.mc.MCEntityEnderPearl;
+import mc.MCEntityEnderPearl;
 import org.spongepowered.api.entity.projectile.EnderPearl;
 
 public class GraniteEntityEnderPearl extends GraniteEntityThrowable<MCEntityEnderPearl> implements EnderPearl {

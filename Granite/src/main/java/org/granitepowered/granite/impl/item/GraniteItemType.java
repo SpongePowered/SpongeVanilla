@@ -29,7 +29,7 @@ import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCItem;
+import mc.MCItem;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.properties.ItemProperty;
 import org.spongepowered.api.text.translation.Translation;

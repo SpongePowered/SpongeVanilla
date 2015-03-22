@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.living.animal;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
-import org.granitepowered.granite.mc.MCEntityOcelot;
+import mc.MCEntityOcelot;
 import org.spongepowered.api.entity.living.animal.Ocelot;
 import org.spongepowered.api.entity.living.animal.OcelotType;
 

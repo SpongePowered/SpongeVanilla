@@ -33,9 +33,9 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntityPlayerMP;
-import org.granitepowered.granite.mc.MCServer;
-import org.granitepowered.granite.mc.MCWorld;
+import mc.MCEntityPlayerMP;
+import mc.MCDedicatedServer;
+import mc.MCWorldServer;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class GraniteServer extends Composite<MCServer> implements Server {
+public class GraniteServer extends Composite<MCDedicatedServer> implements Server {
 
     static String version;
 
@@ -104,7 +104,7 @@ public class GraniteServer extends Composite<MCServer> implements Server {
     public Collection<World> getWorlds() {
         return ImmutableList
                 .<World>copyOf(
-                        Iterables.transform(Arrays.asList((MCWorld[]) obj.worldServers), new MinecraftUtils.WrapFunction<GraniteWorld>()));
+                        Iterables.transform(Arrays.asList((MCWorldServer[]) obj.worldServers), new MinecraftUtils.WrapFunction<GraniteWorld>()));
     }
 
     @Override

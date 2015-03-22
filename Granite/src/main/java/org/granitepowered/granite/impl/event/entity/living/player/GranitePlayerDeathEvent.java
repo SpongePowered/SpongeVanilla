@@ -28,7 +28,7 @@ import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
-import org.granitepowered.granite.mc.MCDamageSource;
+import mc.MCDamageSource;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.event.cause.Cause;

@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.item;
 
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import org.granitepowered.granite.mc.MCItemBlock;
+import mc.MCItemBlock;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemBlock;
 

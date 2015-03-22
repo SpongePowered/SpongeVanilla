@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.world;
 import com.flowpowered.math.vector.Vector2d;
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCWorldBorder;
+import mc.MCWorldBorder;
 import org.spongepowered.api.world.WorldBorder;
 
 public class GraniteWorldBorder extends Composite<MCWorldBorder> implements WorldBorder {

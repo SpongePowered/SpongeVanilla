@@ -27,13 +27,13 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCPrimedTNT;
+import mc.MCEntityTNTPrimed;
 import org.spongepowered.api.entity.explosive.PrimedTNT;
 import org.spongepowered.api.entity.living.Living;
 
-public class GraniteEntityPrimedTNT extends GraniteEntity<MCPrimedTNT> implements PrimedTNT {
+public class GraniteEntityPrimedTNT extends GraniteEntity<MCEntityTNTPrimed> implements PrimedTNT {
 
-    public GraniteEntityPrimedTNT(MCPrimedTNT obj) {
+    public GraniteEntityPrimedTNT(MCEntityTNTPrimed obj) {
         super(obj);
     }
 

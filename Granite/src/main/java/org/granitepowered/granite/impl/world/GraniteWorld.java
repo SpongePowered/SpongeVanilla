@@ -37,12 +37,12 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCEnumFacing;
-import org.granitepowered.granite.mc.MCGameRules;
-import org.granitepowered.granite.mc.MCWorld;
-import org.granitepowered.granite.mc.MCWorldInfo;
+import mc.MCBlockPos;
+import mc.MCEntity;
+import mc.MCEnumFacing;
+import mc.MCGameRules;
+import mc.MCWorldServer;
+import mc.MCWorldInfo;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockState;
@@ -69,9 +69,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class GraniteWorld extends Composite<MCWorld> implements World {
+public class GraniteWorld extends Composite<MCWorldServer> implements World {
 
-    public GraniteWorld(MCWorld obj) {
+    public GraniteWorld(MCWorldServer obj) {
         super(obj);
     }
 

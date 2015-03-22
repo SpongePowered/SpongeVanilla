@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.item.merchant;
 
 import com.google.common.base.Preconditions;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.mc.MCMerchantRecipe;
+import mc.MCMerchantRecipe;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.item.inventory.ItemStack;

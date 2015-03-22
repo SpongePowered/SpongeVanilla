@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntityPigZombie;
+import mc.MCEntityPigZombie;
 import org.spongepowered.api.entity.living.monster.ZombiePigman;
 
 public class GraniteEntityZombiePigman extends GraniteEntityZombie<MCEntityPigZombie> implements ZombiePigman {

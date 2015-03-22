@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.potion;
 
-import org.granitepowered.granite.mc.MCPotion;
+import mc.MCPotion;
 import org.granitepowered.granite.util.Instantiator;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.potion.PotionEffect;

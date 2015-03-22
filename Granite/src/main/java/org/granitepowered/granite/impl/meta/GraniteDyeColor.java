@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.meta;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCEnumDyeColor;
+import mc.MCEnumDyeColor;
 import org.spongepowered.api.item.DyeColor;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 

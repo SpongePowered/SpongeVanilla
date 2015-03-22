@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.potion;
 
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCPotion;
+import mc.MCPotion;
 import org.spongepowered.api.potion.PotionEffectType;
 
 public class GranitePotionEffectType extends Composite<MCPotion> implements PotionEffectType {

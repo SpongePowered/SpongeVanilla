@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntityCreeper;
+import mc.MCEntityCreeper;
 import org.spongepowered.api.entity.living.monster.Creeper;
 
 public class GraniteEntityCreeper extends GraniteEntityMonster<MCEntityCreeper> implements Creeper {

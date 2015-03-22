@@ -28,7 +28,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityAgeable;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
-import org.granitepowered.granite.mc.MCEntityVillager;
+import mc.MCEntityVillager;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.villager.Career;

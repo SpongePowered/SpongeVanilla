@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity;
 
-import org.granitepowered.granite.mc.MCEntityXPOrb;
+import mc.MCEntityXPOrb;
 import org.spongepowered.api.entity.ExperienceOrb;
 
 public class GraniteEntityExperienceOrb extends GraniteEntity<MCEntityXPOrb> implements ExperienceOrb {

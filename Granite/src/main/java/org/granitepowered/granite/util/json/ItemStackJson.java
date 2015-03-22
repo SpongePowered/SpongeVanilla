@@ -35,8 +35,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCItemStack;
-import org.granitepowered.granite.mc.MCNBTTagCompound;
+import mc.MCItemStack;
+import mc.MCNBTTagCompound;
 
 import java.lang.reflect.Type;
 

@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.entity.projectile;
 import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
-import org.granitepowered.granite.mc.MCEntityArrow;
+import mc.MCEntityArrow;
 import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 

@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.vehicle;
 
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityBoat;
+import mc.MCEntityBoat;
 import org.spongepowered.api.entity.vehicle.Boat;
 
 public class GraniteEntityBoat extends GraniteEntity<MCEntityBoat> implements Boat {

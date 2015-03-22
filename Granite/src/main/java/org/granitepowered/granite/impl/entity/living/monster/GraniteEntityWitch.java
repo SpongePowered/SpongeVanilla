@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.living.monster;
 
 import com.flowpowered.math.vector.Vector3f;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCEntityWitch;
+import mc.MCEntityWitch;
 import org.spongepowered.api.entity.living.monster.Witch;
 import org.spongepowered.api.entity.projectile.Projectile;
 

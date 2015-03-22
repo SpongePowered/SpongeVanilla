@@ -25,8 +25,8 @@ package org.granitepowered.granite.impl.entity.hanging;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.mc.MCEntityItemFrame;
-import org.granitepowered.granite.mc.MCItemStack;
+import mc.MCEntityItemFrame;
+import mc.MCItemStack;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.hanging.ItemFrame;
 import org.spongepowered.api.item.inventory.ItemStack;

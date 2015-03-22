@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
-import org.granitepowered.granite.mc.MCEntityAmbientCreature;
+import mc.MCEntityAmbientCreature;
 
 public class GraniteEntityAmbientCreature<T extends MCEntityAmbientCreature> extends GraniteEntityLiving<T> {
 

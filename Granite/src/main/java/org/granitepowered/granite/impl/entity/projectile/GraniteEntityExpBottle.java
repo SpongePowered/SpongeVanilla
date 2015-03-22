@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.projectile;
 
-import org.granitepowered.granite.mc.MCEntityExpBottle;
+import mc.MCEntityExpBottle;
 import org.spongepowered.api.entity.projectile.ThrownExpBottle;
 
 public class GraniteEntityExpBottle extends GraniteEntityThrowable<MCEntityExpBottle> implements ThrownExpBottle {

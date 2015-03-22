@@ -27,7 +27,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
-import org.granitepowered.granite.mc.MCEntitySkeleton;
+import mc.MCEntitySkeleton;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.monster.Skeleton;
 import org.spongepowered.api.entity.living.monster.SkeletonType;

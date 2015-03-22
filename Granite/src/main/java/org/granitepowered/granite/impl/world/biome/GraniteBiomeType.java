@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.world.biome;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCBiomeGenBase;
+import mc.MCBiomeGenBase;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.gen.Populator;
 

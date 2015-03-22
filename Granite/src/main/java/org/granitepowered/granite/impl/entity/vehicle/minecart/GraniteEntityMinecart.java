@@ -26,9 +26,9 @@ package org.granitepowered.granite.impl.entity.vehicle.minecart;
 import com.flowpowered.math.GenericMath;
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCBlockRailBase;
-import org.granitepowered.granite.mc.MCBlockState;
-import org.granitepowered.granite.mc.MCEntityMinecart;
+import mc.MCBlockRailBase;
+import mc.MCBlockState;
+import mc.MCEntityMinecart;
 import org.granitepowered.granite.util.Instantiator;
 import org.spongepowered.api.entity.vehicle.minecart.Minecart;
 

@@ -27,7 +27,7 @@ import com.google.common.base.Optional;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.block.GraniteBlockType;
-import org.granitepowered.granite.mc.MCEntityEnderman;
+import mc.MCEntityEnderman;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.living.monster.Enderman;

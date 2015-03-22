@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.vehicle.minecart;
 
-import org.granitepowered.granite.mc.MCEntityMinecartFurnace;
+import mc.MCEntityMinecartFurnace;
 import org.spongepowered.api.entity.vehicle.minecart.MinecartFurnace;
 
 public class GraniteEntityMinecartFurnace extends GraniteEntityMinecartContainer<MCEntityMinecartFurnace> implements MinecartFurnace {

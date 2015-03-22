@@ -37,8 +37,8 @@ import com.google.gson.JsonSerializer;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCEntity;
-import org.granitepowered.granite.mc.MCWorld;
+import mc.MCEntity;
+import mc.MCWorldServer;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -72,7 +72,7 @@ public class EntityJson implements JsonSerializer<GraniteEntity>, JsonDeserializ
             }
         }
 
-        MCWorld world = unwrap(Granite.getInstance().getServer().get().getWorlds().iterator().next());
+        MCWorldServer world = unwrap(Granite.getInstance().getServer().get().getWorlds().iterator().next());
 
         MCEntity entity = (MCEntity) Mappings.invokeStatic("EntityList", "createEntityByName", type != null ? type : "XPOrb", world);
         if (!entity.getName().equals(name)) {

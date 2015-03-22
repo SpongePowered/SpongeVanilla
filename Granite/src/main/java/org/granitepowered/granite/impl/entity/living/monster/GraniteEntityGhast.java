@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.living.monster;
 
 import com.flowpowered.math.vector.Vector3f;
 import org.granitepowered.granite.impl.entity.living.GraniteEntityAerial;
-import org.granitepowered.granite.mc.MCEntityGhast;
+import mc.MCEntityGhast;
 import org.spongepowered.api.entity.living.monster.Ghast;
 import org.spongepowered.api.entity.projectile.Projectile;
 

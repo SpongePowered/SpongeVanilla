@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.living.monster;
 
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCEntityZombie;
+import mc.MCEntityZombie;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.monster.Zombie;
 import org.spongepowered.api.item.inventory.Carrier;

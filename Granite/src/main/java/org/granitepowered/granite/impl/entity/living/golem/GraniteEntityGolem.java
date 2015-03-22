@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.living.golem;
 
 import org.granitepowered.granite.impl.entity.living.GraniteEntityCreature;
-import org.granitepowered.granite.mc.MCEntityGolem;
+import mc.MCEntityGolem;
 import org.spongepowered.api.entity.living.golem.Golem;
 
 public class GraniteEntityGolem<T extends MCEntityGolem> extends GraniteEntityCreature<T> implements Golem {

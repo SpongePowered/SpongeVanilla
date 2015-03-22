@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.projectile;
 
-import org.granitepowered.granite.mc.MCEntityEgg;
+import mc.MCEntityEgg;
 import org.spongepowered.api.entity.projectile.Egg;
 
 public class GraniteEntityEgg extends GraniteEntityThrowable<MCEntityEgg> implements Egg {

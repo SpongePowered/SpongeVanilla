@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.vehicle.minecart;
 
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCEntityMinecartCommandBlock;
+import mc.MCEntityMinecartCommandBlock;
 import org.spongepowered.api.entity.vehicle.minecart.MinecartCommandBlock;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.permission.SubjectCollection;

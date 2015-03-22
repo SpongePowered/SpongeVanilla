@@ -68,11 +68,7 @@ import org.granitepowered.granite.impl.world.GraniteDimension;
 import org.granitepowered.granite.impl.world.GraniteWorld;
 import org.granitepowered.granite.impl.world.GraniteWorldBorder;
 import org.granitepowered.granite.impl.world.biome.GraniteBiomeType;
-import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MC;
-import org.granitepowered.granite.mc.MCBlockPos;
-import org.granitepowered.granite.mc.MCIChatComponent;
-import org.granitepowered.granite.mc.MCRotations;
+import mc.*;
 import org.spongepowered.api.text.message.Message;
 
 import java.util.Objects;
@@ -83,45 +79,45 @@ import javax.annotation.Nullable;
 public class MinecraftUtils {
 
     public static ImmutableMap<Class<?>, Class<? extends Composite>> composites = ImmutableMap.<Class<?>, Class<? extends Composite>>builder()
-            .put(Mappings.getClass("BiomeGenBase"), GraniteBiomeType.class)
-            .put(Mappings.getClass("Block"), GraniteBlockType.class)
-            .put(Mappings.getClass("BlockState"), GraniteBlockState.class)
-            .put(Mappings.getClass("Chunk"), GraniteChunk.class)
-            .put(Mappings.getClass("DedicatedServer"), GraniteServer.class)
-            .put(Mappings.getClass("Enchantment"), GraniteServer.class)
-            .put(Mappings.getClass("Entity"), GraniteEntity.class)
-            .put(Mappings.getClass("EntityArmorStand"), GraniteEntityArmorStand.class)
-            .put(Mappings.getClass("EntityArrow"), GraniteEntityArrow.class)
-            .put(Mappings.getClass("EntityBat"), GraniteEntityBat.class)
-            .put(Mappings.getClass("EntityEnderCrystal"), GraniteEntityEnderCrystal.class)
-            .put(Mappings.getClass("EntityDragon"), GraniteEntityDragon.class)
-            .put(Mappings.getClass("EntityDragonPart"), GraniteEntityDragonPart.class)
-            .put(Mappings.getClass("EntityEgg"), GraniteEntityEgg.class)
-            .put(Mappings.getClass("EntityFallingBlock"), GraniteEntityFallingBlock.class)
-            .put(Mappings.getClass("EntityItem"), GraniteEntityItem.class)
-            .put(Mappings.getClass("EntityLargeFireball"), GraniteLargeFireball.class)
-            .put(Mappings.getClass("EntityLightningBolt"), GraniteEntityLightningBolt.class)
-            .put(Mappings.getClass("EntityLivingBase"), GraniteEntityLivingBase.class)
-            .put(Mappings.getClass("EntityLiving"), GraniteEntityLiving.class)
-            .put(Mappings.getClass("EntityPlayerMP"), GranitePlayer.class)
-            .put(Mappings.getClass("EntitySmallFireball"), GraniteSmallFireball.class)
-            .put(Mappings.getClass("EntityTNTPrimed"), GraniteEntityPrimedTNT.class)
-            .put(Mappings.getClass("EntityXPOrb"), GraniteEntityExperienceOrb.class)
-            .put(Mappings.getClass("EnumArt"), GraniteArt.class)
-            .put(Mappings.getClass("EnumBannerPattern"), GraniteBannerPatternShape.class)
-            .put(Mappings.getClass("EnumDyeColor"), GraniteDyeColor.class)
-            .put(Mappings.getClass("GameProfile"), GraniteGameProfile.class)
-            .put(Mappings.getClass("Item"), GraniteItemType.class)
-            .put(Mappings.getClass("ItemBlock"), GraniteItemBlock.class)
-            .put(Mappings.getClass("ItemStack"), GraniteItemStack.class)
-            .put(Mappings.getClass("MerchantRecipe"), GraniteTradeOffer.class)
-            .put(Mappings.getClass("NetworkManager"), GraniteStatusClient.class)
-            .put(Mappings.getClass("Potion"), GranitePotionEffectType.class)
-            .put(Mappings.getClass("PotionEffect"), GranitePotionEffect.class)
-            .put(Mappings.getClass("PropertyHelper"), GraniteBlockProperty.class)
-            .put(Mappings.getClass("WorldBorder"), GraniteWorldBorder.class)
-            .put(Mappings.getClass("WorldServer"), GraniteWorld.class)
-            .put(Mappings.getClass("WorldProvider"), GraniteDimension.class)
+            .put(MCBiomeGenBase.class, GraniteBiomeType.class)
+            .put(MCBlock.class, GraniteBlockType.class)
+            .put(MCBlockState.class, GraniteBlockState.class)
+            .put(MCChunk.class, GraniteChunk.class)
+            .put(MCDedicatedServer.class, GraniteServer.class)
+            .put(MCEnchantment.class, GraniteServer.class)
+            .put(MCEntity.class, GraniteEntity.class)
+            .put(MCEntityArmorStand.class, GraniteEntityArmorStand.class)
+            .put(MCEntityArrow.class, GraniteEntityArrow.class)
+            .put(MCEntityBat.class, GraniteEntityBat.class)
+            .put(MCEntityEnderCrystal.class, GraniteEntityEnderCrystal.class)
+            .put(MCEntityDragon.class, GraniteEntityDragon.class)
+            .put(MCEntityDragonPart.class, GraniteEntityDragonPart.class)
+            .put(MCEntityEgg.class, GraniteEntityEgg.class)
+            .put(MCEntityFallingBlock.class, GraniteEntityFallingBlock.class)
+            .put(MCEntityItem.class, GraniteEntityItem.class)
+            .put(MCEntityLargeFireball.class, GraniteLargeFireball.class)
+            .put(MCEntityLightningBolt.class, GraniteEntityLightningBolt.class)
+            .put(MCEntityLivingBase.class, GraniteEntityLivingBase.class)
+            .put(MCEntityLiving.class, GraniteEntityLiving.class)
+            .put(MCEntityPlayerMP.class, GranitePlayer.class)
+            .put(MCEntitySmallFireball.class, GraniteSmallFireball.class)
+            .put(MCEntityTNTPrimed.class, GraniteEntityPrimedTNT.class)
+            .put(MCEntityXPOrb.class, GraniteEntityExperienceOrb.class)
+            .put(MCEnumArt.class, GraniteArt.class)
+            .put(MCEnumBannerPattern.class, GraniteBannerPatternShape.class)
+            .put(MCEnumDyeColor.class, GraniteDyeColor.class)
+            .put(MCGameProfile.class, GraniteGameProfile.class)
+            .put(MCItem.class, GraniteItemType.class)
+            .put(MCItemBlock.class, GraniteItemBlock.class)
+            .put(MCItemStack.class, GraniteItemStack.class)
+            .put(MCMerchantRecipe.class, GraniteTradeOffer.class)
+            .put(MCNetworkManager.class, GraniteStatusClient.class)
+            .put(MCPotion.class, GranitePotionEffectType.class)
+            .put(MCPotionEffect.class, GranitePotionEffect.class)
+            .put(MCPropertyHelper.class, GraniteBlockProperty.class)
+            .put(MCWorldBorder.class, GraniteWorldBorder.class)
+            .put(MCWorldServer.class, GraniteWorld.class)
+            .put(MCWorldProvider.class, GraniteDimension.class)
             .build();
 
     @Nonnull
@@ -155,7 +151,7 @@ public class MinecraftUtils {
 
     public static MCIChatComponent graniteToMinecraftChatComponent(Message message) {
         String json = Granite.getInstance().getGson().toJson(message, GraniteMessage.class);
-        return (MCIChatComponent) Mappings.invokeStatic("IChatComponent$Serializer", "jsonToComponent", json);
+        return MCIChatComponent.Serializer.jsonToComponent(json);
     }
 
     public static MCBlockPos graniteToMinecraftBlockPos(Vector3i vector) {
@@ -166,8 +162,8 @@ public class MinecraftUtils {
         return (Enum) clazz.getEnumConstants()[number];
     }
 
-    public static Message minecraftToGraniteMessage(MCIChatComponent deathComponent) {
-        String json = (String) Mappings.invokeStatic("IChatComponent$Serializer", "componentToJson", deathComponent);
+    public static Message minecraftToGraniteMessage(MCIChatComponent component) {
+        String json = MCIChatComponent.Serializer.componentToJson(component);
         return Granite.getInstance().getGson().fromJson(json, GraniteMessage.class);
     }
 

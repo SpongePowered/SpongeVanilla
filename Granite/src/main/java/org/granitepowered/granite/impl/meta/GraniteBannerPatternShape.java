@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.meta;
 
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCEnumBannerPattern;
+import mc.MCEnumBannerPattern;
 import org.spongepowered.api.block.meta.BannerPatternShape;
 
 public class GraniteBannerPatternShape extends Composite<MCEnumBannerPattern> implements BannerPatternShape {

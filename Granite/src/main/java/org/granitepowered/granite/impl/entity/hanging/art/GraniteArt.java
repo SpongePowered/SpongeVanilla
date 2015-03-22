@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.hanging.art;
 
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCEnumArt;
+import mc.MCEnumArt;
 import org.spongepowered.api.entity.hanging.art.Art;
 
 public class GraniteArt extends Composite<MCEnumArt> implements Art {

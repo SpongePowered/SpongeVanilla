@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntityCaveSpider;
+import mc.MCEntityCaveSpider;
 import org.spongepowered.api.entity.living.monster.CaveSpider;
 
 public class GraniteEntityCaveSpider extends GraniteEntitySpider<MCEntityCaveSpider> implements CaveSpider {

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntityGuardian;
+import mc.MCEntityGuardian;
 import org.spongepowered.api.entity.living.monster.Guardian;
 
 public class GraniteEntityGuardian extends GraniteEntityMonster<MCEntityGuardian> implements Guardian {

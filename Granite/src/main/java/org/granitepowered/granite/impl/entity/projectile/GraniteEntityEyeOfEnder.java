@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.projectile;
 
 import com.flowpowered.math.vector.Vector3d;
-import org.granitepowered.granite.mc.MCEntityEnderEye;
+import mc.MCEntityEnderEye;
 import org.spongepowered.api.entity.projectile.EyeOfEnder;
 
 public class GraniteEntityEyeOfEnder extends GraniteEntityThrowable<MCEntityEnderEye> implements EyeOfEnder {

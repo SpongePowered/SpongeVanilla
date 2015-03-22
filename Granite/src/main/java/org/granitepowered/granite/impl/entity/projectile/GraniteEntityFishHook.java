@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.entity.projectile;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityFishHook;
+import mc.MCEntityFishHook;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.projectile.FishHook;

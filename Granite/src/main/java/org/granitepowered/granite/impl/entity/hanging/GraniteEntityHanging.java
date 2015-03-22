@@ -25,8 +25,8 @@ package org.granitepowered.granite.impl.entity.hanging;
 
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityHanging;
-import org.granitepowered.granite.mc.MCEnumFacing;
+import mc.MCEntityHanging;
+import mc.MCEnumFacing;
 import org.spongepowered.api.entity.hanging.Hanging;
 import org.spongepowered.api.util.Direction;
 

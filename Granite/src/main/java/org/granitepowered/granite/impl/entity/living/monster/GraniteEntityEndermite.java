@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntityEndermite;
+import mc.MCEntityEndermite;
 import org.spongepowered.api.entity.living.monster.Endermite;
 
 public class GraniteEntityEndermite extends GraniteEntityMonster<MCEntityEndermite> implements Endermite {

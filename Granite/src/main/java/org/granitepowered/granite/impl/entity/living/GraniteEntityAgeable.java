@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
-import org.granitepowered.granite.mc.MCEntityAgeable;
+import mc.MCEntityAgeable;
 import org.spongepowered.api.entity.living.Ageable;
 
 public class GraniteEntityAgeable<T extends MCEntityAgeable> extends GraniteEntityCreature<T> implements Ageable {

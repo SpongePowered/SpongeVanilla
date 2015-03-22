@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.world;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.MCWorldProvider;
+import mc.MCWorldProvider;
 import org.spongepowered.api.service.permission.context.Context;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.api.world.DimensionType;

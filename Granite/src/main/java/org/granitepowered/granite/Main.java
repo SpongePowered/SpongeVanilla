@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Arrays;
 
 public class Main {
@@ -32,7 +34,19 @@ public class Main {
     public static void main(String args[]) {
         if (Arrays.asList(args).contains("debug")) {
             debugLog = true;
+
+            // The startup process is a little complicated
+            // Granite's Main calls LaunchWrapper's Main
+            // Which starts the GraniteTweaker up
+            // Which in turn calls GraniteStartup's Main, and init begins
+
+            if (ArrayUtils.contains(args, "debug")) {
+                System.setProperty("mixin.debug", "true");
+                System.setProperty("legacy.debugClassLoadingSave", "true");
+            }
+
+            // Not using GraniteTweaker.class.getName() here, because classloaders
+            net.minecraft.launchwrapper.Launch.main(ArrayUtils.addAll(args, "--tweakClass", "org.granitepowered.granite.loader.GraniteTweaker"));
         }
-        new GraniteStartupThread(args).start();
     }
 }

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.projectile;
 
-import org.granitepowered.granite.mc.MCEntitySnowball;
+import mc.MCEntitySnowball;
 import org.spongepowered.api.entity.projectile.Snowball;
 
 public class GraniteSnowball extends GraniteEntityThrowable<MCEntitySnowball> implements Snowball {

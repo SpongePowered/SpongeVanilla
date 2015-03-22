@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCGameProfile;
+import mc.MCGameProfile;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.entity.player.User;
 

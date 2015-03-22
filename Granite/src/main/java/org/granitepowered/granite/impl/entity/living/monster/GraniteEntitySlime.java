@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntitySlime;
+import mc.MCEntitySlime;
 import org.spongepowered.api.entity.living.monster.Slime;
 
 public class GraniteEntitySlime<T extends MCEntitySlime> extends GraniteEntityMonster<T> implements Slime {

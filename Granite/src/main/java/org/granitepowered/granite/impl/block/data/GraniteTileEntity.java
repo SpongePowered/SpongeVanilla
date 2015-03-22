@@ -28,7 +28,7 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
-import org.granitepowered.granite.mc.MCTileEntity;
+import mc.MCTileEntity;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.data.TileEntity;
 import org.spongepowered.api.service.persistence.data.DataContainer;

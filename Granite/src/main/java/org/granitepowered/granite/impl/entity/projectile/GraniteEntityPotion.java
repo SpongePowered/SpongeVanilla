@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.projectile;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCEntityPotion;
+import mc.MCEntityPotion;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.projectile.ThrownPotion;
 import org.spongepowered.api.item.inventory.ItemStack;

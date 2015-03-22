@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.living.animal;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.meta.GraniteMeta;
-import org.granitepowered.granite.mc.MCEntityRabbit;
+import mc.MCEntityRabbit;
 import org.spongepowered.api.entity.living.animal.Rabbit;
 import org.spongepowered.api.entity.living.animal.RabbitType;
 import org.spongepowered.api.text.translation.Translations;

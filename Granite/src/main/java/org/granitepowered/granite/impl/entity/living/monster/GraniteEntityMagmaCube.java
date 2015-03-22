@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.monster;
 
-import org.granitepowered.granite.mc.MCEntityMagmaCube;
+import mc.MCEntityMagmaCube;
 import org.spongepowered.api.entity.living.monster.MagmaCube;
 
 public class GraniteEntityMagmaCube extends GraniteEntitySlime<MCEntityMagmaCube> implements MagmaCube {

@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.golem;
 
-import org.granitepowered.granite.mc.MCEntityIronGolem;
+import mc.MCEntityIronGolem;
 import org.spongepowered.api.entity.living.golem.IronGolem;
 
 public class GraniteEntityIronGolem extends GraniteEntityGolem<MCEntityIronGolem> implements IronGolem {

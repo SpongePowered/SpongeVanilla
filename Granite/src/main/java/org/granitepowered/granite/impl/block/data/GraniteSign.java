@@ -24,8 +24,8 @@
 package org.granitepowered.granite.impl.block.data;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCIChatComponent;
-import org.granitepowered.granite.mc.MCTileEntitySign;
+import mc.MCIChatComponent;
+import mc.MCTileEntitySign;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.data.Sign;
 import org.spongepowered.api.service.persistence.data.DataContainer;

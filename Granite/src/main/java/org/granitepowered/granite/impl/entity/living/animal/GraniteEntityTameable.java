@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.entity.living.animal;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.mc.MCEntityTameable;
+import mc.MCEntityTameable;
 import org.spongepowered.api.entity.Tamer;
 import org.spongepowered.api.entity.living.Sittable;
 import org.spongepowered.api.entity.living.Tameable;

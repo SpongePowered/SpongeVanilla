@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.projectile.fireball;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.mc.MCEntityWitherSkull;
+import mc.MCEntityWitherSkull;
 import org.spongepowered.api.entity.projectile.explosive.WitherSkull;
 
 public class GraniteEntityWitherSkull extends GraniteFireball<MCEntityWitherSkull> implements WitherSkull {

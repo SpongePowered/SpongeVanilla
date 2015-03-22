@@ -24,7 +24,7 @@
 package org.granitepowered.granite.impl.entity.living.complex;
 
 import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mc.MCEntityDragonPart;
+import mc.MCEntityDragonPart;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.entity.living.complex.EnderDragon;
 import org.spongepowered.api.entity.living.complex.EnderDragonPart;

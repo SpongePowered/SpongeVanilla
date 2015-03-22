@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living;
 
-import org.granitepowered.granite.mc.MCEntityBat;
+import mc.MCEntityBat;
 import org.spongepowered.api.entity.living.Bat;
 
 public class GraniteEntityBat extends GraniteEntityAmbientCreature<MCEntityBat> implements Bat {

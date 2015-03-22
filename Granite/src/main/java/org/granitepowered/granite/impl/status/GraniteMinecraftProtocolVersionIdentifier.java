@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.status;
 import org.granitepowered.granite.ProtocolMinecraftVersion;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.GraniteMinecraftVersion;
-import org.granitepowered.granite.mc.MCMinecraftProtocolVersionIdentifier;
+import mc.MCMinecraftProtocolVersionIdentifier;
 import org.spongepowered.api.MinecraftVersion;
 
 public class GraniteMinecraftProtocolVersionIdentifier extends Composite<MCMinecraftProtocolVersionIdentifier> implements ProtocolMinecraftVersion {

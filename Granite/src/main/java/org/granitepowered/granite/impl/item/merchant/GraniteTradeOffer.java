@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.item.merchant;
 
 import com.google.common.base.Optional;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mc.MCMerchantRecipe;
+import mc.MCMerchantRecipe;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.merchant.TradeOffer;

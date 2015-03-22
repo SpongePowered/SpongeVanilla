@@ -26,7 +26,7 @@ package org.granitepowered.granite.impl.status;
 import com.google.common.base.Optional;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.GraniteMinecraftVersion;
-import org.granitepowered.granite.mc.MCNetworkManager;
+import mc.MCNetworkManager;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.status.StatusClient;
 

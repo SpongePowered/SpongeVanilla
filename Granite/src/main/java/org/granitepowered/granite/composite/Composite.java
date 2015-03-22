@@ -24,7 +24,7 @@
 package org.granitepowered.granite.composite;
 
 import com.google.common.base.Throwables;
-import org.granitepowered.granite.mc.MC;
+import mc.MC;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

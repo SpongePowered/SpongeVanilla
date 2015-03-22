@@ -57,6 +57,11 @@
         </repository>
 
         <repository>
+            <id>minecraft-libs</id>
+            <url>https://libraries.minecraft.net</url>
+        </repository>
+
+        <repository>
             <id>sonatype-nexus</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
         </repository>
@@ -160,6 +165,12 @@
             <artifactId>configurate-hocon</artifactId>
             <version>0.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>launchwrapper</artifactId>
+            <version>1.11</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -235,6 +246,7 @@
                                     <include>ninja.leaping.configurate:configurate-hocon</include>
                                     <include>io.netty:netty-all</include>
                                     <include>net.java.dev.jna:jna</include>
+                                    <include>net.minecraft:launchwrapper</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

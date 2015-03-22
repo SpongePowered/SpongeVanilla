@@ -23,7 +23,7 @@
 
 package org.granitepowered.granite.impl.entity.living.animal;
 
-import org.granitepowered.granite.mc.MCEntityPig;
+import mc.MCEntityPig;
 import org.spongepowered.api.entity.living.animal.Pig;
 
 public class GraniteEntityPig extends GraniteEntityAnimal<MCEntityPig> implements Pig {
