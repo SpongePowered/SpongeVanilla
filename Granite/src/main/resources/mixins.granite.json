@@ -2,5 +2,6 @@
     "package": "org.granitepowered.granite.mixin",
     "required": true,
     "mixins": [
+        "server.MixinDedicatedServer"
     ]
 }

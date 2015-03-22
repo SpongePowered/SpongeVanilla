@@ -24,18 +24,8 @@
 package org.granitepowered.granite;
 
 import com.google.common.base.Optional;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import javassist.ClassPool;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.item.inventory.GraniteItemStack;
-import org.granitepowered.granite.impl.text.action.GraniteTextAction;
-import org.granitepowered.granite.impl.text.message.GraniteMessage;
-import org.granitepowered.granite.util.json.EntityJson;
-import org.granitepowered.granite.util.json.ItemStackJson;
-import org.granitepowered.granite.util.json.MessageJson;
-import org.granitepowered.granite.util.json.TextActionJson;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
@@ -76,7 +66,6 @@ public class Granite implements Game {
     private ServerConfig serverConfig;
     private ClassPool classPool;
     private Logger logger;
-    private Gson gson;
     private File classesDir;
 
     public Granite() {
@@ -192,26 +181,12 @@ public class Granite implements Game {
         this.serverConfig = serverConfig;
     }
 
-    public void createGson() {
-        GsonBuilder builder = new GsonBuilder();
-
-        builder.registerTypeAdapter(GraniteMessage.class, new MessageJson());
-        builder.registerTypeAdapter(GraniteTextAction.class, new TextActionJson());
-        builder.registerTypeAdapter(GraniteEntity.class, new EntityJson());
-        builder.registerTypeAdapter(GraniteItemStack.class, new ItemStackJson());
-        gson = builder.create();
-    }
-
     public Logger getLogger() {
         return logger;
     }
 
     public void setLogger(Logger logger) {
         this.logger = logger;
-    }
-
-    public Gson getGson() {
-        return gson;
     }
 
     public ClassPool getClassPool() {

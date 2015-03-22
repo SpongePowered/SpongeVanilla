@@ -29,19 +29,17 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javassist.ClassPool;
 import mc.Bootstrap;
-import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
-import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
-import org.granitepowered.granite.impl.event.state.GraniteLoadCompleteEvent;
-import org.granitepowered.granite.impl.event.state.GranitePostInitializationEvent;
-import org.granitepowered.granite.impl.event.state.GranitePreInitializationEvent;
-import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
-import org.granitepowered.granite.impl.plugin.GranitePluginManager;
+import mc.DedicatedServer;
+import mc.MinecraftServer;
+import org.granitepowered.granite.guice.GraniteGuiceModule;
 import org.granitepowered.granite.loader.DeobfuscatorTransformer;
 import org.granitepowered.granite.loader.GraniteTweaker;
 import org.granitepowered.granite.loader.Mappings;
 import org.granitepowered.granite.loader.MappingsLoader;
 import org.granitepowered.granite.loader.MinecraftLoader;
+import org.granitepowered.granite.plugin.GranitePluginManager;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Server;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,6 +73,7 @@ public class GraniteStartup extends Thread {
     public void run() {
         Injector injector = Guice.createInjector(new GraniteGuiceModule());
         Granite.setInstance(injector.getInstance(Granite.class));
+
         Granite.getInstance().setLogger(LoggerFactory.getLogger("Granite"));
 
         try {
@@ -99,6 +98,7 @@ public class GraniteStartup extends Thread {
                     }
                 }
             }
+
             Granite.getInstance().getLogger()
                     .info("Starting Granite implementationVersion " + this.serverVersion + " build " + this.buildNumber
                             + " implementing API implementationVersion " + this.apiVersion);
@@ -106,12 +106,8 @@ public class GraniteStartup extends Thread {
             Granite.getInstance().setImplementationVersion(this.serverVersion);
             Granite.getInstance().setApiVersion(this.apiVersion);
 
-            Granite.getInstance().setServerConfig(new ServerConfig());
             Granite.getInstance().setClassPool(ClassPool.getDefault());
-
-            Granite.getInstance().getEventManager().post(new GraniteConstructionEvent());
-
-            Granite.getInstance().createGson();
+            Granite.getInstance().setServerConfig(new ServerConfig());
 
             loadMinecraft();
 
@@ -124,16 +120,6 @@ public class GraniteStartup extends Thread {
             bootstrap();
 
             // TODO: Create new Registering Class with hard coded sounds (even though i hate hard coding soo much);
-
-            ((GranitePluginManager) Granite.getInstance().getPluginManager()).loadPlugins();
-
-            // TODO: Set the Server instance
-            //Granite.getInstance().setServer();
-
-            Granite.getInstance().getEventManager().post(new GranitePreInitializationEvent());
-            Granite.getInstance().getEventManager().post(new GraniteInitializationEvent());
-            Granite.getInstance().getEventManager().post(new GranitePostInitializationEvent());
-            Granite.getInstance().getEventManager().post(new GraniteLoadCompleteEvent());
 
             Date date = new Date();
             String day = new SimpleDateFormat("dd").format(date);
@@ -165,6 +151,14 @@ public class GraniteStartup extends Thread {
             if (Objects.equals(day + month, "3112")) {
                 Granite.getInstance().getLogger().info("New Years Eve. Make way for " + Integer.toString(Integer.parseInt(year) + 1) + "!");
             }
+
+            ((GranitePluginManager) Granite.getInstance().getPluginManager()).loadPlugins();
+
+            Granite.getInstance().setServer((Server) new DedicatedServer(new File("worlds/")));
+
+            // Start the server
+            Thread t = new Thread((MinecraftServer) Granite.getInstance().getServer().get());
+            t.start();
         } catch (Throwable t) {
             Granite.error("We did a REALLY BIG boo-boo :'(", t);
         }
@@ -245,4 +239,3 @@ public class GraniteStartup extends Thread {
         }
     }
 }
-

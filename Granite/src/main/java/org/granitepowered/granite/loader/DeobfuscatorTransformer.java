@@ -23,11 +23,16 @@
 
 package org.granitepowered.granite.loader;
 
-import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Descriptor;
 import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.RemappingClassAdapter;
 
@@ -47,6 +52,14 @@ public class DeobfuscatorTransformer implements IClassTransformer, IClassNameTra
     private static JarFile minecraftJarFile;
 
     private Map<String, List<String>> superclasses = new HashMap<>();
+
+    public static void init() {
+        try {
+            minecraftJarFile = new JarFile(minecraftJar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String unmapClassName(String name) {
@@ -109,7 +122,8 @@ public class DeobfuscatorTransformer implements IClassTransformer, IClassNameTra
                 }
             });
 
-            // Enough is ENOUGH! I have had it with these motherfuckin' snowmen in these motherfuckin' classes! Everybody strap in! We're 'bout to edit some fuckin' bytecode.
+            // Enough is ENOUGH! I have had it with these motherfuckin' snowmen in these motherfuckin' classes! Everybody strap in! We're 'bout to
+            // edit some fuckin' bytecode.
             // PS. Damn you Grum
             output = new ClassVisitor(Opcodes.ASM5, output) {
                 @Override
@@ -128,12 +142,14 @@ public class DeobfuscatorTransformer implements IClassTransformer, IClassNameTra
             output = new ClassVisitor(Opcodes.ASM5, output) {
                 @Override
                 public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-                    return super.visitField((access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC, name, desc, signature, value);
+                    return super
+                            .visitField((access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC, name, desc, signature, value);
                 }
 
                 @Override
                 public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-                    return super.visitMethod((access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC, name, desc, signature, exceptions);
+                    return super.visitMethod((access & ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PUBLIC, name, desc, signature,
+                            exceptions);
                 }
             };
 
@@ -252,13 +268,5 @@ public class DeobfuscatorTransformer implements IClassTransformer, IClassNameTra
 
         // Not found - returning original name
         return name;
-    }
-
-    public static void init() {
-        try {
-            minecraftJarFile = new JarFile(minecraftJar);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
