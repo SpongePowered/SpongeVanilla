@@ -23,11 +23,11 @@
 
 package org.granitepowered.granite.impl.entity.projectile;
 
-import org.granitepowered.granite.mc.MCEntityThrowable;
-import org.spongepowered.api.entity.projectile.source.ProjectileSource;
-
 import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
+import org.granitepowered.granite.mc.MCEntityThrowable;
+import org.spongepowered.api.entity.projectile.source.ProjectileSource;
 
 public abstract class GraniteEntityThrowable<T extends MCEntityThrowable> extends GraniteProjectile<T> {
 

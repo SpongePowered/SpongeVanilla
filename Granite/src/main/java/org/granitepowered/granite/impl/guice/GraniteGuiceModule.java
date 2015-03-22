@@ -39,8 +39,9 @@ import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.service.scheduler.Scheduler;
 
-import javax.inject.Provider;
 import java.io.File;
+
+import javax.inject.Provider;
 
 public class GraniteGuiceModule extends AbstractModule {
 

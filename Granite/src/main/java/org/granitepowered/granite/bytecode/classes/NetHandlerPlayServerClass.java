@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Throwables;
@@ -35,15 +37,18 @@ import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerChatEvent;
 import org.granitepowered.granite.impl.event.entity.living.player.GranitePlayerMoveEvent;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCNetHandlerPlayServer;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCPacketChatMessage;
+import org.granitepowered.granite.mc.MCPacketPlayer;
+import org.granitepowered.granite.mc.MCPacketPlayerBlockPlacement;
+import org.granitepowered.granite.mc.MCPacketPlayerDigging;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.world.Location;
 
 import java.lang.reflect.Constructor;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class NetHandlerPlayServerClass extends BytecodeClass {
 

@@ -23,6 +23,10 @@
 
 package org.granitepowered.granite.impl.entity.player;
 
+import static org.granitepowered.granite.util.MinecraftUtils.graniteToMinecraftChatComponent;
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
@@ -36,7 +40,11 @@ import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.message.GraniteMessage;
 import org.granitepowered.granite.impl.text.message.GraniteMessageBuilder;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCPacket;
+import org.granitepowered.granite.mc.MCRegistryNamespaced;
 import org.granitepowered.granite.util.Instantiator;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.effect.particle.ParticleEffect;
@@ -72,12 +80,16 @@ import org.spongepowered.api.util.Tristate;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
 
-import static org.granitepowered.granite.util.MinecraftUtils.*;
+import javax.annotation.Nullable;
 
 public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> implements Player {
 
@@ -341,7 +353,7 @@ public class GranitePlayer extends GraniteEntityPlayer<MCEntityPlayerMP> impleme
                 }
                 //data = item.getDamage();
             } else if (type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_CRACK).getId()
-                       || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
+                    || type.getId() == ((GraniteParticleType) ParticleTypes.BLOCK_DUST).getId()) {
                 // Only block types are allowed
                 if (itemType instanceof ItemBlock) {
                     try {

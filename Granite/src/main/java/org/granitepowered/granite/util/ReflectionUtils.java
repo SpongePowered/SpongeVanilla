@@ -29,15 +29,11 @@ import com.google.common.collect.ImmutableBiMap;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyFactory;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.mappings.Mappings;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;

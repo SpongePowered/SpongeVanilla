@@ -23,7 +23,11 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
-import org.granitepowered.granite.bytecode.*;
+import org.granitepowered.granite.bytecode.BytecodeClass;
+import org.granitepowered.granite.bytecode.CallbackInfo;
+import org.granitepowered.granite.bytecode.CodeInsertionMode;
+import org.granitepowered.granite.bytecode.Insert;
+import org.granitepowered.granite.bytecode.Position;
 import org.granitepowered.granite.impl.entity.vehicle.GraniteEntityBoat;
 import org.granitepowered.granite.mc.MCEntityBoat;
 import org.granitepowered.granite.mc.MCEntityLivingBase;
@@ -35,7 +39,8 @@ public class EntityBoatClass extends BytecodeClass {
         super("EntityBoat");
     }
 
-    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "Entity#moveEntity"))
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE,
+            position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "Entity#moveEntity"))
     public void moveOnLand(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
         if (boat.obj.onGround && boat.canMoveOnLand()) {
@@ -45,13 +50,15 @@ public class EntityBoatClass extends BytecodeClass {
         }
     }
 
-    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "java.lang.Math#sqrt", index = 0))
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE,
+            position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "java.lang.Math#sqrt", index = 0))
     public void beforeMotionModify(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
         boat.setInitialDisplacement(Math.sqrt(boat.obj.motionX * boat.obj.motionX + boat.obj.motionZ * boat.obj.motionX));
     }
 
-    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "java.lang.Math#sqrt", index = 1))
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE,
+            position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "java.lang.Math#sqrt", index = 1))
     public void beforeLimitSpeed(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
         boat.setTempMotionX(boat.obj.motionX);
@@ -59,7 +66,8 @@ public class EntityBoatClass extends BytecodeClass {
         boat.setTempSpeedMultiplier(boat.obj.speedMultiplier);
     }
 
-    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.FIELD, value = "onGround", index = 1))
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE,
+            position = @Position(mode = Position.PositionMode.FIELD, value = "onGround", index = 1))
     public void afterLimitSpeed(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
         boat.obj.motionX = boat.getTempMotionX();
@@ -83,7 +91,8 @@ public class EntityBoatClass extends BytecodeClass {
         }
     }
 
-    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE, position = @Position(mode = Position.PositionMode.FIELD, value = "riddenByEntity", index = 0))
+    @Insert(methodName = "onUpdate", mode = CodeInsertionMode.BEFORE,
+            position = @Position(mode = Position.PositionMode.FIELD, value = "riddenByEntity", index = 0))
     public void customDeceleration(CallbackInfo<MCEntityBoat> info) {
         GraniteEntityBoat boat = MinecraftUtils.wrap(info.getCaller());
         if (!(boat.obj.riddenByEntity instanceof MCEntityLivingBase)) {

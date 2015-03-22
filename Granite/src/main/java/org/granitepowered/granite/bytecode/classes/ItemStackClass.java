@@ -23,17 +23,21 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import org.granitepowered.granite.bytecode.BytecodeClass;
 import org.granitepowered.granite.bytecode.Proxy;
 import org.granitepowered.granite.bytecode.ProxyCallbackInfo;
 import org.granitepowered.granite.impl.block.GraniteBlockState;
 import org.granitepowered.granite.impl.entity.player.GranitePlayer;
 import org.granitepowered.granite.impl.world.GraniteWorld;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCEntityPlayerMP;
+import org.granitepowered.granite.mc.MCEnumFacing;
+import org.granitepowered.granite.mc.MCItemStack;
+import org.granitepowered.granite.mc.MCWorld;
 import org.spongepowered.api.block.BlockState;
-
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class ItemStackClass extends BytecodeClass {
 

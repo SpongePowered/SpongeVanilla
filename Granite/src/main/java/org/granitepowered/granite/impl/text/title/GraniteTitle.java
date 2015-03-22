@@ -39,7 +39,7 @@ public class GraniteTitle implements Title {
     boolean reset;
 
     public GraniteTitle(Optional<Message> title, Optional<Message> subtitle, Optional<Integer> fadeIn, Optional<Integer> stay,
-                        Optional<Integer> fadeOut, boolean clear, boolean reset) {
+            Optional<Integer> fadeOut, boolean clear, boolean reset) {
         this.title = title;
         this.subtitle = subtitle;
         this.fadeIn = fadeIn;

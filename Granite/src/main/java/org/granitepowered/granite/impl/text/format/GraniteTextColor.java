@@ -25,7 +25,7 @@ package org.granitepowered.granite.impl.text.format;
 
 import org.spongepowered.api.text.format.TextColor;
 
-import java.awt.*;
+import java.awt.Color;
 
 public enum GraniteTextColor implements TextColor.Base {
     BLACK('0', Color.decode("0x000000")),

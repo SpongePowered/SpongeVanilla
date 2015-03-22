@@ -29,7 +29,7 @@ import org.granitepowered.granite.mc.MCEnumDyeColor;
 import org.spongepowered.api.item.DyeColor;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class GraniteDyeColor extends Composite<MCEnumDyeColor> implements DyeColor {
 

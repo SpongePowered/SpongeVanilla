@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite.impl.world;
 
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -34,7 +37,12 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.mappings.Mappings;
-import org.granitepowered.granite.mc.*;
+import org.granitepowered.granite.mc.MCBlockPos;
+import org.granitepowered.granite.mc.MCEntity;
+import org.granitepowered.granite.mc.MCEnumFacing;
+import org.granitepowered.granite.mc.MCGameRules;
+import org.granitepowered.granite.mc.MCWorld;
+import org.granitepowered.granite.mc.MCWorldInfo;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockState;
@@ -60,9 +68,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteWorld extends Composite<MCWorld> implements World {
 

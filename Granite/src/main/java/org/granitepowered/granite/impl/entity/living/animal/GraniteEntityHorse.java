@@ -46,7 +46,8 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public HorseStyle getStyle() {
-        //return Granite.getInstance().getGameRegistry().horseStyles.get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
+        //return Granite.getInstance().getGameRegistry().horseStyles.get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20)
+        // .fieldGet$watchedObject()) & 0xFF);
         throw new NotImplementedException("");
     }
 
@@ -57,7 +58,8 @@ public class GraniteEntityHorse extends GraniteEntityTameable<MCEntityHorse> imp
 
     @Override
     public HorseColor getColor() {
-        //return Granite.getInstance().getGameRegistry().horseColors.get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20).fieldGet$watchedObject()) & 0xFF);
+        //return Granite.getInstance().getGameRegistry().horseColors.get(((int) obj.fieldGet$dataWatcher().getWatchedObject(20)
+        // .fieldGet$watchedObject()) & 0xFF);
         throw new NotImplementedException("");
     }
 

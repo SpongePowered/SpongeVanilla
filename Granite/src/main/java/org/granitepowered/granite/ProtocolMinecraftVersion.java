@@ -26,5 +26,6 @@ package org.granitepowered.granite;
 import org.spongepowered.api.MinecraftVersion;
 
 public interface ProtocolMinecraftVersion extends MinecraftVersion {
+
     int getProtocol();
 }

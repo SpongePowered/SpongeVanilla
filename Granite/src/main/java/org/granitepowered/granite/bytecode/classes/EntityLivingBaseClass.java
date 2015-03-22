@@ -38,7 +38,8 @@ public class EntityLivingBaseClass extends BytecodeClass {
         super("EntityLivingBase");
     }
 
-    @Insert(methodName = "onEntityUpdate", mode = CodeInsertionMode.REPLACE, position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "EntityLivingBase#setAir", index = 2))
+    @Insert(methodName = "onEntityUpdate", mode = CodeInsertionMode.REPLACE,
+            position = @Position(mode = Position.PositionMode.METHOD_CALL, value = "EntityLivingBase#setAir", index = 2))
     public void onEntityUpdateSetAir(CallbackInfo<MCEntityLivingBase> info) {
         GraniteEntityLivingBase livingBase = MinecraftUtils.wrap(info.getCaller());
         ((MCEntityLivingBase) livingBase.obj).setAir(livingBase.getMaxAir());

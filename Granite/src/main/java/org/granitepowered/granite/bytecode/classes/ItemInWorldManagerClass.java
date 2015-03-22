@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -40,8 +42,6 @@ import org.granitepowered.granite.mc.MCPacket;
 import org.granitepowered.granite.util.Instantiator;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class ItemInWorldManagerClass extends BytecodeClass {
 

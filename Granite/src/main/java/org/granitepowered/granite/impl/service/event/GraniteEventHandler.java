@@ -42,7 +42,7 @@ public class GraniteEventHandler {
     private MethodHandle methodHandle;
 
     public GraniteEventHandler(Object instance, Class<? extends Event> eventType, PluginContainer pluginContainer, Order order,
-                               boolean ignoreCancelled, Method method) {
+            boolean ignoreCancelled, Method method) {
         this.instance = instance;
         this.eventType = eventType;
         this.pluginContainer = pluginContainer;

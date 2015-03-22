@@ -28,7 +28,7 @@ import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class GraniteParticleEffect implements ParticleEffect {
 

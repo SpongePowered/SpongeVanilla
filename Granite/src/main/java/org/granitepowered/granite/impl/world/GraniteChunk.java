@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.world;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
@@ -47,8 +49,6 @@ import org.spongepowered.api.world.weather.Weather;
 
 import java.util.Collection;
 import java.util.Set;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteChunk extends Composite<MCChunk> implements Chunk {
 

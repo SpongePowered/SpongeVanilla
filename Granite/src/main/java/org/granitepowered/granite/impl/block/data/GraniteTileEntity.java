@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.block.data;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.flowpowered.math.vector.Vector3d;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.block.GraniteBlockLoc;
@@ -32,8 +34,6 @@ import org.spongepowered.api.block.data.TileEntity;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public abstract class GraniteTileEntity<T extends MCTileEntity> extends Composite<T> implements TileEntity {
 

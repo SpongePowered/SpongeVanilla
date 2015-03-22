@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.impl.block;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
@@ -34,8 +36,6 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemBlock;
 import org.spongepowered.api.text.translation.Translation;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 

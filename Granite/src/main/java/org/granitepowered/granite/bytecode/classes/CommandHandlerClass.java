@@ -23,6 +23,8 @@
 
 package org.granitepowered.granite.bytecode.classes;
 
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.bytecode.BytecodeClass;
@@ -34,8 +36,6 @@ import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.util.command.CommandSource;
 
 import java.util.Arrays;
-
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class CommandHandlerClass extends BytecodeClass {
 

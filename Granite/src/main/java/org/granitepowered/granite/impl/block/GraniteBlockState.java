@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite.impl.block;
 
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.granitepowered.granite.composite.Composite;
@@ -33,10 +36,12 @@ import org.spongepowered.api.block.BlockProperty;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 
-import java.util.*;
-
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GraniteBlockState extends Composite<MCBlockState> implements BlockState {
 

@@ -38,7 +38,11 @@ import org.granitepowered.granite.util.json.ItemStackJson;
 import org.granitepowered.granite.util.json.MessageJson;
 import org.granitepowered.granite.util.json.TextActionJson;
 import org.slf4j.Logger;
-import org.spongepowered.api.*;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.MinecraftVersion;
+import org.spongepowered.api.Platform;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
@@ -50,10 +54,11 @@ import org.spongepowered.api.service.scheduler.Scheduler;
 import org.spongepowered.api.service.scheduler.SynchronousScheduler;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 @NonnullByDefault
 public class Granite implements Game {
@@ -82,7 +87,8 @@ public class Granite implements Game {
     }
 
     @Inject
-    public Granite(PluginManager pluginManager, GameRegistry gameRegistry, EventManager eventManager, Scheduler scheduler, String implementationVersion) {
+    public Granite(PluginManager pluginManager, GameRegistry gameRegistry, EventManager eventManager, Scheduler scheduler,
+            String implementationVersion) {
         this.pluginManager = pluginManager;
         this.gameRegistry = gameRegistry;
         this.eventManager = eventManager;

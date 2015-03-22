@@ -23,14 +23,14 @@
 
 package org.granitepowered.granite.impl.entity.projectile.fireball;
 
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.impl.entity.projectile.GraniteProjectile;
 import org.granitepowered.granite.mc.MCEntityFireball;
 import org.spongepowered.api.entity.projectile.explosive.fireball.Fireball;
 import org.spongepowered.api.entity.projectile.source.ProjectileSource;
-
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public abstract class GraniteFireball<T extends MCEntityFireball> extends GraniteProjectile<T> implements Fireball {
 

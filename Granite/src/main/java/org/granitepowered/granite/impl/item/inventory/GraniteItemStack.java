@@ -23,6 +23,9 @@
 
 package org.granitepowered.granite.impl.item.inventory;
 
+import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
+import static org.granitepowered.granite.util.MinecraftUtils.wrap;
+
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
@@ -41,9 +44,6 @@ import org.spongepowered.api.service.persistence.InvalidDataException;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 
 import java.util.Collection;
-
-import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 public class GraniteItemStack extends Composite<MCItemStack> implements ItemStack {
 

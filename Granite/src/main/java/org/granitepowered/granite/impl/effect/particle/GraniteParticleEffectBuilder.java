@@ -30,7 +30,7 @@ import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class GraniteParticleEffectBuilder implements ParticleEffectBuilder {
 

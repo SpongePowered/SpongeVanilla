@@ -53,7 +53,7 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
     Optional<ShiftClickAction<?>> shiftClickAction;
 
     public GraniteMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style, Optional<ClickAction<?>> clickAction,
-                                 Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
+            Optional<HoverAction<?>> hoverAction, Optional<ShiftClickAction<?>> shiftClickAction) {
         this.children = children;
         this.color = color;
         this.style = style;
@@ -76,8 +76,8 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
         String content;
 
         public GraniteTextMessageBuilder(String content, ImmutableList<Message> children, TextColor color, TextStyle style,
-                                         Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction,
-                                         Optional<ShiftClickAction<?>> shiftClickAction) {
+                Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction,
+                Optional<ShiftClickAction<?>> shiftClickAction) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
             this.content = content;
         }
@@ -150,8 +150,8 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
         }
 
         public GraniteTranslatableMessageBuilder(ImmutableList<Message> children, TextColor color, TextStyle style,
-                                                 Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction,
-                                                 Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, Object[] objects) {
+                Optional<ClickAction<?>> clickAction, Optional<HoverAction<?>> hoverAction,
+                Optional<ShiftClickAction<?>> shiftClickAction, Translation translation, Object[] objects) {
             super(children, color, style, clickAction, hoverAction, shiftClickAction);
             this.translation = translation;
             this.objects = objects;
@@ -213,7 +213,7 @@ public abstract class GraniteMessageBuilder<T extends Message> implements Messag
         @Override
         public Message.Translatable build() {
             return new GraniteMessage.GraniteTranslatable(ImmutableList.copyOf(children), color, style, clickAction, hoverAction, shiftClickAction,
-                                                          translation, ImmutableList.copyOf(objects));
+                    translation, ImmutableList.copyOf(objects));
         }
     }
 

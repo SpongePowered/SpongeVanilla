@@ -27,8 +27,17 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.base.Throwables;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.typesafe.config.*;
-import javassist.*;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigObject;
+import com.typesafe.config.ConfigParseOptions;
+import com.typesafe.config.ConfigSyntax;
+import com.typesafe.config.ConfigValue;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.NotFoundException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.util.ReflectionUtils;
@@ -96,7 +105,8 @@ public class Mappings {
 
                 if (!mappingsFile.exists()) {
                     Granite.getInstance().getLogger()
-                            .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called \"mappings.json\"");
+                            .warn("Could not find local mappings file. Obtain it (somehow) and place it in the server's root directory called "
+                                    + "\"mappings.json\"");
                     Throwables.propagate(e);
                 } else {
                     Granite.error(e);
@@ -167,7 +177,9 @@ public class Mappings {
     }
 
     public static CtClass getCtClass(String humanClassName) {
-        if (!ctClasses.containsKey(humanClassName)) throw new MappingNotFoundException("Could not find CtClass " + humanClassName);
+        if (!ctClasses.containsKey(humanClassName)) {
+            throw new MappingNotFoundException("Could not find CtClass " + humanClassName);
+        }
         return ctClasses.get(humanClassName);
     }
 

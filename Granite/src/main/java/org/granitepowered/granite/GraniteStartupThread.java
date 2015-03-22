@@ -32,8 +32,31 @@ import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.*;
-import org.granitepowered.granite.impl.event.state.*;
+import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
+import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
+import org.granitepowered.granite.bytecode.classes.EntityBoatClass;
+import org.granitepowered.granite.bytecode.classes.EntityClass;
+import org.granitepowered.granite.bytecode.classes.EntityEggClass;
+import org.granitepowered.granite.bytecode.classes.EntityEnderPearlClass;
+import org.granitepowered.granite.bytecode.classes.EntityFishHookClass;
+import org.granitepowered.granite.bytecode.classes.EntityLightningBoltClass;
+import org.granitepowered.granite.bytecode.classes.EntityLivingBaseClass;
+import org.granitepowered.granite.bytecode.classes.EntityMinecartClass;
+import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
+import org.granitepowered.granite.bytecode.classes.EntitySnowballClass;
+import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
+import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
+import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
+import org.granitepowered.granite.bytecode.classes.ItemStackClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerHandshakeTCPClass;
+import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
+import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
+import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
+import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
+import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
+import org.granitepowered.granite.impl.event.state.GraniteLoadCompleteEvent;
+import org.granitepowered.granite.impl.event.state.GranitePostInitializationEvent;
+import org.granitepowered.granite.impl.event.state.GranitePreInitializationEvent;
 import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
@@ -67,7 +90,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -113,7 +141,8 @@ public class GraniteStartupThread extends Thread {
                 }
             }
             Granite.getInstance().getLogger()
-                    .info("Starting Granite implementationVersion " + this.serverVersion + " build " + this.buildNumber + " implementing API implementationVersion " + this.apiVersion);
+                    .info("Starting Granite implementationVersion " + this.serverVersion + " build " + this.buildNumber
+                            + " implementing API implementationVersion " + this.apiVersion);
 
             Granite.getInstance().setImplementationVersion(this.serverVersion);
             Granite.getInstance().setApiVersion(this.apiVersion);
@@ -280,7 +309,8 @@ public class GraniteStartupThread extends Thread {
                 Granite.getInstance().getLogger().info("Modifying bytecode");
 
                 if (Granite.getInstance().getClassesDir().exists()) {
-                    File oldClassesDir = new File(Granite.getInstance().getClassesDir().getParentFile(), Granite.getInstance().getClassesDir().getName() + "_old");
+                    File oldClassesDir =
+                            new File(Granite.getInstance().getClassesDir().getParentFile(), Granite.getInstance().getClassesDir().getName() + "_old");
 
                     if (oldClassesDir.exists()) {
                         forceDeleteFolder(oldClassesDir);
@@ -333,7 +363,8 @@ public class GraniteStartupThread extends Thread {
 
         if (!minecraftJar.exists()) {
             Granite.getInstance().getLogger().warn("Could not find Minecraft .jar, downloading");
-            HttpRequest req = HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/" + version + "/minecraft_server." + version + ".jar");
+            HttpRequest req =
+                    HttpRequest.get("https://s3.amazonaws.com/Minecraft.Download/versions/" + version + "/minecraft_server." + version + ".jar");
             if (req.code() == 404) {
                 throw new RuntimeException("404 error whilst trying to download Minecraft");
             } else if (req.code() == 200) {
