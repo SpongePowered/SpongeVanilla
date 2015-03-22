@@ -24,7 +24,6 @@
 package org.granitepowered.granite.impl.world;
 
 import static org.granitepowered.granite.util.MinecraftUtils.unwrap;
-import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3d;
@@ -33,16 +32,15 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.mappings.Mappings;
 import mc.MCBlockPos;
 import mc.MCEntity;
 import mc.MCEnumFacing;
 import mc.MCGameRules;
-import mc.MCWorldServer;
 import mc.MCWorldInfo;
+import mc.MCWorldServer;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.composite.Composite;
+import org.granitepowered.granite.impl.entity.GraniteEntity;
 import org.granitepowered.granite.util.MinecraftUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockState;
@@ -225,11 +223,12 @@ public class GraniteWorld extends Composite<MCWorldServer> implements World {
 
     @Override
     public Optional<Entity> createEntity(EntityType type, Vector3d position) {
-        MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type.getId(), obj);
+        /*MCEntity entity = (MCEntity) Mappings.invokeStatic("createEntityByName", type.getId(), obj);
         entity.setPositionAndUpdate(position.getX(), position.getY(), position.getZ());
         boolean ret = obj.spawnEntityInWorld(entity);
 
-        return ret ? Optional.of((Entity) wrap(entity)) : Optional.<Entity>absent();
+        return ret ? Optional.of((Entity) wrap(entity)) : Optional.<Entity>absent();*/
+        throw new NotImplementedException("");
     }
 
     @Override

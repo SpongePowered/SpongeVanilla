@@ -23,42 +23,10 @@
 
 package mc;
 
-@Implement(name = "Block")
-public class MCBlock implements MC {
+public class MCEnchantmentHelper {
 
-    public static Object blockRegistry;
-    public MCBlockState defaultBlockState;
-    public boolean needsRandomTick;
-    public int lightValue;
-    public float blockHardness;
-    public boolean enableStats;
-    public MCMaterial blockMaterial;
-
-    public boolean isSolidFullCube() {
-        return Boolean.parseBoolean(null);
-    }
-
-    public MCBlockState getStateFromMeta(int meta) {
-        return null;
-    }
-
-    public MCBlockState getStateFromId(int id) {
-        return null;
-    }
-
-    public int getStateId(MCBlockState blockState) {
+    public static int getEnchantmentLevel(int level, MCItemStack itemstack) {
         return Integer.parseInt(null);
     }
 
-    public int getMetaFromState(MCBlockState state) {
-        return Integer.parseInt(null);
-    }
-
-    public String getUnlocalizedName() {
-        return null;
-    }
-
-    public boolean isReplaceable(MCWorldServer world, MCBlockPos pos) {
-        return Boolean.parseBoolean(null);
-    }
 }

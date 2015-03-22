@@ -26,12 +26,12 @@ package org.granitepowered.granite.impl.block;
 import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 
 import com.google.common.base.Optional;
+import mc.MCBlock;
+import mc.MCBlockFalling;
+import mc.MCBlockLiquid;
 import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
 import org.granitepowered.granite.composite.Composite;
 import org.granitepowered.granite.impl.text.translation.GraniteTranslation;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MCBlock;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemBlock;
@@ -45,7 +45,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public String getId() {
-        try {
+        /*try {
             Object registry = Mappings.getField("Block", "blockRegistry").get(null);
 
             Object resourceLocation = Mappings.invoke(registry, "getNameForObject", obj);
@@ -53,7 +53,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
         } catch (IllegalAccessException e) {
             Granite.error(e);
         }
-
+*/
         return "error";
     }
 
@@ -80,7 +80,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean isLiquid() {
-        return Mappings.getClass("BlockLiquid").isAssignableFrom(this.getClass());
+        return MCBlockLiquid.class.isAssignableFrom(this.getClass());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GraniteBlockType extends Composite<MCBlock> implements BlockType {
 
     @Override
     public boolean isAffectedByGravity() {
-        return Mappings.getClass("BlockFalling").isAssignableFrom(this.getClass());
+        return MCBlockFalling.class.isAssignableFrom(this.getClass());
     }
 
     @Override

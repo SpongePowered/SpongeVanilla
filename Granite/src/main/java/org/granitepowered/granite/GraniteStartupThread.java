@@ -30,28 +30,6 @@ import com.google.inject.Injector;
 import javassist.ClassPool;
 import javassist.NotFoundException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.granitepowered.granite.bytecode.BytecodeModifier;
-import org.granitepowered.granite.bytecode.classes.CommandHandlerClass;
-import org.granitepowered.granite.bytecode.classes.DedicatedServerClass;
-import org.granitepowered.granite.bytecode.classes.EntityBoatClass;
-import org.granitepowered.granite.bytecode.classes.EntityClass;
-import org.granitepowered.granite.bytecode.classes.EntityEggClass;
-import org.granitepowered.granite.bytecode.classes.EntityEnderPearlClass;
-import org.granitepowered.granite.bytecode.classes.EntityFishHookClass;
-import org.granitepowered.granite.bytecode.classes.EntityLightningBoltClass;
-import org.granitepowered.granite.bytecode.classes.EntityLivingBaseClass;
-import org.granitepowered.granite.bytecode.classes.EntityMinecartClass;
-import org.granitepowered.granite.bytecode.classes.EntityPlayerMPClass;
-import org.granitepowered.granite.bytecode.classes.EntitySnowballClass;
-import org.granitepowered.granite.bytecode.classes.EntityXFireballClass;
-import org.granitepowered.granite.bytecode.classes.InstantiatorClass;
-import org.granitepowered.granite.bytecode.classes.ItemInWorldManagerClass;
-import org.granitepowered.granite.bytecode.classes.ItemStackClass;
-import org.granitepowered.granite.bytecode.classes.NetHandlerHandshakeTCPClass;
-import org.granitepowered.granite.bytecode.classes.NetHandlerPlayServerClass;
-import org.granitepowered.granite.bytecode.classes.ServerConfigurationManagerClass;
-import org.granitepowered.granite.bytecode.classes.WorldProviderClass;
 import org.granitepowered.granite.impl.event.state.GraniteConstructionEvent;
 import org.granitepowered.granite.impl.event.state.GraniteInitializationEvent;
 import org.granitepowered.granite.impl.event.state.GraniteLoadCompleteEvent;
@@ -61,7 +39,6 @@ import org.granitepowered.granite.impl.guice.GraniteGuiceModule;
 import org.granitepowered.granite.impl.plugin.GranitePluginManager;
 import org.granitepowered.granite.impl.text.chat.GraniteChatType;
 import org.granitepowered.granite.impl.text.format.GraniteTextColor;
-import org.granitepowered.granite.mappings.Mappings;
 import org.granitepowered.granite.util.ReflectionUtils;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Server;
@@ -81,7 +58,6 @@ import org.spongepowered.api.text.translation.GraniteTranslationFactory;
 import org.spongepowered.api.text.translation.Translations;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -91,18 +67,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class GraniteStartupThread extends Thread {
 
     String[] args;
-    BytecodeModifier modifier;
 
     String serverVersion;
     String apiVersion;
@@ -159,15 +131,7 @@ public class GraniteStartupThread extends Thread {
 
             loadMinecraftToClassPool();
 
-            Mappings.load();
-
-            modifyBytecode();
-
             loadClasses();
-
-            bootstrap();
-
-            postLoadClasses();
 
             //TODO: Create new Registering Class with hard coded sounds (even though i hate hard coding soo uch);
 
@@ -228,10 +192,6 @@ public class GraniteStartupThread extends Thread {
         }
     }
 
-    private void postLoadClasses() {
-        modifier.post();
-    }
-
     private void injectSpongeFields() {
         Granite.getInstance().getLogger().info("Injecting Sponge fields");
 
@@ -274,87 +234,6 @@ public class GraniteStartupThread extends Thread {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Throwables.propagate(e);
         }
-    }
-
-    private void modifyBytecode() {
-        File buildNumberFile = new File(Granite.getInstance().getClassesDir(), "buildnumber.txt");
-        try {
-            modifier = new BytecodeModifier();
-
-            modifier.add(new CommandHandlerClass());
-            modifier.add(new DedicatedServerClass());
-            modifier.add(new EntityMinecartClass());
-            modifier.add(new EntityClass());
-            modifier.add(new EntityBoatClass());
-            modifier.add(new EntityEggClass());
-            modifier.add(new EntityEnderPearlClass());
-            modifier.add(new EntityFishHookClass());
-            modifier.add(new EntityLightningBoltClass());
-            modifier.add(new EntityLivingBaseClass());
-            modifier.add(new EntityPlayerMPClass());
-            modifier.add(new EntitySnowballClass());
-            modifier.add(new EntityXFireballClass("EntitySmallFireball"));
-            modifier.add(new EntityXFireballClass("EntityLargeFireball"));
-            modifier.add(new ItemInWorldManagerClass());
-            modifier.add(new ItemStackClass());
-            modifier.add(new NetHandlerHandshakeTCPClass());
-            modifier.add(new NetHandlerPlayServerClass());
-            modifier.add(new ServerConfigurationManagerClass());
-            modifier.add(new WorldProviderClass());
-
-            modifier.add(new InstantiatorClass());
-
-            if (buildNumber.equals("UNKNOWN") || !buildNumberFile.exists() || !Objects
-                    .equals(FileUtils.readFileToString(buildNumberFile), buildNumber)) {
-                Granite.getInstance().getLogger().info("Modifying bytecode");
-
-                if (Granite.getInstance().getClassesDir().exists()) {
-                    File oldClassesDir =
-                            new File(Granite.getInstance().getClassesDir().getParentFile(), Granite.getInstance().getClassesDir().getName() + "_old");
-
-                    if (oldClassesDir.exists()) {
-                        forceDeleteFolder(oldClassesDir);
-                    }
-
-                    FileUtils.moveDirectory(Granite.getInstance().getClassesDir(), oldClassesDir);
-                    forceDeleteFolder(oldClassesDir);
-                }
-
-                try {
-                    JarFile file = new JarFile("minecraft_server." + Granite.getInstance().getMinecraftVersion().getName().split(" ")[1] + ".jar");
-                    Enumeration<JarEntry> entries = file.entries();
-                    while (entries.hasMoreElements()) {
-                        JarEntry entry = entries.nextElement();
-
-                        File f = new File(Granite.getInstance().getClassesDir() + java.io.File.separator + entry.getName());
-
-                        if (entry.isDirectory()) {
-                            f.mkdirs();
-                        } else {
-                            FileOutputStream os = new FileOutputStream(f);
-                            IOUtils.copy(file.getInputStream(entry), os);
-                            os.close();
-                        }
-                    }
-
-                    modifier.modify();
-
-                    FileUtils.write(buildNumberFile, buildNumber + "");
-                } catch (IOException e) {
-                    Throwables.propagate(e);
-                }
-            } else {
-                Granite.getInstance().getLogger().info("Found pre-modified bytecode in classes/, loading that");
-            }
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
-    }
-
-    private void bootstrap() {
-        Granite.getInstance().getLogger().info("Bootstrapping Minecraft");
-
-        Mappings.invokeStatic("Bootstrap", "register");
     }
 
     private void loadMinecraftToClassPool() {

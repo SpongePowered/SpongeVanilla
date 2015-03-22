@@ -23,17 +23,14 @@
 
 package org.granitepowered.granite.impl.potion;
 
+import mc.MCPotionEffect;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.composite.Composite;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MCPotion;
-import mc.MCPotionEffect;
 import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.potion.PotionEffectType;
 import org.spongepowered.api.service.persistence.data.DataContainer;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 public class GranitePotionEffect extends Composite<MCPotionEffect> implements PotionEffect {
@@ -44,15 +41,15 @@ public class GranitePotionEffect extends Composite<MCPotionEffect> implements Po
 
     @Override
     public PotionEffectType getType() {
-        Class potionClass = Mappings.getClass("Potion");
+        /*Class potionClass = MCPotion.class;
         Field potionTypes = Mappings.getField(potionClass, "potionTypes");
         MCPotion[] mcPotions = null;
         try {
             mcPotions = (MCPotion[]) potionTypes.get(potionClass);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        }
-        return new GranitePotionEffectType(mcPotions[obj.potionId]);
+        }*/
+        return new GranitePotionEffectType(obj.potionId);
     }
 
     @Override

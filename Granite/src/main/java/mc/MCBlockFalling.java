@@ -21,20 +21,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.mc;
+package mc;
 
-import com.google.common.collect.ImmutableMap;
+/**
+ * Created by Ash on 22/03/2015.
+ */
+public class MCBlockFalling extends MCBlock {
 
-@Implement(name = "BlockState")
-public class MCBlockState implements MC {
-
-    public MCBlock block;
-
-    public ImmutableMap<MCProperty, Comparable> fieldGet$properties() {
-        return null;
-    }
-
-    public MCBlockState withProperty(MCProperty property, Comparable value) {
-        return null;
-    }
 }

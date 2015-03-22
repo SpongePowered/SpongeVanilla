@@ -29,14 +29,11 @@ import static org.granitepowered.granite.util.MinecraftUtils.wrap;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.google.common.base.Optional;
-import org.apache.commons.lang3.NotImplementedException;
-import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.impl.entity.GraniteEntity;
-import org.granitepowered.granite.impl.potion.GranitePotionEffect;
-import org.granitepowered.granite.mappings.Mappings;
-import mc.MCDamageSource;
 import mc.MCEntityLivingBase;
 import mc.MCPotion;
+import org.apache.commons.lang3.NotImplementedException;
+import org.granitepowered.granite.impl.entity.GraniteEntity;
+import org.granitepowered.granite.impl.potion.GranitePotionEffect;
 import org.spongepowered.api.attribute.Attribute;
 import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.entity.living.ArmorStand;
@@ -60,11 +57,11 @@ public class GraniteEntityLivingBase<T extends MCEntityLivingBase> extends Grani
 
     @Override
     public void damage(double amount) {
-        try {
+        /*try {
             obj.damageEntity((MCDamageSource) Mappings.getField("DamageSource", "generic").get(null), (float) amount);
         } catch (IllegalAccessException e) {
             Granite.error(e);
-        }
+        }*/
     }
 
     @Override

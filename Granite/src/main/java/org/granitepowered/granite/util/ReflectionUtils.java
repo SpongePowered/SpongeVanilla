@@ -129,38 +129,6 @@ public class ReflectionUtils {
         return clazz;
     }
 
-    public static Class<?> getClassByName(String name) {
-        boolean array = name.endsWith("[]");
-        name = name.replaceAll("\\[\\]", "");
-
-        Class<?> clazz = null;
-
-        for (Class<?> primitive : ctPrimitives.keySet()) {
-            if (Objects.equals(primitive.getName(), name)) {
-                clazz = primitive;
-            }
-        }
-
-        if (name.split("\\.").length == 1 && !name.toLowerCase().equals(name)) {
-            clazz = Mappings.getClass(name);
-        }
-
-        try {
-            clazz = Class.forName(name);
-        } catch (ClassNotFoundException ignored) {
-        }
-
-        try {
-            clazz = Class.forName("java.lang." + name);
-        } catch (ClassNotFoundException ignored) {
-        }
-
-        if (array) {
-            clazz = Array.newInstance(clazz, 0).getClass();
-        }
-        return clazz;
-    }
-
     public static CtClass getCtClassByName(String name) {
         boolean array = name.endsWith("[]");
         name = name.replaceAll("\\[\\]", "");
