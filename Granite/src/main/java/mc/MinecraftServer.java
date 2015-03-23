@@ -23,7 +23,14 @@
 
 package mc;
 
-public class MinecraftServer implements Runnable {
+public abstract class MinecraftServer implements Runnable {
+
+    private String hostname;
+    private int serverPort;
+    private ServerConfigurationManager serverConfigManager;
+    private int tickCount;
+    private boolean onlineMode;
+    private String motd;
 
     @Override
     public void run() {

@@ -1,40 +1,20 @@
-/*
- * License (MIT)
- *
- * Copyright (c) 2014-2015 Granite Team
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the
- * following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package org.granitepowered.granite.mixin.server;
 
 import com.google.common.base.Optional;
-import mc.MinecraftServer;
+import mc.ServerConfigurationManager;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.net.ChannelListener;
 import org.spongepowered.api.net.ChannelRegistrationException;
 import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
+import org.spongepowered.api.util.command.source.ConsoleSource;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.gen.WorldGenerator;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -42,8 +22,26 @@ import java.util.List;
 import java.util.UUID;
 
 @NonnullByDefault
-@Mixin(value = mc.DedicatedServer.class, remap = false)
-public class MixinDedicatedServer extends MinecraftServer implements Server {
+@Mixin(value = mc.MinecraftServer.class, remap = false)
+public abstract class MixinMinecraftServer implements Server, ConsoleSource {
+
+    @Shadow
+    private String hostname;
+
+    @Shadow
+    private int serverPort;
+
+    @Shadow
+    private ServerConfigurationManager serverConfigManager;
+
+    @Shadow
+    private int tickCount;
+
+    @Shadow
+    private boolean onlineMode;
+
+    @Shadow
+    private String motd;
 
     @Override
     public Collection<Player> getOnlinePlayers() {
@@ -52,7 +50,7 @@ public class MixinDedicatedServer extends MinecraftServer implements Server {
 
     @Override
     public int getMaxPlayers() {
-        throw new NotImplementedException("");
+        return this.serverConfigManager.maxPlayers;
     }
 
     @Override
@@ -61,7 +59,7 @@ public class MixinDedicatedServer extends MinecraftServer implements Server {
     }
 
     @Override
-    public Optional<Player> getPlayer(String playerName) {
+    public Optional<Player> getPlayer(String s) {
         throw new NotImplementedException("");
     }
 
@@ -76,12 +74,12 @@ public class MixinDedicatedServer extends MinecraftServer implements Server {
     }
 
     @Override
-    public Optional<World> getWorld(String worldName) {
+    public Optional<World> getWorld(String s) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public Optional<World> loadWorld(String worldName) {
+    public Optional<World> loadWorld(String s) {
         throw new NotImplementedException("");
     }
 
@@ -91,53 +89,55 @@ public class MixinDedicatedServer extends MinecraftServer implements Server {
     }
 
     @Override
-    public World createWorld(String worldName, WorldGenerator worldGenerator, long seed) {
+    public World createWorld(String s, WorldGenerator worldGenerator, long l) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public World createWorld(String worldName, WorldGenerator worldGenerator) {
+    public World createWorld(String s, WorldGenerator worldGenerator) {
         throw new NotImplementedException("");
     }
 
     @Override
-    public World createWorld(String worldName) {
+    public World createWorld(String s) {
         throw new NotImplementedException("");
     }
 
     @Override
     public int getRunningTimeTicks() {
-        throw new NotImplementedException("");
+        return this.tickCount;
     }
 
     @Override
     public void broadcastMessage(Message message) {
-        throw new NotImplementedException("");
+        for (Player player : getOnlinePlayers()) {
+            player.sendMessage(message);
+        }
     }
 
     @Override
     public Optional<InetSocketAddress> getBoundAddress() {
-        throw new NotImplementedException("");
+        return Optional.fromNullable(new InetSocketAddress(this.hostname, this.serverPort));
     }
 
     @Override
     public boolean hasWhitelist() {
-        throw new NotImplementedException("");
+        return this.serverConfigManager.whiteListEnforced;
     }
 
     @Override
-    public void setHasWhitelist(boolean hasWhitelist) {
-        throw new NotImplementedException("");
+    public void setHasWhitelist(boolean whitListEnforced) {
+        this.serverConfigManager.whiteListEnforced = whitListEnforced;
     }
 
     @Override
     public boolean getOnlineMode() {
-        throw new NotImplementedException("");
+        return this.onlineMode;
     }
 
     @Override
     public Message getMotd() {
-        throw new NotImplementedException("");
+        return Messages.of(this.motd).builder().build();
     }
 
     @Override
