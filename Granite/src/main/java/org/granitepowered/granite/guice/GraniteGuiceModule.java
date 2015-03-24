@@ -26,7 +26,7 @@ package org.granitepowered.granite.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import org.granitepowered.granite.Granite;
-import org.granitepowered.granite.event.GraniteEventManager;
+import org.granitepowered.granite.service.event.GraniteEventManager;
 import org.granitepowered.granite.plugin.GranitePluginManager;
 import org.granitepowered.granite.registry.GraniteGameRegistry;
 import org.granitepowered.granite.scheduler.GraniteScheduler;

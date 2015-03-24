@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.event;
+package org.granitepowered.granite.service.event;
 
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.event.Event;

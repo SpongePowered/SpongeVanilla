@@ -21,13 +21,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.granitepowered.granite.event;
+package org.granitepowered.granite.service.event;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import org.apache.commons.lang3.NotImplementedException;
 import org.granitepowered.granite.Granite;
+import org.granitepowered.granite.event.GraniteEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
