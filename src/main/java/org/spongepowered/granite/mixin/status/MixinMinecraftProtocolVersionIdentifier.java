@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,11 +25,11 @@
 package org.spongepowered.granite.mixin.status;
 
 import net.minecraft.network.ServerStatusResponse;
-import org.spongepowered.granite.ProtocolMinecraftVersion;
-import org.spongepowered.granite.GraniteMinecraftVersion;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.granite.GraniteMinecraftVersion;
+import org.spongepowered.granite.ProtocolMinecraftVersion;
 
 @Mixin(ServerStatusResponse.MinecraftProtocolVersionIdentifier.class)
 public abstract class MixinMinecraftProtocolVersionIdentifier implements ProtocolMinecraftVersion {

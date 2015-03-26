@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,7 +28,6 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Optional;
 import net.minecraft.launchwrapper.Launch;
-import org.spongepowered.granite.Granite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -37,6 +36,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.granite.Granite;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,12 +68,12 @@ public class GranitePluginManager implements PluginManager {
     @Inject
     public GranitePluginManager(Granite granite) {
         this.granite = requireNonNull(granite, "granite");
-        plugins.put(granite.getId(), granite);
-        pluginInstances.put(granite, granite);
+        this.plugins.put(granite.getId(), granite);
+        this.pluginInstances.put(granite, granite);
     }
 
     public void loadPlugins() throws IOException {
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream(granite.getPluginsDirectory(), "*.jar")) {
+        try (DirectoryStream<Path> dir = Files.newDirectoryStream(this.granite.getPluginsDirectory(), "*.jar")) {
             for (Path jar : dir) {
                 String pluginClassName = null;
 
@@ -92,7 +92,7 @@ public class GranitePluginManager implements PluginManager {
                         }
                     }
                 } catch (IOException e) {
-                    granite.getLogger().error("Failed to load plugin JAR: " + jar, e);
+                    this.granite.getLogger().error("Failed to load plugin JAR: " + jar, e);
                     continue;
                 }
 
@@ -102,13 +102,13 @@ public class GranitePluginManager implements PluginManager {
                         Launch.classLoader.addURL(jar.toUri().toURL());
                         Class<?> pluginClass = Class.forName(pluginClassName);
                         GranitePluginContainer container = new GranitePluginContainer(pluginClass);
-                        plugins.put(container.getId(), container);
-                        pluginInstances.put(container.getInstance(), container);
-                        granite.getGame().getEventManager().register(container, container.getInstance());
+                        this.plugins.put(container.getId(), container);
+                        this.pluginInstances.put(container.getInstance(), container);
+                        this.granite.getGame().getEventManager().register(container, container.getInstance());
 
-                        granite.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
+                        this.granite.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
                     } catch (Throwable e) {
-                        granite.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
+                        this.granite.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
                     }
                 }
             }
@@ -140,12 +140,12 @@ public class GranitePluginManager implements PluginManager {
             return Optional.of((PluginContainer) instance);
         }
 
-        return Optional.fromNullable(pluginInstances.get(instance));
+        return Optional.fromNullable(this.pluginInstances.get(instance));
     }
 
     @Override
     public Optional<PluginContainer> getPlugin(String id) {
-        return Optional.fromNullable(plugins.get(id));
+        return Optional.fromNullable(this.plugins.get(id));
     }
 
     @Override
@@ -155,12 +155,12 @@ public class GranitePluginManager implements PluginManager {
 
     @Override
     public Collection<PluginContainer> getPlugins() {
-        return Collections.unmodifiableCollection(plugins.values());
+        return Collections.unmodifiableCollection(this.plugins.values());
     }
 
     @Override
     public boolean isLoaded(String id) {
-        return plugins.containsKey(id);
+        return this.plugins.containsKey(id);
     }
 
 }

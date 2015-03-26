@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,13 +26,13 @@ package org.spongepowered.granite.status;
 
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.server.MinecraftServer;
-import org.spongepowered.granite.Granite;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.server.StatusPingEvent;
 import org.spongepowered.api.status.StatusClient;
 import org.spongepowered.api.status.StatusResponse;
+import org.spongepowered.granite.Granite;
 
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;

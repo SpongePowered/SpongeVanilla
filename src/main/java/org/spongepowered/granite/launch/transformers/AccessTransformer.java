@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -126,7 +126,7 @@ public class AccessTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (bytes == null || !modifiers.containsKey(transformedName)) {
+        if (bytes == null || !this.modifiers.containsKey(transformedName)) {
             return bytes;
         }
 
@@ -134,7 +134,7 @@ public class AccessTransformer implements IClassTransformer {
         ClassReader reader = new ClassReader(bytes);
         reader.accept(classNode, 0);
 
-        for (Modifier m : modifiers.get(transformedName)) {
+        for (Modifier m : this.modifiers.get(transformedName)) {
             if (m.isClass) { // Class
                 classNode.access = m.transform(classNode.access);
             } else if (m.desc == null) { // Field
@@ -225,25 +225,26 @@ public class AccessTransformer implements IClassTransformer {
 
             switch (access & 4) {
                 case ACC_PRIVATE:
-                    result |= targetAccess;
+                    result |= this.targetAccess;
                     break;
                 case 0: // default
-                    if (targetAccess != ACC_PRIVATE) {
-                        result |= targetAccess;
+                    if (this.targetAccess != ACC_PRIVATE) {
+                        result |= this.targetAccess;
                     }
                     break;
                 case ACC_PROTECTED:
-                    result |= targetAccess != 0 && targetAccess != ACC_PRIVATE ? targetAccess : ACC_PROTECTED;
+                    result |= this.targetAccess != 0 && this.targetAccess != ACC_PRIVATE ? this.targetAccess : ACC_PROTECTED;
                     break;
                 case ACC_PUBLIC:
-                    result |= targetAccess != 0 && targetAccess != ACC_PRIVATE && targetAccess != ACC_PROTECTED ? targetAccess : ACC_PUBLIC;
+                    result |= this.targetAccess != 0 && this.targetAccess != ACC_PRIVATE && this.targetAccess != ACC_PROTECTED ? this.targetAccess
+                            : ACC_PUBLIC;
                     break;
                 default:
                     throw new AssertionError();
             }
 
-            if (markFinal != null) {
-                if (markFinal) {
+            if (this.markFinal != null) {
+                if (this.markFinal) {
                     result |= ACC_FINAL;
                 } else {
                     result &= ~ACC_FINAL;

@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,9 +27,6 @@ package org.spongepowered.granite;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.spongepowered.granite.event.GraniteEventFactory;
-import org.spongepowered.granite.guice.GraniteGuiceModule;
-import org.spongepowered.granite.launch.GraniteLaunch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
@@ -43,6 +40,9 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
+import org.spongepowered.granite.event.GraniteEventFactory;
+import org.spongepowered.granite.guice.GraniteGuiceModule;
+import org.spongepowered.granite.launch.GraniteLaunch;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,50 +68,50 @@ public final class Granite implements PluginContainer {
 
     private Granite() {
         this.gameDir = GraniteLaunch.getGameDirectory();
-        this.pluginsDir = gameDir.resolve("plugins");
-        this.configDir = gameDir.resolve("config");
+        this.pluginsDir = this.gameDir.resolve("plugins");
+        this.configDir = this.gameDir.resolve("config");
     }
 
     public Game getGame() {
-        return game;
+        return this.game;
     }
 
     public Logger getLogger() {
-        return logger;
+        return this.logger;
     }
 
     public Path getGameDirectory() {
-        return gameDir;
+        return this.gameDir;
     }
 
     public Path getPluginsDirectory() {
-        return pluginsDir;
+        return this.pluginsDir;
     }
 
     public Path getConfigDirectory() {
-        return configDir;
+        return this.configDir;
     }
 
     public void load() {
         try {
-            logger.info("Loading Granite...");
+            this.logger.info("Loading Granite...");
 
             this.game = injector.getInstance(GraniteGame.class);
 
             try {
-                SimpleCommandService commandService = new SimpleCommandService(game.getPluginManager());
-                game.getServiceManager().setProvider(this, CommandService.class, commandService);
-                game.getEventManager().register(this, commandService);
+                SimpleCommandService commandService = new SimpleCommandService(this.game.getPluginManager());
+                this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
+                this.game.getEventManager().register(this, commandService);
             } catch (ProviderExistsException e) {
-                logger.warn("An unknown CommandService was already registered", e);
+                this.logger.warn("An unknofwn CommandService was already registered", e);
             }
 
-            if (Files.notExists(gameDir) || Files.notExists(pluginsDir)) {
-                Files.createDirectories(pluginsDir);
+            if (Files.notExists(this.gameDir) || Files.notExists(this.pluginsDir)) {
+                Files.createDirectories(this.pluginsDir);
             }
 
             getLogger().info("Loading plugins...");
-            game.getPluginManager().loadPlugins();
+            this.game.getPluginManager().loadPlugins();
             postState(ConstructionEvent.class);
             getLogger().info("Initializing plugins...");
             postState(PreInitializationEvent.class);
@@ -129,7 +129,7 @@ public final class Granite implements PluginContainer {
     }
 
     public void postState(Class<? extends StateEvent> type) {
-        game.getEventManager().post(GraniteEventFactory.createStateEvent(type, game));
+        this.game.getEventManager().post(GraniteEventFactory.createStateEvent(type, this.game));
     }
 
     @Override
@@ -144,7 +144,7 @@ public final class Granite implements PluginContainer {
 
     @Override
     public String getVersion() {
-        return game.getImplementationVersion();
+        return this.game.getImplementationVersion();
     }
 
     @Override

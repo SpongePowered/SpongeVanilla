@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -58,30 +58,30 @@ class RegisteredHandler implements EventHandler, Comparable<RegisteredHandler> {
     }
 
     public PluginContainer getPlugin() {
-        return plugin;
+        return this.plugin;
     }
 
     public Class<? extends Event> getEventClass() {
-        return eventClass;
+        return this.eventClass;
     }
 
     @Override
     public Object getHandle() {
-        return handler.getHandle();
+        return this.handler.getHandle();
     }
 
     @Override
     public void handle(Event event) throws Throwable {
-        if (ignoreCancelled && event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+        if (this.ignoreCancelled && event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
             return;
         }
 
-        handler.handle(event);
+        this.handler.handle(event);
     }
 
     @Override
     public int compareTo(RegisteredHandler handler) {
-        return order.compareTo(handler.order);
+        return this.order.compareTo(handler.order);
     }
 
     @Override
@@ -94,12 +94,12 @@ class RegisteredHandler implements EventHandler, Comparable<RegisteredHandler> {
         }
 
         RegisteredHandler that = (RegisteredHandler) o;
-        return handle.equals(that.handle);
+        return this.handle.equals(that.handle);
     }
 
     @Override
     public int hashCode() {
-        return handle.hashCode();
+        return this.handle.hashCode();
     }
 
 }

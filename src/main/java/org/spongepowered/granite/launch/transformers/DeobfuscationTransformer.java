@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -101,7 +101,8 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
                     continue;
                 }
 
-                String[] source, dest;
+                String[] source;
+                String[] dest;
                 switch (type) {
                     case CLASS:
                         classes.put(parts[1], parts[2]);
@@ -120,6 +121,7 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
                         dest = getSignature(parts[3]);
                         methods.put(source[0], source[1] + parts[2], dest[1]);
                         break;
+                    default:
                 }
             }
         }
@@ -128,8 +130,8 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
         this.rawFields = fields.build();
         this.rawMethods = methods.build();
 
-        this.fields = Maps.newHashMapWithExpectedSize(rawFields.size());
-        this.methods = Maps.newHashMapWithExpectedSize(rawMethods.size());
+        this.fields = Maps.newHashMapWithExpectedSize(this.rawFields.size());
+        this.methods = Maps.newHashMapWithExpectedSize(this.rawMethods.size());
     }
 
     private static String[] getSignature(String in) {
@@ -175,24 +177,24 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
 
     @Override
     public String map(String typeName) {
-        if (classes == null) {
+        if (this.classes == null) {
             return typeName;
         }
-        String name = classes.get(typeName);
+        String name = this.classes.get(typeName);
         return name != null ? name : typeName;
     }
 
     public String unmap(String typeName) {
-        if (classes == null) {
+        if (this.classes == null) {
             return typeName;
         }
-        String name = classes.inverse().get(typeName);
+        String name = this.classes.inverse().get(typeName);
         return name != null ? name : typeName;
     }
 
     @Override
     public String mapFieldName(String owner, String fieldName, String desc) {
-        if (classes == null) {
+        if (this.classes == null) {
             return fieldName;
         }
         Map<String, String> fields = getFieldMap(owner);
@@ -207,24 +209,24 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
     }
 
     private Map<String, String> getFieldMap(String owner) {
-        Map<String, String> result = fields.get(owner);
+        Map<String, String> result = this.fields.get(owner);
         if (result != null) {
             return result;
         }
 
-        if (!failedFields.contains(owner)) {
+        if (!this.failedFields.contains(owner)) {
             loadSuperMaps(owner);
-            if (!fields.containsKey(owner)) {
-                failedFields.add(owner);
+            if (!this.fields.containsKey(owner)) {
+                this.failedFields.add(owner);
             }
         }
 
-        return fields.get(owner);
+        return this.fields.get(owner);
     }
 
     @Override
     public String mapMethodName(String owner, String methodName, String desc) {
-        if (classes == null) {
+        if (this.classes == null) {
             return methodName;
         }
         Map<String, String> methods = getMethodMap(owner);
@@ -239,19 +241,19 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
     }
 
     private Map<String, String> getMethodMap(String owner) {
-        Map<String, String> result = methods.get(owner);
+        Map<String, String> result = this.methods.get(owner);
         if (result != null) {
             return result;
         }
 
-        if (!failedMethods.contains(owner)) {
+        if (!this.failedMethods.contains(owner)) {
             loadSuperMaps(owner);
-            if (!methods.containsKey(owner)) {
-                failedMethods.add(owner);
+            if (!this.methods.containsKey(owner)) {
+                this.failedMethods.add(owner);
             }
         }
 
-        return methods.get(owner);
+        return this.methods.get(owner);
     }
 
     @Override
@@ -296,7 +298,7 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
         System.arraycopy(interfaces, 0, parents, 1, interfaces.length);
 
         for (String parent : parents) {
-            if (!fields.containsKey(parent)) {
+            if (!this.fields.containsKey(parent)) {
                 loadSuperMaps(parent);
             }
         }
@@ -316,8 +318,8 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
             }
         }
 
-        fields.putAll(rawFields.row(name));
-        methods.putAll(rawMethods.row(name));
+        fields.putAll(this.rawFields.row(name));
+        methods.putAll(this.rawMethods.row(name));
 
         this.fields.put(name, ImmutableMap.copyOf(fields));
         this.methods.put(name, ImmutableMap.copyOf(methods));
@@ -329,10 +331,10 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
             return type;
         }
 
-        Map<String, String> newClassMap = fieldDescriptions.get(newType);
+        Map<String, String> newClassMap = this.fieldDescriptions.get(newType);
         if (newClassMap == null) {
             newClassMap = new HashMap<>();
-            fieldDescriptions.put(newType, newClassMap);
+            this.fieldDescriptions.put(newType, newClassMap);
         }
         newClassMap.put(newName, type);
         return type;
@@ -383,22 +385,22 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
 
         @Override
         protected MethodVisitor createRemappingMethodAdapter(int access, String newDesc, MethodVisitor mv) {
-            return new RemappingMethodAdapter(access, newDesc, mv, remapper) {
+            return new RemappingMethodAdapter(access, newDesc, mv, RemappingAdapter.this.remapper) {
 
                 @Override
                 public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-                    String type = remapper.mapType(owner);
-                    String fieldName = remapper.mapFieldName(owner, name, desc);
-                    String newDesc = remapper.mapDesc(desc);
+                    String type = this.remapper.mapType(owner);
+                    String fieldName = this.remapper.mapFieldName(owner, name, desc);
+                    String newDesc = this.remapper.mapDesc(desc);
                     if (opcode == Opcodes.GETSTATIC && type.startsWith("net/minecraft/") && newDesc.startsWith("Lnet/minecraft/")) {
                         String replDesc = getStaticFieldType(owner, name, type, fieldName);
                         if (replDesc != null) {
-                            newDesc = remapper.mapDesc(replDesc);
+                            newDesc = this.remapper.mapDesc(replDesc);
                         }
                     }
 
-                    if (mv != null) {
-                        mv.visitFieldInsn(opcode, type, fieldName, newDesc);
+                    if (this.mv != null) {
+                        this.mv.visitFieldInsn(opcode, type, fieldName, newDesc);
                     }
                 }
             };

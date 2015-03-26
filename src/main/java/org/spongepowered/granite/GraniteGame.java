@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,8 +27,6 @@ package org.spongepowered.granite;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.minecraft.server.MinecraftServer;
-import org.spongepowered.granite.event.GraniteEventManager;
-import org.spongepowered.granite.plugin.GranitePluginManager;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
@@ -39,6 +37,8 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
 import org.spongepowered.api.service.scheduler.SynchronousScheduler;
+import org.spongepowered.granite.event.GraniteEventManager;
+import org.spongepowered.granite.plugin.GranitePluginManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -58,7 +58,8 @@ public class GraniteGame implements Game {
     private final ServiceManager serviceManager;
 
     @Inject
-    public GraniteGame(GranitePluginManager pluginManager, GraniteEventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager) {
+    public GraniteGame(GranitePluginManager pluginManager, GraniteEventManager eventManager, GameRegistry gameRegistry,
+            ServiceManager serviceManager) {
         this.pluginManager = pluginManager;
         this.eventManager = eventManager;
         this.gameRegistry = gameRegistry;
@@ -77,22 +78,22 @@ public class GraniteGame implements Game {
 
     @Override
     public GranitePluginManager getPluginManager() {
-        return pluginManager;
+        return this.pluginManager;
     }
 
     @Override
     public GraniteEventManager getEventManager() {
-        return eventManager;
+        return this.eventManager;
     }
 
     @Override
     public GameRegistry getRegistry() {
-        return gameRegistry;
+        return this.gameRegistry;
     }
 
     @Override
     public ServiceManager getServiceManager() {
-        return serviceManager;
+        return this.serviceManager;
     }
 
     @Override
@@ -107,7 +108,7 @@ public class GraniteGame implements Game {
 
     @Override
     public CommandService getCommandDispatcher() {
-        return serviceManager.provideUnchecked(CommandService.class);
+        return this.serviceManager.provideUnchecked(CommandService.class);
     }
 
     @Override

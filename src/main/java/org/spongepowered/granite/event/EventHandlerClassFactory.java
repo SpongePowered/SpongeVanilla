@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -81,7 +81,7 @@ class EventHandlerClassFactory implements EventHandlerFactory {
 
     @Override
     public EventHandler get(Object handle, Method method) throws Exception {
-        return cache.get(new Handler(handle.getClass(), method))
+        return this.cache.get(new Handler(handle.getClass(), method))
                 .getConstructor(handle.getClass())
                 .newInstance(handle);
     }
@@ -90,8 +90,9 @@ class EventHandlerClassFactory implements EventHandlerFactory {
     private Class<? extends EventHandler> createClass(Class<?> handle, Method method) {
         Class<?> eventClass = method.getParameterTypes()[0];
         String name =
-                targetPackage + eventClass.getSimpleName() + "Handler_" + handle.getSimpleName() + '_' + method.getName() + id.incrementAndGet();
-        return (Class<? extends EventHandler>) classLoader.defineClass(name, generateClass(name, handle, method, eventClass));
+                this.targetPackage + eventClass.getSimpleName() + "Handler_" + handle.getSimpleName() + '_' + method.getName() + this.id
+                        .incrementAndGet();
+        return (Class<? extends EventHandler>) this.classLoader.defineClass(name, generateClass(name, handle, method, eventClass));
     }
 
     private static final String EVENT_HANDLER_CLASS = Type.getInternalName(EventHandler.class);
@@ -173,13 +174,13 @@ class EventHandlerClassFactory implements EventHandlerFactory {
 
             Handler handler = (Handler) o;
 
-            return type.equals(handler.type)
-                    && method.equals(handler.method);
+            return this.type.equals(handler.type)
+                    && this.method.equals(handler.method);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(type, method);
+            return Objects.hash(this.type, this.method);
         }
 
     }

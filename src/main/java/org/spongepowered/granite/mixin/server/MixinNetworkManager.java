@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,11 +26,11 @@ package org.spongepowered.granite.mixin.server;
 
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.network.NetworkManager;
-import org.spongepowered.granite.GraniteMinecraftVersion;
-import org.spongepowered.granite.server.ConnectionInfo;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.granite.GraniteMinecraftVersion;
+import org.spongepowered.granite.server.ConnectionInfo;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;

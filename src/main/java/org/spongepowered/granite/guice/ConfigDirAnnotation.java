@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -40,7 +40,7 @@ class ConfigDirAnnotation implements ConfigDir {
 
     @Override
     public boolean sharedRoot() {
-        return shared;
+        return this.shared;
     }
 
     @Override
@@ -69,7 +69,7 @@ class ConfigDirAnnotation implements ConfigDir {
     @Override
     public String toString() {
         return Objects.toStringHelper('@' + getClass().getName())
-                .add("shared", shared)
+                .add("shared", this.shared)
                 .toString();
     }
 

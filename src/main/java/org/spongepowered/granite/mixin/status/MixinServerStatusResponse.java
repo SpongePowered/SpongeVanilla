@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,14 +30,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.util.IChatComponent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.granite.status.GraniteFavicon;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.event.server.StatusPingEvent;
 import org.spongepowered.api.status.Favicon;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.granite.status.GraniteFavicon;
 
 import java.io.IOException;
 

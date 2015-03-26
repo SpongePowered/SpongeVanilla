@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,12 +24,12 @@
  */
 package org.spongepowered.granite.plugin;
 
-import org.spongepowered.granite.Granite;
-import org.spongepowered.granite.guice.GranitePluginGuiceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.granite.Granite;
+import org.spongepowered.granite.guice.GranitePluginGuiceModule;
 
 public class GranitePluginContainer implements PluginContainer {
 
@@ -44,32 +44,32 @@ public class GranitePluginContainer implements PluginContainer {
         this.id = info.id();
         this.name = info.name();
         this.version = info.version();
-        this.logger = LoggerFactory.getLogger(id);
+        this.logger = LoggerFactory.getLogger(this.id);
 
         this.instance = Granite.getInjector().createChildInjector(new GranitePluginGuiceModule(this)).getInstance(pluginClass);
     }
 
     @Override
     public String getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
     @Override
     public Object getInstance() {
-        return instance;
+        return this.instance;
     }
 
     public Logger getLogger() {
-        return logger;
+        return this.logger;
     }
 }

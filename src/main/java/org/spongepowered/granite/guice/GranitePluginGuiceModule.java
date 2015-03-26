@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +27,6 @@ package org.spongepowered.granite.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
-import org.spongepowered.granite.plugin.GranitePluginContainer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -35,6 +34,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.granite.plugin.GranitePluginContainer;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -55,8 +55,8 @@ public class GranitePluginGuiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(PluginContainer.class).toInstance(container);
-        bind(Logger.class).toInstance(container.getLogger());
+        bind(PluginContainer.class).toInstance(this.container);
+        bind(Logger.class).toInstance(this.container.getLogger());
 
         bind(Path.class).annotatedWith(privateConfigDir).toProvider(PrivateConfigDirProvider.class);
         bind(File.class).annotatedWith(privateConfigDir).toProvider(FilePrivateConfigDirProvider.class);
@@ -83,7 +83,7 @@ public class GranitePluginGuiceModule extends AbstractModule {
 
         @Override
         public Path get() {
-            return configDir.resolve(container.getId());
+            return this.configDir.resolve(this.container.getId());
         }
     }
 
@@ -98,7 +98,7 @@ public class GranitePluginGuiceModule extends AbstractModule {
 
         @Override
         public File get() {
-            return configDir.toFile();
+            return this.configDir.toFile();
         }
 
     }
@@ -116,7 +116,7 @@ public class GranitePluginGuiceModule extends AbstractModule {
 
         @Override
         public File get() {
-            return configDir.resolve(container.getId() + ".conf").toFile();
+            return this.configDir.resolve(this.container.getId() + ".conf").toFile();
         }
 
     }
@@ -134,7 +134,7 @@ public class GranitePluginGuiceModule extends AbstractModule {
 
         @Override
         public File get() {
-            return configDir.resolve(container.getId() + ".conf").toFile();
+            return this.configDir.resolve(this.container.getId() + ".conf").toFile();
         }
 
     }

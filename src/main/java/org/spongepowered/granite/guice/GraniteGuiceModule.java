@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,17 +26,17 @@ package org.spongepowered.granite.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
-import org.spongepowered.granite.Granite;
-import org.spongepowered.granite.GraniteGame;
-import org.spongepowered.granite.GraniteGameRegistry;
-import org.spongepowered.granite.event.GraniteEventManager;
-import org.spongepowered.granite.plugin.GranitePluginManager;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.granite.Granite;
+import org.spongepowered.granite.GraniteGame;
+import org.spongepowered.granite.GraniteGameRegistry;
+import org.spongepowered.granite.event.GraniteEventManager;
+import org.spongepowered.granite.plugin.GranitePluginManager;
 
 import java.io.File;
 import java.nio.file.Path;

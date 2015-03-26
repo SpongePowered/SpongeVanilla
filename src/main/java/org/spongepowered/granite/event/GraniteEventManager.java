@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,13 +34,13 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.reflect.TypeToken;
-import org.spongepowered.granite.Granite;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Cancellable;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.granite.Granite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -82,7 +82,7 @@ public class GraniteEventManager implements EventManager {
         List<RegisteredHandler> registrations = new ArrayList<>();
         Set<Class<?>> types = (Set) TypeToken.of(rootEvent).getTypes().rawTypes();
 
-        synchronized (lock) {
+        synchronized (this.lock) {
             types.stream().filter(Event.class::isAssignableFrom).forEach(type -> registrations.addAll(this.handlersByEvent.get(type)));
         }
 
@@ -116,15 +116,15 @@ public class GraniteEventManager implements EventManager {
                 if (isValidHandler(method)) {
                     try {
                         Class<? extends Event> eventClass = (Class<? extends Event>) method.getParameterTypes()[0];
-                        EventHandler handler = handlerFactory.get(listener, method);
+                        EventHandler handler = this.handlerFactory.get(listener, method);
                         handlers.add(new RegisteredHandler(container, eventClass, subscribe.order(), handler, method, subscribe.ignoreCancelled()));
                     } catch (Exception e) {
-                        granite.getLogger().error("Failed to create handler for " + method + " on " + method.getDeclaringClass().getName(), e);
+                        this.granite.getLogger().error("Failed to create handler for " + method + " on " + method.getDeclaringClass().getName(), e);
                     }
 
                 } else {
-                    granite.getLogger().warn("The method {} on {} has @{} but has the wrong signature", method, method.getDeclaringClass().getName(),
-                            Subscribe.class.getName());
+                    this.granite.getLogger().warn("The method {} on {} has @{} but has the wrong signature", method,
+                            method.getDeclaringClass().getName(), Subscribe.class.getName());
                 }
             }
         }
@@ -133,20 +133,20 @@ public class GraniteEventManager implements EventManager {
             boolean changed = false;
 
             for (RegisteredHandler handler : handlers) {
-                if (handlersByEvent.put(handler.getEventClass(), handler)) {
+                if (this.handlersByEvent.put(handler.getEventClass(), handler)) {
                     changed = true;
                 }
             }
 
             if (changed) {
-                handlersCache.invalidateAll();
+                this.handlersCache.invalidateAll();
             }
         }
     }
 
     @Override
     public void register(Object plugin, Object listener) {
-        Optional<PluginContainer> container = pluginManager.fromInstance(plugin);
+        Optional<PluginContainer> container = this.pluginManager.fromInstance(plugin);
         checkArgument(container.isPresent(), "Unknown plugin: %s", plugin);
         register(container.get(), listener);
     }
@@ -157,7 +157,7 @@ public class GraniteEventManager implements EventManager {
         synchronized (this.lock) {
             boolean changed = false;
 
-            Iterator<RegisteredHandler> itr = handlersByEvent.values().iterator();
+            Iterator<RegisteredHandler> itr = this.handlersByEvent.values().iterator();
             while (itr.hasNext()) {
                 RegisteredHandler handler = itr.next();
                 if (listener.equals(handler.getHandle())) {
@@ -175,11 +175,11 @@ public class GraniteEventManager implements EventManager {
     @Override
     public boolean post(Event event) {
         requireNonNull(event, "event");
-        for (RegisteredHandler handler : handlersCache.getUnchecked(event.getClass())) {
+        for (RegisteredHandler handler : this.handlersCache.getUnchecked(event.getClass())) {
             try {
                 handler.handle(event);
             } catch (Throwable e) {
-                granite.getLogger().error("Could not pass " + event.getClass().getSimpleName() + " to " + handler.getPlugin(), e);
+                this.granite.getLogger().error("Could not pass " + event.getClass().getSimpleName() + " to " + handler.getPlugin(), e);
             }
         }
 

@@ -1,7 +1,7 @@
-/**
+/*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,15 +23,17 @@
  * THE SOFTWARE.
  */
 package org.spongepowered.granite.status;
-;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.minecraft.network.NetworkManager;
-import org.spongepowered.granite.server.ConnectionInfo;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.status.StatusClient;
+import org.spongepowered.granite.server.ConnectionInfo;
 
 import java.net.InetSocketAddress;
+
+;
 
 public class GraniteStatusClient implements StatusClient {
 
