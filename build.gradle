@@ -1,0 +1,196 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/content/groups/public'
+        }
+        maven {
+            name = 'minecrell-snapshots'
+            url = 'http://repo.minecrell.net/snapshots'
+        }
+    }
+
+    dependencies {
+        classpath 'net.minecrell:VanillaGradle:1.0-SNAPSHOT'
+        classpath('nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0') {
+            exclude module: 'guava'
+        }
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+    }
+}
+
+evaluationDependsOn('SpongeAPI')
+
+defaultTasks 'build', 'licenseFormat'
+
+// Apply plugins
+apply plugin: 'net.minecrell.vanilla'
+apply plugin: 'license'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
+    maven {
+        name = 'sonatype-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+group = 'org.spongepowered'
+version = '0.1-SNAPSHOT'
+
+mainClassName = 'org.spongepowered.granite.launch.server.VanillaServerMain'
+
+ext {
+    name = 'Granite'
+    inceptionYear = '2014'
+    packaging = 'jar'
+    url = 'http://github.com/SpongePowered'
+    organization = 'SpongePowered'
+    mixinSrg = new File(project.buildDir, "tmp/mixins/mixins.srg")
+    mixinRefMap = new File(project.buildDir, "tmp/mixins/mixins.granite.refmap.json")
+}
+
+minecraft {
+    version = '1.8'
+    mappings = 'snapshot_20150326'
+    serverTweaker = 'org.spongepowered.granite.launch.server.VanillaServerTweaker'
+}
+
+dependencies {
+    compile project('SpongeAPI')
+    compile('org.spongepowered:mixin:0.2-SNAPSHOT') {
+        exclude module: 'launchwrapper'
+    }
+
+    runtime 'org.apache.logging.log4j:log4j-slf4j-impl:2.0-beta9'
+}
+
+compileJava {
+    options.compilerArgs += [
+            '-Xlint:all',
+            '-Xlint:-path',
+            '-Xlint:-processing',
+            "-AoutSrgFile=${project.mixinSrg.canonicalPath}",
+            "-AoutRefMapFile=${project.mixinRefMap.canonicalPath}"
+    ]
+
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+}
+
+afterEvaluate {
+    tasks.compileJava.options.compilerArgs += "-AreobfSrgFile=${tasks.reobf.srg}"
+}
+
+jar {
+    manifest {
+        attributes(
+                'Specification-Name': 'SpongeAPI',
+                'Specification-Version': project('SpongeAPI').version,
+                'Specification-Vendor': 'SpongePowered',
+                'Implementation-Name': name,
+                'Implementation-Version': version,
+                'Implementation-Vendor': url,
+                'Class-Path': 'bin/minecraft_server.1.8.jar bin/launchwrapper-1.11.jar'
+        )
+    }
+}
+
+shadowJar {
+    classifier = ''
+    exclude 'GradleStart**'
+    exclude 'net/minecraftforge/**'
+
+    dependencies {
+        include dependency('org.spongepowered:mixin')
+        include dependency('net.sf.jopt-simple:jopt-simple')
+        include dependency('org.ow2.asm:asm-all')
+
+        // SpongeAPI
+        include project('SpongeAPI')
+
+        include dependency('org.slf4j:slf4j-api')
+        include dependency('org.apache.logging.log4j:log4j-slf4j-impl')
+
+        include dependency('com.google.inject:guice')
+        include dependency('aopalliance:aopalliance:1.0')
+        include dependency('javax.inject:javax.inject')
+
+        include dependency('com.typesafe:config')
+        include dependency('ninja.leaping.configurate:configurate-core')
+        include dependency('ninja.leaping.configurate:configurate-hocon')
+
+        include dependency('com.flowpowered:flow-math')
+    }
+
+    from project.mixinRefMap
+}
+build.dependsOn(shadowJar)
+
+// License header formatting
+license {
+    header file('HEADER.txt')
+    ext.name = project.name
+    ext.organization = project.organization
+    ext.url = project.url
+    ext.year = project.inceptionYear
+    sourceSets = project.sourceSets
+    ignoreFailures false
+    strictCheck true
+    includes(['**/*.java'])
+}
+
+// Copy the current srgs to the build dir so the user doesn't have to go hunting for them
+task copySrgs(type: Copy, dependsOn: 'genSrgs') {
+    from plugins.getPlugin('net.minecrell.vanilla').delayedFile('{SRG_DIR}')
+
+    include '**/*.srg'
+    into 'build/srgs'
+}
+
+setupDecompWorkspace.dependsOn copySrgs
+setupDevWorkspace.dependsOn copySrgs
+
+reobf {
+    addExtraSrgFile project.mixinSrg
+
+    reobf(shadowJar) { spec ->
+        spec.classpath = configurations.compile
+    }
+}
+
+configure([distZip, distTar]) {
+    enabled = false
+}
+
+// Disable checkstyle and Javadocs for SpongeAPI
+project('SpongeAPI') {
+    afterEvaluate {
+        configure([javadoc, javadocJar, sourceJar, licenseFormat]) {
+            enabled = false
+        }
+        tasks.withType(Checkstyle) {
+            enabled = false
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+

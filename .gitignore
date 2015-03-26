@@ -1,27 +1,263 @@
-### IntelliJ IDEA ###
+##########################
+#### General
+##########################
+# https://gist.github.com/octocat/9257657
 
-## Directory-based project format
-.idea/
+*.log
+*.bak
+
+#################
+## Compiled source
+#################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+#################
+## Archives
+#################
+# https://github.com/github/gitignore/blob/master/Global/Archives.gitignore
+
+# It's better to unpack these files and commit the raw source because
+# git has its own built in compression methods.
+*.7z
+*.jar
+*.rar
+*.zip
+*.gz
+*.bzip
+*.bz2
+*.xz
+*.lzma
+*.cab
+
+#packing-only formats
+*.iso
+*.tar
+
+#package management formats
+*.dmg
+*.xpi
+*.gem
+*.egg
+*.deb
+*.rpm
+*.msi
+*.msm
+*.msp
+
+##########################
+#### Operating Systems
+##########################
+
+#################
+## Windows
+#################
+# https://github.com/github/gitignore/blob/master/Global/Windows.gitignore
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+#################
+## OSX
+#################
+# https://github.com/github/gitignore/blob/master/Global/OSX.gitignore
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+#################
+## Linux
+#################
+# https://github.com/github/gitignore/blob/master/Global/Linux.gitignore
+
+*~
+
+# KDE directory preferences
+.directory
+
+##########################
+#### IDE
+##########################
+
+#################
+## Eclipse
+#################
+# https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
+
+# Don't commit project files
+.classpath
+.project
+
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# TeXlipse plugin
+.texlipse
+
+#################
+## NetBeans
+#################
+# https://github.com/github/gitignore/blob/master/Global/NetBeans.gitignore
+
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+#################
+## JetBrains
+#################
+# https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+
 *.iml
-artifacts/
 
-## File-based project format
+## Directory-based project format:
+.idea/
+# if you remove the above rule, at least ignore the following:
+
+# User-specific stuff:
+# .idea/workspace.xml
+# .idea/tasks.xml
+# .idea/dictionaries
+
+# Sensitive or high-churn files:
+# .idea/dataSources.ids
+# .idea/dataSources.xml
+# .idea/sqlDataSources.xml
+# .idea/dynamic.xml
+# .idea/uiDesigner.xml
+
+# Gradle:
+# .idea/gradle.xml
+# .idea/libraries
+
+# Mongo Explorer plugin:
+# .idea/mongoSettings.xml
+
+## File-based project format:
 *.ipr
 *.iws
 
+## Plugin-specific files:
+
+# IntelliJ
 out/
 
-### Eclipse ###
-.project
-.classpath
-.settings/
-.checkstyle
-bin/
+# mpeltonen/sbt-idea plugin
+.idea_modules/
 
-### Maven ###
-dependency-reduced-pom.xml
-target/
+# JIRA plugin
+atlassian-ide-plugin.xml
 
-### Other ###
-TestServer/
-run/
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+
+##########################
+#### Project
+##########################
+
+#################
+## Java
+#################
+# https://github.com/github/gitignore/blob/master/Java.gitignore
+
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+#################
+## Gradle
+#################
+# https://github.com/github/gitignore/blob/master/Gradle.gitignore
+
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Allow the Gradle wrapper
+!gradle-wrapper.jar
+
+#################
+## Granite
+#################
+run

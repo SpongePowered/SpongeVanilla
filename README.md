@@ -1,63 +1,85 @@
 Granite
-======
+=============
 
-An implementation of SpongeAPI directly on top of the vanilla Minecraft server.
+Granite is the SpongeAPI implementation for Vanilla Minecraft.
 
-Granite uses bytecode manipulation to make Minecraft's internal classes implement interfaces that describe those classes.
-This lets us construct composites that stitch together functionality from multiple Minecraft classes without having
-to depend on Mojang's code. The relations between Granite's interfaces and Minecraft's classes are defined in a configuration
-file outside the code. This lets us potentially maintain compatibility with multiple Minecraft versions without having to
-alter our code. Having no references to anyone else's code in Granite also means that there are no legal gray areas that could
-lead to the project being taken down.
+* IRC: #sponge or #spongedev on irc.esper.net
 
-Download and usage
-------
-We provide pre-built jars on [our website](http://www.granitepowered.org/), so no experience with compiling is necessary,
-but you can also compile it yourself assuming you have Git and Maven installed:
+## Prerequisites
+* [Java] 8
+* [Gradle] 2.3+
 
-1. Clone our repository:
+## Cloning
+To clone Granite, simply run `git clone git@github.com:SpongePowered/Granite.git`
 
-   `git clone https://github.com/GranitePowered/Granite.git`
+## Setup
+__Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any 'gradle' command.
 
-2. Change directory to your local copy of Granite:
+__For [Eclipse]__
+  1. Run `gradle setupDecompWorkspace --refresh-dependencies`
+  2. Make sure you have the Gradle plugin installed (Help > Eclipse Marketplace > Gradle Integration Plugin)
+  3. Import Granite as a Gradle project (File > Import)
+  4. Select the root folder for Granite  and click **Build Model**
+  5. Check Granite when it finishes building and click **Finish**
 
-   `cd Granite`
+__For [IntelliJ]__
+  1. Run `gradle setupDecompWorkspace --refresh-dependencies`
+  2. Make sure you have the Gradle plugin enabled (File > Settings > Plugins).
+  3. Click File > Import Module and select the **build.gradle** file for Granite.
 
-3. Build the entire project:
+## Running
+__Note:__ The following is aimed to help you setup run configurations for Eclipse and IntelliJ, if you do not want to be able to run Granite directly from your IDE then you can skip this.
 
-   `mvn clean install -U`
+__For [Eclipse]__
+  1. Go to **Run > Run Configurations**.
+  2. Right-click **Java Application** and select **New**.
+  3. Set the current project.
+  4. Set the name as `Granite (Client)` and apply the information for Client below.
+  5. Repeat step 1 through 4, then set the name as `Granite (Server)` and apply the information for Server below.
+  6. When launching the server for the first time, it will shutdown by itself. You will need to modify the server.properties to set onlinemode=false and modify the eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
-4. Run the test script:
 
-   `./test.sh`
+__For [IntelliJ]__
+  1. Go to **Run > Edit Configurations**.
+  2. Click the green + button and select **Application**.
+  3. Set the name as `Granite (Client)` and apply the information for Client below.
+  4. Repeat step 2 and set the name as `Granite (Server)` and apply the information for Server below.
+  5. When launching the server for the first time, it will shutdown by itself. You will need to modify the server.properties to set onlinemode=false and modify the eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
-Want to Help?
-------
-Join us on IRC: irc.esper.net **#granite**
+__Client__
 
-If you'd like to contribute, make a pull request - we read and consider them all very carefully.
-Should you decide to contribute to the project, please read our [contribution guidelines](https://github.com/GraniteTeam/Granite/blob/master/CONTRIBUTING.md).
+|     Property      | Value                       |
+|:-----------------:|:----------------------------|
+|    Main class     | GradleStart                 |
+| Program arguments | --noCoreSearch              |
+| Working directory | ./run (Included in project) |
+| Module classpath  | Granite (IntelliJ Only)     |
 
-You can also visit our website at http://www.granitepowered.org/ .
+__Server__
 
-License (MIT)
--------
-Copyright (c) 2014-2015 Granite Team
+|     Property      | Value                       |
+|:-----------------:|:----------------------------|
+|    Main class     | GradleStartServer           |
+| Program arguments | --noCoreSearch              |
+| Working directory | ./run (Included in project) |
+| Module classpath  | Granite (IntelliJ Only)     |
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+## Building
+__Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any 'gradle' command.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+In order to build Granite you simply need to run the `gradle` command. You can find the compiled JAR files in `./build/libs` but in most cases
+you'll only need 'granite-x.x.x-x.x.x.jar'.
+
+## FAQ
+__A dependency was added, but my IDE is missing it! How do I add it?__
+>If a new dependency was added, you can just restart your IDE and the Gradle plugin for that IDE should pull in the new dependencies.
+
+__Help! Things are not working!__
+>Some issues can be resolved by deleting the '.gradle' folder in your user directory and running through the setup steps again, or even running `gradle cleanCache` and running through the setup again. Otherwise if you are having trouble with something that the README does not cover, feel free to join our IRC channel and ask for assistance.
+
+[Eclipse]: http://www.eclipse.org/
+[Gradle]: http://www.gradle.org/
+[IntelliJ]: http://www.jetbrains.com/idea/
+[Java]: http://java.oracle.com/
+[MIT License]: http://www.tldrlegal.com/license/mit-license
