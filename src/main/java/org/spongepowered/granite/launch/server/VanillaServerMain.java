@@ -60,7 +60,7 @@ public final class VanillaServerMain {
         }
 
         Launch.main(join(args,
-                "--tweakClass", "org.spongepowered.granite.launch.VanillaServerTweaker"
+                "--tweakClass", "org.spongepowered.granite.launch.server.VanillaServerTweaker"
         ));
     }
 

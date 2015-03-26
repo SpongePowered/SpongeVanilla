@@ -23,8 +23,7 @@
  * THE SOFTWARE.
  */
 package org.spongepowered.granite.status;
-
-import com.google.common.base.MoreObjects;
+;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.minecraft.network.NetworkManager;
@@ -78,7 +77,7 @@ public class GraniteStatusClient implements StatusClient {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        return Objects.toStringHelper(this)
                 .addValue(this.connection)
                 .toString();
     }

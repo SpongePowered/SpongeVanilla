@@ -24,7 +24,7 @@
  */
 package org.spongepowered.granite;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.granite.event.GraniteEventManager;
@@ -46,9 +46,9 @@ import javax.inject.Singleton;
 @Singleton
 public class GraniteGame implements Game {
 
-    private static final String API_VERSION = MoreObjects.firstNonNull(GraniteGame.class.getPackage().getSpecificationVersion(), "UNKNOWN");
+    private static final String API_VERSION = Objects.firstNonNull(GraniteGame.class.getPackage().getSpecificationVersion(), "UNKNOWN");
     private static final String IMPLEMENTATION_VERSION =
-            MoreObjects.firstNonNull(GraniteGame.class.getPackage().getImplementationVersion(), "UNKNOWN");
+            Objects.firstNonNull(GraniteGame.class.getPackage().getImplementationVersion(), "UNKNOWN");
 
     private static final MinecraftVersion MINECRAFT_VERSION = new GraniteMinecraftVersion("1.8", 47);
 

@@ -24,7 +24,7 @@
  */
 package org.spongepowered.granite;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.spongepowered.api.MinecraftVersion;
 
 public class GraniteMinecraftVersion implements ProtocolMinecraftVersion {
@@ -88,7 +88,7 @@ public class GraniteMinecraftVersion implements ProtocolMinecraftVersion {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        return Objects.toStringHelper(this)
                 .add("name", this.name)
                 .add("protocol", this.protocol)
                 .toString();
