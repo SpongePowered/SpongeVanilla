@@ -22,30 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.launch;
+package org.spongepowered.granite.block;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockState;
 
-import java.nio.file.Path;
+public class GraniteBlockSnapshot implements BlockSnapshot {
 
-import javax.annotation.Nullable;
+    private final IBlockState state;
 
-public final class GraniteLaunch {
-
-    @Nullable private static Path gameDir;
-
-    private GraniteLaunch() {
+    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
+        this.state = worldHandle.getBlockState(pos);
     }
 
-    public static void initialize(Path gameDir) {
-        GraniteLaunch.gameDir = requireNonNull(gameDir, "gameDir");
-        // TODO: Options
+    public GraniteBlockSnapshot(IBlockState state) {
+        this.state = state;
     }
 
-    public static Path getGameDirectory() {
-        checkState(gameDir != null, "Granite was not initialized");
-        return gameDir;
+    @Override
+    public BlockState getState() {
+        return (BlockState) state;
     }
-
 }

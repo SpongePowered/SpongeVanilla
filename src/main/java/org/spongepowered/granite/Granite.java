@@ -30,6 +30,8 @@ import com.google.inject.Injector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.event.block.BlockBreakEvent;
+import org.spongepowered.api.event.block.BlockChangeEvent;
 import org.spongepowered.api.event.state.ConstructionEvent;
 import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.LoadCompleteEvent;
@@ -40,6 +42,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
+import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.granite.event.GraniteEventFactory;
 import org.spongepowered.granite.guice.GraniteGuiceModule;
 import org.spongepowered.granite.launch.GraniteLaunch;
@@ -53,23 +56,20 @@ public final class Granite implements PluginContainer {
     public static final Granite instance = new Granite();
 
     private static final Injector injector = Guice.createInjector(new GraniteGuiceModule());
-
-    public static Injector getInjector() {
-        return injector;
-    }
-
     private final Logger logger = LogManager.getLogger();
-
     private final Path gameDir;
     private final Path pluginsDir;
     private final Path configDir;
-
     private GraniteGame game;
 
     private Granite() {
         this.gameDir = GraniteLaunch.getGameDirectory();
         this.pluginsDir = this.gameDir.resolve("plugins");
         this.configDir = this.gameDir.resolve("config");
+    }
+
+    public static Injector getInjector() {
+        return injector;
     }
 
     public Game getGame() {
@@ -103,7 +103,7 @@ public final class Granite implements PluginContainer {
                 this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
                 this.game.getEventManager().register(this, commandService);
             } catch (ProviderExistsException e) {
-                this.logger.warn("An unknofwn CommandService was already registered", e);
+                this.logger.warn("An unknown CommandService was already registered", e);
             }
 
             if (Files.notExists(this.gameDir) || Files.notExists(this.pluginsDir)) {
@@ -151,5 +151,4 @@ public final class Granite implements PluginContainer {
     public Object getInstance() {
         return this;
     }
-
 }

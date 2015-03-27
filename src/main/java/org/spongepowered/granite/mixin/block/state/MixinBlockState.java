@@ -22,30 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.launch;
+package org.spongepowered.granite.mixin.block.state;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
+import net.minecraft.block.state.BlockState;
+import org.spongepowered.asm.mixin.Mixin;
 
-import java.nio.file.Path;
-
-import javax.annotation.Nullable;
-
-public final class GraniteLaunch {
-
-    @Nullable private static Path gameDir;
-
-    private GraniteLaunch() {
-    }
-
-    public static void initialize(Path gameDir) {
-        GraniteLaunch.gameDir = requireNonNull(gameDir, "gameDir");
-        // TODO: Options
-    }
-
-    public static Path getGameDirectory() {
-        checkState(gameDir != null, "Granite was not initialized");
-        return gameDir;
-    }
+@Mixin(BlockState.class)
+public abstract class MixinBlockState implements org.spongepowered.api.block.BlockState {
 
 }

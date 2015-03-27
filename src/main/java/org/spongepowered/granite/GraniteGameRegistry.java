@@ -25,6 +25,8 @@
 package org.spongepowered.granite;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableBiMap;
+import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.GameProfile;
@@ -73,6 +75,7 @@ import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.selector.ArgumentType;
 import org.spongepowered.api.text.selector.SelectorType;
 import org.spongepowered.api.text.translation.Translation;
+import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.biome.BiomeType;
@@ -91,6 +94,15 @@ import javax.inject.Singleton;
 
 @Singleton
 public class GraniteGameRegistry implements GameRegistry {
+
+    public static final ImmutableBiMap<Direction, EnumFacing> MAP_DIRECTION = ImmutableBiMap.<Direction, EnumFacing>builder()
+            .put(Direction.NORTH, EnumFacing.NORTH)
+            .put(Direction.EAST, EnumFacing.EAST)
+            .put(Direction.SOUTH, EnumFacing.SOUTH)
+            .put(Direction.WEST, EnumFacing.WEST)
+            .put(Direction.UP, EnumFacing.UP)
+            .put(Direction.DOWN, EnumFacing.DOWN)
+            .build();
 
     @Override
     public Optional<BlockType> getBlock(String id) {

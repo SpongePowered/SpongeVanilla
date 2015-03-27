@@ -38,11 +38,11 @@ import java.net.SocketAddress;
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager extends SimpleChannelInboundHandler implements ConnectionInfo {
 
-    @Shadow
-    public abstract SocketAddress getRemoteAddress();
-
     private InetSocketAddress virtualHost;
     private MinecraftVersion version;
+
+    @Shadow
+    public abstract SocketAddress getRemoteAddress();
 
     @Override
     public InetSocketAddress getAddress() {

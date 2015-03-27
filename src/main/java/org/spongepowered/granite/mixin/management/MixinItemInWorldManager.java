@@ -22,30 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.launch;
+package org.spongepowered.granite.mixin.management;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.ItemInWorldManager;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSettings;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.granite.GraniteHooks;
 
-import java.nio.file.Path;
+@Mixin(ItemInWorldManager.class)
+public abstract class MixinItemInWorldManager {
 
-import javax.annotation.Nullable;
+    @Shadow
+    public World theWorld;
 
-public final class GraniteLaunch {
+    @Shadow
+    private WorldSettings.GameType gameType;
 
-    @Nullable private static Path gameDir;
+    @Shadow
+    public EntityPlayerMP thisPlayerMP;
 
-    private GraniteLaunch() {
+    @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
+    public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
+        if (GraniteHooks.onBlockBreakEvent(theWorld, gameType, thisPlayerMP, pos).isCancelled()) {
+            ci.setReturnValue(false);
+        }
     }
-
-    public static void initialize(Path gameDir) {
-        GraniteLaunch.gameDir = requireNonNull(gameDir, "gameDir");
-        // TODO: Options
-    }
-
-    public static Path getGameDirectory() {
-        checkState(gameDir != null, "Granite was not initialized");
-        return gameDir;
-    }
-
 }

@@ -40,19 +40,19 @@ import java.security.MessageDigest;
 
 public final class VanillaServerMain {
 
-    private VanillaServerMain() {
-    }
-
     private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.8.jar";
     private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.8/minecraft_server.1.8.jar";
-
     private static final String LAUNCHWRAPPER_LOCAL = "launchwrapper-1.11.jar";
     private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar";
-
     private static final String DEOBF_SRG_LOCAL = "deobf.srg.gz";
     private static final String DEOBF_SRG_REMOTE =
             "https://raw.githubusercontent.com/MinecraftForge/FML/c30e86bdc1cfcd3c68d555ea54c151780fa79864/conf/joined.srg";
     private static final String DEOBF_SRG_HASH = "93f72f87b5505dcbf1ce1c0f5b70f4fa";
+    // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+    private static final char[] hexArray = "0123456789abcdef".toCharArray();
+
+    private VanillaServerMain() {
+    }
 
     public static void main(String[] args) throws Exception {
         if (!checkMinecraft()) {
@@ -146,9 +146,6 @@ public final class VanillaServerMain {
 
         return hash;
     }
-
-    // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
-    private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
     public static String toHexString(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];

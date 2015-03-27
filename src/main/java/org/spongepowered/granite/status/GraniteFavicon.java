@@ -47,6 +47,7 @@ import javax.imageio.ImageIO;
 
 public class GraniteFavicon implements Favicon {
 
+    private static final String FAVICON_PREFIX = "data:image/png;base64,";
     private final String encoded;
     private final BufferedImage decoded;
 
@@ -58,41 +59,6 @@ public class GraniteFavicon implements Favicon {
     public GraniteFavicon(String encoded) throws IOException {
         this.encoded = checkNotNull(encoded, "encoded");
         this.decoded = decode(encoded);
-    }
-
-    public String getEncoded() {
-        return this.encoded;
-    }
-
-    @Override
-    public BufferedImage getImage() {
-        return this.decoded;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof GraniteFavicon)) {
-            return false;
-        }
-
-        GraniteFavicon that = (GraniteFavicon) o;
-        return Objects.equal(this.encoded, that.encoded);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return this.encoded.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .addValue(this.decoded)
-                .toString();
     }
 
     public static Favicon load(String raw) throws IOException {
@@ -114,8 +80,6 @@ public class GraniteFavicon implements Favicon {
     public static Favicon load(BufferedImage image) throws IOException {
         return new GraniteFavicon(image);
     }
-
-    private static final String FAVICON_PREFIX = "data:image/png;base64,";
 
     private static String encode(BufferedImage favicon) throws IOException {
         checkArgument(favicon.getWidth() == 64, "favicon must be 64 pixels wide");
@@ -151,5 +115,40 @@ public class GraniteFavicon implements Favicon {
         } finally {
             base64.release();
         }
+    }
+
+    public String getEncoded() {
+        return this.encoded;
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return this.decoded;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof GraniteFavicon)) {
+            return false;
+        }
+
+        GraniteFavicon that = (GraniteFavicon) o;
+        return Objects.equal(this.encoded, that.encoded);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return this.encoded.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .addValue(this.decoded)
+                .toString();
     }
 }

@@ -42,6 +42,14 @@ public final class VanillaServerTweaker implements ITweaker {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private static boolean isObfuscated() {
+        try {
+            return Launch.classLoader.getClassBytes("net.minecraft.world.World") == null;
+        } catch (IOException ignored) {
+            return true;
+        }
+    }
+
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         GraniteLaunch.initialize(gameDir != null ? gameDir.toPath() : Paths.get(""));
@@ -81,14 +89,6 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.registerTransformer(MixinBootstrap.TRANSFORMER_CLASS);
 
         logger.info("Initialization finished. Starting Minecraft server...");
-    }
-
-    private static boolean isObfuscated() {
-        try {
-            return Launch.classLoader.getClassBytes("net.minecraft.world.World") == null;
-        } catch (IOException ignored) {
-            return true;
-        }
     }
 
     @Override

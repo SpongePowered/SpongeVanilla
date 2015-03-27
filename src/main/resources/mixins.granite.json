@@ -3,7 +3,9 @@
     "refmap": "mixins.granite.refmap.json",
     "server": [
         "MixinGameProfile",
+        "block.state.MixinBlockState",
         "entity.player.MixinEntityPlayerMP",
+        "management.MixinItemInWorldManager",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinNetHandlerHandshakeTCP",
@@ -13,6 +15,7 @@
         "status.MixinNetHandlerStatusServer",
         "status.MixinPingResponseHandler",
         "status.MixinPlayerCountData",
-        "status.MixinServerStatusResponse"
+        "status.MixinServerStatusResponse",
+        "world.MixinWorld"
     ]
 }

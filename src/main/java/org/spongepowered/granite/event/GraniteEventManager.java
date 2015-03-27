@@ -77,6 +77,17 @@ public class GraniteEventManager implements EventManager {
         this.pluginManager = requireNonNull(pluginManager, "pluginManager");
     }
 
+    private static boolean isValidHandler(Method method) {
+        int modifiers = method.getModifiers();
+        if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers) || Modifier.isInterface(method.getDeclaringClass().getModifiers())
+                || method.getReturnType() != void.class) {
+            return false;
+        }
+
+        Class<?>[] parameters = method.getParameterTypes();
+        return parameters.length == 1 && Event.class.isAssignableFrom(parameters[0]);
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     private RegisteredHandler[] bakeHandlers(Class<? extends Event> rootEvent) {
         List<RegisteredHandler> registrations = new ArrayList<>();
@@ -89,17 +100,6 @@ public class GraniteEventManager implements EventManager {
         RegisteredHandler[] handlers = registrations.toArray(new RegisteredHandler[registrations.size()]);
         Arrays.sort(handlers);
         return handlers;
-    }
-
-    private static boolean isValidHandler(Method method) {
-        int modifiers = method.getModifiers();
-        if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers) || Modifier.isInterface(method.getDeclaringClass().getModifiers())
-                || method.getReturnType() != void.class) {
-            return false;
-        }
-
-        Class<?>[] parameters = method.getParameterTypes();
-        return parameters.length == 1 && Event.class.isAssignableFrom(parameters[0]);
     }
 
     @SuppressWarnings("unchecked")

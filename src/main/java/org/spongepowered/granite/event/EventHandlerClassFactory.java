@@ -58,6 +58,8 @@ import javax.annotation.Nullable;
 
 class EventHandlerClassFactory implements EventHandlerFactory {
 
+    private static final String EVENT_HANDLER_CLASS = Type.getInternalName(EventHandler.class);
+    private static final String EVENT_HANDLER_METHOD = '(' + Type.getDescriptor(Event.class) + ")V";
     private final String targetPackage;
     private final AtomicInteger id = new AtomicInteger();
     private final LocalClassLoader classLoader = new LocalClassLoader(getClass().getClassLoader());
@@ -78,25 +80,6 @@ class EventHandlerClassFactory implements EventHandlerFactory {
         }
         this.targetPackage = targetPackage;
     }
-
-    @Override
-    public EventHandler get(Object handle, Method method) throws Exception {
-        return this.cache.get(new Handler(handle.getClass(), method))
-                .getConstructor(handle.getClass())
-                .newInstance(handle);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends EventHandler> createClass(Class<?> handle, Method method) {
-        Class<?> eventClass = method.getParameterTypes()[0];
-        String name =
-                this.targetPackage + eventClass.getSimpleName() + "Handler_" + handle.getSimpleName() + '_' + method.getName() + this.id
-                        .incrementAndGet();
-        return (Class<? extends EventHandler>) this.classLoader.defineClass(name, generateClass(name, handle, method, eventClass));
-    }
-
-    private static final String EVENT_HANDLER_CLASS = Type.getInternalName(EventHandler.class);
-    private static final String EVENT_HANDLER_METHOD = '(' + Type.getDescriptor(Event.class) + ")V";
 
     private static byte[] generateClass(String name, Class<?> handle, Method method, Class<?> eventClass) {
         name = name.replace('.', '/');
@@ -151,6 +134,22 @@ class EventHandlerClassFactory implements EventHandlerFactory {
         cw.visitEnd();
 
         return cw.toByteArray();
+    }
+
+    @Override
+    public EventHandler get(Object handle, Method method) throws Exception {
+        return this.cache.get(new Handler(handle.getClass(), method))
+                .getConstructor(handle.getClass())
+                .newInstance(handle);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends EventHandler> createClass(Class<?> handle, Method method) {
+        Class<?> eventClass = method.getParameterTypes()[0];
+        String name =
+                this.targetPackage + eventClass.getSimpleName() + "Handler_" + handle.getSimpleName() + '_' + method.getName() + this.id
+                        .incrementAndGet();
+        return (Class<? extends EventHandler>) this.classLoader.defineClass(name, generateClass(name, handle, method, eventClass));
     }
 
     private static class Handler {
