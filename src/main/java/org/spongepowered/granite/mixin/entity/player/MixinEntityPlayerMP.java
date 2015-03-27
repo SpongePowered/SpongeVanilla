@@ -26,13 +26,13 @@ package org.spongepowered.granite.mixin.entity.player;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.world.World;
+import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.net.PlayerConnection;
