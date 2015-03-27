@@ -1,6 +1,6 @@
 package org.spongepowered.granite.entity;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import net.minecraft.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.text.translation.Translation;
@@ -72,7 +72,7 @@ public class GraniteEntityType implements EntityType {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        return Objects.toStringHelper(this)
                 .add("id", this.entityTypeId)
                 .add("name", this.entityTypeId)
                 .add("modid", this.modId)
