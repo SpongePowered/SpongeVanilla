@@ -2,7 +2,6 @@ package org.spongepowered.granite.entity;
 
 import com.google.common.base.MoreObjects;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.registry.EntityRegistry.EntityRegistration;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.text.translation.Translation;
 

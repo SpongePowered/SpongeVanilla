@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import net.minecraft.util.EnumChatFormatting;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.mod.registry.SpongeGameRegistry;
+import org.spongepowered.granite.registry.GraniteGameRegistry;
 
 import java.awt.Color;
 
@@ -69,7 +69,7 @@ public class GraniteTextColor implements TextColor.Base {
     }
 
     public static GraniteTextColor of(EnumChatFormatting color) {
-        return SpongeGameRegistry.enumChatColor.get(color);
+        return GraniteGameRegistry.enumChatColor.get(color);
     }
 
 }

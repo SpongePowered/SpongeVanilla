@@ -38,7 +38,6 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.granite.text.format.GraniteTextColor;
-import org.spongepowered.mod.text.format.SpongeTextColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
