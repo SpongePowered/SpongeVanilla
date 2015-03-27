@@ -54,6 +54,9 @@ ext {
     mixinRefMap = new File(project.buildDir, "tmp/mixins/mixins.granite.refmap.json")
 }
 
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
 repositories {
     mavenCentral()
     maven {
