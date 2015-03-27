@@ -3,6 +3,7 @@
     "refmap": "mixins.granite.refmap.json",
     "server": [
         "MixinGameProfile",
+        "entity.player.MixinEntityPlayerMP",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinNetHandlerHandshakeTCP",
