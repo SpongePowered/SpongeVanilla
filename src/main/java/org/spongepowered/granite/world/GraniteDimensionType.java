@@ -22,28 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+package org.spongepowered.granite.world;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+import net.minecraft.world.WorldProvider;
+import org.spongepowered.api.world.Dimension;
+import org.spongepowered.api.world.DimensionType;
 
-    private final IBlockState state;
+public class GraniteDimensionType implements DimensionType {
 
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
+    private final String name;
+    private final boolean keepSpawnLoaded;
+    private final Class<? extends WorldProvider> dimensionClass;
 
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
+    public GraniteDimensionType(String name, boolean keepSpawnLoaded, Class<? extends WorldProvider> dimensionClass) {
+        this.name = name;
+        this.keepSpawnLoaded = keepSpawnLoaded;
+        this.dimensionClass = dimensionClass;
     }
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public boolean doesKeepSpawnLoaded() {
+        return this.keepSpawnLoaded;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<? extends Dimension> getDimensionClass() {
+        return (Class<? extends Dimension>) this.dimensionClass;
     }
 }

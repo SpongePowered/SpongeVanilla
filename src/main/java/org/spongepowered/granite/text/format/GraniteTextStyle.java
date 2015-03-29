@@ -27,6 +27,7 @@ package org.spongepowered.granite.text.format;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import net.minecraft.util.EnumChatFormatting;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -38,19 +39,9 @@ public class GraniteTextStyle extends TextStyle.Base {
     private final EnumChatFormatting handle;
 
     GraniteTextStyle(EnumChatFormatting handle, @Nullable Boolean bold, @Nullable Boolean italic, @Nullable Boolean underline,
-                     @Nullable Boolean strikethrough, @Nullable Boolean obfuscated) {
+            @Nullable Boolean strikethrough, @Nullable Boolean obfuscated) {
         super(bold, italic, underline, strikethrough, obfuscated);
         this.handle = checkNotNull(handle, "handle");
-    }
-
-    @Override
-    public String getName() {
-        return this.handle.name();
-    }
-
-    @Override
-    public char getCode() {
-        return this.handle.formattingCode;
     }
 
     public static GraniteTextStyle of(EnumChatFormatting handle) {
@@ -72,4 +63,15 @@ public class GraniteTextStyle extends TextStyle.Base {
         return handle == check ? true : null;
     }
 
+    @Override
+    public String getName() {
+        return this.handle.name();
+    }
+
+    @Override
+    public char getCode() {
+        throw new NotImplementedException("");
+    }
+
 }
+

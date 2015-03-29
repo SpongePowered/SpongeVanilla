@@ -27,9 +27,10 @@ package org.spongepowered.granite.text.format;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import net.minecraft.util.EnumChatFormatting;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.granite.registry.GraniteGameRegistry;
+import org.spongepowered.granite.Granite;
 
 import java.awt.Color;
 
@@ -42,6 +43,10 @@ public class GraniteTextColor implements TextColor.Base {
     public GraniteTextColor(EnumChatFormatting handle, Color color) {
         this.handle = checkNotNull(handle, "handle");
         this.color = checkNotNull(color, "color");
+    }
+
+    public static GraniteTextColor of(EnumChatFormatting color) {
+        return (GraniteTextColor) Granite.instance.getGame().getRegistry().getTextColor(color.getFriendlyName()).get();
     }
 
     public EnumChatFormatting getHandle() {
@@ -58,9 +63,10 @@ public class GraniteTextColor implements TextColor.Base {
         return this.color;
     }
 
-    @Override @Deprecated
+    @Deprecated
+    @Override
     public char getCode() {
-        return this.handle.formattingCode;
+        throw new NotImplementedException("");
     }
 
     @Override
@@ -68,8 +74,5 @@ public class GraniteTextColor implements TextColor.Base {
         return getName();
     }
 
-    public static GraniteTextColor of(EnumChatFormatting color) {
-        return GraniteGameRegistry.enumChatColor.get(color);
-    }
-
 }
+

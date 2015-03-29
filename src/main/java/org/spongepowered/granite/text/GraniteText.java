@@ -39,3 +39,4 @@ public interface GraniteText {
     String toLegacy(char code);
 
 }
+

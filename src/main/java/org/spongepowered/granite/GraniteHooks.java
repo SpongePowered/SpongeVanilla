@@ -25,7 +25,6 @@
 package org.spongepowered.granite;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.Packet;
@@ -68,12 +67,13 @@ public class GraniteHooks {
             }
         }
 
+        // TODO: This needs to be thought about as forge has made some fields private where as in minecraft they are still private and not accessible.
         // Tell client the block is gone immediately then process events
-        if (world.getTileEntity(pos) == null) {
+        /*if (world.getTileEntity(pos) == null) {
             S23PacketBlockChange packet = new S23PacketBlockChange(world, pos);
-            packet.blockState = Blocks.air.getDefaultState();
+            packet. = Blocks.air.getDefaultState();
             entityPlayer.playerNetServerHandler.sendPacket(packet);
-        }
+        }*/
 
         // Post the block break event
         // TODO Cause/Reason

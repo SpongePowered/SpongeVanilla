@@ -22,6 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package org.spongepowered.granite.effect.particle;
 
 import net.minecraft.util.EnumParticleTypes;
@@ -32,34 +33,30 @@ import java.awt.Color;
 
 public class GraniteParticleType implements ParticleType {
 
-    private EnumParticleTypes type;
-    private boolean motion;
+    private final String name;
+    private final boolean hasMotion;
 
-    public GraniteParticleType(EnumParticleTypes type, boolean motion) {
-        this.motion = motion;
-        this.type = type;
-    }
-
-    public EnumParticleTypes getInternalType() {
-        return this.type;
+    public GraniteParticleType(EnumParticleTypes particleType, boolean hasMotion) {
+        this.name = particleType.getParticleName();
+        this.hasMotion = hasMotion;
     }
 
     @Override
     public String getName() {
-        return this.type.getParticleName();
+        return this.name;
     }
 
     @Override
     public boolean hasMotion() {
-        return this.motion;
+        return this.hasMotion;
     }
 
     public static class Colorable extends GraniteParticleType implements ParticleType.Colorable {
 
-        private Color color;
+        private final Color color;
 
-        public Colorable(EnumParticleTypes type, Color color) {
-            super(type, false);
+        public Colorable(EnumParticleTypes particleType, Color color) {
+            super(particleType, false);
             this.color = color;
         }
 
@@ -67,15 +64,14 @@ public class GraniteParticleType implements ParticleType {
         public Color getDefaultColor() {
             return this.color;
         }
-
     }
 
     public static class Resizable extends GraniteParticleType implements ParticleType.Resizable {
 
-        private float size;
+        private final float size;
 
-        public Resizable(EnumParticleTypes type, float size) {
-            super(type, false);
+        public Resizable(EnumParticleTypes particleType, float size) {
+            super(particleType, false);
             this.size = size;
         }
 
@@ -83,40 +79,36 @@ public class GraniteParticleType implements ParticleType {
         public float getDefaultSize() {
             return this.size;
         }
-
     }
 
     public static class Note extends GraniteParticleType implements ParticleType.Note {
 
-        private float note;
+        private final float note;
 
-        public Note(EnumParticleTypes type, float note) {
-            super(type, false);
-            this.note = note;
+        public Note(EnumParticleTypes particleType, float size) {
+            super(particleType, false);
+            this.note = size;
         }
 
         @Override
         public float getDefaultNote() {
             return this.note;
         }
-
     }
 
     public static class Material extends GraniteParticleType implements ParticleType.Material {
 
-        // TODO: This should change to the sponge item stack type if a clone method available is
-        private net.minecraft.item.ItemStack item;
+        private final ItemStack itemStack;
 
-        public Material(EnumParticleTypes type, net.minecraft.item.ItemStack item, boolean motion) {
-            super(type, motion);
-            this.item = item;
+        public Material(EnumParticleTypes particleType, net.minecraft.item.ItemStack itemStack, boolean hasMotion) {
+            super(particleType, hasMotion);
+            this.itemStack = ItemStack.class.cast(itemStack);
         }
 
         @Override
         public ItemStack getDefaultItem() {
-            return ItemStack.class.cast(this.item.copy());
+            return this.itemStack;
         }
-
     }
-
 }
+

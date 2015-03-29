@@ -22,28 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+package org.spongepowered.granite.entity.living.animal;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+import org.apache.commons.lang3.NotImplementedException;
+import org.spongepowered.api.entity.living.animal.HorseColor;
+import org.spongepowered.api.service.persistence.data.DataContainer;
 
-    private final IBlockState state;
+public class GraniteHorseColor implements HorseColor {
 
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
+    private final String name;
 
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
+    public GraniteHorseColor(String name) {
+        this.name = name;
     }
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        throw new NotImplementedException("");
     }
 }

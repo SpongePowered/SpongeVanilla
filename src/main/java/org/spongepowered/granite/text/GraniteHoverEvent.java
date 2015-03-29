@@ -33,3 +33,4 @@ public interface GraniteHoverEvent {
     void setHandle(HoverAction<?> handle);
 
 }
+

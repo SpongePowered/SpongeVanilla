@@ -39,7 +39,8 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
-import org.spongepowered.granite.GraniteGameRegistry;
+import org.spongepowered.granite.Granite;
+import org.spongepowered.granite.registry.GraniteGameRegistry;
 import org.spongepowered.granite.util.VecHelper;
 
 import java.util.Collection;
@@ -66,8 +67,8 @@ public class BlockWrapper implements BlockLoc {
         this.pos = blockPos;
     }
 
-    private static EnumFacing getNotchDirection(Direction dir) {
-        EnumFacing facing = GraniteGameRegistry.MAP_DIRECTION.get(dir);
+    private static EnumFacing getNotchDirection(Direction direction) {
+        EnumFacing facing = ((GraniteGameRegistry) Granite.instance.getGame().getRegistry()).getNotchDirection(direction);
         if (facing == null) {
             // TODO: EnumFacing doesn't have an 'invalid/default' value.
             return EnumFacing.DOWN;
@@ -128,6 +129,11 @@ public class BlockWrapper implements BlockLoc {
     }
 
     @Override
+    public void remove() {
+
+    }
+
+    @Override
     public void interact() {
         throw new UnsupportedOperationException();
     }
@@ -145,6 +151,11 @@ public class BlockWrapper implements BlockLoc {
     @Override
     public BlockState getState() {
         return (BlockState) this.handle.getBlockState(this.pos);
+    }
+
+    @Override
+    public boolean hasTileEntity() {
+        return false;
     }
 
     @Override
@@ -239,7 +250,7 @@ public class BlockWrapper implements BlockLoc {
     @Override
     public boolean isFaceFlammable(Direction direction) {
         //TODO Needs to honor direction
-        return Blocks.fire.canCatchFire(handle, pos);
+        return Blocks.fire.canCatchFire(this.handle, this.pos);
     }
 }
 

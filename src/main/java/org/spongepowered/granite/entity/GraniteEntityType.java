@@ -22,90 +22,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package org.spongepowered.granite.entity;
 
-import com.google.common.base.Objects;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.text.translation.Translation;
 
 public class GraniteEntityType implements EntityType {
 
-    public final int entityTypeId;
-    public final String entityName;
-    public final String modId;
-    public final Class<? extends Entity> entityClass;
-    // currently not used
-    public int trackingRange;
-    public int updateFrequency;
-    public boolean sendsVelocityUpdates;
+    private final String id;
+    private final int entityTypeId;
+    private final Class<? extends Entity> entityClass;
 
-    public GraniteEntityType(int id, String name, Class<? extends Entity> clazz) {
-        this(id, name.toLowerCase(), "minecraft", clazz);
+    public GraniteEntityType(String id) {
+        this.id = id;
+        this.entityTypeId = EntityList.getIDFromString(id);
+        this.entityClass = EntityList.getClassFromID(EntityList.getIDFromString(id));
     }
 
-    public GraniteEntityType(int id, String name, String modId, Class<? extends Entity> clazz) {
-        this.entityTypeId = id;
-        this.entityName = name.toLowerCase();
-        this.entityClass = clazz;
-        this.modId = modId.toLowerCase();
+    public GraniteEntityType(String id, Class<? extends Entity> entityClass) {
+        this.id = id;
+        this.entityTypeId = EntityList.getIDFromString(id);
+        this.entityClass = entityClass;
+    }
+
+    public int getEntityTypeId() {
+        return this.entityTypeId;
     }
 
     @Override
     public String getId() {
-        return this.modId + ":" + this.entityName;
+        return "minecratf:" + this.id;
     }
 
-    public String getEntityName() {
-        return this.entityName;
-    }
-
-    public String getModId() {
-        return this.modId;
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     public Class<? extends org.spongepowered.api.entity.Entity> getEntityClass() {
         return (Class<? extends org.spongepowered.api.entity.Entity>) this.entityClass;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final GraniteEntityType other = (GraniteEntityType) obj;
-        if (!this.entityName.equals(other.entityName)) {
-            return false;
-        } else if (!this.entityClass.equals(other.entityClass)) {
-            return false;
-        } else if (this.entityTypeId != other.entityTypeId) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.entityTypeId;
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("id", this.entityTypeId)
-                .add("name", this.entityTypeId)
-                .add("modid", this.modId)
-                .add("class", this.entityClass.getName())
-                .toString();
-    }
-
-    @Override
     public Translation getTranslation() {
-        return null;
+        throw new NotImplementedException("");
     }
 }
+

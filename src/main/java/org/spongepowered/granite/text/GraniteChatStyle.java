@@ -29,3 +29,4 @@ public interface GraniteChatStyle {
     char[] asFormattingCode();
 
 }
+

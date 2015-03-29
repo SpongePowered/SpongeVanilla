@@ -42,3 +42,4 @@ public class ChatComponentIterable implements Iterable<IChatComponent> {
     }
 
 }
+

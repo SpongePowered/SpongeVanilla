@@ -22,28 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+package org.spongepowered.granite.potion;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+import net.minecraft.potion.Potion;
+import org.apache.commons.lang3.NotImplementedException;
+import org.spongepowered.api.potion.PotionEffectType;
+import org.spongepowered.api.text.translation.Translation;
 
-    private final IBlockState state;
+public class GranitePotionEffectType implements PotionEffectType {
 
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
+    private final Potion potion;
 
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
+    public GranitePotionEffectType(Potion potion) {
+        this.potion = potion;
     }
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    public boolean isInstant() {
+        return this.potion.isInstant();
+    }
+
+    @Override
+    public Translation getTranslation() {
+        throw new NotImplementedException("");
     }
 }

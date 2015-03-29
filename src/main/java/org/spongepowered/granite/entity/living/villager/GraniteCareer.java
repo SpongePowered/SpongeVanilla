@@ -22,28 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+package org.spongepowered.granite.entity.living.villager;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+import org.apache.commons.lang3.NotImplementedException;
+import org.spongepowered.api.entity.living.villager.Career;
+import org.spongepowered.api.entity.living.villager.Profession;
+import org.spongepowered.api.text.translation.Translation;
 
-    private final IBlockState state;
+public class GraniteCareer implements Career {
 
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
+    private final String name;
+    private final Profession profession;
 
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
+    public GraniteCareer(String name, Profession profession) {
+        this.name = name;
+        this.profession = profession;
     }
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    public Profession getProfession() {
+        return this.profession;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public Translation getTranslation() {
+        throw new NotImplementedException("");
     }
 }

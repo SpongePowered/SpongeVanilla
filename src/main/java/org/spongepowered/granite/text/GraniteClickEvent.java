@@ -33,3 +33,4 @@ public interface GraniteClickEvent {
     void setHandle(ClickAction<?> handle);
 
 }
+

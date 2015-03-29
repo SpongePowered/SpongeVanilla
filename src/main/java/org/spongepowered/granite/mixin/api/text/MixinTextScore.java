@@ -22,28 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
+package org.spongepowered.granite.mixin.api.text;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+import com.google.common.base.Optional;
+import net.minecraft.util.ChatComponentScore;
+import net.minecraft.util.ChatComponentStyle;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+@Mixin(value = Text.Score.class, remap = false)
+public abstract class MixinTextScore extends MixinText {
 
-    private final IBlockState state;
-
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
-
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
-    }
+    @Shadow protected Object score;
+    @Shadow protected Optional<String> override;
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    protected ChatComponentStyle createComponent() {
+        ChatComponentScore component = new ChatComponentScore(null, null); // TODO
+        if (this.override.isPresent()) {
+            component.setValue(this.override.get());
+        }
+        return component;
     }
 }

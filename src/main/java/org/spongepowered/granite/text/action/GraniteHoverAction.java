@@ -68,7 +68,7 @@ public class GraniteHoverAction {
                 nbt.setString("id", entity.getUniqueId().toString());
 
                 if (entity.getType().isPresent()) {
-                    nbt.setString("type", EntityList.getStringFromID(((GraniteEntityType) entity.getType().get()).entityTypeId));
+                    nbt.setString("type", EntityList.getStringFromID(((GraniteEntityType) entity.getType().get()).getEntityTypeId()));
                 }
 
                 nbt.setString("name", entity.getName());
@@ -93,3 +93,4 @@ public class GraniteHoverAction {
     }
 
 }
+

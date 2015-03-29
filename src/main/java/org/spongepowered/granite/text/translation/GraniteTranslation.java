@@ -53,3 +53,4 @@ public class GraniteTranslation implements Translation {
     }
 
 }
+

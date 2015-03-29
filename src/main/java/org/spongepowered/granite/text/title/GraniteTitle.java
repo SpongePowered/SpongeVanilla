@@ -31,3 +31,4 @@ public interface GraniteTitle {
     void send(EntityPlayerMP player);
 
 }
+

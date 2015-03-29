@@ -22,28 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+package org.spongepowered.granite.effect.sound;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+import org.spongepowered.api.effect.sound.SoundType;
 
-    private final IBlockState state;
+public class GraniteSoundType implements SoundType {
 
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
+    private final String name;
 
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
+    public GraniteSoundType(String name) {
+        this.name = name;
     }
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    public String getName() {
+        return this.name;
     }
 }

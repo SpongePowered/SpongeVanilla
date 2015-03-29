@@ -22,28 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.block;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockState;
+package org.spongepowered.granite.text.selector;
 
-public class GraniteBlockSnapshot implements BlockSnapshot {
+import org.spongepowered.api.text.selector.SelectorType;
 
-    private final IBlockState state;
+public class GraniteSelectorType implements SelectorType {
 
-    public GraniteBlockSnapshot(World worldHandle, BlockPos pos) {
-        this.state = worldHandle.getBlockState(pos);
-    }
+    private final String id;
 
-    public GraniteBlockSnapshot(IBlockState state) {
-        this.state = state;
+    public GraniteSelectorType(String id) {
+        this.id = id;
     }
 
     @Override
-    public BlockState getState() {
-        return (BlockState) this.state;
+    public String getId() {
+        return this.id;
     }
 }

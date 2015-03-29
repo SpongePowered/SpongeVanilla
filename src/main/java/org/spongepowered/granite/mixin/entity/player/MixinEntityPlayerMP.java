@@ -29,9 +29,9 @@ import com.google.common.base.Optional;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.entity.player.Player;
@@ -54,8 +54,6 @@ import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.granite.Granite;
-import org.spongepowered.granite.effect.particle.GraniteParticleEffect;
-import org.spongepowered.granite.effect.particle.GraniteParticleHelper;
 import org.spongepowered.granite.text.GraniteChatComponent;
 import org.spongepowered.granite.text.GraniteText;
 import org.spongepowered.granite.text.chat.GraniteChatType;
@@ -66,18 +64,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 @Mixin(EntityPlayerMP.class)
 @Implements(@Interface(iface = Player.class, prefix = "playermp$"))
 public abstract class MixinEntityPlayerMP extends EntityPlayer implements CommandSource {
     @Shadow
-    private String translator;
-
-    @Shadow
     public NetHandlerPlayServer playerNetServerHandler;
-
+    @Shadow
+    private String translator;
     private ServiceReference<PermissionService> permService =
             Granite.instance.getGame().getServiceManager().potentiallyProvide(PermissionService.class);
 
@@ -148,7 +141,8 @@ public abstract class MixinEntityPlayerMP extends EntityPlayer implements Comman
     }
 
     public void playermp$spawnParticles(ParticleEffect particleEffect, Vector3d position, int radius) {
-        checkNotNull(particleEffect, "The particle effect cannot be null!");
+        throw new NotImplementedException("");
+        /*checkNotNull(particleEffect, "The particle effect cannot be null!");
         checkNotNull(position, "The position cannot be null");
         checkArgument(radius > 0, "The radius has to be greater then zero!");
 
@@ -164,7 +158,7 @@ public abstract class MixinEntityPlayerMP extends EntityPlayer implements Comman
                     this.playerNetServerHandler.sendPacket(packet);
                 }
             }
-        }
+        }*/
     }
 
     public PlayerConnection playermp$getConnection() {
@@ -225,14 +219,14 @@ public abstract class MixinEntityPlayerMP extends EntityPlayer implements Comman
         }
     }
 
+    private boolean permDefault(String permission) {
+        return canCommandSenderUseCommand(4, permission);
+    }
+
     @Override
     public boolean hasPermission(Set<Context> contexts, String permission) {
         Subject subj = internalSubject();
         return subj == null ? permDefault(permission) : subj.hasPermission(contexts, permission);
-    }
-
-    private boolean permDefault(String permission) {
-        return canCommandSenderUseCommand(4, permission);
     }
 
     @Override

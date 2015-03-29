@@ -28,11 +28,9 @@ import org.spongepowered.api.text.chat.ChatType;
 
 public class GraniteChatType implements ChatType {
 
-    private String name;
-    private byte id;
+    private final byte id;
 
-    public GraniteChatType(String name, byte id) {
-        this.name = name;
+    public GraniteChatType(byte id) {
         this.id = id;
     }
 
@@ -40,7 +38,5 @@ public class GraniteChatType implements ChatType {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
-    }
 }
+
