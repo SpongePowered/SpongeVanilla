@@ -1555,22 +1555,22 @@ public class GraniteGameRegistry implements GameRegistry {
 
     private void registerTextColors() {
         this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.BLACK, Color.BLACK));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.DARK_BLUE, new Color(0x0000AA)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.DARK_GREEN, new Color(0x00AA00)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.DARK_AQUA, new Color(0x00AAAA)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.DARK_RED, new Color(0xAA0000)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.DARK_PURPLE, new Color(0xAA00AA)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.GOLD, new Color(0xFFAA00)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.GRAY, new Color(0xAAAAAA)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.DARK_GRAY, new Color(0x555555)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.BLUE, new Color(0x5555FF)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.GREEN, new Color(0x55FF55)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.AQUA, new Color(0x00FFFF)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.RED, new Color(0xFF5555)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.LIGHT_PURPLE, new Color(0xFF55FF)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.YELLOW, new Color(0xFFFF55)));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.WHITE, Color.WHITE));
-        this.textColors.put("BLACK", new GraniteTextColor(EnumChatFormatting.RESET, Color.WHITE));
+        this.textColors.put("DARK_BLUE", new GraniteTextColor(EnumChatFormatting.DARK_BLUE, new Color(0x0000AA)));
+        this.textColors.put("DARK_GREEN", new GraniteTextColor(EnumChatFormatting.DARK_GREEN, new Color(0x00AA00)));
+        this.textColors.put("DARK_AQUA", new GraniteTextColor(EnumChatFormatting.DARK_AQUA, new Color(0x00AAAA)));
+        this.textColors.put("DARK_RED", new GraniteTextColor(EnumChatFormatting.DARK_RED, new Color(0xAA0000)));
+        this.textColors.put("DARK_PURPLE", new GraniteTextColor(EnumChatFormatting.DARK_PURPLE, new Color(0xAA00AA)));
+        this.textColors.put("GOLD", new GraniteTextColor(EnumChatFormatting.GOLD, new Color(0xFFAA00)));
+        this.textColors.put("GRAY", new GraniteTextColor(EnumChatFormatting.GRAY, new Color(0xAAAAAA)));
+        this.textColors.put("DARK_GRAY", new GraniteTextColor(EnumChatFormatting.DARK_GRAY, new Color(0x555555)));
+        this.textColors.put("BLUE", new GraniteTextColor(EnumChatFormatting.BLUE, new Color(0x5555FF)));
+        this.textColors.put("GREEN", new GraniteTextColor(EnumChatFormatting.GREEN, new Color(0x55FF55)));
+        this.textColors.put("AQUA", new GraniteTextColor(EnumChatFormatting.AQUA, new Color(0x00FFFF)));
+        this.textColors.put("RED", new GraniteTextColor(EnumChatFormatting.RED, new Color(0xFF5555)));
+        this.textColors.put("LIGHT_PURPLE", new GraniteTextColor(EnumChatFormatting.LIGHT_PURPLE, new Color(0xFF55FF)));
+        this.textColors.put("YELLOW", new GraniteTextColor(EnumChatFormatting.YELLOW, new Color(0xFFFF55)));
+        this.textColors.put("WHITE", new GraniteTextColor(EnumChatFormatting.WHITE, Color.WHITE));
+        this.textColors.put("RESET", new GraniteTextColor(EnumChatFormatting.RESET, Color.WHITE));
         RegistryHelper.mapFields(TextColors.class, this.textColors);
     }
 

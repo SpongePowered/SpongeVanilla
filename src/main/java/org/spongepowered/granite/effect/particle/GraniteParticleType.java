@@ -35,10 +35,16 @@ public class GraniteParticleType implements ParticleType {
 
     private final String name;
     private final boolean hasMotion;
+    private final EnumParticleTypes particleType;
 
     public GraniteParticleType(EnumParticleTypes particleType, boolean hasMotion) {
         this.name = particleType.getParticleName();
         this.hasMotion = hasMotion;
+        this.particleType = particleType;
+    }
+
+    public EnumParticleTypes getInternalType() {
+        return this.particleType;
     }
 
     @Override

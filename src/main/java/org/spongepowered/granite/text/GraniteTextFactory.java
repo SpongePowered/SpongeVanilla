@@ -26,7 +26,7 @@ package org.spongepowered.granite.text;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -39,43 +39,28 @@ import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.granite.text.format.GraniteTextColor;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @NonnullByDefault
 public class GraniteTextFactory implements TextFactory {
 
-    private static final Map<Character, EnumChatFormatting> chatChars = Maps.newHashMap();
     private static final Pattern FORMATTING_PATTERN = Pattern.compile(GraniteText.COLOR_CHAR + "([0-9A-FK-OR])", CASE_INSENSITIVE);
 
+    private static final ImmutableMap<Character, EnumChatFormatting> CHAR_TO_FORMATTING;
+
     static {
-        chatChars.put((char) 0, EnumChatFormatting.BLACK);
-        chatChars.put((char) 1, EnumChatFormatting.DARK_BLUE);
-        chatChars.put((char) 2, EnumChatFormatting.DARK_GREEN);
-        chatChars.put((char) 3, EnumChatFormatting.DARK_AQUA);
-        chatChars.put((char) 4, EnumChatFormatting.DARK_RED);
-        chatChars.put((char) 5, EnumChatFormatting.DARK_PURPLE);
-        chatChars.put((char) 6, EnumChatFormatting.GOLD);
-        chatChars.put((char) 7, EnumChatFormatting.GRAY);
-        chatChars.put((char) 8, EnumChatFormatting.DARK_GRAY);
-        chatChars.put((char) 9, EnumChatFormatting.BLUE);
-        chatChars.put("a".charAt(0), EnumChatFormatting.GREEN);
-        chatChars.put("b".charAt(0), EnumChatFormatting.AQUA);
-        chatChars.put("c".charAt(0), EnumChatFormatting.RED);
-        chatChars.put("d".charAt(0), EnumChatFormatting.LIGHT_PURPLE);
-        chatChars.put("e".charAt(0), EnumChatFormatting.YELLOW);
-        chatChars.put("f".charAt(0), EnumChatFormatting.WHITE);
-        chatChars.put("k".charAt(0), EnumChatFormatting.OBFUSCATED);
-        chatChars.put("l".charAt(0), EnumChatFormatting.BOLD);
-        chatChars.put("m".charAt(0), EnumChatFormatting.STRIKETHROUGH);
-        chatChars.put("n".charAt(0), EnumChatFormatting.UNDERLINE);
-        chatChars.put("o".charAt(0), EnumChatFormatting.ITALIC);
-        chatChars.put("r".charAt(0), EnumChatFormatting.RESET);
+        ImmutableMap.Builder<Character, EnumChatFormatting> builder = ImmutableMap.builder();
+
+        for (EnumChatFormatting formatting : EnumChatFormatting.values()) {
+            builder.put(formatting.formattingCode, formatting);
+        }
+
+        CHAR_TO_FORMATTING = builder.build();
     }
 
     private static void applyStyle(TextBuilder builder, char code) {
-        EnumChatFormatting formatting = chatChars.get(code);
+        EnumChatFormatting formatting = CHAR_TO_FORMATTING.get(code);
         if (formatting != null) {
             switch (formatting) {
                 case BOLD:
