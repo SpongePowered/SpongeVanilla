@@ -12,9 +12,8 @@ Granite is the SpongeAPI implementation for Vanilla Minecraft.
 ## Cloning
 The following steps will ensure your project is cloned properly.
 
-1. `git clone git@github.com:SpongePowered/Granite.git`
-2. `cd Granite`  
-3. `git submodule update --init --recursive`  
+1. `git clone --recursive https://github.com/SpongePowered/Granite.git`
+2. `cd Granite`
 4. `cp scripts/pre-commit .git/hooks`
 
 ## Setup
