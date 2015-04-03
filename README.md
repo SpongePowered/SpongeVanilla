@@ -14,7 +14,7 @@ The following steps will ensure your project is cloned properly.
 
 1. `git clone --recursive https://github.com/SpongePowered/Granite.git`
 2. `cd Granite`
-4. `cp scripts/pre-commit .git/hooks`
+3. `cp scripts/pre-commit .git/hooks`
 
 ## Setup
 __Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any 'gradle' command.
