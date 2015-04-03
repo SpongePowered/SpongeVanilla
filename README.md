@@ -10,7 +10,7 @@ Granite is the SpongeAPI implementation for Vanilla Minecraft.
 * [Gradle] 2.3+
 
 ## Cloning
-To clone Granite, simply run `git clone git@github.com:SpongePowered/Granite.git`
+To clone Granite, simply run `git clone --recursive git@github.com:SpongePowered/Granite.git`
 
 ## Setup
 __Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any 'gradle' command.
