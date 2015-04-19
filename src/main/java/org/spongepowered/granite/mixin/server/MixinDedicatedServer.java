@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -47,25 +47,25 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = {"ldc=Loading properties"}, shift = At.Shift.BY, by = -2, remap = false))
     public void onServerLoad(CallbackInfoReturnable<Boolean> ci) {
-        Granite.instance.load();
+        Granite.getInstance().load();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;setConfigManager"
             + "(Lnet/minecraft/server/management/ServerConfigurationManager;)V", shift = At.Shift.BY, by = -7))
     public void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
-        Granite.instance.initialize();
+        Granite.getInstance().initialize();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.BY, by = -24))
     public void onServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
-        Granite.instance.postState(ServerAboutToStartEvent.class);
+        Granite.getInstance().postState(ServerAboutToStartEvent.class);
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
     public void onServerStarting(CallbackInfoReturnable<Boolean> ci) {
-        Granite.instance.postState(ServerStartingEvent.class);
+        Granite.getInstance().postState(ServerStartingEvent.class);
     }
 
 }

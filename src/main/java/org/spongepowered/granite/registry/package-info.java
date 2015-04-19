@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,25 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.mixin.api.text;
-
-import com.google.common.collect.ImmutableList;
-import net.minecraft.util.ChatComponentStyle;
-import net.minecraft.util.ChatComponentTranslation;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.translation.Translation;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-
-@Mixin(value = Text.Translatable.class, remap = false)
-public abstract class MixinTextTranslatable extends MixinText {
-
-    @Shadow protected Translation translation;
-    @Shadow protected ImmutableList<Object> arguments;
-
-    @Override
-    protected ChatComponentStyle createComponent() {
-        return new ChatComponentTranslation(this.translation.getId(), this.arguments.toArray());
-    }
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.granite.registry;

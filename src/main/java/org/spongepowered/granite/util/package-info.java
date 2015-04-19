@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,11 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.text;
-
-public interface GraniteChatStyle {
-
-    char[] asFormattingCode();
-
-}
-
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.granite.util;

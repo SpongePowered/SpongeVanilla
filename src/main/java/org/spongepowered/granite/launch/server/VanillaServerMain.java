@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,15 +26,16 @@ package org.spongepowered.granite.launch.server;
 
 import net.minecraft.launchwrapper.Launch;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
@@ -42,14 +43,9 @@ public final class VanillaServerMain {
 
     private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.8.jar";
     private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.8/minecraft_server.1.8.jar";
+
     private static final String LAUNCHWRAPPER_LOCAL = "launchwrapper-1.11.jar";
     private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar";
-    private static final String DEOBF_SRG_LOCAL = "deobf.srg.gz";
-    private static final String DEOBF_SRG_REMOTE =
-            "https://raw.githubusercontent.com/MinecraftForge/FML/c30e86bdc1cfcd3c68d555ea54c151780fa79864/conf/joined.srg";
-    private static final String DEOBF_SRG_HASH = "93f72f87b5505dcbf1ce1c0f5b70f4fa";
-    // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
-    private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
     private VanillaServerMain() {
     }
@@ -72,59 +68,58 @@ public final class VanillaServerMain {
     }
 
     private static boolean checkMinecraft() throws Exception {
-        Path bin = Paths.get("bin");
-        if (Files.notExists(bin)) {
-            Files.createDirectories(bin);
+        File bin = new File("bin");
+        if (!bin.isDirectory() && !bin.mkdirs()) {
+            throw new IOException("Failed to create folder at " + bin);
         }
 
         // First check if Minecraft is already downloaded :D
-        Path path = bin.resolve(MINECRAFT_SERVER_LOCAL);
+        File file = new File(bin, MINECRAFT_SERVER_LOCAL);
+
         // Download the server first
-        if (Files.notExists(path) && !downloadVerified(MINECRAFT_SERVER_REMOTE, path)) {
+        if (!file.isFile() && !downloadVerified(MINECRAFT_SERVER_REMOTE, file)) {
             return false;
         }
 
-        path = bin.resolve(LAUNCHWRAPPER_LOCAL);
-        if (Files.notExists(path) && !downloadVerified(LAUNCHWRAPPER_REMOTE, path)) {
-            return false;
-        }
-
-        path = bin.resolve(DEOBF_SRG_LOCAL);
-        return Files.exists(path) || downloadVerified(DEOBF_SRG_REMOTE, path, DEOBF_SRG_HASH);
+        file = new File(bin, LAUNCHWRAPPER_LOCAL);
+        return file.isFile() || downloadVerified(LAUNCHWRAPPER_REMOTE, file);
     }
 
-    private static boolean downloadVerified(String remote, Path path) throws Exception {
-        return downloadVerified(remote, path, null);
-    }
 
-    private static boolean downloadVerified(String remote, Path path, String expected) throws Exception {
-        String name = path.getFileName().toString();
-        boolean gzip = name.endsWith(".gz");
+    private static boolean downloadVerified(String remote, File file) throws Exception {
+        String name = file.getName();
         URL url = new URL(remote);
 
         System.out.println("Downloading " + name + "... This can take a while.");
         System.out.println(url);
         URLConnection con = url.openConnection();
-        if (gzip) {
-            con.addRequestProperty("Accept-Encoding", "gzip");
-        }
-
         MessageDigest md5 = MessageDigest.getInstance("MD5");
 
-        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(con.getInputStream(), md5));
-                FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
-            out.transferFrom(source, 0, Long.MAX_VALUE);
+        InputStream in = null;
+        FileOutputStream out = null;
+        ReadableByteChannel source = null;
+        FileChannel target = null;
+        try {
+            in = con.getInputStream();
+            out = new FileOutputStream(file);
+            source = Channels.newChannel(new DigestInputStream(in, md5));
+            target = out.getChannel();
+
+            target.transferFrom(source, 0, Long.MAX_VALUE);
+        } finally {
+            close(in, out, source, target);
         }
 
-        if (expected == null) {
-            expected = getETag(con);
-        }
+        String expected = getETag(con);
         if (!expected.isEmpty()) {
             String hash = toHexString(md5.digest());
             if (hash.equals(expected)) {
                 System.out.println("Successfully downloaded " + name + " and verified checksum!");
             } else {
-                Files.delete(path);
+                if (!file.delete()) {
+                    throw new IOException("Failed to delete " + file);
+                }
+
                 System.err.println("Failed to download " + name + " (failed checksum verification).");
                 System.err.println("Please try again later.");
                 return false;
@@ -146,6 +141,21 @@ public final class VanillaServerMain {
 
         return hash;
     }
+
+    private static void close(Closeable... closeables) {
+        for (Closeable closeable : closeables) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+    private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
     public static String toHexString(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];

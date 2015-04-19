@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,21 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.granite.util;
 
-package org.spongepowered.granite.text.selector;
+import java.io.File;
+import java.io.FilenameFilter;
 
-import org.spongepowered.api.text.selector.SelectorType;
+public class FileExtensionFilter implements FilenameFilter {
 
-public class GraniteSelectorType implements SelectorType {
+    private final String extension;
 
-    private final String id;
-
-    public GraniteSelectorType(String id) {
-        this.id = id;
+    public FileExtensionFilter(String extension) {
+        this.extension = '.' + extension;
     }
 
     @Override
-    public String getId() {
-        return this.id;
+    public boolean accept(File dir, String name) {
+        return name.endsWith(this.extension);
     }
+
 }

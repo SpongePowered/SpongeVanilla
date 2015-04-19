@@ -1,1 +1,3 @@
-include 'SpongeAPI'
+rootProject.name = name
+include 'Common'
+include 'Common:SpongeAPI'

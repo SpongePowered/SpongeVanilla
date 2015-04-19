@@ -6,26 +6,28 @@ Granite is the SpongeAPI implementation for Vanilla Minecraft.
 * IRC: #sponge or #spongedev on irc.esper.net
 
 ## Prerequisites
-* [Java] 8
-* [Gradle] 2.3+
+* [Java] 6
 
 ## Cloning
-To clone Granite, simply run `git clone git@github.com:SpongePowered/Granite.git`
+The following steps will ensure your project is cloned properly.  
+1. `git clone --recursive https://github.com/SpongePowered/Granite.git
+2. `cd Granite`
+3. `cp scripts/pre-commit .git/hooks`
 
 ## Setup
 __Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any 'gradle' command.
 
-__For [Eclipse]__
-  1. Run `gradle setupDecompWorkspace --refresh-dependencies`
-  2. Make sure you have the Gradle plugin installed (Help > Eclipse Marketplace > Gradle Integration Plugin)
-  3. Import Granite as a Gradle project (File > Import)
-  4. Select the root folder for Granite  and click **Build Model**
+__For [Eclipse]__  
+  1. Run `gradle setupDecompWorkspace --refresh-dependencies`  
+  2. Run `gradle eclipse`
+  3. Import Granite as an existing project (File > Import > General)
+  4. Select the root folder for Granite and make sure `Search for nested projects` is enabled
   5. Check Granite when it finishes building and click **Finish**
 
-__For [IntelliJ]__
-  1. Run `gradle setupDecompWorkspace --refresh-dependencies`
-  2. Make sure you have the Gradle plugin enabled (File > Settings > Plugins).
-  3. Click File > Import Module and select the **build.gradle** file for Granite.
+__For [IntelliJ]__  
+  1. Run `gradle setupDecompWorkspace --refresh-dependencies`  
+  2. Make sure you have the Gradle plugin enabled (File > Settings > Plugins).  
+  3. Click File > New > Project from Existing Sources > Gradle and select the root folder for Granite.
 
 ## Running
 __Note:__ The following is aimed to help you setup run configurations for Eclipse and IntelliJ, if you do not want to be able to run Granite directly from your IDE then you can skip this.

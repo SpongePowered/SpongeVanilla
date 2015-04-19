@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,26 +25,27 @@
 package org.spongepowered.granite.event;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.reflect.TypeToken;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.util.event.Cancellable;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.Granite;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -73,9 +74,28 @@ public class GraniteEventManager implements EventManager {
 
     @Inject
     public GraniteEventManager(Granite granite, PluginManager pluginManager) {
-        this.granite = requireNonNull(granite, "granite");
-        this.pluginManager = requireNonNull(pluginManager, "pluginManager");
+        this.granite = checkNotNull(granite, "granite");
+        this.pluginManager = checkNotNull(pluginManager, "pluginManager");
     }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private RegisteredHandler[] bakeHandlers(Class<? extends Event> rootEvent) {
+        List<RegisteredHandler> registrations = Lists.newArrayList();
+        Set<Class<?>> types = (Set) TypeToken.of(rootEvent).getTypes().rawTypes();
+
+        synchronized (this.lock) {
+            for (Class<?> type : types) {
+                if (Event.class.isAssignableFrom(type)) {
+                    registrations.addAll(this.handlersByEvent.get(type));
+                }
+            }
+        }
+
+        RegisteredHandler[] handlers = registrations.toArray(new RegisteredHandler[registrations.size()]);
+        Arrays.sort(handlers);
+        return handlers;
+    }
+
 
     private static boolean isValidHandler(Method method) {
         int modifiers = method.getModifiers();
@@ -88,26 +108,12 @@ public class GraniteEventManager implements EventManager {
         return parameters.length == 1 && Event.class.isAssignableFrom(parameters[0]);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private RegisteredHandler[] bakeHandlers(Class<? extends Event> rootEvent) {
-        List<RegisteredHandler> registrations = new ArrayList<>();
-        Set<Class<?>> types = (Set) TypeToken.of(rootEvent).getTypes().rawTypes();
-
-        synchronized (this.lock) {
-            types.stream().filter(Event.class::isAssignableFrom).forEach(type -> registrations.addAll(this.handlersByEvent.get(type)));
-        }
-
-        RegisteredHandler[] handlers = registrations.toArray(new RegisteredHandler[registrations.size()]);
-        Arrays.sort(handlers);
-        return handlers;
-    }
-
     @SuppressWarnings("unchecked")
     public void register(PluginContainer container, Object listener) {
-        requireNonNull(container, "container");
-        requireNonNull(listener, "listener");
+        checkNotNull(container, "container");
+        checkNotNull(listener, "listener");
 
-        List<RegisteredHandler> handlers = new ArrayList<>();
+        List<RegisteredHandler> handlers = Lists.newArrayList();
 
         Class<?> handle = listener.getClass();
         for (Method method : handle.getMethods()) {
@@ -119,11 +125,11 @@ public class GraniteEventManager implements EventManager {
                         EventHandler handler = this.handlerFactory.get(listener, method);
                         handlers.add(new RegisteredHandler(container, eventClass, subscribe.order(), handler, method, subscribe.ignoreCancelled()));
                     } catch (Exception e) {
-                        this.granite.getLogger().error("Failed to create handler for " + method + " on " + method.getDeclaringClass().getName(), e);
+                        Sponge.getLogger().error("Failed to create handler for " + method + " on " + method.getDeclaringClass().getName(), e);
                     }
 
                 } else {
-                    this.granite.getLogger().warn("The method {} on {} has @{} but has the wrong signature", method,
+                    Sponge.getLogger().warn("The method {} on {} has @{} but has the wrong signature", method,
                             method.getDeclaringClass().getName(), Subscribe.class.getName());
                 }
             }
@@ -153,7 +159,7 @@ public class GraniteEventManager implements EventManager {
 
     @Override
     public void unregister(Object listener) {
-        requireNonNull(listener, "listener");
+        checkNotNull(listener, "listener");
         synchronized (this.lock) {
             boolean changed = false;
 
@@ -174,12 +180,12 @@ public class GraniteEventManager implements EventManager {
 
     @Override
     public boolean post(Event event) {
-        requireNonNull(event, "event");
+        checkNotNull(event, "event");
         for (RegisteredHandler handler : this.handlersCache.getUnchecked(event.getClass())) {
             try {
                 handler.handle(event);
             } catch (Throwable e) {
-                this.granite.getLogger().error("Could not pass " + event.getClass().getSimpleName() + " to " + handler.getPlugin(), e);
+                Sponge.getLogger().error("Could not pass " + event.getClass().getSimpleName() + " to " + handler.getPlugin(), e);
             }
         }
 

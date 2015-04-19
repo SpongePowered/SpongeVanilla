@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,12 +24,12 @@
  */
 package org.spongepowered.granite.event;
 
-import static java.util.Objects.requireNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.util.event.Cancellable;
-import org.spongepowered.api.util.event.Event;
-import org.spongepowered.api.util.event.Order;
 
 import java.lang.reflect.Method;
 
@@ -49,11 +49,11 @@ class RegisteredHandler implements EventHandler, Comparable<RegisteredHandler> {
 
     RegisteredHandler(PluginContainer plugin, Class<? extends Event> eventClass, Order order, EventHandler handler, Method handle,
             boolean ignoreCancelled) {
-        this.plugin = requireNonNull(plugin, "plugin");
-        this.eventClass = requireNonNull(eventClass, "eventClass");
-        this.order = requireNonNull(order, "order");
-        this.handle = requireNonNull(handle, "handle");
-        this.handler = requireNonNull(handler, "handler");
+        this.plugin = checkNotNull(plugin, "plugin");
+        this.eventClass = checkNotNull(eventClass, "eventClass");
+        this.order = checkNotNull(order, "order");
+        this.handle = checkNotNull(handle, "handle");
+        this.handler = checkNotNull(handler, "handler");
         this.ignoreCancelled = ignoreCancelled;
     }
 

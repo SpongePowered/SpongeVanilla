@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,9 +24,11 @@
  */
 package org.spongepowered.granite.plugin;
 
-import static java.util.Objects.requireNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
+import com.google.common.io.Closer;
 import net.minecraft.launchwrapper.Launch;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
@@ -36,18 +38,17 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.Granite;
+import org.spongepowered.granite.util.FileExtensionFilter;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -60,24 +61,27 @@ import javax.inject.Singleton;
 public class GranitePluginManager implements PluginManager {
 
     private static final String PLUGIN_DESCRIPTOR = Type.getDescriptor(Plugin.class);
+    private static final FilenameFilter JAR_FILES = new FileExtensionFilter("jar");
 
     private final Granite granite;
-    private final Map<String, PluginContainer> plugins = new HashMap<>();
-    private final Map<Object, PluginContainer> pluginInstances = new IdentityHashMap<>();
+    private final Map<String, PluginContainer> plugins = Maps.newHashMap();
+    private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
     @Inject
     public GranitePluginManager(Granite granite) {
-        this.granite = requireNonNull(granite, "granite");
-        this.plugins.put(granite.getId(), granite);
-        this.pluginInstances.put(granite, granite);
+        this.granite = checkNotNull(granite, "granite");
+        PluginContainer plugin = granite.getPlugin();
+        this.plugins.put(plugin.getId(), plugin);
+        this.pluginInstances.put(granite, plugin);
     }
 
     public void loadPlugins() throws IOException {
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream(this.granite.getPluginsDirectory(), "*.jar")) {
-            for (Path jar : dir) {
-                String pluginClassName = null;
+        for (File jar : Sponge.getPluginsDirectory().listFiles(JAR_FILES)) {
+            String pluginClassName = null;
 
-                try (ZipFile zip = new ZipFile(jar.toFile())) {
+            try {
+                ZipFile zip = new ZipFile(jar);
+                try {
                     Enumeration<? extends ZipEntry> entries = zip.entries();
                     while (entries.hasMoreElements()) {
                         ZipEntry entry = entries.nextElement();
@@ -85,38 +89,46 @@ public class GranitePluginManager implements PluginManager {
                             continue;
                         }
 
-                        try (InputStream in = zip.getInputStream(entry)) {
+                        Closer closer = Closer.create();
+                        try {
+                            InputStream in = closer.register(zip.getInputStream(entry));
                             if ((pluginClassName = findPlugin(in)) != null) {
                                 break;
                             }
+                        } catch (Throwable e) {
+                            throw closer.rethrow(e);
+                        } finally {
+                            closer.close();
                         }
                     }
-                } catch (IOException e) {
-                    this.granite.getLogger().error("Failed to load plugin JAR: " + jar, e);
-                    continue;
+                } finally {
+                    zip.close();
                 }
+            } catch (IOException e) {
+                Sponge.getLogger().error("Failed to load plugin JAR: " + jar, e);
+                continue;
+            }
 
-                // Load the plugin
-                if (pluginClassName != null) {
-                    try {
-                        Launch.classLoader.addURL(jar.toUri().toURL());
-                        Class<?> pluginClass = Class.forName(pluginClassName);
-                        GranitePluginContainer container = new GranitePluginContainer(pluginClass);
-                        this.plugins.put(container.getId(), container);
-                        this.pluginInstances.put(container.getInstance(), container);
-                        this.granite.getGame().getEventManager().register(container, container.getInstance());
+            // Load the plugin
+            if (pluginClassName != null) {
+                try {
+                    Launch.classLoader.addURL(jar.toURI().toURL());
+                    Class<?> pluginClass = Class.forName(pluginClassName);
+                    GranitePluginContainer container = new GranitePluginContainer(pluginClass);
+                    this.plugins.put(container.getId(), container);
+                    this.pluginInstances.put(container.getInstance(), container);
+                    Sponge.getGame().getEventManager().register(container, container.getInstance());
 
-                        this.granite.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
-                    } catch (Throwable e) {
-                        this.granite.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
-                    }
+                    Sponge.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
+                } catch (Throwable e) {
+                    Sponge.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
                 }
             }
         }
     }
 
     @Nullable
-    private String findPlugin(InputStream in) throws IOException {
+    private static String findPlugin(InputStream in) throws IOException {
         ClassReader reader = new ClassReader(in);
         ClassNode classNode = new ClassNode();
         reader.accept(classNode, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
@@ -134,7 +146,7 @@ public class GranitePluginManager implements PluginManager {
 
     @Override
     public Optional<PluginContainer> fromInstance(Object instance) {
-        requireNonNull(instance, "instance");
+        checkNotNull(instance, "instance");
 
         if (instance instanceof GranitePluginContainer) {
             return Optional.of((PluginContainer) instance);

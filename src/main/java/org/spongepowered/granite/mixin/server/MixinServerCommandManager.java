@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,7 +31,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.granite.Granite;
+import org.spongepowered.common.Sponge;
 
 @Mixin(ServerCommandManager.class)
 public abstract class MixinServerCommandManager extends CommandHandler {
@@ -51,8 +51,8 @@ public abstract class MixinServerCommandManager extends CommandHandler {
             args = command.substring(pos + 1);
         }
 
-        Game game = Granite.instance.getGame();
-        if (game.getEventManager().post(SpongeEventFactory.createCommand(game, args, (CommandSource) sender, name))) {
+        Game game = Sponge.getInstance().getGame();
+        if (game.getEventManager().post(SpongeEventFactory.createCommand(game, args, (CommandSource) sender, name, null))) {
             return 1;
         }
 

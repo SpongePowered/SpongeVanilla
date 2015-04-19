@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,12 +26,17 @@ package org.spongepowered.granite.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.world.TeleportHelper;
+import org.spongepowered.common.Sponge;
+import org.spongepowered.common.guice.ConfigDirAnnotation;
+import org.spongepowered.common.world.SpongeTeleportHelper;
 import org.spongepowered.granite.Granite;
 import org.spongepowered.granite.GraniteGame;
 import org.spongepowered.granite.event.GraniteEventManager;
@@ -39,25 +44,31 @@ import org.spongepowered.granite.plugin.GranitePluginManager;
 import org.spongepowered.granite.registry.GraniteGameRegistry;
 
 import java.io.File;
-import java.nio.file.Path;
 
 public class GraniteGuiceModule extends AbstractModule {
 
+    private final Granite granite;
+    private final Logger logger;
+
+    public GraniteGuiceModule(Granite granite, Logger logger) {
+        this.granite = granite;
+        this.logger = logger;
+    }
+
     @Override
     protected void configure() {
-        bind(Granite.class).toInstance(Granite.instance);
+        bind(Granite.class).toInstance(this.granite);
+        bind(Logger.class).toInstance(this.logger);
+
         bind(Game.class).to(GraniteGame.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(GraniteEventManager.class).in(Scopes.SINGLETON);
         bind(GameRegistry.class).to(GraniteGameRegistry.class).in(Scopes.SINGLETON);
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
+        bind(TeleportHelper.class).to(SpongeTeleportHelper.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
-        Path configDir = Granite.instance.getConfigDirectory();
-
-        bind(Path.class).annotatedWith(sharedRoot).toInstance(configDir);
-        bind(File.class).annotatedWith(sharedRoot).toInstance(configDir.toFile());
+        bind(File.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDirectory());
     }
 
 }
-

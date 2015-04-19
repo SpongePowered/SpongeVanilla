@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,23 +24,101 @@
  */
 package org.spongepowered.granite.launch.server;
 
+import com.google.common.io.Resources;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.granite.launch.GraniteLaunch;
+import org.spongepowered.common.launch.SpongeLaunch;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.net.URL;
 import java.util.List;
 
 public final class VanillaServerTweaker implements ITweaker {
 
     private static final Logger logger = LogManager.getLogger();
+
+    private String[] args = ArrayUtils.EMPTY_STRING_ARRAY;
+
+    @Override
+    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
+        SpongeLaunch.initialize(gameDir, null, null);
+
+        if (args != null && !args.isEmpty()) {
+            this.args = args.toArray(new String[args.size()]);
+        }
+    }
+
+    @Override
+    public void injectIntoClassLoader(LaunchClassLoader loader) {
+        logger.info("Initializing Granite...");
+
+        // We shouldn't load these through Launchwrapper as they use native dependencies
+        loader.addClassLoaderExclusion("io.netty.");
+        loader.addClassLoaderExclusion("jline.");
+        loader.addClassLoaderExclusion("org.fusesource.");
+
+        // Don't allow libraries to be transformed
+        loader.addTransformerExclusion("joptsimple.");
+
+        // Minecraft Server libraries
+        loader.addTransformerExclusion("com.google.gson.");
+        loader.addTransformerExclusion("org.apache.commons.codec.");
+        loader.addTransformerExclusion("org.apache.commons.io.");
+        loader.addTransformerExclusion("org.apache.commons.lang3.");
+
+        // SpongeAPI
+        loader.addTransformerExclusion("com.flowpowered.math.");
+        loader.addTransformerExclusion("org.slf4j.");
+
+        // Guice
+        loader.addTransformerExclusion("com.google.inject.");
+        loader.addTransformerExclusion("org.aopalliance.");
+
+        // Configurate
+        loader.addTransformerExclusion("ninja.leaping.configurate.");
+        loader.addTransformerExclusion("com.typesafe.config.");
+
+        // Granite Launch
+        loader.addClassLoaderExclusion("org.spongepowered.tools.");
+        loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
+        loader.addClassLoaderExclusion("org.spongepowered.granite.launch.");
+        loader.addTransformerExclusion("org.spongepowered.granite.mixin.");
+
+        // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
+        loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
+
+        // Check if we're running in deobfuscated environment already
+        logger.debug("Applying runtime deobfuscation...");
+        if (isObfuscated()) {
+            logger.info("Deobfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
+            Launch.blackboard.put("granite.deobf-srg", Resources.getResource("mappings.srg"));
+            loader.registerTransformer("org.spongepowered.granite.launch.transformers.DeobfuscationTransformer");
+            logger.debug("Runtime deobfuscation is applied.");
+        } else {
+            logger.debug("Runtime deobfuscation was not applied. Granite is being loaded in a deobfuscated environment.");
+        }
+
+        logger.debug("Applying access transformer...");
+        Launch.blackboard.put("granite.at", new URL[]{Resources.getResource("common_at.cfg")/*, Resources.getResource("granite_at.cfg")*/});
+        loader.registerTransformer("org.spongepowered.granite.launch.transformers.AccessTransformer");
+
+        logger.debug("Initializing Mixin environment...");
+        MixinBootstrap.init();
+        MixinEnvironment env = MixinEnvironment.getDefaultEnvironment()
+                .addConfiguration("mixins.common.api.json")
+                .addConfiguration("mixins.common.core.json")
+                .addConfiguration("mixins.granite.json");
+        env.setSide(MixinEnvironment.Side.SERVER);
+
+        logger.info("Initialization finished. Starting Minecraft server...");
+    }
 
     private static boolean isObfuscated() {
         try {
@@ -51,53 +129,13 @@ public final class VanillaServerTweaker implements ITweaker {
     }
 
     @Override
-    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
-        GraniteLaunch.initialize(gameDir != null ? gameDir.toPath() : Paths.get(""));
-    }
-
-    @Override
-    public void injectIntoClassLoader(LaunchClassLoader loader) {
-        logger.info("Initializing Granite...");
-
-        loader.addClassLoaderExclusion("io.netty.");
-        loader.addClassLoaderExclusion("gnu.trove.");
-        loader.addClassLoaderExclusion("joptsimple.");
-        loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
-        loader.addClassLoaderExclusion("org.spongepowered.tools.");
-        loader.addClassLoaderExclusion("org.spongepowered.granite.mixin.");
-        loader.addClassLoaderExclusion("org.spongepowered.granite.launch.");
-
-        // Check if we're running in deobfuscated environment already
-        logger.info("Applying runtime deobfuscation...");
-        if (isObfuscated()) {
-            Launch.blackboard.put("granite.deobf-srg", Paths.get("bin", "deobf.srg.gz"));
-            loader.registerTransformer("org.spongepowered.granite.launch.transformers.DeobfuscationTransformer");
-            logger.info("Runtime deobfuscation is applied.");
-        } else {
-            logger.info("Runtime deobfuscation was not applied. Granite is being loaded in a deobfuscated environment.");
-        }
-
-        logger.info("Applying access transformer...");
-        Launch.blackboard.put("granite.at", "granite_at.cfg");
-        loader.registerTransformer("org.spongepowered.granite.launch.transformers.AccessTransformer");
-
-        logger.info("Initializing Mixin environment...");
-        MixinBootstrap.init();
-        MixinEnvironment env = MixinEnvironment.getCurrentEnvironment();
-        env.addConfiguration("mixins.granite.json");
-        env.setSide(MixinEnvironment.Side.SERVER);
-        loader.registerTransformer(MixinBootstrap.TRANSFORMER_CLASS);
-
-        logger.info("Initialization finished. Starting Minecraft server...");
-    }
-
-    @Override
     public String getLaunchTarget() {
         return "net.minecraft.server.MinecraftServer";
     }
 
     @Override
     public String[] getLaunchArguments() {
-        return new String[]{"nogui"};
+        return this.args;
     }
+
 }

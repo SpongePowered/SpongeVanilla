@@ -1,7 +1,7 @@
 /*
- * This file is part of Granite, licensed under the MIT License (MIT).
+ * This file is part of Sponge, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
  */
 package org.spongepowered.granite.event;
 
-import static java.util.Objects.requireNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.objectweb.asm.Opcodes.ACC_FINAL;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
@@ -37,8 +37,9 @@ import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.V1_8;
+import static org.objectweb.asm.Opcodes.V1_6;
 
+import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -46,20 +47,15 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-import org.spongepowered.api.util.event.Event;
+import org.spongepowered.api.event.Event;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nullable;
 
-;
-
 class EventHandlerClassFactory implements EventHandlerFactory {
 
-    private static final String EVENT_HANDLER_CLASS = Type.getInternalName(EventHandler.class);
-    private static final String EVENT_HANDLER_METHOD = '(' + Type.getDescriptor(Event.class) + ")V";
     private final String targetPackage;
     private final AtomicInteger id = new AtomicInteger();
     private final LocalClassLoader classLoader = new LocalClassLoader(getClass().getClassLoader());
@@ -74,12 +70,31 @@ class EventHandlerClassFactory implements EventHandlerFactory {
             });
 
     public EventHandlerClassFactory(String targetPackage) {
-        requireNonNull(targetPackage, "targetPackage");
+        checkNotNull(targetPackage, "targetPackage");
         if (!targetPackage.isEmpty()) {
             targetPackage += '.';
         }
         this.targetPackage = targetPackage;
     }
+
+    @Override
+    public EventHandler get(Object handle, Method method) throws Exception {
+        return this.cache.get(new Handler(handle.getClass(), method))
+                .getConstructor(handle.getClass())
+                .newInstance(handle);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends EventHandler> createClass(Class<?> handle, Method method) {
+        Class<?> eventClass = method.getParameterTypes()[0];
+        String name =
+                this.targetPackage + eventClass.getSimpleName() + "Handler_" + handle.getSimpleName() + '_' + method.getName() + this.id
+                        .incrementAndGet();
+        return (Class<? extends EventHandler>) this.classLoader.defineClass(name, generateClass(name, handle, method, eventClass));
+    }
+
+    private static final String EVENT_HANDLER_CLASS = Type.getInternalName(EventHandler.class);
+    private static final String EVENT_HANDLER_METHOD = '(' + Type.getDescriptor(Event.class) + ")V";
 
     private static byte[] generateClass(String name, Class<?> handle, Method method, Class<?> eventClass) {
         name = name.replace('.', '/');
@@ -92,7 +107,7 @@ class EventHandlerClassFactory implements EventHandlerFactory {
         FieldVisitor fv;
         MethodVisitor mv;
 
-        cw.visit(V1_8, ACC_PUBLIC + ACC_FINAL + ACC_SUPER, name, null, "java/lang/Object", new String[]{EVENT_HANDLER_CLASS});
+        cw.visit(V1_6, ACC_PUBLIC + ACC_FINAL + ACC_SUPER, name, null, "java/lang/Object", new String[]{EVENT_HANDLER_CLASS});
 
         {
             fv = cw.visitField(ACC_PRIVATE + ACC_FINAL, "handle", handleDescriptor, null, null);
@@ -136,30 +151,14 @@ class EventHandlerClassFactory implements EventHandlerFactory {
         return cw.toByteArray();
     }
 
-    @Override
-    public EventHandler get(Object handle, Method method) throws Exception {
-        return this.cache.get(new Handler(handle.getClass(), method))
-                .getConstructor(handle.getClass())
-                .newInstance(handle);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends EventHandler> createClass(Class<?> handle, Method method) {
-        Class<?> eventClass = method.getParameterTypes()[0];
-        String name =
-                this.targetPackage + eventClass.getSimpleName() + "Handler_" + handle.getSimpleName() + '_' + method.getName() + this.id
-                        .incrementAndGet();
-        return (Class<? extends EventHandler>) this.classLoader.defineClass(name, generateClass(name, handle, method, eventClass));
-    }
-
     private static class Handler {
 
         private final Class<?> type;
         private final Method method;
 
         private Handler(Class<?> type, Method method) {
-            this.type = requireNonNull(type, "type");
-            this.method = requireNonNull(method, "method");
+            this.type = checkNotNull(type, "type");
+            this.method = checkNotNull(method, "method");
         }
 
         @Override
@@ -179,7 +178,7 @@ class EventHandlerClassFactory implements EventHandlerFactory {
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.type, this.method);
+            return Objects.hashCode(this.type, this.method);
         }
 
     }
