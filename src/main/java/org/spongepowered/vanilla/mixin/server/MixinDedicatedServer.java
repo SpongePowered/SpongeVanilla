@@ -45,10 +45,9 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
-            args = {"ldc=Loading properties"}, shift = At.Shift.BY, by = -2, remap = false))
+            args = {"ldc=Loading properties"}, remap = false))
     public void onServerLoad(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.getInstance().load();
-        System.out.println("Here");
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;setConfigManager"
@@ -67,6 +66,11 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
     public void onServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.getInstance().postState(ServerStartingEvent.class);
+    }
+
+    @Override
+    public boolean canCommandSenderUseCommand(int permLevel, String commandName) {
+        return true; // TODO: Temporary fix for command execution
     }
 
 }
