@@ -30,7 +30,7 @@ ext.minecraftPlugin = plugins.getPlugin('net.minecrell.vanilla')
 apply from: project(':Common').file('gradle/implementation.gradle')
 
 minecraft {
-    serverTweaker = 'org.spongepowered.granite.launch.server.VanillaServerTweaker'
+    serverTweaker = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
 }
 
 configurations {
@@ -47,7 +47,7 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.spongepowered.granite.launch.server.VanillaServerMain',
+                'Main-Class': 'org.spongepowered.vanilla.launch.server.VanillaServerMain',
                 'Class-Path': 'bin/minecraft_server.1.8.jar bin/launchwrapper-1.11.jar'
         )
     }
