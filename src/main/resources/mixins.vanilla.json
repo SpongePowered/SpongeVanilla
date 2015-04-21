@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "minVersion": "0.2",
+    "package": "org.spongepowered.vanilla.mixin",
+    "refmap": "mixins.vanilla.refmap.json",
+    "server": [
+        "server.MixinDedicatedServer",
+        "server.MixinMinecraftServer",
+        "server.MixinServerCommandManager",
+        "world.MixinWorld"
+    ]
+}
