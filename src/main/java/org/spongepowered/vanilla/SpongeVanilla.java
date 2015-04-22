@@ -61,7 +61,7 @@ public final class SpongeVanilla {
         this.plugin = new Plugin();
 
         // Initialize Sponge
-        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger())).getInstance(Sponge.class);
+        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger("Sponge"))).getInstance(Sponge.class);
 
         this.game = Sponge.getGame();
     }

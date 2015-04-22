@@ -42,7 +42,7 @@ import java.util.List;
 
 public final class VanillaServerTweaker implements ITweaker {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("Sponge");
 
     private String[] args = ArrayUtils.EMPTY_STRING_ARRAY;
 
