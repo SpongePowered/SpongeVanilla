@@ -4,6 +4,10 @@
     "package": "org.spongepowered.vanilla.mixin",
     "refmap": "mixins.vanilla.refmap.json",
     "server": [
+        "block.tile.MixinTileEntity",
+        "entity.MixinEntity",
+        "entity.vehicle.MixinEntityMinecart",
+        "item.MixinEnchantment",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinServerCommandManager",
