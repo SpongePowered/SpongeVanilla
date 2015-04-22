@@ -24,10 +24,42 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.Sponge;
+import org.spongepowered.common.configuration.SpongeConfig;
+import org.spongepowered.common.interfaces.IMixinWorld;
+import org.spongepowered.common.world.border.PlayerBorderListener;
+
+import java.io.File;
 
 @Mixin(World.class)
-public abstract class MixinWorld implements org.spongepowered.api.world.World {
+public abstract class MixinWorld implements org.spongepowered.api.world.World, IMixinWorld {
+
+    public SpongeConfig<SpongeConfig.WorldConfig> worldConfig;
+
+    @Shadow private net.minecraft.world.border.WorldBorder worldBorder;
+
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void onConstructed(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client,
+            CallbackInfo ci) {
+        String providerName = providerIn.getDimensionName().toLowerCase().replace(" ", "_").replace("[^A-Za-z0-9_]", "");
+        this.worldConfig =
+                new SpongeConfig<SpongeConfig.WorldConfig>(SpongeConfig.Type.WORLD, new File(Sponge.getConfigDirectory()
+                        + File.separator + providerName
+                        + File.separator + "dim0", "world.conf"),
+                        "sponge");
+
+        this.worldBorder.addListener(new PlayerBorderListener());
+    }
 
 }
