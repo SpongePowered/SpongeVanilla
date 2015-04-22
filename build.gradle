@@ -40,6 +40,8 @@ configurations {
 }
 
 dependencies {
+    compile 'jline:jline:2.12.1'
+
     shadow 'org.ow2.asm:asm-all:5.0.3'
 }
 
@@ -67,5 +69,7 @@ shadowJar {
         include dependency('org.ow2.asm:asm-all')
 
         include dependency('com.typesafe:config')
+
+        include dependency('jline:jline')
     }
 }
