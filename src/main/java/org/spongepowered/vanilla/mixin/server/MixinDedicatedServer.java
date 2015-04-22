@@ -31,7 +31,9 @@ import org.spongepowered.api.event.state.ServerStartingEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.common.service.scheduler.SyncScheduler;
 import org.spongepowered.vanilla.SpongeVanilla;
 
 import java.io.File;
@@ -66,6 +68,11 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
     public void onServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.getInstance().postState(ServerStartingEvent.class);
+    }
+
+    @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
+    public void onTick(CallbackInfo ci) {
+        ((SyncScheduler) SyncScheduler.getInstance()).tick();
     }
 
     @Override
