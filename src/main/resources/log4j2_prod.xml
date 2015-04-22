@@ -2,10 +2,10 @@
 <Configuration status="WARN" packages="com.mojang.util">
     <Appenders>
         <Console name="MinecraftSysOut" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n"/>
         </Console>
         <Console name="SysOut" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger{1}]: %msg%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss} %level] [%logger{1}]: %msg%n"/>
         </Console>
         <Queue name="ServerGuiConsole">
             <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n"/>
@@ -28,6 +28,9 @@
             <AppenderRef ref="File"/>
             <AppenderRef ref="ServerGuiConsole"/>
         </Logger>
+
+        <!-- Hide LaunchWrapper messages unless it's a real problem -->
+        <Logger name="LaunchWrapper" level="warn"/>
 
         <!-- Log all other messages with prefix -->
         <Root level="info">

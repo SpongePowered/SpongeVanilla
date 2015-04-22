@@ -51,7 +51,7 @@ public abstract class MixinServerCommandManager extends CommandHandler {
             args = command.substring(pos + 1);
         }
 
-        Game game = Sponge.getInstance().getGame();
+        Game game = Sponge.getGame();
         if (game.getEventManager().post(SpongeEventFactory.createCommand(game, args, (CommandSource) sender, name, null))) {
             return 1;
         }
