@@ -68,20 +68,20 @@ public final class VanillaServerMain {
     }
 
     private static boolean checkMinecraft() throws Exception {
-        File bin = new File("bin");
-        if (!bin.isDirectory() && !bin.mkdirs()) {
-            throw new IOException("Failed to create folder at " + bin);
+        File lib = new File("lib");
+        if (!lib.isDirectory() && !lib.mkdirs()) {
+            throw new IOException("Failed to create folder at " + lib);
         }
 
         // First check if Minecraft is already downloaded :D
-        File file = new File(bin, MINECRAFT_SERVER_LOCAL);
+        File file = new File(MINECRAFT_SERVER_LOCAL);
 
         // Download the server first
         if (!file.isFile() && !downloadVerified(MINECRAFT_SERVER_REMOTE, file)) {
             return false;
         }
 
-        file = new File(bin, LAUNCHWRAPPER_LOCAL);
+        file = new File(lib, LAUNCHWRAPPER_LOCAL);
         return file.isFile() || downloadVerified(LAUNCHWRAPPER_REMOTE, file);
     }
 
