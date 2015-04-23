@@ -1,5 +1,3 @@
-package org.spongepowered.vanilla.mixin.entity.vehicle;
-
 /*
  * This file is part of Sponge, licensed under the MIT License (MIT).
  *
@@ -24,6 +22,7 @@ package org.spongepowered.vanilla.mixin.entity.vehicle;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package org.spongepowered.vanilla.mixin.entity.vehicle;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;

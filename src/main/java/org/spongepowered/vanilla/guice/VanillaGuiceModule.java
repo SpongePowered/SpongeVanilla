@@ -46,18 +46,17 @@ import org.spongepowered.vanilla.registry.VanillaGameRegistry;
 import java.io.File;
 
 public class VanillaGuiceModule extends AbstractModule {
-
-    private final SpongeVanilla vanilla;
+    private final SpongeVanilla instance;
     private final Logger logger;
 
-    public VanillaGuiceModule(SpongeVanilla vanilla, Logger logger) {
-        this.vanilla = vanilla;
+    public VanillaGuiceModule(SpongeVanilla instance, Logger logger) {
+        this.instance = instance;
         this.logger = logger;
     }
 
     @Override
     protected void configure() {
-        bind(SpongeVanilla.class).toInstance(this.vanilla);
+        bind(SpongeVanilla.class).toInstance(this.instance);
         bind(Logger.class).toInstance(this.logger);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
@@ -70,5 +69,4 @@ public class VanillaGuiceModule extends AbstractModule {
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
         bind(File.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDirectory());
     }
-
 }

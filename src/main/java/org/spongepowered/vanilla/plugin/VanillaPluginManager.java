@@ -67,9 +67,9 @@ public class VanillaPluginManager implements PluginManager {
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
     @Inject
-    public VanillaPluginManager(SpongeVanilla vanilla) {
+    public VanillaPluginManager(SpongeVanilla instance) {
         registerPlugin(MinecraftPluginContainer.INSTANCE);
-        registerPlugin(vanilla.getPlugin());
+        registerPlugin(instance);
     }
 
     private void registerPlugin(PluginContainer plugin) {

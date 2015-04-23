@@ -29,7 +29,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 public class MinecraftPluginContainer implements PluginContainer {
 
-    public static PluginContainer INSTANCE = new MinecraftPluginContainer();
+    public static final MinecraftPluginContainer INSTANCE = new MinecraftPluginContainer();
 
     private MinecraftPluginContainer() {
     }

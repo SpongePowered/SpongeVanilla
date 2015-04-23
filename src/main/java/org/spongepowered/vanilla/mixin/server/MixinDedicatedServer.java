@@ -49,25 +49,25 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = {"ldc=Loading properties"}, remap = false))
     public void onServerLoad(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.getInstance().load();
+        SpongeVanilla.INSTANCE.load();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;setConfigManager"
             + "(Lnet/minecraft/server/management/ServerConfigurationManager;)V", shift = At.Shift.BY, by = -7))
     public void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.getInstance().initialize();
+        SpongeVanilla.INSTANCE.initialize();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.BY, by = -24))
     public void onServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.getInstance().postState(ServerAboutToStartEvent.class);
+        SpongeVanilla.INSTANCE.postState(ServerAboutToStartEvent.class);
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
     public void onServerStarting(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.getInstance().postState(ServerStartingEvent.class);
+        SpongeVanilla.INSTANCE.postState(ServerStartingEvent.class);
     }
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
