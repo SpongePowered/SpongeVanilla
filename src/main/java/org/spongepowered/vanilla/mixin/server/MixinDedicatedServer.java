@@ -75,9 +75,4 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         ((SyncScheduler) SyncScheduler.getInstance()).tick();
     }
 
-    @Override
-    public boolean canCommandSenderUseCommand(int permLevel, String commandName) {
-        return true; // TODO: Temporary fix for command execution
-    }
-
 }

@@ -30,15 +30,12 @@ import org.spongepowered.api.Server;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.event.state.ServerStoppedEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.text.SpongeText;
-import org.spongepowered.common.text.SpongeTextFactory;
 import org.spongepowered.vanilla.SpongeVanilla;
 
 @Mixin(MinecraftServer.class)
@@ -64,23 +61,6 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
     @Overwrite
     public String getServerModName() {
         return SpongeVanilla.getInstance().getPlugin().getName();
-    }
-
-    @Override
-    public String getName() {
-        return getCommandSenderName();
-    }
-
-    @Override
-    public void sendMessage(Text... messages) {
-        for (Text message : messages) {
-            addChatMessage(((SpongeText) message).toComponent(SpongeTextFactory.getDefaultLocale()));
-        }
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return true;
     }
 
 }

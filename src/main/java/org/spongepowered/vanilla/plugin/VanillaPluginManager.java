@@ -63,16 +63,18 @@ public class VanillaPluginManager implements PluginManager {
     private static final String PLUGIN_DESCRIPTOR = Type.getDescriptor(Plugin.class);
     private static final FilenameFilter JAR_FILES = new FileExtensionFilter("jar");
 
-    private final SpongeVanilla vanilla;
     private final Map<String, PluginContainer> plugins = Maps.newHashMap();
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
     @Inject
     public VanillaPluginManager(SpongeVanilla vanilla) {
-        this.vanilla = checkNotNull(vanilla, "vanilla");
-        PluginContainer plugin = vanilla.getPlugin();
+        registerPlugin(MinecraftPluginContainer.INSTANCE);
+        registerPlugin(vanilla.getPlugin());
+    }
+
+    private void registerPlugin(PluginContainer plugin) {
         this.plugins.put(plugin.getId(), plugin);
-        this.pluginInstances.put(vanilla, plugin);
+        this.pluginInstances.put(plugin.getInstance(), plugin);
     }
 
     public void loadPlugins() throws IOException {
@@ -115,8 +117,7 @@ public class VanillaPluginManager implements PluginManager {
                     Launch.classLoader.addURL(jar.toURI().toURL());
                     Class<?> pluginClass = Class.forName(pluginClassName);
                     VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
-                    this.plugins.put(container.getId(), container);
-                    this.pluginInstances.put(container.getInstance(), container);
+                    registerPlugin(container);
                     Sponge.getGame().getEventManager().register(container, container.getInstance());
 
                     Sponge.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
@@ -148,7 +149,7 @@ public class VanillaPluginManager implements PluginManager {
     public Optional<PluginContainer> fromInstance(Object instance) {
         checkNotNull(instance, "instance");
 
-        if (instance instanceof VanillaPluginContainer) {
+        if (instance instanceof PluginContainer) {
             return Optional.of((PluginContainer) instance);
         }
 
