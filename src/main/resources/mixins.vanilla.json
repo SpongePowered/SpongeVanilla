@@ -9,6 +9,7 @@
         "entity.MixinEntity",
         "entity.vehicle.MixinEntityMinecart",
         "item.MixinEnchantment",
+        "management.MixinItemInWorldManager",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinServerCommandManager",
