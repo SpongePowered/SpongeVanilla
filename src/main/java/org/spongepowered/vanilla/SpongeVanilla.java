@@ -24,22 +24,42 @@
  */
 package org.spongepowered.vanilla;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.ConstructionEvent;
 import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.LoadCompleteEvent;
 import org.spongepowered.api.event.state.PostInitializationEvent;
 import org.spongepowered.api.event.state.PreInitializationEvent;
+import org.spongepowered.api.event.state.ServerStartedEvent;
+import org.spongepowered.api.event.state.ServerStartingEvent;
+import org.spongepowered.api.event.state.ServerStoppedEvent;
 import org.spongepowered.api.event.state.StateEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
+import org.spongepowered.api.service.permission.PermissionService;
+import org.spongepowered.api.service.persistence.SerializationService;
+import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
+import org.spongepowered.api.service.scheduler.SynchronousScheduler;
+import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.command.SpongeCommandDisambiguator;
+import org.spongepowered.common.interfaces.IMixinServerCommandManager;
+import org.spongepowered.common.service.permission.SpongeContextCalculator;
+import org.spongepowered.common.service.permission.SpongePermissionService;
+import org.spongepowered.common.service.persistence.SpongeSerializationService;
+import org.spongepowered.common.service.scheduler.AsyncScheduler;
+import org.spongepowered.common.service.scheduler.SyncScheduler;
+import org.spongepowered.common.service.sql.SqlServiceImpl;
+import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.vanilla.guice.VanillaGuiceModule;
 import org.spongepowered.vanilla.plugin.VanillaPluginManager;
 
@@ -84,20 +104,51 @@ public final class SpongeVanilla {
             }
 
             try {
-                SimpleCommandService commandService = new SimpleCommandService(this.game);
+                SimpleCommandService commandService = new SimpleCommandService(this.game, new SpongeCommandDisambiguator(this.game));
                 this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
-                this.game.getEventManager().register(this, commandService);
             } catch (ProviderExistsException e) {
-                Sponge.getLogger().warn("An unknown CommandService was already registered", e);
+                Sponge.getLogger().warn("Non-Sponge CommandService already registered", e);
             }
 
-            //this.game.getEventManager().register(this, this.game.getRegistry());
+            try {
+                this.game.getServiceManager().setProvider(this, SqlService.class, new SqlServiceImpl());
+            } catch (ProviderExistsException e) {
+                Sponge.getLogger().warn("Non-Sponge SqlService already registered", e);
+            }
+
+            try {
+                this.game.getServiceManager().setProvider(this, SynchronousScheduler.class, SyncScheduler.getInstance());
+                this.game.getServiceManager().setProvider(this, AsynchronousScheduler.class, AsyncScheduler.getInstance());
+            } catch (ProviderExistsException e) {
+                Sponge.getLogger().error("Non-Sponge scheduler already registered", e);
+            }
+
+            try {
+                SerializationService serializationService = new SpongeSerializationService();
+                this.game.getServiceManager().setProvider(this, SerializationService.class, serializationService);
+            } catch (ProviderExistsException e) {
+                Sponge.getLogger().warn("Non-Sponge SerializationService already registered", e);
+            }
+
+            this.game.getEventManager().register(this, this);
+            this.game.getEventManager().register(this, this.game.getRegistry());
 
             Sponge.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
             postState(ConstructionEvent.class);
             Sponge.getLogger().info("Initializing plugins...");
             postState(PreInitializationEvent.class);
+
+            this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(new Predicate<PermissionService>() {
+
+                @Override
+                public boolean apply(PermissionService input) {
+                    input.registerContextCalculator(new SpongeContextCalculator());
+                    return true;
+                }
+            });
+
+            SpongeHooks.enableThreadContentionMonitoring();
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
@@ -105,7 +156,20 @@ public final class SpongeVanilla {
 
     public void initialize() {
         postState(InitializationEvent.class);
+
+        if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
+            try {
+                this.game.getServiceManager().setProvider(this, PermissionService.class, new SpongePermissionService());
+            } catch (ProviderExistsException e) {
+                // It's a fallback, ignore
+            }
+        }
+
         postState(PostInitializationEvent.class);
+
+        SerializationService service = this.game.getServiceManager().provide(SerializationService.class).get();
+        ((SpongeSerializationService) service).completeRegistration();
+
         Sponge.getLogger().info("Successfully loaded and initialized plugins.");
 
         postState(LoadCompleteEvent.class);
@@ -113,6 +177,21 @@ public final class SpongeVanilla {
 
     public void postState(Class<? extends StateEvent> type) {
         this.game.getEventManager().post(SpongeEventFactory.createState(type, this.game));
+    }
+
+    @Subscribe
+    public void onServerStarting(ServerStartingEvent event) {
+        ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerEarlyCommands(this.game);
+    }
+
+    @Subscribe
+    public void onServerStarted(ServerStartedEvent event) {
+        ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
+    }
+
+    @Subscribe
+    public void onServerStopped(ServerStoppedEvent event) throws IOException {
+        ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
     }
 
     private class Plugin implements PluginContainer {

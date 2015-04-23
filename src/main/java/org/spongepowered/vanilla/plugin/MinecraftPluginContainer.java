@@ -22,22 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.server;
+package org.spongepowered.vanilla.plugin;
 
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ServerCommandManager;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.common.command.MinecraftCommandWrapper;
-import org.spongepowered.common.interfaces.IMixinServerCommandManager;
-import org.spongepowered.vanilla.plugin.MinecraftPluginContainer;
+import net.minecraft.server.MinecraftServer;
+import org.spongepowered.api.plugin.PluginContainer;
 
-@Mixin(ServerCommandManager.class)
-public abstract class MixinServerCommandManager extends CommandHandler implements IMixinServerCommandManager {
+public class MinecraftPluginContainer implements PluginContainer {
+
+    public static PluginContainer INSTANCE = new MinecraftPluginContainer();
+
+    private MinecraftPluginContainer() {
+    }
 
     @Override
-    public MinecraftCommandWrapper wrapCommand(ICommand command) {
-        return new MinecraftCommandWrapper(MinecraftPluginContainer.INSTANCE, command);
+    public String getId() {
+        return "minecraft";
+    }
+
+    @Override
+    public String getName() {
+        return "Minecraft";
+    }
+
+    @Override
+    public String getVersion() {
+        return MinecraftServer.getServer().getMinecraftVersion();
+    }
+
+    @Override
+    public Object getInstance() {
+        return MinecraftServer.getServer();
     }
 
 }
