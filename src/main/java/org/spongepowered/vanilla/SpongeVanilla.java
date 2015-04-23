@@ -66,28 +66,18 @@ import org.spongepowered.vanilla.plugin.VanillaPluginManager;
 import java.io.File;
 import java.io.IOException;
 
-public final class SpongeVanilla {
+public final class SpongeVanilla implements PluginContainer {
 
-    private static final SpongeVanilla instance = new SpongeVanilla();
+    public static final SpongeVanilla INSTANCE = new SpongeVanilla();
 
-    public static SpongeVanilla getInstance() {
-        return instance;
-    }
-
-    private final Plugin plugin;
     private final Game game;
 
     private SpongeVanilla() {
-        this.plugin = new Plugin();
 
         // Initialize Sponge
         Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger("Sponge"))).getInstance(Sponge.class);
 
         this.game = Sponge.getGame();
-    }
-
-    public PluginContainer getPlugin() {
-        return this.plugin;
     }
 
     public void load() {
@@ -194,28 +184,23 @@ public final class SpongeVanilla {
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
     }
 
-    private class Plugin implements PluginContainer {
-
-        @Override
-        public String getId() {
-            return "sponge";
-        }
-
-        @Override
-        public String getName() {
-            return "Sponge";
-        }
-
-        @Override
-        public String getVersion() {
-            return SpongeVanilla.this.game.getImplementationVersion();
-        }
-
-        @Override
-        public Object getInstance() {
-            return SpongeVanilla.this;
-        }
-
+    @Override
+    public String getId() {
+        return "sponge";
     }
 
+    @Override
+    public String getName() {
+        return "Sponge";
+    }
+
+    @Override
+    public String getVersion() {
+        return this.game.getImplementationVersion();
+    }
+
+    @Override
+    public Object getInstance() {
+        return this;
+    }
 }

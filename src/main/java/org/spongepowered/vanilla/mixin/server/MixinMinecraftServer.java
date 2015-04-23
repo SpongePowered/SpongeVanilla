@@ -44,23 +44,23 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
     public void onServerStarted(CallbackInfo ci) {
-        SpongeVanilla.getInstance().postState(ServerStartedEvent.class);
+        SpongeVanilla.INSTANCE.postState(ServerStartedEvent.class);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
     public void onServerStopping(CallbackInfo ci) {
-        SpongeVanilla.getInstance().postState(ServerStoppingEvent.class);
+        SpongeVanilla.INSTANCE.postState(ServerStoppingEvent.class);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
     public void onServerStopped(CallbackInfo ci) {
-        SpongeVanilla.getInstance().postState(ServerStoppedEvent.class);
+        SpongeVanilla.INSTANCE.postState(ServerStoppedEvent.class);
     }
 
     @Overwrite
     public String getServerModName() {
-        return SpongeVanilla.getInstance().getPlugin().getName();
+        return SpongeVanilla.INSTANCE.getName();
     }
 
 }

@@ -52,9 +52,9 @@ public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
             this.customEntityData = new NBTTagCompound();
         }
 
-        if (!customEntityData.hasKey("SpongeData", 10)) {
-            customEntityData.setTag("SpongeData", new NBTTagCompound());
+        if (!this.customEntityData.hasKey("SpongeData", 10)) {
+            this.customEntityData.setTag("SpongeData", new NBTTagCompound());
         }
-        return customEntityData.getCompoundTag("SpongeData");
+        return this.customEntityData.getCompoundTag("SpongeData");
     }
 }
