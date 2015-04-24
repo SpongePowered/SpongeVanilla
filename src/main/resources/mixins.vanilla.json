@@ -15,6 +15,7 @@
         "server.MixinConsoleHandler",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
+        "server.MixinServerConfigurationManager",
         "world.MixinWorld"
     ]
 }
