@@ -46,6 +46,7 @@ import org.spongepowered.vanilla.registry.VanillaGameRegistry;
 import java.io.File;
 
 public class VanillaGuiceModule extends AbstractModule {
+
     private final SpongeVanilla instance;
     private final Logger logger;
 

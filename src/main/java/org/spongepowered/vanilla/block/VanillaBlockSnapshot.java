@@ -31,13 +31,15 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 
 public class VanillaBlockSnapshot implements BlockSnapshot {
+
     private final IBlockState state;
 
     public VanillaBlockSnapshot(World world, BlockPos pos) {
         this.state = world.getBlockState(pos);
     }
+
     @Override
     public BlockState getState() {
-        return (BlockState) state;
+        return (BlockState) this.state;
     }
 }

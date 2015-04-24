@@ -46,6 +46,7 @@ public class VanillaHooks {
 
     /**
      * Hook that prepares server logic for the firing of a {@link BlockBreakEvent}.
+     *
      * @param world The world
      * @param gameType The gametype
      * @param entityPlayer The player

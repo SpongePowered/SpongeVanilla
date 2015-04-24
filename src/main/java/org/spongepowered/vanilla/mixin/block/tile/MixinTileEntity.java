@@ -30,19 +30,19 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.common.interfaces.IMixinTileEntity;
 
+import javax.annotation.Nullable;
+
 @NonnullByDefault
 @Mixin(net.minecraft.tileentity.TileEntity.class)
 public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
 
-    private NBTTagCompound customEntityData;
+    @Nullable private NBTTagCompound customEntityData;
 
     /**
      * Gets the SpongeData NBT tag, used for additional data not stored in the
      * vanilla tag.
      *
-     * <p>
-     * Modifying this tag will affect the data stored.
-     * </p>
+     * <p>Modifying this tag will affect the data stored.</p>
      *
      * @return The data tag
      */
