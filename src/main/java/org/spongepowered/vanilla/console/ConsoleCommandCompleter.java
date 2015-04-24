@@ -85,7 +85,7 @@ public class ConsoleCommandCompleter implements Completer {
             if (pos == -1) {
                 return cursor - len;
             } else {
-                return cursor - (len - pos - 1);
+                return cursor - (len - pos);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
