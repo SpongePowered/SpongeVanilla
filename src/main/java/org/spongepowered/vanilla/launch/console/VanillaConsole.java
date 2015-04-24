@@ -30,7 +30,6 @@ import static jline.TerminalFactory.OFF;
 import static jline.console.ConsoleReader.RESET_LINE;
 
 import com.mojang.util.QueueLogAppender;
-import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +44,7 @@ public final class VanillaConsole {
     private VanillaConsole() {}
 
     private static ConsoleReader reader;
+    private static Formatter formatter;
 
     public static ConsoleReader getReader() {
         checkState(reader != null, "VanillaConsole was not initialized");
@@ -88,6 +88,15 @@ public final class VanillaConsole {
         thread.start();
     }
 
+    public static void setFormatter(Formatter formatter) {
+        VanillaConsole.formatter = formatter;
+    }
+
+    public interface Formatter {
+
+        String format(String text);
+    }
+
     private static class Writer implements Runnable {
 
         @Override
@@ -98,6 +107,10 @@ public final class VanillaConsole {
                 message = QueueLogAppender.getNextLogEvent("VanillaConsole");
                 if (message == null) {
                     continue;
+                }
+
+                if (formatter != null) {
+                    message = formatter.format(message);
                 }
 
                 try {

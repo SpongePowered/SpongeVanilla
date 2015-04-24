@@ -42,7 +42,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.text.SpongeChatComponent;
 import org.spongepowered.common.text.SpongeText;
 import org.spongepowered.vanilla.SpongeVanilla;
-import org.spongepowered.vanilla.console.ConsoleFormatter;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements Server, CommandSource, ICommandSender {
@@ -74,7 +73,7 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
 
     @Override @Overwrite
     public void addChatMessage(IChatComponent component) {
-        logger.info(ConsoleFormatter.format(((SpongeChatComponent) component).toLegacy(SpongeText.COLOR_CHAR)));
+        logger.info(((SpongeChatComponent) component).toLegacy(SpongeText.COLOR_CHAR));
     }
 
 }

@@ -27,11 +27,14 @@ package org.spongepowered.vanilla.console;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.util.EnumChatFormatting;
 import org.fusesource.jansi.Ansi;
+import org.spongepowered.vanilla.launch.console.VanillaConsole;
 
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class ConsoleFormatter {
+public final class ConsoleFormatter implements VanillaConsole.Formatter {
+
+    public static final VanillaConsole.Formatter INSTANCE = new ConsoleFormatter();
 
     private ConsoleFormatter() {
     }
@@ -67,7 +70,8 @@ public final class ConsoleFormatter {
         return Pattern.compile(formatting.toString(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE);
     }
 
-    public static String format(String text) {
+    @Override
+    public String format(String text) {
         for (Map.Entry<Pattern, String> entry : REPLACEMENTS.entrySet()) {
             text = entry.getKey().matcher(text).replaceAll(entry.getValue());
         }
