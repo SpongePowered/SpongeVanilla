@@ -9,8 +9,9 @@ SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.
 * [Java] 6
 
 ## Cloning
-The following steps will ensure your project is cloned properly.  
-1. `git clone --recursive https://github.com/SpongePowered/SpongeVanilla.git
+The following steps will ensure your project is cloned properly.
+
+1. `git clone --recursive https://github.com/SpongePowered/SpongeVanilla.git`
 2. `cd SpongeVanilla`
 3. `cp scripts/pre-commit .git/hooks`
 
