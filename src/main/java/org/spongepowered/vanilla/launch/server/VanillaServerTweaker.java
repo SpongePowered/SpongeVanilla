@@ -132,7 +132,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public String getLaunchTarget() {
-        return "net.minecraft.server.MinecraftServer";
+        return "org.spongepowered.vanilla.SpongeVanilla";
     }
 
     @Override

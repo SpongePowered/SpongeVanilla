@@ -55,6 +55,7 @@ import java.util.zip.ZipFile;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
@@ -67,9 +68,9 @@ public class VanillaPluginManager implements PluginManager {
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
     @Inject
-    public VanillaPluginManager(SpongeVanilla instance) {
-        registerPlugin(MinecraftPluginContainer.INSTANCE);
-        registerPlugin(instance);
+    public VanillaPluginManager(@Named("Sponge") PluginContainer spongePlugin, @Named("Minecraft") PluginContainer minecraftPlugin) {
+        registerPlugin(spongePlugin);
+        registerPlugin(minecraftPlugin);
     }
 
     private void registerPlugin(PluginContainer plugin) {

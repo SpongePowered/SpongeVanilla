@@ -27,8 +27,10 @@ package org.spongepowered.vanilla;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.Subscribe;
@@ -78,6 +80,10 @@ public final class SpongeVanilla implements PluginContainer {
         Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger("Sponge"))).getInstance(Sponge.class);
 
         this.game = Sponge.getGame();
+    }
+
+    public static void main(String[] args) {
+        MinecraftServer.main(args);
     }
 
     public void load() {
