@@ -43,6 +43,7 @@ import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.block.VanillaBlockSnapshot;
 
 public class VanillaHooks {
+
     /**
      * Hook that prepares server logic for the firing of a {@link BlockBreakEvent}.
      * @param world The world
@@ -51,7 +52,7 @@ public class VanillaHooks {
      * @param pos The position
      * @return The called event
      */
-    public static BlockBreakEvent onBlockBreakEvent(World world, WorldSettings.GameType gameType, EntityPlayerMP entityPlayer, BlockPos pos) {
+    public static BlockBreakEvent prepareBlockBreakEvent(World world, WorldSettings.GameType gameType, EntityPlayerMP entityPlayer, BlockPos pos) {
         boolean preCancelEvent = false;
         if (gameType.isCreative() && entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() instanceof ItemSword) {
             preCancelEvent = true;

@@ -46,7 +46,7 @@ public abstract class MixinItemInWorldManager {
 
     @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
     public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
-        if (VanillaHooks.onBlockBreakEvent(theWorld, gameType, thisPlayerMP, pos).isCancelled()) {
+        if (VanillaHooks.prepareBlockBreakEvent(theWorld, gameType, thisPlayerMP, pos).isCancelled()) {
             ci.setReturnValue(false);
         }
     }
