@@ -24,7 +24,8 @@
  */
 package org.spongepowered.vanilla.launch.server;
 
-import com.google.common.io.Resources;
+import static com.google.common.io.Resources.getResource;
+
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -88,10 +89,9 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addTransformerExclusion("com.typesafe.config.");
 
         // Sponge Launch
-        loader.addClassLoaderExclusion("org.spongepowered.tools.");
+        loader.addTransformerExclusion("org.spongepowered.tools.");
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.vanilla.launch.");
-        loader.addTransformerExclusion("org.spongepowered.vanilla.mixin.");
 
         // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
@@ -100,7 +100,7 @@ public final class VanillaServerTweaker implements ITweaker {
         logger.debug("Applying runtime de-obfuscation...");
         if (isObfuscated()) {
             logger.info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
-            Launch.blackboard.put("vanilla.deobf-srg", Resources.getResource("mappings.srg"));
+            Launch.blackboard.put("vanilla.mappings", getResource("mappings.srg"));
             loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.DeobfuscationTransformer");
             logger.debug("Runtime de-obfuscation is applied.");
         } else {
@@ -108,7 +108,7 @@ public final class VanillaServerTweaker implements ITweaker {
         }
 
         logger.debug("Applying access transformer...");
-        Launch.blackboard.put("vanilla_at.cfg", new URL[]{Resources.getResource("common_at.cfg")});
+        Launch.blackboard.put("vanilla.at", new URL[]{getResource("common_at.cfg"), getResource("vanilla_at.cfg")});
         loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.AccessTransformer");
 
         logger.debug("Initializing Mixin environment...");

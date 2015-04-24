@@ -71,7 +71,7 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
     private final Map<String, Map<String, String>> fieldDescriptions = Maps.newHashMap();
 
     public DeobfuscationTransformer() throws Exception {
-        URL mappings = (URL) Launch.blackboard.get("vanilla.deobf-srg");
+        URL mappings = (URL) Launch.blackboard.get("vanilla.mappings");
 
         final ImmutableBiMap.Builder<String, String> classes = ImmutableBiMap.builder();
         final ImmutableTable.Builder<String, String, String> fields = ImmutableTable.builder();
