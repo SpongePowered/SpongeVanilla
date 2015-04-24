@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.vanilla.console.ConsoleCommandCompleter;
+import org.spongepowered.vanilla.console.ConsoleFormatter;
 import org.spongepowered.vanilla.launch.console.VanillaConsole;
 
 import java.io.IOException;
@@ -43,6 +44,7 @@ public abstract class MixinConsoleHandler extends Thread {
     @Override
     public void run() {
         final ConsoleReader reader = VanillaConsole.getReader();
+        VanillaConsole.setFormatter(ConsoleFormatter.INSTANCE);
         reader.addCompleter(new ConsoleCommandCompleter(this.server));
 
         String line;
