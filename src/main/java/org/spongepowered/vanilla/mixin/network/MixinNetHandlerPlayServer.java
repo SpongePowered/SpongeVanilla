@@ -33,23 +33,29 @@ import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
+import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.interfaces.text.IMixinChatComponent;
-import org.spongepowered.common.text.SpongeTexts;
-
-import java.util.Locale;
+import org.spongepowered.common.text.translation.SpongeTranslation;
 
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer {
@@ -116,4 +122,14 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             }
         }
     }
+
+    @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
+    public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent reason) {
+        Text quitMessage = Texts.builder(new SpongeTranslation("multiplayer.player.left"), playerEntity.getDisplayName()).color(TextColors.YELLOW).build();
+
+        PlayerQuitEvent event = SpongeEventFactory.createPlayerQuit(Sponge.getGame(), (Player) playerEntity, quitMessage);
+        Sponge.getGame().getEventManager().post(event);
+        ((Server) this.serverController).broadcastMessage(event.getQuitMessage());
+    }
+
 }
