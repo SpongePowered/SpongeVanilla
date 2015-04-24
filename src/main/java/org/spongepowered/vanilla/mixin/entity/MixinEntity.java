@@ -29,10 +29,12 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.common.interfaces.IMixinEntity;
 
+import javax.annotation.Nullable;
+
 @Mixin(net.minecraft.entity.Entity.class)
 public abstract class MixinEntity implements Entity, IMixinEntity {
 
-    private NBTTagCompound customEntityData;
+    @Nullable private NBTTagCompound customEntityData;
 
     @Override
     public final NBTTagCompound getSpongeData() {
@@ -40,10 +42,10 @@ public abstract class MixinEntity implements Entity, IMixinEntity {
             this.customEntityData = new NBTTagCompound();
         }
 
-        if (!customEntityData.hasKey("SpongeData", 10)) {
-            customEntityData.setTag("SpongeData", new NBTTagCompound());
+        if (!this.customEntityData.hasKey("SpongeData", 10)) {
+            this.customEntityData.setTag("SpongeData", new NBTTagCompound());
         }
-        return customEntityData.getCompoundTag("SpongeData");
+        return this.customEntityData.getCompoundTag("SpongeData");
     }
 
 }

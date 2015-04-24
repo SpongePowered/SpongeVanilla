@@ -38,13 +38,13 @@ public abstract class MixinEntityMinecart extends Entity implements Minecart, IM
 
     private double maxSpeed;
 
-    public MixinEntityMinecart(World worldIn) {
+    protected MixinEntityMinecart(World worldIn) {
         super(worldIn);
     }
 
     @Override
     public double getMaximumMinecartSpeed() {
-        return maxSpeed;
+        return this.maxSpeed;
     }
 
 }

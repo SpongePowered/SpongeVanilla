@@ -52,6 +52,7 @@ import java.util.Locale;
 
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer {
+
     @Shadow private int chatSpamThresholdCount;
     @Shadow private EntityPlayerMP playerEntity;
     @Shadow private MinecraftServer serverController;

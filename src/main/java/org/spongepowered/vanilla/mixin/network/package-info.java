@@ -22,33 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.management;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ItemInWorldManager;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldSettings;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.vanilla.VanillaHooks;
-
-@Mixin(ItemInWorldManager.class)
-public abstract class MixinItemInWorldManager {
-
-    @Shadow public World theWorld;
-
-    @Shadow private WorldSettings.GameType gameType;
-
-    @Shadow public EntityPlayerMP thisPlayerMP;
-
-    @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
-    public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
-        if (VanillaHooks.prepareBlockBreakEvent(this.theWorld, this.gameType, this.thisPlayerMP, pos).isCancelled()) {
-            ci.setReturnValue(false);
-        }
-    }
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.vanilla.mixin.network;
