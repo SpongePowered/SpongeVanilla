@@ -25,6 +25,7 @@
 package org.spongepowered.vanilla.launch.server;
 
 import static com.google.common.io.Resources.getResource;
+import static org.spongepowered.vanilla.plugin.VanillaPluginManager.SCAN_CLASSPATH_PROPERTY;
 
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
@@ -105,6 +106,9 @@ public final class VanillaServerTweaker implements ITweaker {
             logger.debug("Runtime de-obfuscation is applied.");
         } else {
             logger.debug("Runtime de-obfuscation was not applied. Sponge is being loaded in a de-obfuscated environment.");
+
+            // Enable plugin classpath scanning in deobfuscated environment
+            System.setProperty(SCAN_CLASSPATH_PROPERTY, "true");
         }
 
         logger.debug("Applying access transformer...");

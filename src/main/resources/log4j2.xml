@@ -27,7 +27,7 @@
 
     <Loggers>
         <!-- Log Minecraft messages without prefix -->
-        <Logger name="net.minecraft" level="info" additivity="false">
+        <Logger name="net.minecraft" level="debug" additivity="false">
             <filters>
                 <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL"/>
             </filters>
@@ -36,8 +36,11 @@
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Logger>
 
+        <!-- Mixin has its own system properties to enable debugging -->
+        <Logger name="mixin" level="info"/>
+
         <!-- Log all other messages with prefix -->
-        <Root level="info">
+        <Root level="debug">
             <!--<AppenderRef ref="SysOut"/>-->
             <AppenderRef ref="VanillaConsole"/>
             <AppenderRef ref="File"/>
