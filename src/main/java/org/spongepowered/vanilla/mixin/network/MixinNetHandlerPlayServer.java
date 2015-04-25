@@ -46,7 +46,6 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.interfaces.text.IMixinChatComponent;
-import org.spongepowered.common.interfaces.text.IMixinText;
 import org.spongepowered.common.text.SpongeTexts;
 
 import java.util.Locale;
