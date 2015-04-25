@@ -70,7 +70,8 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
         return SpongeVanilla.INSTANCE.getName();
     }
 
-    @Override @Overwrite
+    @Override
+    @Overwrite
     public void addChatMessage(IChatComponent component) {
         logger.info(SpongeTexts.toLegacy(component));
     }
