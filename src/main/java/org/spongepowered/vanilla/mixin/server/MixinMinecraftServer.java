@@ -39,8 +39,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.text.SpongeChatComponent;
-import org.spongepowered.common.text.SpongeText;
+import org.spongepowered.common.interfaces.text.IMixinChatComponent;
+import org.spongepowered.common.interfaces.text.IMixinText;
+import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.vanilla.SpongeVanilla;
 
 @Mixin(MinecraftServer.class)
@@ -73,7 +74,7 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
 
     @Override @Overwrite
     public void addChatMessage(IChatComponent component) {
-        logger.info(((SpongeChatComponent) component).toLegacy(SpongeText.COLOR_CHAR));
+        logger.info(SpongeTexts.toLegacy(component));
     }
 
 }

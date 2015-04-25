@@ -45,8 +45,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.common.text.SpongeChatComponent;
-import org.spongepowered.common.text.SpongeText;
+import org.spongepowered.common.interfaces.text.IMixinChatComponent;
+import org.spongepowered.common.interfaces.text.IMixinText;
+import org.spongepowered.common.text.SpongeTexts;
 
 import java.util.Locale;
 
@@ -100,9 +101,10 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             {
                 ChatComponentTranslation chatcomponenttranslation1 = new ChatComponentTranslation("chat.type.text", new Object[] {this.playerEntity.getDisplayName(), s});
                 // Sponge Start -> Fire PlayerChatEvent
-                final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) playerEntity, (CommandSource) playerEntity, ((SpongeChatComponent) chatcomponenttranslation1).toText());
+                final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) playerEntity, (CommandSource) playerEntity, ((IMixinChatComponent) chatcomponenttranslation1).toText());
                 Sponge.getGame().getEventManager().post(event);
-                this.serverController.getConfigurationManager().sendChatMsgImpl(((SpongeText) event.getMessage()).toComponent(Locale.ENGLISH), false); //TODO Is this locale right zml?
+                // TODO: Send with correct locale
+                this.serverController.getConfigurationManager().sendChatMsgImpl(SpongeTexts.toComponent(event.getMessage(), Locale.ENGLISH), false);
                 // Sponge End
             }
 
