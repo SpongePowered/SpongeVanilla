@@ -46,10 +46,12 @@ import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.permission.PermissionService;
+import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.persistence.SerializationService;
 import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
 import org.spongepowered.api.service.scheduler.SynchronousScheduler;
 import org.spongepowered.api.service.sql.SqlService;
+import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.command.SpongeCommandDisambiguator;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
@@ -153,7 +155,10 @@ public final class SpongeVanilla implements PluginContainer {
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             try {
-                this.game.getServiceManager().setProvider(this, PermissionService.class, new SpongePermissionService());
+                SpongePermissionService service = new SpongePermissionService();
+                // Setup default permissions
+                service.getGroupForOpLevel(2).getData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
+                this.game.getServiceManager().setProvider(this, PermissionService.class, service);
             } catch (ProviderExistsException e) {
                 // It's a fallback, ignore
             }

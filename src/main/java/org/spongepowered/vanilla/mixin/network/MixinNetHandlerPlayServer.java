@@ -37,6 +37,7 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.StringUtils;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
@@ -101,9 +102,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
                 ChatComponentTranslation chatcomponenttranslation1 = new ChatComponentTranslation("chat.type.text", new Object[] {this.playerEntity.getDisplayName(), s});
                 // Sponge Start -> Fire PlayerChatEvent
                 final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) playerEntity, (CommandSource) playerEntity, ((IMixinChatComponent) chatcomponenttranslation1).toText());
-                Sponge.getGame().getEventManager().post(event);
-                // TODO: Send with correct locale
-                this.serverController.getConfigurationManager().sendChatMsgImpl(SpongeTexts.toComponent(event.getMessage(), Locale.ENGLISH), false);
+                if (!Sponge.getGame().getEventManager().post(event)) {
+                    ((Server) this.serverController).broadcastMessage(event.getMessage());
+                }
                 // Sponge End
             }
 
