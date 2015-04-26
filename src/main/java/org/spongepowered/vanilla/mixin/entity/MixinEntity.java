@@ -47,6 +47,20 @@ public abstract class MixinEntity implements Entity, IMixinEntity {
         Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntityConstructing(Sponge.getGame(), this));
     }
 
+    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"), cancellable = false)
+    public void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+        if (tagCompound.hasKey("ForgeData")) {
+            customEntityData = tagCompound.getCompoundTag("ForgeData");
+        }
+    }
+
+    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"), cancellable = false)
+    public void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+        if (customEntityData != null) {
+            tagCompound.setTag("ForgeData", customEntityData);
+        }
+    }
+
     @Override
     public final NBTTagCompound getSpongeData() {
         if (this.customEntityData == null) {

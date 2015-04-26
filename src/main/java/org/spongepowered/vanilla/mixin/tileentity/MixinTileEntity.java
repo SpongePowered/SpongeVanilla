@@ -22,12 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.block.tile;
+package org.spongepowered.vanilla.mixin.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.block.tile.TileEntity;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.interfaces.IMixinTileEntity;
 
 import javax.annotation.Nullable;
@@ -37,6 +40,20 @@ import javax.annotation.Nullable;
 public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
 
     @Nullable private NBTTagCompound customEntityData;
+
+    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"), cancellable = false)
+    public void endReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+        if (tagCompound.hasKey("ForgeData")) {
+            customEntityData = tagCompound.getCompoundTag("ForgeData");
+        }
+    }
+
+    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"), cancellable = false)
+    public void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+        if (customEntityData != null) {
+            tagCompound.setTag("ForgeData", customEntityData);
+        }
+    }
 
     /**
      * Gets the SpongeData NBT tag, used for additional data not stored in the
