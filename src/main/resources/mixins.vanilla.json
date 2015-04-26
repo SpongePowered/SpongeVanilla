@@ -16,6 +16,7 @@
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinServerConfigurationManager",
+        "world.MixinChunk",
         "world.MixinWorld"
     ]
 }
