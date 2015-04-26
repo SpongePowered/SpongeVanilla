@@ -6,7 +6,6 @@
     "priority": 1111,
     "server": [
         "MixinBootstrap",
-        "block.tile.MixinTileEntity",
         "entity.MixinEntity",
         "entity.vehicle.MixinEntityMinecart",
         "item.MixinEnchantment",
@@ -16,6 +15,7 @@
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinServerConfigurationManager",
+        "tileentity.MixinTileEntity",
         "world.MixinChunk",
         "world.MixinWorld"
     ]
