@@ -41,14 +41,14 @@ public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
 
     @Nullable private NBTTagCompound customEntityData;
 
-    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"), cancellable = false)
+    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
     public void endReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey("ForgeData")) {
             customEntityData = tagCompound.getCompoundTag("ForgeData");
         }
     }
 
-    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"), cancellable = false)
+    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
     public void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (customEntityData != null) {
             tagCompound.setTag("ForgeData", customEntityData);
