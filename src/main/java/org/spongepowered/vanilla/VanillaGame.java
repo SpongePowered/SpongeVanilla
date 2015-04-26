@@ -24,10 +24,8 @@
  */
 package org.spongepowered.vanilla;
 
-import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.Server;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.event.EventManager;
@@ -49,11 +47,6 @@ public class VanillaGame extends SpongeGame {
     @Override
     public Platform getPlatform() {
         return Platform.SERVER;
-    }
-
-    @Override
-    public Server getServer() {
-        return (Server) MinecraftServer.getServer();
     }
 
 }
