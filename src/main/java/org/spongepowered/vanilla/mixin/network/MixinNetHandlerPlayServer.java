@@ -24,110 +24,45 @@
  */
 package org.spongepowered.vanilla.mixin.network;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayServer;
-import net.minecraft.network.play.client.C01PacketChatMessage;
-import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.common.interfaces.text.IMixinChatComponent;
-import org.spongepowered.common.text.translation.SpongeTranslation;
+import org.spongepowered.common.text.SpongeTexts;
 
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer {
 
-    @Shadow private int chatSpamThresholdCount;
     @Shadow private EntityPlayerMP playerEntity;
     @Shadow private MinecraftServer serverController;
-    @Shadow abstract void kickPlayerFromServer(String reason);
-    @Shadow abstract void sendPacket(final Packet packetIn);
-    @Shadow abstract void handleSlashCommand(String command);
 
-    /**
-     * @author Zidane
-     *
-     * Purpose: To fire the {@link org.spongepowered.api.event.entity.player.PlayerChatEvent}.
-     * Reasoning: The overwrite is needed due to the spot where the event has to fire being awkward. Mumfrey can correct
-     * me otherwise.
-     */
-    @Overwrite
-    public void processChatMessage(C01PacketChatMessage packetIn) {
-        PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.playerEntity.getServerForPlayer());
-
-        if (this.playerEntity.getChatVisibility() == EntityPlayer.EnumChatVisibility.HIDDEN)
-        {
-            ChatComponentTranslation chatcomponenttranslation = new ChatComponentTranslation("chat.cannotSend", new Object[0]);
-            chatcomponenttranslation.getChatStyle().setColor(EnumChatFormatting.RED);
-            this.sendPacket(new S02PacketChat(chatcomponenttranslation));
-        }
-        else
-        {
-            this.playerEntity.markPlayerActive();
-            String s = packetIn.getMessage();
-            s = StringUtils.normalizeSpace(s);
-
-            for (int i = 0; i < s.length(); ++i)
-            {
-                if (!ChatAllowedCharacters.isAllowedCharacter(s.charAt(i)))
-                {
-                    this.kickPlayerFromServer("Illegal characters in chat");
-                    return;
-                }
-            }
-
-            if (s.startsWith("/"))
-            {
-                this.handleSlashCommand(s);
-            }
-            else
-            {
-                ChatComponentTranslation chatcomponenttranslation1 = new ChatComponentTranslation("chat.type.text", new Object[] {this.playerEntity.getDisplayName(), s});
-                // Sponge Start -> Fire PlayerChatEvent
-                final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) playerEntity, (CommandSource) playerEntity, ((IMixinChatComponent) chatcomponenttranslation1).toText());
-                if (!Sponge.getGame().getEventManager().post(event)) {
-                    ((Server) this.serverController).broadcastMessage(event.getMessage());
-                }
-                // Sponge End
-            }
-
-            this.chatSpamThresholdCount += 20;
-
-            if (this.chatSpamThresholdCount > 200 && !this.serverController.getConfigurationManager().canSendCommands(this.playerEntity.getGameProfile()))
-            {
-                this.kickPlayerFromServer("disconnect.spam");
-            }
+    @Redirect(method = "processChatMessage",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
+    public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
+        final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity, (CommandSource)
+                this.playerEntity, SpongeTexts.toText(component));
+        if (!Sponge.getGame().getEventManager().post(event)) {
+            ((Server) this.serverController).broadcastMessage(event.getMessage());
         }
     }
 
-    @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
-    public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent reason) {
-        Text quitMessage = Texts.builder(new SpongeTranslation("multiplayer.player.left"), playerEntity.getDisplayName()).color(TextColors.YELLOW).build();
-
-        PlayerQuitEvent event = SpongeEventFactory.createPlayerQuit(Sponge.getGame(), (Player) playerEntity, quitMessage);
+    @Redirect(method = "onDisconnect",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
+    public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
+        PlayerQuitEvent event = SpongeEventFactory.createPlayerQuit(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText(component));
         Sponge.getGame().getEventManager().post(event);
         ((Server) this.serverController).broadcastMessage(event.getQuitMessage());
     }
