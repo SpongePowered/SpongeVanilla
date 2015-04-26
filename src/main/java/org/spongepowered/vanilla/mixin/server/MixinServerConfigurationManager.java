@@ -26,26 +26,32 @@ package org.spongepowered.vanilla.mixin.server;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
-import org.spongepowered.common.text.translation.SpongeTranslation;
+
+import java.util.Iterator;
 
 @Mixin(ServerConfigurationManager.class)
 public abstract class MixinServerConfigurationManager {
@@ -57,26 +63,17 @@ public abstract class MixinServerConfigurationManager {
         // Nullroute the call, we're sending the message below
     }
 
-    @Inject(method = "initializeConnectionToPlayer", at = @At(value = "RETURN"))
-    public void initializeConnectionToPlayerInject(NetworkManager netman, EntityPlayerMP player, CallbackInfo ci) {
-        GameProfile newProfile = player.getGameProfile();
-        GameProfile cachedGameProfile = this.mcServer.getPlayerProfileCache().getProfileByUUID(newProfile.getId());
+    @Inject(method = "initializeConnectionToPlayer", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void initializeConnectionToPlayerInject(NetworkManager netManager, EntityPlayerMP player, CallbackInfo ci, GameProfile gameprofile,
+            PlayerProfileCache playerprofilecache, GameProfile gameprofile1, String s, NBTTagCompound nbttagcompound, String s1,
+            WorldServer worldserver, WorldInfo worldinfo, BlockPos blockpos, NetHandlerPlayServer nethandlerplayserver,
+            ChatComponentTranslation chatcomponenttranslation, Iterator iterator) {
 
-        String oldName = cachedGameProfile == null ? newProfile.getName() : cachedGameProfile.getName();
-
-        Text joinMessage;
-        if (!player.getCommandSenderName().equalsIgnoreCase(oldName)) {
-            joinMessage = Texts.builder(new SpongeTranslation("multiplayer.player.joined.renamed"),
-                    SpongeTexts.toText(player.getDisplayName()), oldName).color(TextColors.YELLOW).build();
-        } else {
-            joinMessage = Texts.builder(new SpongeTranslation("multiplayer.player.joined"),
-                    SpongeTexts.toText(player.getDisplayName())).color(TextColors.YELLOW).build();
-        }
-
-        PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player,  joinMessage);
+        PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, SpongeTexts.toText(chatcomponenttranslation));
         Sponge.getGame().getEventManager().post(event);
 
         // Send (possibly changed) join message
         ((Server) this.mcServer).broadcastMessage(event.getJoinMessage());
     }
+
 }
