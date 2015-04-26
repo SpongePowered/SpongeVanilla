@@ -47,14 +47,14 @@ public abstract class MixinEntity implements Entity, IMixinEntity {
         Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntityConstructing(Sponge.getGame(), this));
     }
 
-    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"), cancellable = false)
+    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     public void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey("ForgeData")) {
             customEntityData = tagCompound.getCompoundTag("ForgeData");
         }
     }
 
-    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"), cancellable = false)
+    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     public void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (customEntityData != null) {
             tagCompound.setTag("ForgeData", customEntityData);
