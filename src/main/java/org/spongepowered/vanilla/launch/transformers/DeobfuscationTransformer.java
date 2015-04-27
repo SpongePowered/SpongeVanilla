@@ -50,6 +50,7 @@ import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.commons.RemappingMethodAdapter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.spongepowered.vanilla.launch.server.VanillaServerTweaker;
 
 import java.io.IOException;
 import java.net.URL;
@@ -87,13 +88,13 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
 
                 String[] parts = StringUtils.split(line, ' ');
                 if (parts.length < 3) {
-                    System.out.println("Invalid line: " + line);
+                    VanillaServerTweaker.getLogger().warn("Invalid deobfuscation mapping line: {}", line);
                     return true;
                 }
 
                 MappingType type = MappingType.of(parts[0]);
                 if (type == null) {
-                    System.out.println("Invalid mapping: " + line);
+                    VanillaServerTweaker.getLogger().warn("Invalid deobfuscation mapping type: {}", line);
                     return true;
                 }
 

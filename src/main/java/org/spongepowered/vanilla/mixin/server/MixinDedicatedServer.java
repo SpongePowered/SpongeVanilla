@@ -42,12 +42,12 @@ import java.net.Proxy;
 @Mixin(DedicatedServer.class)
 public abstract class MixinDedicatedServer extends MinecraftServer {
 
-    public MixinDedicatedServer(File workDir, Proxy proxy, File profileCacheDir) {
+    protected MixinDedicatedServer(File workDir, Proxy proxy, File profileCacheDir) {
         super(workDir, proxy, profileCacheDir);
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
-            args = {"ldc=Loading properties"}, remap = false))
+            args = "ldc=Loading properties", remap = false))
     public void onServerLoad(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.load();
     }

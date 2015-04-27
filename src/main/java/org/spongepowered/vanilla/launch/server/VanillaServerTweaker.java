@@ -49,6 +49,10 @@ public final class VanillaServerTweaker implements ITweaker {
 
     private String[] args = ArrayUtils.EMPTY_STRING_ARRAY;
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         SpongeLaunch.initialize(gameDir, null, null);

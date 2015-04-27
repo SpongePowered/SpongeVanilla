@@ -41,7 +41,8 @@ import java.io.PrintStream;
 
 public final class VanillaConsole {
 
-    private VanillaConsole() {}
+    private VanillaConsole() {
+    }
 
     private static ConsoleReader reader;
     private static Formatter formatter;
@@ -51,12 +52,14 @@ public final class VanillaConsole {
         return reader;
     }
 
-    private static void disable() throws IOException {
+    private static void disable() {
         System.setProperty(JLINE_TERMINAL, OFF);
     }
 
     public static void start() {
-        if (reader != null) return;
+        if (reader != null) {
+            return;
+        }
 
         if (System.console() != null) {
             try {

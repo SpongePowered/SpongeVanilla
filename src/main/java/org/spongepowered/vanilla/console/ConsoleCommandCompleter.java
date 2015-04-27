@@ -65,7 +65,8 @@ public class ConsoleCommandCompleter implements Completer {
 
             @Override
             public List<String> call() throws Exception {
-                return server.getTabCompletions(server, input, server.getPosition());
+                return ConsoleCommandCompleter.this.server
+                        .getTabCompletions(ConsoleCommandCompleter.this.server, input, ConsoleCommandCompleter.this.server.getPosition());
             }
         });
 
