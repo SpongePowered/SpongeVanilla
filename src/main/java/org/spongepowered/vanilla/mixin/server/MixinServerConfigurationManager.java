@@ -58,12 +58,13 @@ public abstract class MixinServerConfigurationManager {
 
     @Shadow private MinecraftServer mcServer;
 
-    @Redirect(method = "initializeConnectionToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
+    @Redirect(method = "initializeConnectionToPlayer", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
     public void initializeConnectionToPlayerRedirectSendChatMsg(ServerConfigurationManager this$0, IChatComponent component) {
         // Nullroute the call, we're sending the message below
     }
 
-    @Inject(method = "initializeConnectionToPlayer", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "initializeConnectionToPlayer", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void initializeConnectionToPlayerInject(NetworkManager netManager, EntityPlayerMP player, CallbackInfo ci, GameProfile gameprofile,
             PlayerProfileCache playerprofilecache, GameProfile gameprofile1, String s, NBTTagCompound nbttagcompound, String s1,
             WorldServer worldserver, WorldInfo worldinfo, BlockPos blockpos, NetHandlerPlayServer nethandlerplayserver,

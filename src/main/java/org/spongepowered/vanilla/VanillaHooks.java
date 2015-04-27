@@ -42,7 +42,10 @@ import org.spongepowered.common.Sponge;
 import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.block.VanillaBlockSnapshot;
 
-public class VanillaHooks {
+public final class VanillaHooks {
+
+    private VanillaHooks() {
+    }
 
     /**
      * Hook that prepares server logic for the firing of a {@link BlockBreakEvent}.

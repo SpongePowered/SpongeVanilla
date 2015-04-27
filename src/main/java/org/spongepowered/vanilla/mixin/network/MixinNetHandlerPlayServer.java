@@ -50,7 +50,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     @Shadow private MinecraftServer serverController;
 
     @Redirect(method = "processChatMessage",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
     public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
         final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity, (CommandSource)
                 this.playerEntity, SpongeTexts.toText(component));
@@ -60,7 +61,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     }
 
     @Redirect(method = "onDisconnect",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
     public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
         PlayerQuitEvent event = SpongeEventFactory.createPlayerQuit(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText(component));
         Sponge.getGame().getEventManager().post(event);
