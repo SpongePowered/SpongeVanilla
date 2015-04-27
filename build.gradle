@@ -27,7 +27,7 @@ buildscript {
 
 apply plugin: 'net.minecrell.vanilla'
 ext.minecraftPlugin = plugins.getPlugin('net.minecrell.vanilla')
-apply from: project(':Common').file('gradle/implementation.gradle')
+apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
     serverTweaker = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
