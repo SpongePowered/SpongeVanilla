@@ -24,7 +24,9 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import org.spongepowered.asm.mixin.injection.Surrogate;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -75,4 +77,10 @@ public abstract class MixinWorld implements org.spongepowered.api.world.World, I
         }
     }
 
+    @Surrogate
+    public void onSpawnEntityInWorld(Entity entity, CallbackInfoReturnable<Boolean> cir, int i, int j) {
+        boolean flag = entity.forceSpawn || entity instanceof EntityPlayer;
+        this.onSpawnEntityInWorld(entity, cir, i, j, flag);
+    }
+    
 }
