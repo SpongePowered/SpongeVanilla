@@ -83,18 +83,25 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isBlockProtected"
             + "(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/entity/player/EntityPlayer;)Z"), cancellable = true)
     public void injectProcessPlayerDigging(C07PacketPlayerDigging packetIn, CallbackInfo ci) {
+        // We'll handle all the logic here
+        ci.cancel();
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
         //TODO Quote gabizou: Calculate the clicked location on the server. Hmmm, sounds fun...come back and do later -_-.
         boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
                 new Cause(null, this.playerEntity, null), (Player) this.playerEntity, new Location((World) worldserver,
                         VecHelper.toVector(packetIn.getPosition())), EntityInteractionTypes.ATTACK, null));
-        if (cancelled) {
-            ci.cancel();
-            this.playerEntity.playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldserver, packetIn.getPosition()));
-            TileEntity tileentity = worldserver.getTileEntity(packetIn.getPosition());
-            if (tileentity != null) {
-                this.playerEntity.playerNetServerHandler.sendPacket(tileentity.getDescriptionPacket());
+        boolean revert = cancelled;
+
+        if (!cancelled) {
+            if (!this.serverController.isBlockProtected(worldserver, packetIn.getPosition(), this.playerEntity) && worldserver.getWorldBorder().contains(packetIn.getPosition())) {
+                this.playerEntity.theItemInWorldManager.onBlockClicked(packetIn.getPosition(), packetIn.getFacing());
+            } else {
+                revert = true;
             }
+        }
+
+        if (revert) {
+            this.playerEntity.playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldserver, packetIn.getPosition()));
         }
     }
 
