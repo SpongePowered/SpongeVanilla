@@ -34,9 +34,7 @@ import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.api.Server;
-import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -82,11 +80,14 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         ((Server) this.serverController).broadcastMessage(event.getQuitMessage());
     }
 
-    @Inject(method = "processPlayerDigging", at = @At(value = "FIELD", opcode = Opcodes.GETSTATIC, target = "net/minecraft/network/play/client/C07PacketPlayerDigging$Action.START_DESTROY_BLOCK:Lnet/minecraft/network/play/client/C07PacketPlayerDigging$Action;", shift = At.Shift.AFTER, by = 2), cancellable = true)
+    @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isBlockProtected"
+            + "(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/entity/player/EntityPlayer;)Z"), cancellable = true)
     public void injectProcessPlayerDigging(C07PacketPlayerDigging packetIn, CallbackInfo ci) {
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
         //TODO Quote gabizou: Calculate the clicked location on the server. Hmmm, sounds fun...come back and do later -_-.
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, playerEntity, null), (Player) playerEntity, new Location((World) worldserver, VecHelper.toVector(packetIn.getPosition())), EntityInteractionTypes.ATTACK, null));
+        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
+                new Cause(null, this.playerEntity, null), (Player) this.playerEntity, new Location((World) worldserver,
+                        VecHelper.toVector(packetIn.getPosition())), EntityInteractionTypes.ATTACK, null));
         if (cancelled) {
             ci.cancel();
             this.playerEntity.playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldserver, packetIn.getPosition()));

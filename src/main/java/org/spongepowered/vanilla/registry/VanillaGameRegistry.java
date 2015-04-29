@@ -28,7 +28,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.block.BlockType;
@@ -42,10 +41,10 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 
+import java.util.Set;
+
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
-import java.util.Iterator;
-import java.util.Set;
 
 @Singleton
 public class VanillaGameRegistry extends SpongeGameRegistry {
@@ -82,7 +81,7 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
 
     private void setBlockTypes() {
         for (Object obj : Block.blockRegistry) {
-            blockTypes.add((BlockType) obj);
+            this.blockTypes.add((BlockType) obj);
         }
 
         RegistryHelper.mapFields(BlockTypes.class, new Function<String, BlockType>() {
@@ -102,7 +101,7 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
 
     private void setItemTypes() {
         for (Object obj : Item.itemRegistry) {
-            itemTypes.add((ItemType) obj);
+            this.itemTypes.add((ItemType) obj);
         }
 
         RegistryHelper.mapFields(ItemTypes.class, new Function<String, ItemType>() {
