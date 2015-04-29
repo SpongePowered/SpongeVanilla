@@ -24,19 +24,11 @@
  */
 package org.spongepowered.vanilla.mixin.server;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -47,30 +39,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
 
-import java.util.Iterator;
+import javax.annotation.Nullable;
 
 @Mixin(ServerConfigurationManager.class)
 public abstract class MixinServerConfigurationManager {
 
     @Shadow private MinecraftServer mcServer;
+    @Nullable
+    private IChatComponent joinMessage;
 
     @Redirect(method = "initializeConnectionToPlayer", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
     public void initializeConnectionToPlayerRedirectSendChatMsg(ServerConfigurationManager this$0, IChatComponent component) {
-        // Nullroute the call, we're sending the message below
+        this.joinMessage = component;
     }
 
-    @Inject(method = "initializeConnectionToPlayer", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void initializeConnectionToPlayerInject(NetworkManager netManager, EntityPlayerMP player, CallbackInfo ci, GameProfile gameprofile,
-            PlayerProfileCache playerprofilecache, GameProfile gameprofile1, String s, NBTTagCompound nbttagcompound, String s1,
-            WorldServer worldserver, WorldInfo worldinfo, BlockPos blockpos, NetHandlerPlayServer nethandlerplayserver,
-            ChatComponentTranslation chatcomponenttranslation, Iterator iterator) {
-
-        PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, SpongeTexts.toText(chatcomponenttranslation));
+    @Inject(method = "initializeConnectionToPlayer", at = @At("RETURN"))
+    public void initializeConnectionToPlayerInject(NetworkManager netManager, EntityPlayerMP player, CallbackInfo ci) {
+        PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, SpongeTexts.toText(this.joinMessage));
+        this.joinMessage = null;
         Sponge.getGame().getEventManager().post(event);
 
         // Send (possibly changed) join message
