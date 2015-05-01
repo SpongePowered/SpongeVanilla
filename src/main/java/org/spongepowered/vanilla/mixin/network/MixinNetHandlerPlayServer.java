@@ -28,10 +28,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import org.spongepowered.api.Server;
@@ -105,4 +105,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         }
     }
 
+    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
+    public void onProcessPlayerBlockPlacement(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
+        // TODO PlayerInteractEvents really need a result field to stop the invoke of useItem in your hand
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(), (Player) playerEntity, EntityInteractionTypes.USE, null));
+    }
 }
