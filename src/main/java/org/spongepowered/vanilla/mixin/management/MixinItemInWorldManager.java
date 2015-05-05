@@ -75,7 +75,8 @@ public abstract class MixinItemInWorldManager {
 
     @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"), cancellable = true)
     public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity, float hitz, CallbackInfoReturnable<Boolean> ci) {
-        //TODO no side in API for side for this factory?
+        // TODO no side in API for side for this factory?
+        // TODO Clean this up
         boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, player, null), (Player) player, new Location(((Player) player).getWorld(), VecHelper.toVector(pos)), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
         if (cancelled) {
             final IBlockState state = worldIn.getBlockState(pos);
