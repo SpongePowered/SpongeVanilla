@@ -24,7 +24,6 @@
  */
 package org.spongepowered.vanilla.mixin.network;
 
-import com.google.common.base.Optional;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.INetHandlerPlayServer;
@@ -108,7 +107,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     }
 
     /**
-     * Invoke before <code>packetIn.getPlacedBlockDirection() == 255</code> (line 576 in official source) to reset "isRightClickAirCancelled" flag.
+     * Invoke before <code>packetIn.getPlacedBlockDirection() == 255</code> (line 576 in source) to reset "isRightClickAirCancelled" flag.
      * @param packetIn Injected packet param
      * @param ci Info to provide mixin on how to handle the callback
      */
@@ -118,17 +117,18 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     }
 
     /**
-     * Invoke after <code>packetIn.getPlacedBlockDirection() == 255</code> (line 576 in official source) to fire {@link org.spongepowered.api.event.entity.player.PlayerInteractEvent} on right click with air with item in-hand.
+     * Invoke after <code>packetIn.getPlacedBlockDirection() == 255</code> (line 576 in source) to fire {@link org.spongepowered.api.event.entity.player.PlayerInteractEvent} on right click with air with item in-hand.
      * @param packetIn Injected packet param
      * @param ci Info to provide mixin on how to handle the callback
      */
     @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I", ordinal = 1, shift = At.Shift.BY, by = 3))
     public void injectBeforeItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
+        //TODO Need to do a vec check in facing direction to not fire this event if actually interacting an entity.
         isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(), (Player) playerEntity, EntityInteractionTypes.USE, null));
     }
 
     /**
-     * Invoke after <code>itemstack == null</code> (line 578 in official source) to stop the logic for using an item if {@link org.spongepowered.api.event.entity.player.PlayerInteractEvent} was cancelled.
+     * Invoke before <code>itemstack == null</code> (line 578 in source) to stop the logic for using an item if {@link org.spongepowered.api.event.entity.player.PlayerInteractEvent} was cancelled.
      * @param packetIn Injected packet param
      * @param ci Info to provide mixin on how to handle the callback
      */
