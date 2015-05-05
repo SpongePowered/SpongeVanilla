@@ -27,6 +27,7 @@ package org.spongepowered.vanilla.mixin.management;
 import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,7 +82,7 @@ public abstract class MixinItemInWorldManager {
             boolean isBottom = false;
             if (state.getProperties().containsKey(BlockDoor.HALF)) {
                 if (state.getValue(BlockDoor.HALF) != BlockDoor.EnumDoorHalf.UPPER) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
                     isBottom = true;
                 }
             } else {
