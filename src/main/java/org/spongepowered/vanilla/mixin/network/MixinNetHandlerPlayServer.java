@@ -25,11 +25,13 @@
 package org.spongepowered.vanilla.mixin.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
@@ -52,8 +54,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.util.VecHelper;
+import org.spongepowered.vanilla.SpongeVanilla;
 import org.spongepowered.vanilla.util.EntityUtils;
 
 @Mixin(NetHandlerPlayServer.class)
@@ -90,9 +94,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         ci.cancel();
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
         //TODO Quote gabizou: Calculate the clicked location on the server. Hmmm, sounds fun...come back and do later -_-.
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
-                new Cause(null, this.playerEntity, null), (Player) this.playerEntity, new Location((World) worldserver,
-                        VecHelper.toVector(packetIn.getPosition())), EntityInteractionTypes.ATTACK, null));
+        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, this.playerEntity, null), (Player) this.playerEntity, new Location((World) worldserver, VecHelper.toVector(packetIn.getPosition())), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()), EntityInteractionTypes.ATTACK, null));
         boolean revert = cancelled;
 
         if (!cancelled) {

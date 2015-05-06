@@ -24,16 +24,17 @@
  */
 package org.spongepowered.vanilla.util;
 
+import com.flowpowered.math.GenericMath;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class EntityUtils {
     public static MovingObjectPosition rayTraceFromEntity(Entity entity, double traceDistance, float partialTicks) {
-        Vec3 var4 = EntityUtils.getPositionEyes(entity, partialTicks);
-        Vec3 var5 = entity.getLook(partialTicks);
-        Vec3 var6 = var4.addVector(var5.xCoord * traceDistance, var5.yCoord * traceDistance, var5.zCoord * traceDistance);
-        return entity.worldObj.rayTraceBlocks(var4, var6, false, false, true);
+        final Vec3 vecPositionEyes = EntityUtils.getPositionEyes(entity, partialTicks);
+        final Vec3 vecFacing = entity.getLook(partialTicks);
+        final Vec3 vecInFront = vecPositionEyes.addVector(vecFacing.xCoord * traceDistance, vecFacing.yCoord * traceDistance, vecFacing.zCoord * traceDistance);
+        return entity.worldObj.rayTraceBlocks(vecPositionEyes, vecInFront, false, false, true);
     }
 
     public static Vec3 getPositionEyes(Entity entity, float partialTicks) {
@@ -41,9 +42,9 @@ public class EntityUtils {
             return new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         }
 
-        double interpX = entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks;
-        double interpY = entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks + entity.getEyeHeight();
-        double interpZ = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks;
+        double interpX = GenericMath.lerp(entity.prevPosX, entity.posX, partialTicks);
+        double interpY = GenericMath.lerp(entity.prevPosY, entity.posY, partialTicks);
+        double interpZ = GenericMath.lerp(entity.prevPosZ, entity.posZ, partialTicks);
         return new Vec3(interpX, interpY, interpZ);
     }
 }
