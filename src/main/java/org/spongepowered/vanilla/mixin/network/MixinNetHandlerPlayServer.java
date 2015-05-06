@@ -33,6 +33,7 @@ import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.EntityInteractionTypes;
@@ -53,6 +54,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.util.VecHelper;
+import org.spongepowered.vanilla.util.EntityUtils;
 
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer {
@@ -123,8 +125,10 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
      */
     @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I", ordinal = 1, shift = At.Shift.BY, by = 3))
     public void injectBeforeItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
-        //TODO Need to do a vec check in facing direction to not fire this event if actually interacting an entity.
-        isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(), (Player) playerEntity, EntityInteractionTypes.USE, null));
+        final MovingObjectPosition objectPosition = EntityUtils.rayTraceFromEntity(playerEntity, 4, 1);
+        if (objectPosition != null && objectPosition.entityHit == null) {
+            isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(), (Player) playerEntity, EntityInteractionTypes.USE, null));
+        }
     }
 
     /**
