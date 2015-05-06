@@ -25,8 +25,6 @@
 package org.spongepowered.vanilla.mixin.management;
 
 import com.flowpowered.math.vector.Vector3d;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
@@ -37,12 +35,12 @@ import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemDoublePlant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -54,6 +52,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.VanillaHooks;
 
@@ -61,10 +60,8 @@ import org.spongepowered.vanilla.VanillaHooks;
 public abstract class MixinItemInWorldManager {
 
     @Shadow public World theWorld;
-
-    @Shadow private WorldSettings.GameType gameType;
-
     @Shadow public EntityPlayerMP thisPlayerMP;
+    @Shadow private WorldSettings.GameType gameType;
 
     @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
     public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
@@ -75,29 +72,49 @@ public abstract class MixinItemInWorldManager {
 
     @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"), cancellable = true)
     public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity, float hitz, CallbackInfoReturnable<Boolean> ci) {
-        // TODO no side in API for side for this factory?
-        // TODO Clean this up
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, player, null), (Player) player, new Location(((Player) player).getWorld(), VecHelper.toVector(pos)), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
+        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, player, null), (Player) player, new Location(((Player) player).getWorld(), VecHelper.toVector(pos)), SpongeGameRegistry.directionMap.inverse().get(side), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
         if (cancelled) {
+            // Short-circuit and return false
+            ci.setReturnValue(false);
             final IBlockState state = worldIn.getBlockState(pos);
-            boolean isBottom = false;
-            if (state.getProperties().containsKey(BlockDoor.HALF)) {
-                if (state.getValue(BlockDoor.HALF) != BlockDoor.EnumDoorHalf.UPPER) {
-                            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
-                    isBottom = true;
-                }
-            } else {
-                if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.add(0, 2, 0)));
-                }
-            }
-            if (isBottom) {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.add(0, 1, 0)));
-            } else {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.add(0, -1, 0)));
+
+            // Commence activation hacks
+
+            // CommandBlock GUI opens solely on the client, we need to force it close on cancellation
+            if (state.getBlock() == Blocks.command_block) {
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S2EPacketCloseWindow(0));
+                return;
             }
 
-            ci.setReturnValue(false);
+            // Button animation presses occur on the client without server interference, we need to send down the block change
+            // to fix the button remaining pressed when right-clicking with nothing in-hand
+            if (state.getBlock() instanceof BlockButton) {
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                return;
+            }
+
+            // Stopping the placement of a door causes artifacts (ghosts) on the top-side of the door. We need to remove it
+            if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.up(2)));
+                return;
+            }
+
+            // Stopping a door from opening while interacting the top part will allow the door to open, we need to update the
+            // client to resolve this
+            if (state.getProperties().containsKey(BlockDoor.HALF)) {
+                boolean isLower = false;
+
+                if (state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
+                    isLower = true;
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                }
+
+                if (isLower) {
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.up()));
+                } else {
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.down()));
+                }
+            }
         }
     }
 }
