@@ -29,11 +29,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
-public class EntityUtils {
+public final class EntityUtils {
+
+    private EntityUtils() {
+    }
+
     public static MovingObjectPosition rayTraceFromEntity(Entity entity, double traceDistance, float partialTicks) {
         final Vec3 vecPositionEyes = EntityUtils.getPositionEyes(entity, partialTicks);
         final Vec3 vecFacing = entity.getLook(partialTicks);
-        final Vec3 vecInFront = vecPositionEyes.addVector(vecFacing.xCoord * traceDistance, vecFacing.yCoord * traceDistance, vecFacing.zCoord * traceDistance);
+        final Vec3 vecInFront = vecPositionEyes.addVector(vecFacing.xCoord * traceDistance, vecFacing.yCoord * traceDistance,
+                vecFacing.zCoord * traceDistance);
         return entity.worldObj.rayTraceBlocks(vecPositionEyes, vecInFront, false, false, true);
     }
 

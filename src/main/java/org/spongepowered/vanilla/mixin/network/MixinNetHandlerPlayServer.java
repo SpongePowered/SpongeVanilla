@@ -25,13 +25,11 @@
 package org.spongepowered.vanilla.mixin.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
@@ -57,7 +55,6 @@ import org.spongepowered.common.Sponge;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.util.VecHelper;
-import org.spongepowered.vanilla.SpongeVanilla;
 import org.spongepowered.vanilla.util.EntityUtils;
 
 @Mixin(NetHandlerPlayServer.class)
@@ -94,11 +91,15 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         ci.cancel();
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
         //TODO Quote gabizou: Calculate the clicked location on the server. Hmmm, sounds fun...come back and do later -_-.
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, this.playerEntity, null), (Player) this.playerEntity, new Location((World) worldserver, VecHelper.toVector(packetIn.getPosition())), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()), EntityInteractionTypes.ATTACK, null));
+        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
+                new Cause(null, this.playerEntity, null), (Player) this.playerEntity,
+                new Location((World) worldserver, VecHelper.toVector(packetIn.getPosition())),
+                SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()), EntityInteractionTypes.ATTACK, null));
         boolean revert = cancelled;
 
         if (!cancelled) {
-            if (!this.serverController.isBlockProtected(worldserver, packetIn.getPosition(), this.playerEntity) && worldserver.getWorldBorder().contains(packetIn.getPosition())) {
+            if (!this.serverController.isBlockProtected(worldserver, packetIn.getPosition(), this.playerEntity) && worldserver.getWorldBorder()
+                    .contains(packetIn.getPosition())) {
                 this.playerEntity.theItemInWorldManager.onBlockClicked(packetIn.getPosition(), packetIn.getFacing());
             } else {
                 revert = true;
@@ -111,39 +112,51 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     }
 
     /**
-     * Invoke before <code>packetIn.getPlacedBlockDirection() == 255</code> (line 576 in source) to reset "isRightClickAirCancelled" flag.
+     * Invoke before {@code packetIn.getPlacedBlockDirection() == 255} (line 576 in source) to reset "isRightClickAirCancelled" flag.
      * @param packetIn Injected packet param
      * @param ci Info to provide mixin on how to handle the callback
      */
-    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I", ordinal = 1))
+    @Inject(method = "processPlayerBlockPlacement",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I",
+                    ordinal = 1))
     public void injectBeforeBlockDirectionCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
-         isRightClickAirCancelled = false;
+        this.isRightClickAirCancelled = false;
     }
 
     /**
-     * Invoke after <code>packetIn.getPlacedBlockDirection() == 255</code> (line 576 in source) to fire {@link org.spongepowered.api.event.entity.player.PlayerInteractEvent} on right click with air with item in-hand.
+     * Invoke after {@code packetIn.getPlacedBlockDirection() == 255} (line 576 in source) to fire {@link org.spongepowered.api.event.entity
+     * .player.PlayerInteractEvent} on right click with air with item in-hand.
      * @param packetIn Injected packet param
      * @param ci Info to provide mixin on how to handle the callback
      */
-    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I", ordinal = 1, shift = At.Shift.BY, by = 3))
+    @Inject(method = "processPlayerBlockPlacement",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I",
+                    ordinal = 1, shift = At.Shift.BY, by = 3))
     public void injectBeforeItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
-        final MovingObjectPosition objectPosition = EntityUtils.rayTraceFromEntity(playerEntity, 4, 1);
+        final MovingObjectPosition objectPosition = EntityUtils.rayTraceFromEntity(this.playerEntity, 4, 1);
         if (objectPosition != null && objectPosition.entityHit == null) {
-            isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(), (Player) playerEntity, EntityInteractionTypes.USE, null));
+            this.isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(),
+                    (Player) this.playerEntity, EntityInteractionTypes.USE, null));
         }
     }
 
     /**
-     * Invoke before <code>itemstack == null</code> (line 578 in source) to stop the logic for using an item if {@link org.spongepowered.api.event.entity.player.PlayerInteractEvent} was cancelled.
+     * Invoke before {@code itemstack == null} (line 578 in source) to stop the logic for using an item if {@link org.spongepowered.api.event
+     * .entity.player.PlayerInteractEvent} was cancelled.
      * @param packetIn Injected packet param
      * @param ci Info to provide mixin on how to handle the callback
      */
-    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z", ordinal = 0), cancellable = true)
+    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
+                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z",
+            ordinal = 0), cancellable = true)
     public void injectAfterItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
         // Handle interact logic
         ci.cancel();
-        if (!isRightClickAirCancelled) {
-            this.playerEntity.theItemInWorldManager.tryUseItem(this.playerEntity, this.serverController.worldServerForDimension(this.playerEntity.dimension), this.playerEntity.inventory.getCurrentItem());
+        if (!this.isRightClickAirCancelled) {
+            this.playerEntity.theItemInWorldManager
+                    .tryUseItem(this.playerEntity, this.serverController.worldServerForDimension(this.playerEntity.dimension),
+                            this.playerEntity.inventory.getCurrentItem());
         }
     }
 }

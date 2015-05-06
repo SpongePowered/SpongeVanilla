@@ -82,5 +82,5 @@ public abstract class MixinWorld implements org.spongepowered.api.world.World, I
         boolean flag = entity.forceSpawn || entity instanceof EntityPlayer;
         this.onSpawnEntityInWorld(entity, cir, i, j, flag);
     }
-    
+
 }

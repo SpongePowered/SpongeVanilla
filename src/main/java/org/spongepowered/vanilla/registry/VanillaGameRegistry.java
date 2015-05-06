@@ -88,7 +88,7 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
             @Nullable
             @Override
             public BlockType apply(String input) {
-                for (BlockType type : blockTypes) {
+                for (BlockType type : VanillaGameRegistry.this.blockTypes) {
                     if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
                         return type;
                     }
@@ -108,7 +108,7 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
             @Nullable
             @Override
             public ItemType apply(String input) {
-                for (ItemType type : itemTypes) {
+                for (ItemType type : VanillaGameRegistry.this.itemTypes) {
                     if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
                         return type;
                     }

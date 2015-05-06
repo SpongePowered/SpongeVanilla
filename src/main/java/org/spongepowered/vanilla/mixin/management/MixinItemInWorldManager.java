@@ -70,9 +70,13 @@ public abstract class MixinItemInWorldManager {
         }
     }
 
-    @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"), cancellable = true)
-    public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity, float hitz, CallbackInfoReturnable<Boolean> ci) {
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(), new Cause(null, player, null), (Player) player, new Location(((Player) player).getWorld(), VecHelper.toVector(pos)), SpongeGameRegistry.directionMap.inverse().get(side), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
+    @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"),
+            cancellable = true)
+    public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity,
+            float hitz, CallbackInfoReturnable<Boolean> ci) {
+        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
+                new Cause(null, player, null), (Player) player, new Location(((Player) player).getWorld(), VecHelper.toVector(pos)),
+                SpongeGameRegistry.directionMap.inverse().get(side), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
         if (cancelled) {
             // Short-circuit and return false
             ci.setReturnValue(false);
@@ -89,13 +93,13 @@ public abstract class MixinItemInWorldManager {
             // Button animation presses occur on the client without server interference, we need to send down the block change
             // to fix the button remaining pressed when right-clicking with nothing in-hand
             if (state.getBlock() instanceof BlockButton) {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
                 return;
             }
 
             // Stopping the placement of a door or double plant causes artifacts (ghosts) on the top-side of the block. We need to remove it
             if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.up(2)));
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos.up(2)));
                 return;
             }
 
@@ -106,13 +110,13 @@ public abstract class MixinItemInWorldManager {
 
                 if (state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
                     isLower = true;
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
                 }
 
                 if (isLower) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.up()));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos.up()));
                 } else {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.down()));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos.down()));
                 }
             }
         }
