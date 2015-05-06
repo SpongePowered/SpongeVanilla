@@ -22,39 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.block.tile;
-
-import net.minecraft.nbt.NBTTagCompound;
-import org.spongepowered.api.block.tile.TileEntity;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.common.interfaces.IMixinTileEntity;
-
-@NonnullByDefault
-@Mixin(net.minecraft.tileentity.TileEntity.class)
-public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
-
-    private NBTTagCompound customEntityData;
-
-    /**
-     * Gets the SpongeData NBT tag, used for additional data not stored in the
-     * vanilla tag.
-     *
-     * <p>
-     * Modifying this tag will affect the data stored.
-     * </p>
-     *
-     * @return The data tag
-     */
-    @Override
-    public final NBTTagCompound getSpongeData() {
-        if (this.customEntityData == null) {
-            this.customEntityData = new NBTTagCompound();
-        }
-
-        if (!this.customEntityData.hasKey("SpongeData", 10)) {
-            this.customEntityData.setTag("SpongeData", new NBTTagCompound());
-        }
-        return this.customEntityData.getCompoundTag("SpongeData");
-    }
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.vanilla.mixin.management;

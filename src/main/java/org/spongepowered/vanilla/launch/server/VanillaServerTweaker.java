@@ -24,7 +24,9 @@
  */
 package org.spongepowered.vanilla.launch.server;
 
-import com.google.common.io.Resources;
+import static com.google.common.io.Resources.getResource;
+import static org.spongepowered.vanilla.plugin.VanillaPluginManager.SCAN_CLASSPATH_PROPERTY;
+
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -34,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.common.launch.SpongeLaunch;
+import org.spongepowered.vanilla.launch.console.VanillaConsole;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +49,14 @@ public final class VanillaServerTweaker implements ITweaker {
 
     private String[] args = ArrayUtils.EMPTY_STRING_ARRAY;
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         SpongeLaunch.initialize(gameDir, null, null);
+        VanillaConsole.start();
 
         if (args != null && !args.isEmpty()) {
             this.args = args.toArray(new String[args.size()]);
@@ -86,10 +94,9 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addTransformerExclusion("com.typesafe.config.");
 
         // Sponge Launch
-        loader.addClassLoaderExclusion("org.spongepowered.tools.");
+        loader.addTransformerExclusion("org.spongepowered.tools.");
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.vanilla.launch.");
-        loader.addTransformerExclusion("org.spongepowered.vanilla.mixin.");
 
         // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
@@ -98,15 +105,18 @@ public final class VanillaServerTweaker implements ITweaker {
         logger.debug("Applying runtime de-obfuscation...");
         if (isObfuscated()) {
             logger.info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
-            Launch.blackboard.put("vanilla.deobf-srg", Resources.getResource("mappings.srg"));
+            Launch.blackboard.put("vanilla.mappings", getResource("mappings.srg"));
             loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.DeobfuscationTransformer");
             logger.debug("Runtime de-obfuscation is applied.");
         } else {
             logger.debug("Runtime de-obfuscation was not applied. Sponge is being loaded in a de-obfuscated environment.");
+
+            // Enable plugin classpath scanning in deobfuscated environment
+            System.setProperty(SCAN_CLASSPATH_PROPERTY, "true");
         }
 
         logger.debug("Applying access transformer...");
-        Launch.blackboard.put("vanilla_at.cfg", new URL[]{Resources.getResource("common_at.cfg")});
+        Launch.blackboard.put("vanilla.at", new URL[]{getResource("common_at.cfg"), getResource("vanilla_at.cfg")});
         loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.AccessTransformer");
 
         logger.debug("Initializing Mixin environment...");
@@ -130,7 +140,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public String getLaunchTarget() {
-        return "net.minecraft.server.MinecraftServer";
+        return "org.spongepowered.vanilla.SpongeVanilla";
     }
 
     @Override

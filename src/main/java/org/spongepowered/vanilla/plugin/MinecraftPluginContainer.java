@@ -27,11 +27,12 @@ package org.spongepowered.vanilla.plugin;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.plugin.PluginContainer;
 
-public class MinecraftPluginContainer implements PluginContainer {
+import javax.inject.Singleton;
 
-    public static final MinecraftPluginContainer INSTANCE = new MinecraftPluginContainer();
+@Singleton
+public final class MinecraftPluginContainer implements PluginContainer {
 
-    private MinecraftPluginContainer() {
+    protected MinecraftPluginContainer() {
     }
 
     @Override

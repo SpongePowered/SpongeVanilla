@@ -24,18 +24,33 @@
  */
 package org.spongepowered.vanilla.registry;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Sets;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameDictionary;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.PostInitializationEvent;
 import org.spongepowered.api.event.state.PreInitializationEvent;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 
+import java.util.Set;
+
+import javax.annotation.Nullable;
 import javax.inject.Singleton;
 
 @Singleton
 public class VanillaGameRegistry extends SpongeGameRegistry {
+
+    private final Set<BlockType> blockTypes = Sets.newHashSet();
+    private final Set<ItemType> itemTypes = Sets.newHashSet();
 
     @Override
     public GameDictionary getGameDictionary() {
@@ -57,4 +72,50 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
         postInit();
     }
 
+    @Override
+    public void postInit() {
+        super.postInit();
+        setBlockTypes();
+        setItemTypes();
+    }
+
+    private void setBlockTypes() {
+        for (Object obj : Block.blockRegistry) {
+            this.blockTypes.add((BlockType) obj);
+        }
+
+        RegistryHelper.mapFields(BlockTypes.class, new Function<String, BlockType>() {
+            @Nullable
+            @Override
+            public BlockType apply(String input) {
+                for (BlockType type : VanillaGameRegistry.this.blockTypes) {
+                    if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
+                        return type;
+                    }
+                }
+
+                return null;
+            }
+        });
+    }
+
+    private void setItemTypes() {
+        for (Object obj : Item.itemRegistry) {
+            this.itemTypes.add((ItemType) obj);
+        }
+
+        RegistryHelper.mapFields(ItemTypes.class, new Function<String, ItemType>() {
+            @Nullable
+            @Override
+            public ItemType apply(String input) {
+                for (ItemType type : VanillaGameRegistry.this.itemTypes) {
+                    if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
+                        return type;
+                    }
+                }
+
+                return null;
+            }
+        });
+    }
 }

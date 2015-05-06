@@ -24,20 +24,46 @@
  */
 package org.spongepowered.vanilla.block;
 
+import com.flowpowered.math.vector.Vector3i;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.data.DataContainer;
 
 public class VanillaBlockSnapshot implements BlockSnapshot {
+
     private final IBlockState state;
 
     public VanillaBlockSnapshot(World world, BlockPos pos) {
         this.state = world.getBlockState(pos);
     }
+
     @Override
     public BlockState getState() {
-        return (BlockState) state;
+        return (BlockState) this.state;
     }
+
+    @Override
+    public void setBlockState(BlockState blockState) {
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public Vector3i getLocation() {
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public void setLocation(Vector3i location) {
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public DataContainer toContainer() {
+        throw new NotImplementedException("TODO");
+    }
+
 }

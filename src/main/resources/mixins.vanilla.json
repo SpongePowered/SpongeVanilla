@@ -5,15 +5,19 @@
     "refmap": "mixins.vanilla.refmap.json",
     "priority": 1111,
     "server": [
-        "block.tile.MixinTileEntity",
+        "MixinBootstrap",
         "entity.MixinEntity",
+        "entity.player.MixinEntityPlayer",
         "entity.vehicle.MixinEntityMinecart",
         "item.MixinEnchantment",
         "management.MixinItemInWorldManager",
         "network.MixinNetHandlerPlayServer",
+        "server.MixinConsoleHandler",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
-        "server.MixinServerCommandManager",
+        "server.MixinServerConfigurationManager",
+        "tileentity.MixinTileEntity",
+        "world.MixinChunk",
         "world.MixinWorld"
     ]
 }

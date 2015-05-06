@@ -27,7 +27,7 @@ buildscript {
 
 apply plugin: 'net.minecrell.vanilla'
 ext.minecraftPlugin = plugins.getPlugin('net.minecrell.vanilla')
-apply from: project(':Common').file('gradle/implementation.gradle')
+apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
     serverTweaker = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
@@ -40,6 +40,8 @@ configurations {
 }
 
 dependencies {
+    compile 'jline:jline:2.12.1'
+
     shadow 'org.ow2.asm:asm-all:5.0.3'
 }
 
@@ -67,5 +69,7 @@ shadowJar {
         include dependency('org.ow2.asm:asm-all')
 
         include dependency('com.typesafe:config')
+
+        include dependency('jline:jline')
     }
 }

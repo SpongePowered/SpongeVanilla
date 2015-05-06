@@ -24,11 +24,14 @@
  */
 package org.spongepowered.vanilla.guice;
 
+import static com.google.inject.name.Names.named;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
@@ -40,12 +43,14 @@ import org.spongepowered.common.world.SpongeTeleportHelper;
 import org.spongepowered.vanilla.SpongeVanilla;
 import org.spongepowered.vanilla.VanillaGame;
 import org.spongepowered.vanilla.event.VanillaEventManager;
+import org.spongepowered.vanilla.plugin.MinecraftPluginContainer;
 import org.spongepowered.vanilla.plugin.VanillaPluginManager;
 import org.spongepowered.vanilla.registry.VanillaGameRegistry;
 
 import java.io.File;
 
 public class VanillaGuiceModule extends AbstractModule {
+
     private final SpongeVanilla instance;
     private final Logger logger;
 
@@ -58,6 +63,9 @@ public class VanillaGuiceModule extends AbstractModule {
     protected void configure() {
         bind(SpongeVanilla.class).toInstance(this.instance);
         bind(Logger.class).toInstance(this.logger);
+
+        bind(PluginContainer.class).annotatedWith(named("Sponge")).toInstance(this.instance);
+        bind(PluginContainer.class).annotatedWith(named("Minecraft")).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(VanillaPluginManager.class).in(Scopes.SINGLETON);

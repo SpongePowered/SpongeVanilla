@@ -25,6 +25,7 @@
 package org.spongepowered.vanilla.launch.server;
 
 import net.minecraft.launchwrapper.Launch;
+import org.spongepowered.vanilla.launch.console.VanillaConsole;
 
 import java.io.Closeable;
 import java.io.File;
@@ -55,6 +56,7 @@ public final class VanillaServerMain {
             return;
         }
 
+        VanillaConsole.start();
         Launch.main(join(args,
                 "--tweakClass", "org.spongepowered.vanilla.launch.server.VanillaServerTweaker"
         ));

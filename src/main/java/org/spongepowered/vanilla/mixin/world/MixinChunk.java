@@ -22,31 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla;
+package org.spongepowered.vanilla.mixin.world;
 
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.common.SpongeGame;
+import net.minecraft.world.chunk.Chunk;
+import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.Sponge;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+@Mixin(Chunk.class)
+public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
 
-@Singleton
-public class VanillaGame extends SpongeGame {
-
-    @Inject
-    public VanillaGame(PluginManager pluginManager, EventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager,
-            TeleportHelper teleportHelper) {
-        super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
+    @Inject(method = "onChunkLoad", at = @At("RETURN"))
+    public void postChunkLoad(CallbackInfo ci) {
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createChunkLoad(Sponge.getGame(), this));
     }
 
-    @Override
-    public Platform getPlatform() {
-        return Platform.SERVER;
+    @Inject(method = "onChunkUnload", at = @At("RETURN"))
+    public void postChunkUnload(CallbackInfo ci) {
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createChunkUnload(Sponge.getGame(), this));
     }
 
 }

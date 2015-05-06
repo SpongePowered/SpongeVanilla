@@ -25,51 +25,40 @@
 package org.spongepowered.vanilla.plugin;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.spongepowered.vanilla.plugin.PluginScanner.ARCHIVE;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-import com.google.common.io.Closer;
 import net.minecraft.launchwrapper.Launch;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AnnotationNode;
-import org.objectweb.asm.tree.ClassNode;
 import org.slf4j.Logger;
-import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.vanilla.SpongeVanilla;
-import org.spongepowered.vanilla.util.FileExtensionFilter;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
 public class VanillaPluginManager implements PluginManager {
 
-    private static final String PLUGIN_DESCRIPTOR = Type.getDescriptor(Plugin.class);
-    private static final FilenameFilter JAR_FILES = new FileExtensionFilter("jar");
+    public static final String SCAN_CLASSPATH_PROPERTY = "sponge.plugins.scanClasspath";
+    private static final boolean SCAN_CLASSPATH = Boolean.getBoolean(SCAN_CLASSPATH_PROPERTY);
 
     private final Map<String, PluginContainer> plugins = Maps.newHashMap();
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
     @Inject
-    public VanillaPluginManager(SpongeVanilla instance) {
-        registerPlugin(MinecraftPluginContainer.INSTANCE);
-        registerPlugin(instance);
+    public VanillaPluginManager(@Named("Sponge") PluginContainer spongePlugin, @Named("Minecraft") PluginContainer minecraftPlugin) {
+        registerPlugin(spongePlugin);
+        registerPlugin(minecraftPlugin);
     }
 
     private void registerPlugin(PluginContainer plugin) {
@@ -78,71 +67,45 @@ public class VanillaPluginManager implements PluginManager {
     }
 
     public void loadPlugins() throws IOException {
-        for (File jar : Sponge.getPluginsDirectory().listFiles(JAR_FILES)) {
-            String pluginClassName = null;
+        Set<String> plugins;
 
-            try {
-                ZipFile zip = new ZipFile(jar);
-                try {
-                    Enumeration<? extends ZipEntry> entries = zip.entries();
-                    while (entries.hasMoreElements()) {
-                        ZipEntry entry = entries.nextElement();
-                        if (entry.isDirectory() || !entry.getName().endsWith(".class")) {
-                            continue;
-                        }
+        if (SCAN_CLASSPATH) {
+            Sponge.getLogger().info("Scanning classpath for plugins...");
 
-                        Closer closer = Closer.create();
-                        try {
-                            InputStream in = closer.register(zip.getInputStream(entry));
-                            if ((pluginClassName = findPlugin(in)) != null) {
-                                break;
-                            }
-                        } catch (Throwable e) {
-                            throw closer.rethrow(e);
-                        } finally {
-                            closer.close();
-                        }
-                    }
-                } finally {
-                    zip.close();
-                }
-            } catch (IOException e) {
-                Sponge.getLogger().error("Failed to load plugin JAR: " + jar, e);
-                continue;
+            // Find plugins on the classpath
+            plugins = PluginScanner.scanClassPath(Launch.classLoader);
+            if (!plugins.isEmpty()) {
+                loadPlugins("classpath", plugins);
             }
+        }
 
-            // Load the plugin
-            if (pluginClassName != null) {
-                try {
-                    Launch.classLoader.addURL(jar.toURI().toURL());
-                    Class<?> pluginClass = Class.forName(pluginClassName);
-                    VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
-                    registerPlugin(container);
-                    Sponge.getGame().getEventManager().register(container, container.getInstance());
+        for (File jar : Sponge.getPluginsDirectory().listFiles(ARCHIVE)) {
+            // Search for plugins in the JAR
+            plugins = PluginScanner.scanZip(jar);
 
-                    Sponge.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
-                } catch (Throwable e) {
-                    Sponge.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
-                }
+            if (!plugins.isEmpty()) {
+                // Add plugin to the classpath
+                Launch.classLoader.addURL(jar.toURI().toURL());
+
+                // Load the plugins
+                loadPlugins(jar, plugins);
             }
         }
     }
 
-    @Nullable
-    private static String findPlugin(InputStream in) throws IOException {
-        ClassReader reader = new ClassReader(in);
-        ClassNode classNode = new ClassNode();
-        reader.accept(classNode, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+    private void loadPlugins(Object source, Iterable<String> plugins) {
+        for (String plugin : plugins) {
+            try {
+                Class<?> pluginClass = Class.forName(plugin);
+                VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
+                registerPlugin(container);
+                Sponge.getGame().getEventManager().register(container, container.getInstance());
 
-        if (classNode.visibleAnnotations != null) {
-            for (AnnotationNode node : classNode.visibleAnnotations) {
-                if (node.desc.equals(PLUGIN_DESCRIPTOR)) {
-                    return classNode.name.replace('/', '.');
-                }
+                Sponge.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
+            } catch (Throwable e) {
+                Sponge.getLogger().error("Failed to load plugin: {} (from {})", plugin, source, e);
             }
         }
-
-        return null;
     }
 
     @Override

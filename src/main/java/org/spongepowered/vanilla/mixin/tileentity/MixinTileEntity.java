@@ -22,47 +22,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.entity;
+package org.spongepowered.vanilla.mixin.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.block.tile.TileEntity;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.Sponge;
-import org.spongepowered.common.interfaces.IMixinEntity;
+import org.spongepowered.common.interfaces.IMixinTileEntity;
 
 import javax.annotation.Nullable;
 
-@Mixin(net.minecraft.entity.Entity.class)
-public abstract class MixinEntity implements Entity, IMixinEntity {
+@NonnullByDefault
+@Mixin(net.minecraft.tileentity.TileEntity.class)
+public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
 
     @Nullable private NBTTagCompound customEntityData;
 
-    @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
-    public void onConstructed(World world, CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntityConstructing(Sponge.getGame(), this));
-    }
-
-    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
-    public void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+    @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
+    public void endReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey("ForgeData")) {
             this.customEntityData = tagCompound.getCompoundTag("ForgeData");
         }
     }
 
-    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
-    public void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
+    public void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (this.customEntityData != null) {
             tagCompound.setTag("ForgeData", this.customEntityData);
         }
     }
 
+    /**
+     * Gets the SpongeData NBT tag, used for additional data not stored in the
+     * vanilla tag.
+     *
+     * <p>Modifying this tag will affect the data stored.</p>
+     *
+     * @return The data tag
+     */
     @Override
     public final NBTTagCompound getSpongeData() {
         if (this.customEntityData == null) {
@@ -74,5 +74,4 @@ public abstract class MixinEntity implements Entity, IMixinEntity {
         }
         return this.customEntityData.getCompoundTag("SpongeData");
     }
-
 }

@@ -22,22 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.server;
-
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ServerCommandManager;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.common.command.MinecraftCommandWrapper;
-import org.spongepowered.common.interfaces.IMixinServerCommandManager;
-import org.spongepowered.vanilla.plugin.MinecraftPluginContainer;
-
-@Mixin(ServerCommandManager.class)
-public abstract class MixinServerCommandManager extends CommandHandler implements IMixinServerCommandManager {
-
-    @Override
-    public MinecraftCommandWrapper wrapCommand(ICommand command) {
-        return new MinecraftCommandWrapper(MinecraftPluginContainer.INSTANCE, command);
-    }
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.vanilla.mixin.item;

@@ -22,31 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla;
-
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.common.SpongeGame;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton
-public class VanillaGame extends SpongeGame {
-
-    @Inject
-    public VanillaGame(PluginManager pluginManager, EventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager,
-            TeleportHelper teleportHelper) {
-        super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
-    }
-
-    @Override
-    public Platform getPlatform() {
-        return Platform.SERVER;
-    }
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.vanilla.block;

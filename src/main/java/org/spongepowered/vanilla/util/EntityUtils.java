@@ -24,20 +24,32 @@
  */
 package org.spongepowered.vanilla.util;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import com.flowpowered.math.GenericMath;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
-public class FileExtensionFilter implements FilenameFilter {
+public final class EntityUtils {
 
-    private final String extension;
-
-    public FileExtensionFilter(String extension) {
-        this.extension = '.' + extension;
+    private EntityUtils() {
     }
 
-    @Override
-    public boolean accept(File dir, String name) {
-        return name.endsWith(this.extension);
+    public static MovingObjectPosition rayTraceFromEntity(Entity entity, double traceDistance, float partialTicks) {
+        final Vec3 vecPositionEyes = EntityUtils.getPositionEyes(entity, partialTicks);
+        final Vec3 vecFacing = entity.getLook(partialTicks);
+        final Vec3 vecInFront = vecPositionEyes.addVector(vecFacing.xCoord * traceDistance, vecFacing.yCoord * traceDistance,
+                vecFacing.zCoord * traceDistance);
+        return entity.worldObj.rayTraceBlocks(vecPositionEyes, vecInFront, false, false, true);
     }
 
+    public static Vec3 getPositionEyes(Entity entity, float partialTicks) {
+        if (partialTicks == 1.0F) {
+            return new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        }
+
+        double interpX = GenericMath.lerp(entity.prevPosX, entity.posX, partialTicks);
+        double interpY = GenericMath.lerp(entity.prevPosY, entity.posY, partialTicks);
+        double interpZ = GenericMath.lerp(entity.prevPosZ, entity.posZ, partialTicks);
+        return new Vec3(interpX, interpY, interpZ);
+    }
 }

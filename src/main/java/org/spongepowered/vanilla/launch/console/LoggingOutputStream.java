@@ -22,31 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla;
+package org.spongepowered.vanilla.launch.console;
 
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.common.SpongeGame;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
-@Singleton
-public class VanillaGame extends SpongeGame {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
-    @Inject
-    public VanillaGame(PluginManager pluginManager, EventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager,
-            TeleportHelper teleportHelper) {
-        super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
+public class LoggingOutputStream extends ByteArrayOutputStream {
+
+    private static final String SEPARATOR = System.getProperty("line.separator");
+    private final Logger logger;
+    private final Level level;
+
+    public LoggingOutputStream(Logger logger, Level level) {
+        this.logger = checkNotNull(logger, "logger");
+        this.level = checkNotNull(level, "level");
     }
 
     @Override
-    public Platform getPlatform() {
-        return Platform.SERVER;
+    public void flush() throws IOException {
+        String message = toString();
+        reset();
+
+        if (!message.isEmpty() && !message.equals(SEPARATOR)) {
+            this.logger.log(this.level, message);
+        }
     }
 
 }
