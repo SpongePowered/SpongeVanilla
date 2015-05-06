@@ -24,6 +24,7 @@
  */
 package org.spongepowered.vanilla.plugin;
 
+import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
@@ -72,6 +73,15 @@ public class VanillaPluginContainer implements SpongePluginContainer {
     @Override
     public Logger getLogger() {
         return this.logger;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper("Plugin")
+                .add("id", this.id)
+                .add("name", this.name)
+                .add("version", this.version)
+                .toString();
     }
 
 }
