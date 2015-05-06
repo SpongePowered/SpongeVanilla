@@ -40,18 +40,22 @@ import org.spongepowered.common.Sponge;
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
 
-    public MixinEntityPlayer(World worldIn) {
+    protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
     }
 
     /**
-     * Invoke before <code>ItemStack itemstack = this.getCurrentEquippedItem()</code> (line 1206 in source) to fire {@link org.spongepowered.api.event.entity.player.PlayerInteractEntityEvent}.
+     * Invoke before {@code ItemStack itemstack = this.getCurrentEquippedItem()} (line 1206 in source) to fire {@link org.spongepowered.api
+     * .event.entity.player.PlayerInteractEntityEvent}.
      * @param entity Injected entity being interacted by this player
      * @param ci Info to provide mixin on how to handle the callback
      */
-    @Inject(method = "interactWith", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;", opcode = 0), cancellable = true)
+    @Inject(method = "interactWith",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;",
+                    opcode = 0), cancellable = true)
     public void onInteractWith(Entity entity, CallbackInfoReturnable<Boolean> ci) {
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractEntity(Sponge.getGame(), (Player) this, (org.spongepowered.api.entity.Entity) entity, EntityInteractionTypes.USE, null));
+        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractEntity(Sponge.getGame(), (Player) this,
+                (org.spongepowered.api.entity.Entity) entity, EntityInteractionTypes.USE, null));
         if (cancelled) {
             ci.setReturnValue(false);
         }
