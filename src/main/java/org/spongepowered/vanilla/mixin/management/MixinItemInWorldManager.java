@@ -93,7 +93,7 @@ public abstract class MixinItemInWorldManager {
                 return;
             }
 
-            // Stopping the placement of a door causes artifacts (ghosts) on the top-side of the door. We need to remove it
+            // Stopping the placement of a door or double plant causes artifacts (ghosts) on the top-side of the block. We need to remove it
             if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
                 ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos.up(2)));
                 return;
