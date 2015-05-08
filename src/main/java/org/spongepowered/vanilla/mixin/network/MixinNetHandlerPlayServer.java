@@ -133,8 +133,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;getPlacedBlockDirection()I",
                     ordinal = 1, shift = At.Shift.BY, by = 3))
     public void injectBeforeItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
-        final MovingObjectPosition objectPosition = EntityUtils.rayTraceFromEntity(this.playerEntity, 5, 1);
-        System.out.println(objectPosition);
+        final MovingObjectPosition objectPosition = EntityUtils.rayTraceFromEntity(this.playerEntity, 4, 1);
         if (objectPosition != null && objectPosition.entityHit == null) {
             this.isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(),
                     (Player) this.playerEntity, EntityInteractionTypes.USE, null));
