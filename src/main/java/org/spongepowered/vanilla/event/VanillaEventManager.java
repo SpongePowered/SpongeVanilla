@@ -37,6 +37,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.reflect.TypeToken;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
@@ -158,6 +159,16 @@ public class VanillaEventManager implements EventManager {
     }
 
     @Override
+    public <T extends Event> void register(Object plugin, Class<T> eventClass, org.spongepowered.api.event.EventHandler<? super T> handler) {
+        // TODO Minecrell implement this
+    }
+
+    @Override
+    public <T extends Event> void register(Object plugin, Class<T> eventClass, Order order, org.spongepowered.api.event.EventHandler<? super T> handler) {
+        // TODO Minecrell implement this
+    }
+
+    @Override
     public void unregister(Object listener) {
         checkNotNull(listener, "listener");
         synchronized (this.lock) {
@@ -176,6 +187,11 @@ public class VanillaEventManager implements EventManager {
                 this.handlersCache.invalidateAll();
             }
         }
+    }
+
+    @Override
+    public void unregisterPlugin(Object plugin) {
+        // TODO Minecrell implement this
     }
 
     @Override

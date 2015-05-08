@@ -44,12 +44,12 @@ public final class EntityUtils {
 
     public static Vec3 getPositionEyes(Entity entity, float partialTicks) {
         if (partialTicks == 1.0F) {
-            return new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+            return new Vec3(entity.posX, entity.posY + (double) entity.getEyeHeight(), entity.posZ);
         }
 
-        double interpX = GenericMath.lerp(entity.prevPosX, entity.posX, partialTicks);
-        double interpY = GenericMath.lerp(entity.prevPosY, entity.posY, partialTicks);
-        double interpZ = GenericMath.lerp(entity.prevPosZ, entity.posZ, partialTicks);
+        double interpX = GenericMath.lerp(entity.prevPosX, entity.posX, (double) partialTicks);
+        double interpY = GenericMath.lerp(entity.prevPosY, entity.posY, (double) partialTicks) + (double) entity.getEyeHeight();
+        double interpZ = GenericMath.lerp(entity.prevPosZ, entity.posZ, (double) partialTicks);
         return new Vec3(interpX, interpY, interpZ);
     }
 }
