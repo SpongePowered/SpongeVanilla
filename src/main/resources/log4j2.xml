@@ -27,19 +27,23 @@
 
     <Loggers>
         <!-- Log Minecraft messages without prefix -->
-        <Logger name="net.minecraft" level="debug" additivity="false">
+        <Logger name="net.minecraft" level="all" additivity="false">
             <filters>
                 <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL"/>
             </filters>
-            <AppenderRef ref="MinecraftVanillaConsole"/>
+            <AppenderRef ref="MinecraftVanillaConsole" level="debug"/>
+            <AppenderRef ref="File"/>
+            <!--<AppenderRef ref="ServerGuiConsole"/>-->
+        </Logger>
+        <Logger name="com.mojang" level="all" additivity="false">
+            <AppenderRef ref="MinecraftVanillaConsole" level="debug"/>
             <AppenderRef ref="File"/>
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Logger>
 
         <!-- Log all other messages with prefix -->
-        <Root level="debug">
-            <!--<AppenderRef ref="SysOut"/>-->
-            <AppenderRef ref="VanillaConsole"/>
+        <Root level="all">
+            <AppenderRef ref="VanillaConsole" level="debug"/>
             <AppenderRef ref="File"/>
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Root>

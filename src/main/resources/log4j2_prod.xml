@@ -24,6 +24,7 @@
             </Policies>
         </RollingRandomAccessFile>
     </Appenders>
+
     <Loggers>
         <!-- Log Minecraft messages without prefix -->
         <Logger name="net.minecraft" level="info" additivity="false">
@@ -34,14 +35,23 @@
             <AppenderRef ref="File"/>
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Logger>
+        <Logger name="com.mojang" level="info" additivity="false">
+            <AppenderRef ref="MinecraftVanillaConsole"/>
+            <AppenderRef ref="File"/>
+            <!--<AppenderRef ref="ServerGuiConsole"/>-->
+        </Logger>
 
         <!-- Hide LaunchWrapper messages unless it's a real problem -->
-        <Logger name="LaunchWrapper" level="warn"/>
+        <Logger name="LaunchWrapper" level="all" additivity="false">
+            <AppenderRef ref="VanillaConsole" level="warn"/>
+            <AppenderRef ref="File"/>
+            <!--<AppenderRef ref="ServerGuiConsole"/>-->
+        </Logger>
 
         <!-- Log all other messages with prefix -->
-        <Root level="info">
+        <Root level="all">
             <!--<AppenderRef ref="SysOut"/>-->
-            <AppenderRef ref="VanillaConsole"/>
+            <AppenderRef ref="VanillaConsole" level="info"/>
             <AppenderRef ref="File"/>
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Root>
