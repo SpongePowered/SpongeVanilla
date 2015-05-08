@@ -36,9 +36,6 @@
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Logger>
 
-        <!-- Mixin has its own system properties to enable debugging -->
-        <Logger name="mixin" level="info"/>
-
         <!-- Log all other messages with prefix -->
         <Root level="debug">
             <!--<AppenderRef ref="SysOut"/>-->
