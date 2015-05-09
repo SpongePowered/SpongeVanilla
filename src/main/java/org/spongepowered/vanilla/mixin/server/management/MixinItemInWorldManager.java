@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.management;
+package org.spongepowered.vanilla.mixin.server.management;
 
 import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.block.BlockButton;

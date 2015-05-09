@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla.mixin.server;
+package org.spongepowered.vanilla.mixin.server.management;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetworkManager;
@@ -39,6 +39,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
 
@@ -48,8 +49,7 @@ import javax.annotation.Nullable;
 public abstract class MixinServerConfigurationManager {
 
     @Shadow private MinecraftServer mcServer;
-    @Nullable
-    private IChatComponent joinMessage;
+    @Nullable private IChatComponent joinMessage;
 
     @Redirect(method = "initializeConnectionToPlayer", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
@@ -65,6 +65,13 @@ public abstract class MixinServerConfigurationManager {
 
         // Send (possibly changed) join message
         ((Server) this.mcServer).broadcastMessage(event.getJoinMessage());
+    }
+
+    @Inject(method = "recreatePlayerEntity", at = @At("RETURN"))
+    public void onRecreatePlayerEntity(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd, CallbackInfoReturnable<EntityPlayerMP> ci) {
+        // TODO Bed locations
+        // TODO Player respawn location
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerRespawn(Sponge.getGame(), (Player) playerIn, false, ((Player) playerIn).getLocation()));
     }
 
 }
