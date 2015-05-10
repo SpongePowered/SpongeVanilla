@@ -32,13 +32,18 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.BlockBreakEvent;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.extent.Extent;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.block.VanillaBlockSnapshot;
 
@@ -54,9 +59,11 @@ public final class VanillaHooks {
      * @param gameType The gametype
      * @param entityPlayer The player
      * @param pos The position
+     * @param blockFacing The face of the block
      * @return The called event
      */
-    public static BlockBreakEvent prepareBlockBreakEvent(World world, WorldSettings.GameType gameType, EntityPlayerMP entityPlayer, BlockPos pos) {
+    public static PlayerBreakBlockEvent preparePlayerBreakBlockEvent(World world, WorldSettings.GameType gameType, EntityPlayerMP entityPlayer,
+                                                                     BlockPos pos, EnumFacing blockFacing) {
         boolean preCancelEvent = false;
         if (gameType.isCreative() && entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() instanceof ItemSword) {
             preCancelEvent = true;
@@ -81,12 +88,13 @@ public final class VanillaHooks {
             entityPlayer.playerNetServerHandler.sendPacket(packet);
         }
 
+        // TODO Support replacement block to place when break succeeds
         // Post the block break event
-        BlockBreakEvent event = SpongeEventFactory.createBlockBreak(Sponge.getGame(), new Cause(null, entityPlayer, null), new Location((org
-                .spongepowered.api.world.World) world, VecHelper.toVector(pos)), new VanillaBlockSnapshot(world, pos), 0);
+        PlayerBreakBlockEvent event = SpongeEventFactory.createPlayerBreakBlock(Sponge.getGame(), new Cause(null, entityPlayer, null),
+                (Player) entityPlayer, SpongeGameRegistry.directionMap.inverse().get(blockFacing), new Location((Extent) world,
+                        VecHelper.toVector(pos)), new VanillaBlockSnapshot(world, pos), 0);
         event.setCancelled(preCancelEvent);
         Sponge.getGame().getEventManager().post(event);
-
         if (event.isCancelled()) {
             // Let the client know the block still exists
             entityPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(world, pos));

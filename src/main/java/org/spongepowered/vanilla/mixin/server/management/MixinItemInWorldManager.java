@@ -50,6 +50,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.registry.SpongeGameRegistry;
@@ -62,12 +63,19 @@ public abstract class MixinItemInWorldManager {
     @Shadow public World theWorld;
     @Shadow public EntityPlayerMP thisPlayerMP;
     @Shadow private WorldSettings.GameType gameType;
+    EnumFacing clickedFace;
+
+    @Inject(method = "onBlockClicked", at = @At("HEAD"))
+    public void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
+        clickedFace = side;
+    }
 
     @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
     public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
-        if (VanillaHooks.prepareBlockBreakEvent(this.theWorld, this.gameType, this.thisPlayerMP, pos).isCancelled()) {
+        if (VanillaHooks.preparePlayerBreakBlockEvent(this.theWorld, this.gameType, this.thisPlayerMP, pos, clickedFace).isCancelled()) {
             ci.setReturnValue(false);
         }
+        clickedFace = null;
     }
 
     @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"),
