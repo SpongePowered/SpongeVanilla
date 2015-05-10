@@ -33,6 +33,7 @@ import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
+import org.spongepowered.api.event.entity.player.PlayerRespawnEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,6 +41,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
 
@@ -67,11 +69,18 @@ public abstract class MixinServerConfigurationManager {
         ((Server) this.mcServer).broadcastMessage(event.getJoinMessage());
     }
 
+    /**
+     * Invoke before <code>return entityplayermp1;</code> (line 513 of source) to fire {@link org.spongepowered.api.event.entity.player.PlayerRespawnEvent}.
+     * @param playerIn Injected player param
+     * @param dimension Injected dimension param
+     * @param conqueredEnd Injected conquered end flag
+     * @param ci Info to provide mixin on how to handle the callback
+     */
     @Inject(method = "recreatePlayerEntity", at = @At("RETURN"))
-    public void onRecreatePlayerEntity(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd, CallbackInfoReturnable<EntityPlayerMP> ci) {
-        // TODO Bed locations
-        // TODO Player respawn location
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerRespawn(Sponge.getGame(), (Player) playerIn, false, ((Player) playerIn).getLocation()));
+    public void onRecreatePlayerEntityEnd(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd, CallbackInfoReturnable<EntityPlayerMP> ci) {
+        final PlayerRespawnEvent event = SpongeEventFactory.createPlayerRespawn(Sponge.getGame(), (Player) playerIn, playerIn.getBedLocation() != null, ((Player) playerIn).getLocation());
+        Sponge.getGame().getEventManager().post(event);
+        ((Player) playerIn).setLocation(event.getRespawnLocation());
     }
 
 }
