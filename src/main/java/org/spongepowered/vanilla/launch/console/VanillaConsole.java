@@ -82,9 +82,8 @@ public final class VanillaConsole {
             }
         }
 
-        Logger logger = LogManager.getRootLogger();
-        System.setOut(new PrintStream(new LoggingOutputStream(logger, Level.INFO), true));
-        System.setErr(new PrintStream(new LoggingOutputStream(logger, Level.ERROR), true));
+        System.setOut(new PrintStream(new LoggingOutputStream(LogManager.getLogger("System.OUT"), Level.INFO), true));
+        System.setErr(new PrintStream(new LoggingOutputStream(LogManager.getLogger("System.ERR"), Level.ERROR), true));
 
         Thread thread = new Thread(new Writer(), "Sponge Console Thread");
         thread.setDaemon(true);

@@ -49,6 +49,14 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
         reset();
 
         if (!message.isEmpty() && !message.equals(SEPARATOR)) {
+            if (message.endsWith(SEPARATOR)) {
+                message = message.substring(0, message.length() - SEPARATOR.length());
+            }
+
+            if (message.charAt(message.length() - 1) == '\n') {
+                message = message.substring(0, message.length() - 1);
+            }
+
             this.logger.log(this.level, message);
         }
     }
