@@ -99,32 +99,7 @@ public final class SpongeVanilla implements PluginContainer {
                 }
             }
 
-            try {
-                SimpleCommandService commandService = new SimpleCommandService(this.game, new SpongeCommandDisambiguator(this.game));
-                this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
-            } catch (ProviderExistsException e) {
-                Sponge.getLogger().warn("Non-Sponge CommandService already registered", e);
-            }
-
-            try {
-                this.game.getServiceManager().setProvider(this, SqlService.class, new SqlServiceImpl());
-            } catch (ProviderExistsException e) {
-                Sponge.getLogger().warn("Non-Sponge SqlService already registered", e);
-            }
-
-            try {
-                this.game.getServiceManager().setProvider(this, SynchronousScheduler.class, SyncScheduler.getInstance());
-                this.game.getServiceManager().setProvider(this, AsynchronousScheduler.class, AsyncScheduler.getInstance());
-            } catch (ProviderExistsException e) {
-                Sponge.getLogger().error("Non-Sponge scheduler already registered", e);
-            }
-
-            try {
-                SerializationService serializationService = new SpongeSerializationService();
-                this.game.getServiceManager().setProvider(this, SerializationService.class, serializationService);
-            } catch (ProviderExistsException e) {
-                Sponge.getLogger().warn("Non-Sponge SerializationService already registered", e);
-            }
+            Sponge.getInstance().registerServices();
 
             this.game.getEventManager().register(this, this);
             this.game.getEventManager().register(this, this.game.getRegistry());
