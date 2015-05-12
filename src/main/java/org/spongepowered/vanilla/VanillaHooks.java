@@ -92,7 +92,7 @@ public final class VanillaHooks {
         // Post the block break event
         PlayerBreakBlockEvent event = SpongeEventFactory.createPlayerBreakBlock(Sponge.getGame(), new Cause(null, entityPlayer, null),
                 (Player) entityPlayer, SpongeGameRegistry.directionMap.inverse().get(blockFacing), new Location((Extent) world,
-                        VecHelper.toVector(pos)), new VanillaBlockSnapshot(world, pos), 0);
+                        VecHelper.toVector(pos)), new VanillaBlockSnapshot(world, pos, world.getBlockState(pos)), 0);
         event.setCancelled(preCancelEvent);
         Sponge.getGame().getEventManager().post(event);
         if (event.isCancelled()) {
