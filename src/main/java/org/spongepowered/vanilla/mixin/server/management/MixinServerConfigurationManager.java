@@ -41,7 +41,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
 
@@ -61,12 +60,12 @@ public abstract class MixinServerConfigurationManager {
 
     @Inject(method = "initializeConnectionToPlayer", at = @At("RETURN"))
     public void initializeConnectionToPlayerInject(NetworkManager netManager, EntityPlayerMP player, CallbackInfo ci) {
-        PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, SpongeTexts.toText(this.joinMessage));
+        final PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, SpongeTexts.toText(this.joinMessage));
         this.joinMessage = null;
         Sponge.getGame().getEventManager().post(event);
 
         // Send (possibly changed) join message
-        ((Server) this.mcServer).broadcastMessage(event.getJoinMessage());
+        ((Server) this.mcServer).broadcastMessage(event.getNewMessage());
     }
 
     /**
