@@ -43,23 +43,16 @@ import org.spongepowered.api.event.state.ServerStoppedEvent;
 import org.spongepowered.api.event.state.StateEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
-import org.spongepowered.api.service.command.CommandService;
-import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.persistence.SerializationService;
-import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
-import org.spongepowered.api.service.scheduler.SynchronousScheduler;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.common.command.SpongeCommandDisambiguator;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.persistence.SpongeSerializationService;
-import org.spongepowered.common.service.scheduler.AsyncScheduler;
-import org.spongepowered.common.service.scheduler.SyncScheduler;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.vanilla.guice.VanillaGuiceModule;
@@ -132,7 +125,7 @@ public final class SpongeVanilla implements PluginContainer {
             try {
                 SpongePermissionService service = new SpongePermissionService();
                 // Setup default permissions
-                service.getGroupForOpLevel(2).getData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
+                service.getGroupForOpLevel(2).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
                 this.game.getServiceManager().setProvider(this, PermissionService.class, service);
             } catch (ProviderExistsException e) {
                 // It's a fallback, ignore
