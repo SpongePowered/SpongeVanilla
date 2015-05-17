@@ -70,7 +70,7 @@ public final class VanillaBlockSnapshot implements BlockSnapshot {
     @Nullable
     private static DataContainer getTileEntityData(World world, BlockPos pos) {
         final TileEntity te = world.getTileEntity(pos);
-        return te != null ? ((org.spongepowered.api.block.tile.TileEntity) te).toContainer() : null;
+        return te != null ? ((org.spongepowered.api.block.tileentity.TileEntity) te).toContainer() : null;
     }
 
     public VanillaBlockSnapshot(World world, BlockPos pos, IBlockState blockState, NBTTagCompound nbt) {
@@ -196,7 +196,7 @@ public final class VanillaBlockSnapshot implements BlockSnapshot {
         if (this.data != null) {
             final TileEntity te = world.getTileEntity(pos);
             if (te != null) {
-                ((org.spongepowered.api.block.tile.TileEntity) te).setRawData(this.data);
+                ((org.spongepowered.api.block.tileentity.TileEntity) te).setRawData(this.data);
             }
         }
         return true;
@@ -233,11 +233,11 @@ public final class VanillaBlockSnapshot implements BlockSnapshot {
     @Override
     public String toString() {
         return "VanillaBlockSnapshot{" +
-                "worldUUID=" + worldUUID +
-                ", data=" + data +
-                ", pos=" + pos +
-                ", blockState=" + blockState +
-                ", updateFlag=" + updateFlag +
+                "worldUUID=" + this.worldUUID +
+                ", data=" + this.data +
+                ", pos=" + this.pos +
+                ", blockState=" + this.blockState +
+                ", updateFlag=" + this.updateFlag +
                 '}';
     }
 }

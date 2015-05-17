@@ -25,7 +25,7 @@
 package org.spongepowered.vanilla.mixin.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
-import org.spongepowered.api.block.tile.TileEntity;
+import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
