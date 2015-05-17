@@ -40,11 +40,13 @@ import org.spongepowered.common.Sponge;
 import org.spongepowered.common.service.persistence.NbtTranslator;
 import org.spongepowered.common.util.VecHelper;
 
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 public final class VanillaBlockSnapshot implements BlockSnapshot {
+
     public static final int UPDATE_CLIENT_WITH_PHYSICS = 3;
     public static final int UPDATE_CLIENT = 2;
     public static final int UPDATE = 1;
@@ -58,33 +60,37 @@ public final class VanillaBlockSnapshot implements BlockSnapshot {
     private int updateFlag;
 
     public VanillaBlockSnapshot(World world, BlockPos pos, IBlockState blockState) {
-        this.worldRef = new WeakReference<World>(world);
-        this.worldUUID = ((org.spongepowered.api.world.World) world).getUniqueId();
-        this.pos = pos;
-        this.vecPos = VecHelper.toVector(pos);
-        this.blockState = blockState;
-        this.updateFlag = UPDATE_CLIENT_WITH_PHYSICS;
-        final TileEntity te = world.getTileEntity(pos);
-        if (te != null) {
-            this.data = ((org.spongepowered.api.block.tile.TileEntity) te).toContainer();
-        } else {
-            this.data = null;
-        }
-    }
-
-    public VanillaBlockSnapshot(World world, BlockPos pos, IBlockState blockState, NBTTagCompound nbt) {
-        this.worldRef = new WeakReference<World>(world);
-        this.worldUUID = ((org.spongepowered.api.world.World) world).getUniqueId();
-        this.pos = pos;
-        this.vecPos = VecHelper.toVector(pos);
-        this.blockState = blockState;
-        this.updateFlag = UPDATE_CLIENT_WITH_PHYSICS;
-        this.data = NbtTranslator.getInstance().translateFrom(nbt);
+        this(world, pos, blockState, UPDATE_CLIENT_WITH_PHYSICS);
     }
 
     public VanillaBlockSnapshot(World world, BlockPos pos, IBlockState blockState, int updateFlag) {
-        this(world, pos, blockState);
+        this(world, pos, blockState, getTileEntityData(world, pos), updateFlag);
+    }
+
+    @Nullable
+    private static DataContainer getTileEntityData(World world, BlockPos pos) {
+        final TileEntity te = world.getTileEntity(pos);
+        return te != null ? ((org.spongepowered.api.block.tile.TileEntity) te).toContainer() : null;
+    }
+
+    public VanillaBlockSnapshot(World world, BlockPos pos, IBlockState blockState, NBTTagCompound nbt) {
+        this(world, pos, blockState, NbtTranslator.getInstance().translateFrom(nbt), UPDATE_CLIENT_WITH_PHYSICS);
+    }
+
+    private VanillaBlockSnapshot(World world, BlockPos pos, IBlockState blockState, @Nullable DataContainer container, int updateFlag) {
+        this(new WeakReference<World>(world), ((org.spongepowered.api.world.World) world).getUniqueId(), pos, VecHelper.toVector(pos), blockState,
+                container, updateFlag);
+    }
+
+    private VanillaBlockSnapshot(WeakReference<World> worldRef, UUID worldUUID, BlockPos pos, Vector3i vecPos, IBlockState blockState,
+            @Nullable DataContainer container, int updateFlag) {
+        this.worldRef = worldRef;
+        this.worldUUID = worldUUID;
+        this.pos = pos;
+        this.vecPos = vecPos;
+        this.blockState = blockState;
         this.updateFlag = updateFlag;
+        this.data = container;
     }
 
     @Override
@@ -194,6 +200,11 @@ public final class VanillaBlockSnapshot implements BlockSnapshot {
             }
         }
         return true;
+    }
+
+    @Override
+    public BlockSnapshot copy() {
+        return new VanillaBlockSnapshot(this.worldRef, this.worldUUID, this.pos, this.vecPos, this.blockState, this.data, this.updateFlag);
     }
 
     @Override
