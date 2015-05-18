@@ -60,9 +60,13 @@ public abstract class MixinServerConfigurationManager {
 
     @Inject(method = "initializeConnectionToPlayer", at = @At("RETURN"))
     public void initializeConnectionToPlayerInject(NetworkManager netManager, EntityPlayerMP player, CallbackInfo ci) {
-        final PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, SpongeTexts.toText(this.joinMessage));
+        final PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) player, ((Player) player).getLocation(),
+                SpongeTexts.toText(this.joinMessage));
         this.joinMessage = null;
         Sponge.getGame().getEventManager().post(event);
+
+        // TODO See if this is fine for world changes
+        ((Player) player).setLocation(event.getLocation());
 
         // Send (possibly changed) join message
         ((Server) this.mcServer).broadcastMessage(event.getNewMessage());
