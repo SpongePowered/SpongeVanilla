@@ -24,21 +24,16 @@
  */
 package org.spongepowered.vanilla;
 
-import com.google.common.collect.Maps;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.common.AbstractPlatform;
-
-import java.util.Map;
 
 public class SpongeVanillaPlatform extends AbstractPlatform {
 
     private final Type type;
-    private final String name;
 
     public SpongeVanillaPlatform(MinecraftVersion minecraftVersion, String apiVersion, String version) {
         super(minecraftVersion, apiVersion, version);
         this.type = Type.SERVER;
-        this.name = "Sponge";
     }
 
     @Override
@@ -46,19 +41,4 @@ public class SpongeVanillaPlatform extends AbstractPlatform {
         return this.type;
     }
 
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public Map<String, Object> asMap() {
-        final Map<String, Object> map = Maps.newHashMap();
-        map.put("Name", this.name);
-        map.put("Type", this.type);
-        map.put("ApiVersion", this.getApiVersion());
-        map.put("ImplementationVersion", this.getVersion());
-        map.put("MinecraftVersion", this.getMinecraftVersion());
-        return map;
-    }
 }
