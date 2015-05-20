@@ -173,11 +173,13 @@ public final class SpongeVanilla implements PluginContainer {
 
     @Override
     public String getVersion() {
-        return this.game.getImplementationVersion();
+        return this.game.getPlatform().getVersion();
     }
 
     @Override
     public Object getInstance() {
         return this;
     }
+
+
 }

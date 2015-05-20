@@ -24,32 +24,41 @@
  */
 package org.spongepowered.vanilla;
 
-import org.spongepowered.api.GameRegistry;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.service.event.EventManager;
-import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.common.SpongeGame;
+import com.google.common.collect.Maps;
+import org.spongepowered.api.MinecraftVersion;
+import org.spongepowered.common.AbstractPlatform;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.Map;
 
-@Singleton
-public class VanillaGame extends SpongeGame {
+public class SpongeVanillaPlatform extends AbstractPlatform {
 
-    private final Platform platform = new SpongeVanillaPlatform(SpongeGame.MINECRAFT_VERSION,
-            SpongeGame.API_VERSION, SpongeGame.IMPLEMENTATION_VERSION);
+    private final Type type;
+    private final String name;
 
-    @Inject
-    public VanillaGame(PluginManager pluginManager, EventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager,
-            TeleportHelper teleportHelper) {
-        super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
+    public SpongeVanillaPlatform(MinecraftVersion minecraftVersion, String apiVersion, String version) {
+        super(minecraftVersion, apiVersion, version);
+        this.type = Type.SERVER;
+        this.name = "Sponge";
     }
 
     @Override
-    public Platform getPlatform() {
-        return this.platform;
+    public Type getType() {
+        return this.type;
     }
 
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        final Map<String, Object> map = Maps.newHashMap();
+        map.put("Name", this.name);
+        map.put("Type", this.type);
+        map.put("ApiVersion", this.getApiVersion());
+        map.put("ImplementationVersion", this.getVersion());
+        map.put("MinecraftVersion", this.getMinecraftVersion());
+        return map;
+    }
 }
