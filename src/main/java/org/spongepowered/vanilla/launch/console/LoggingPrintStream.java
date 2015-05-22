@@ -24,46 +24,29 @@
  */
 package org.spongepowered.vanilla.launch.console;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.PrintStream;
 
-public class LoggingOutputStream extends ByteArrayOutputStream {
+public class LoggingPrintStream extends PrintStream {
 
-    private static final String SEPARATOR = System.getProperty("line.separator");
-    private final Logger logger;
-    private final Level level;
-    boolean flush = true;
+    private final LoggingOutputStream out;
 
-    public LoggingOutputStream(Logger logger, Level level) {
-        this.logger = checkNotNull(logger, "logger");
-        this.level = checkNotNull(level, "level");
+    public LoggingPrintStream(Logger logger, Level level) {
+        this(new LoggingOutputStream(logger, level));
+    }
+
+    public LoggingPrintStream(LoggingOutputStream out) {
+        super(out, true);
+        this.out = out;
     }
 
     @Override
-    public void flush() throws IOException {
-        if (!this.flush) {
-            return;
-        }
-
-        String message = toString();
-        reset();
-
-        if (!message.isEmpty() && !message.equals(SEPARATOR)) {
-            if (message.endsWith(SEPARATOR)) {
-                message = message.substring(0, message.length() - SEPARATOR.length());
-            }
-
-            if (message.charAt(message.length() - 1) == '\n') {
-                message = message.substring(0, message.length() - 1);
-            }
-
-            this.logger.log(this.level, message);
-        }
+    public void write(byte[] buf, int off, int len) {
+        this.out.flush = false;
+        super.write(buf, off, len);
+        this.out.flush = true;
     }
 
 }
