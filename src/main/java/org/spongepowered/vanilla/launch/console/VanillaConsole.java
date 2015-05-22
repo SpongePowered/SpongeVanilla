@@ -25,6 +25,8 @@
 package org.spongepowered.vanilla.launch.console;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.System.getProperty;
 import static jline.TerminalFactory.JLINE_TERMINAL;
 import static jline.TerminalFactory.OFF;
 import static jline.console.ConsoleReader.RESET_LINE;
@@ -33,16 +35,16 @@ import com.mojang.util.QueueLogAppender;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.IOException;
-import java.io.PrintStream;
 
 public final class VanillaConsole {
 
     private VanillaConsole() {
     }
+
+    private static final boolean REDIRECT_OUT = parseBoolean(getProperty("sponge.logging.redirect", "true"));
 
     private static ConsoleReader reader;
     private static Formatter formatter;
@@ -82,8 +84,10 @@ public final class VanillaConsole {
             }
         }
 
-        System.setOut(new PrintStream(new LoggingOutputStream(LogManager.getLogger("System.OUT"), Level.INFO), true));
-        System.setErr(new PrintStream(new LoggingOutputStream(LogManager.getLogger("System.ERR"), Level.ERROR), true));
+        if (REDIRECT_OUT) {
+            System.setOut(new LoggingPrintStream(LogManager.getLogger("System.OUT"), Level.INFO));
+            System.setErr(new LoggingPrintStream(LogManager.getLogger("System.ERR"), Level.ERROR));
+        }
 
         Thread thread = new Thread(new Writer(), "Sponge Console Thread");
         thread.setDaemon(true);
