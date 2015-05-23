@@ -89,6 +89,6 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
 
     @Override
     public Collection<Player> getOnlinePlayers() {
-        return (Collection<Player>) serverConfigManager.playerEntityList;
+        return (Collection<Player>) Collections.unmodifiableCollection(serverConfigManager.playerEntityList);
     }
 }
