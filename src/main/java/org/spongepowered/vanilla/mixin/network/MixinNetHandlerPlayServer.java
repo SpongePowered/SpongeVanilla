@@ -67,9 +67,10 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
     public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
-        final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText(component));
+        final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText
+                (component), ((Player) this.playerEntity).getMessageSink());
         if (!Sponge.getGame().getEventManager().post(event)) {
-            ((Server) this.serverController).broadcastMessage(event.getNewMessage());
+            event.getSink().sendMessage(event.getNewMessage());
         }
     }
 
@@ -78,9 +79,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
                     target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
     public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
         final PlayerQuitEvent event = SpongeEventFactory.createPlayerQuit(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText
-                (component));
+                (component), ((Player) this.playerEntity).getMessageSink());
         Sponge.getGame().getEventManager().post(event);
-        ((Server) this.serverController).broadcastMessage(event.getNewMessage());
+        event.getSink().sendMessage(event.getNewMessage());
     }
 
     @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isBlockProtected"

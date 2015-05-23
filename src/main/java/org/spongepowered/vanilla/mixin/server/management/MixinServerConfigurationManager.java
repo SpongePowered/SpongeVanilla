@@ -130,7 +130,7 @@ public abstract class MixinServerConfigurationManager {
 
         // Fire PlayerJoinEvent
         final PlayerJoinEvent event = SpongeEventFactory.createPlayerJoin(Sponge.getGame(), (Player) playerIn, ((Player) playerIn).getLocation(),
-                SpongeTexts.toText(chatcomponenttranslation));
+                SpongeTexts.toText(chatcomponenttranslation), ((Player) playerIn).getMessageSink());
         System.out.println(event);
         Sponge.getGame().getEventManager().post(event);
         // Set the resolved location of the event onto the player
@@ -155,7 +155,7 @@ public abstract class MixinServerConfigurationManager {
         this.func_96456_a((ServerScoreboard)worldserver.getScoreboard(), playerIn);
         this.mcServer.refreshStatusNextTick();
 
-        this.sendChatMsg(SpongeTexts.toComponent(event.getNewMessage()));
+        event.getSink().sendMessage(event.getNewMessage());
         this.playerLoggedIn(playerIn);
         nethandlerplayserver.setPlayerLocation(playerIn.posX, playerIn.posY, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
         this.updateTimeAndWeatherForPlayer(playerIn, worldserver);
