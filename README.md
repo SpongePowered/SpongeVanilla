@@ -50,14 +50,14 @@ __For [Eclipse]__
   2. Right-click **Java Application** and select **New**.
   3. Set the current project.
   4. Set the name as `Sponge (vanilla/server)` and apply the information for Server below.
-  5. When launching the server for the first time, it will shutdown by itself. You will need to modify the server.properties to set onlinemode=false and modify the eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
+  5. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
 
 __For [IntelliJ]__
   1. Go to **Run > Edit Configurations**.
   2. Click the green + button and select **Application**.
   3. Set the name as `Sponge (vanilla/server)` and apply the information for Server below.
-  4. When launching the server for the first time, it will shutdown by itself. You will need to modify the server.properties to set onlinemode=false and modify the eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
+  4. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
 __Server__
 
