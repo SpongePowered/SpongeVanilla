@@ -8,16 +8,21 @@
         "MixinBootstrap",
         "entity.MixinEntity",
         "entity.player.MixinEntityPlayer",
+        "entity.player.MixinEntityPlayerMP",
         "entity.vehicle.MixinEntityMinecart",
         "item.MixinEnchantment",
         "network.MixinNetHandlerPlayServer",
         "server.management.MixinItemInWorldManager",
-        "server.management.MixinServerConfigurationManager",
         "server.MixinConsoleHandler",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "tileentity.MixinTileEntity",
         "world.MixinChunk",
-        "world.MixinWorld"
+        "world.MixinWorld",
+        "world.MixinWorldProvider",
+        "world.MixinWorldServer",
+        "world.MixinWorldType",
+        "world.gen.MixinChunkProviderServer",
+        "world.storage.MixinSaveHandler"
     ]
 }

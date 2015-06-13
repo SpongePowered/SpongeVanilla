@@ -49,7 +49,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
     public void onServerLoad(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.INSTANCE.load();
+        SpongeVanilla.INSTANCE.preInitialize();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;setConfigManager"

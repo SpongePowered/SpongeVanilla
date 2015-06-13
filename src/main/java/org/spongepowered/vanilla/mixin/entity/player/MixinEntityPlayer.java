@@ -24,27 +24,45 @@
  */
 package org.spongepowered.vanilla.mixin.entity.player;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.vanilla.interfaces.IMixinEntityPlayer;
+
+import java.util.HashMap;
 
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
+    private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+
+    private HashMap<Integer, BlockPos> spawnChunkMap = Maps.newHashMap();
+    private HashMap<Integer, Boolean> spawnForcedMap = Maps.newHashMap();
+
+    @Shadow protected BlockPos spawnChunk;
+    @Shadow private boolean spawnForced;
 
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
     }
 
     /**
+     * @author Zidane
+     *
      * Invoke before {@code ItemStack itemstack = this.getCurrentEquippedItem()} (line 1206 in source) to fire {@link org.spongepowered.api
      * .event.entity.player.PlayerInteractEntityEvent}.
      * @param entity Injected entity being interacted by this player
@@ -59,5 +77,93 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
         if (cancelled) {
             ci.setReturnValue(false);
         }
+    }
+
+    @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
+    public void onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
+        if (this.dimension != 0) {
+            setSpawnChunk(pos, forced, this.dimension);
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "clonePlayer", at = @At("RETURN"))
+    public void onClonePlayerEnd(EntityPlayer oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
+        this.spawnChunkMap = ((IMixinEntityPlayer) oldPlayer).getSpawnChunkMap();
+        this.spawnForcedMap = ((IMixinEntityPlayer) oldPlayer).getSpawnForcedMap();
+
+        final NBTTagCompound old = ((IMixinEntityPlayer) oldPlayer).getEntityData();
+        if (old.hasKey(PERSISTED_NBT_TAG)) {
+            ((IMixinEntityPlayer) this).getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
+        }
+    }
+
+    @Inject(method = "readEntityFromNBT", at = @At(value = "FIELD", target = "net.minecraft.entity.player.EntityPlayer"
+            + ".foodStats:Lnet/minecraft/util/FoodStats;"))
+    public void onReadEntityFromNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
+        final NBTTagList spawnlist = tagCompound.getTagList("Spawns", 10);
+        for (int i = 0; i < spawnlist.tagCount(); i++) {
+            final NBTTagCompound spawndata = spawnlist.getCompoundTagAt(i);
+            int spawndim = spawndata.getInteger("Dim");
+            this.spawnChunkMap.put(spawndim, new BlockPos(spawndata.getInteger("SpawnX"), spawndata.getInteger("SpawnY"), spawndata.getInteger("SpawnZ")));
+            this.spawnForcedMap.put(spawndim, spawndata.getBoolean("SpawnForced"));
+        }
+    }
+
+    @Inject(method = "writeEntityToNBT", at = @At(value = "FIELD", target = "net.minecraft.entity.player.EntityPlayer"
+            + ".foodStats:Lnet/minecraft/util/FoodStats;"))
+    public void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
+        final NBTTagList spawnlist = new NBTTagList();
+        for (java.util.Map.Entry<Integer, BlockPos> entry : this.spawnChunkMap.entrySet()) {
+            BlockPos spawn = entry.getValue();
+            if (spawn == null) {
+                continue;
+            }
+            Boolean forced = this.spawnForcedMap.get(entry.getKey());
+            if (forced == null) {
+                forced = false;
+            }
+            NBTTagCompound spawndata = new NBTTagCompound();
+            spawndata.setInteger("Dim", entry.getKey());
+            spawndata.setInteger("SpawnX", spawn.getX());
+            spawndata.setInteger("SpawnY", spawn.getY());
+            spawndata.setInteger("SpawnZ", spawn.getZ());
+            spawndata.setBoolean("SpawnForced", forced);
+            spawnlist.appendTag(spawndata);
+        }
+        tagCompound.setTag("Spawns", spawnlist);
+    }
+
+    public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
+        if (dimension == 0) {
+            if (pos != null) {
+                this.spawnChunk = pos;
+                this.spawnForced = forced;
+            } else {
+                this.spawnChunk = null;
+                this.spawnForced = false;
+            }
+            return;
+        }
+
+        if (pos != null) {
+            this.spawnChunkMap.put(dimension, pos);
+            this.spawnForcedMap.put(dimension, forced);
+        } else {
+            this.spawnChunkMap.remove(dimension);
+            this.spawnForcedMap.remove(dimension);
+        }
+    }
+
+    public BlockPos getBedLocation(int dimension) {
+        return dimension == 0 ? this.spawnChunk : this.spawnChunkMap.get(dimension);
+    }
+
+    public boolean isSpawnForced(int dimension) {
+        if (this.dimension == 0) {
+            return this.spawnForced;
+        }
+        final Boolean forced = this.spawnForcedMap.get(dimension);
+        return forced == null ? false : forced;
     }
 }

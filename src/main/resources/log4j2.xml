@@ -35,6 +35,9 @@
             <AppenderRef ref="File"/>
             <!--<AppenderRef ref="ServerGuiConsole"/>-->
         </Logger>
+
+        <Logger name="mixin" level="info"/>
+
         <Logger name="com.mojang" level="all" additivity="false">
             <AppenderRef ref="MinecraftVanillaConsole" level="debug"/>
             <AppenderRef ref="File"/>

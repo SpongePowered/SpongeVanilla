@@ -33,18 +33,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.common.interfaces.IMixinEntity;
 
 import javax.annotation.Nullable;
 
 @Mixin(net.minecraft.entity.Entity.class)
-public abstract class MixinEntity implements Entity, IMixinEntity {
+public abstract class MixinEntity {
 
     @Nullable private NBTTagCompound customEntityData;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     public void onConstructed(World world, CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntityConstructing(Sponge.getGame(), this));
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntityConstructing(Sponge.getGame(), (Entity) this));
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
@@ -63,16 +62,20 @@ public abstract class MixinEntity implements Entity, IMixinEntity {
         }
     }
 
-    @Override
-    public final NBTTagCompound getSpongeData() {
+    public final NBTTagCompound getEntityData() {
         if (this.customEntityData == null) {
             this.customEntityData = new NBTTagCompound();
         }
+        return this.customEntityData;
+    }
 
-        if (!this.customEntityData.hasKey("SpongeData", 10)) {
-            this.customEntityData.setTag("SpongeData", new NBTTagCompound());
+    public final NBTTagCompound getSpongeData() {
+        final NBTTagCompound customEntityData = getEntityData();
+
+        if (!customEntityData.hasKey("SpongeData", 10)) {
+            customEntityData.setTag("SpongeData", new NBTTagCompound());
         }
-        return this.customEntityData.getCompoundTag("SpongeData");
+        return customEntityData.getCompoundTag("SpongeData");
     }
 
 }

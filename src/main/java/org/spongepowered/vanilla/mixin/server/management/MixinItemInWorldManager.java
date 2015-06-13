@@ -75,7 +75,7 @@ public abstract class MixinItemInWorldManager {
         if (VanillaHooks.preparePlayerBreakBlockEvent(this.theWorld, this.gameType, this.thisPlayerMP, pos, clickedFace).isCancelled()) {
             ci.setReturnValue(false);
         }
-        clickedFace = null;
+        this.clickedFace = null;
     }
 
     @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"),

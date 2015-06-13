@@ -24,6 +24,8 @@
  */
 package org.spongepowered.vanilla;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.storage.SaveFormatOld;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.plugin.PluginManager;
@@ -31,6 +33,8 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,6 +49,11 @@ public class VanillaGame extends SpongeGame {
     public VanillaGame(PluginManager pluginManager, EventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager,
             TeleportHelper teleportHelper) {
         super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
+    }
+
+    @Override
+    public File getSavesDirectory() {
+        return ((SaveFormatOld) ((MinecraftServer) getServer()).getActiveAnvilConverter()).savesDirectory;
     }
 
     @Override

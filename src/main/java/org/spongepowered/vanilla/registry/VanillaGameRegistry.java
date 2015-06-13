@@ -32,10 +32,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.InitializationEvent;
-import org.spongepowered.api.event.state.PostInitializationEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.common.registry.RegistryHelper;
@@ -55,21 +51,6 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
     @Override
     public GameDictionary getGameDictionary() {
         throw new NotImplementedException("TODO");
-    }
-
-    @Subscribe
-    public void onPreInit(PreInitializationEvent event) {
-        preInit();
-    }
-
-    @Subscribe
-    public void onInit(InitializationEvent event) {
-        init();
-    }
-
-    @Subscribe
-    public void onPostInit(PostInitializationEvent event) {
-        postInit();
     }
 
     @Override
