@@ -22,25 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla;
+package org.spongepowered.vanilla.mixin.entity.player;
 
-import org.spongepowered.api.MinecraftVersion;
-import org.spongepowered.common.AbstractPlatform;
+import com.mojang.authlib.GameProfile;
+import io.netty.util.AttributeKey;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-public class SpongeVanillaPlatform extends AbstractPlatform {
+@Mixin(EntityPlayerMP.class)
+public abstract class MixinEntityPlayerMP extends EntityPlayer {
+    @Shadow private NetHandlerPlayServer playerNetServerHandler;
+    private static final AttributeKey<Boolean> FML_MARKER = AttributeKey.valueOf("fml:hasMarker");
 
-    public SpongeVanillaPlatform(MinecraftVersion minecraftVersion, String apiVersion, String version) {
-        super(minecraftVersion, apiVersion, version);
+    public MixinEntityPlayerMP(World worldIn, GameProfile gameProfileIn) {
+        super(worldIn, gameProfileIn);
     }
 
-    @Override
-    public Type getType() {
-        return Type.SERVER;
+    public boolean usesCustomClient() {
+        return false;
     }
-
-    @Override
-    public Type getExecutionType() {
-        return Type.SERVER;
-    }
-
 }

@@ -22,25 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.vanilla;
+package org.spongepowered.vanilla.interfaces;
 
-import org.spongepowered.api.MinecraftVersion;
-import org.spongepowered.common.AbstractPlatform;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 
-public class SpongeVanillaPlatform extends AbstractPlatform {
+import java.util.HashMap;
 
-    public SpongeVanillaPlatform(MinecraftVersion minecraftVersion, String apiVersion, String version) {
-        super(minecraftVersion, apiVersion, version);
-    }
+public interface IMixinEntityPlayer extends org.spongepowered.common.interfaces.IMixinEntityPlayer {
+    NBTTagCompound getEntityData();
 
-    @Override
-    public Type getType() {
-        return Type.SERVER;
-    }
+    HashMap<Integer, BlockPos> getSpawnChunkMap();
 
-    @Override
-    public Type getExecutionType() {
-        return Type.SERVER;
-    }
-
+    HashMap<Integer, Boolean> getSpawnForcedMap();
 }

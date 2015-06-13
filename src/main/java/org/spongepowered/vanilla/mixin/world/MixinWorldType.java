@@ -22,4 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.vanilla.registry;
+package org.spongepowered.vanilla.mixin.world;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldType;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
+@Mixin(WorldType.class)
+public abstract class MixinWorldType {
+    @Shadow private static WorldType FLAT;
+
+    public int getSpawnFuzz() {
+        return Math.max(5, MinecraftServer.getServer().getSpawnProtectionSize() - 6);
+    }
+
+    public int getMinimumSpawnHeight(World world) {
+        return (WorldType) (Object) this == FLAT ? 4 : 64;
+    }
+}

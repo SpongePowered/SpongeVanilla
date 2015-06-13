@@ -24,19 +24,21 @@
  */
 package org.spongepowered.vanilla.mixin.server;
 
-import com.google.common.collect.Lists;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.network.NetworkSystem;
+import net.minecraft.network.play.server.S03PacketTimeUpdate;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ReportedException;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.event.state.ServerStoppedEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
-import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -44,20 +46,30 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.vanilla.SpongeVanilla;
+import org.spongepowered.vanilla.world.VanillaDimensionManager;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.FutureTask;
 
 @Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer implements Server, CommandSource, ICommandSender {
+public abstract class MixinMinecraftServer {
 
-    @Shadow
-    private static Logger logger;
+    @Shadow private static Logger logger;
+    @Shadow protected Queue futureTaskQueue;
+    @Shadow private ServerConfigurationManager serverConfigManager;
+    @Shadow private Profiler theProfiler;
+    @Shadow private int tickCounter;
+    @Shadow abstract boolean getAllowNether();
+    @Shadow abstract NetworkSystem getNetworkSystem();
+    @Shadow List playersOnline;
 
-    @Shadow
-    private ServerConfigurationManager serverConfigManager;
+    private java.util.Hashtable<Integer, long[]> worldTickTimes = new java.util.Hashtable<Integer, long[]>();
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
@@ -76,19 +88,102 @@ public abstract class MixinMinecraftServer implements Server, CommandSource, ICo
         SpongeVanilla.INSTANCE.postState(ServerStoppedEvent.class);
     }
 
+    @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
+            locals = LocalCapture.CAPTURE_FAILHARD)
+    public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createWorldUnload(Sponge.getGame(), (World) worldserver));
+    }
+
+    @Overwrite
+    public void updateTimeLightAndEntities() {
+        this.theProfiler.startSection("jobs");
+        Queue queue = this.futureTaskQueue;
+
+        synchronized (this.futureTaskQueue) {
+            while (!this.futureTaskQueue.isEmpty()) {
+                try {
+                    ((FutureTask) this.futureTaskQueue.poll()).run();
+                } catch (Throwable throwable2) {
+                    logger.fatal(throwable2);
+                }
+            }
+        }
+
+        this.theProfiler.endStartSection("levels");
+        int j;
+
+        Integer[] ids = VanillaDimensionManager.getIDs(this.tickCounter % 200 == 0);
+
+        for (j = 0; j < ids.length; ++j) {
+            int id = ids[j];
+            long i = System.nanoTime();
+
+            if (j == 0 || this.getAllowNether()) {
+                WorldServer worldserver = VanillaDimensionManager.getWorldFromDimId(id);
+                this.theProfiler.startSection(worldserver.getWorldInfo().getWorldName());
+
+                if (this.tickCounter % 20 == 0) {
+                    this.theProfiler.startSection("timeSync");
+                    this.serverConfigManager.sendPacketToAllPlayersInDimension(
+                            new S03PacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
+                                    worldserver.getGameRules().getGameRuleBooleanValue("doDaylightCycle")), worldserver.provider.getDimensionId());
+                    this.theProfiler.endSection();
+                }
+
+                this.theProfiler.startSection("tick");
+                CrashReport crashreport;
+
+                try {
+                    worldserver.tick();
+                } catch (Throwable throwable1) {
+                    crashreport = CrashReport.makeCrashReport(throwable1, "Exception ticking world");
+                    worldserver.addWorldInfoToCrashReport(crashreport);
+                    throw new ReportedException(crashreport);
+                }
+
+                try {
+                    worldserver.updateEntities();
+                } catch (Throwable throwable) {
+                    crashreport = CrashReport.makeCrashReport(throwable, "Exception ticking world entities");
+                    worldserver.addWorldInfoToCrashReport(crashreport);
+                    throw new ReportedException(crashreport);
+                }
+
+                this.theProfiler.endSection();
+                this.theProfiler.startSection("tracker");
+                worldserver.getEntityTracker().updateTrackedEntities();
+                this.theProfiler.endSection();
+                this.theProfiler.endSection();
+            }
+            this.worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
+        }
+        this.theProfiler.endStartSection("dim_unloading");
+        VanillaDimensionManager.unloadWorlds(this.worldTickTimes);
+        this.theProfiler.endStartSection("connection");
+        this.getNetworkSystem().networkTick();
+        this.theProfiler.endStartSection("players");
+        this.serverConfigManager.onTick();
+        this.theProfiler.endStartSection("tickables");
+
+        for (j = 0; j < this.playersOnline.size(); ++j) {
+            ((IUpdatePlayerListBox) this.playersOnline.get(j)).update();
+        }
+
+        this.theProfiler.endSection();
+    }
+
     @Overwrite
     public String getServerModName() {
         return SpongeVanilla.INSTANCE.getName();
     }
 
-    @Override
     @Overwrite
     public void addChatMessage(IChatComponent component) {
         logger.info(SpongeTexts.toLegacy(component));
     }
 
-    @Override
-    public Collection<Player> getOnlinePlayers() {
-        return (Collection<Player>) Collections.unmodifiableCollection(serverConfigManager.playerEntityList);
+    public Hashtable<Integer, long[]> getWorldTickTimes() {
+        return this.worldTickTimes;
     }
+
 }

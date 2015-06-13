@@ -24,36 +24,30 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.profiler.Profiler;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import org.spongepowered.api.event.SpongeEventFactory;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Surrogate;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.vanilla.world.VanillaDimensionManager;
 
-@Mixin(World.class)
-public abstract class MixinWorld {
+@Mixin(WorldServer.class)
+public abstract class MixinWorldServer extends World {
 
-    @Inject(method = "spawnEntityInWorld", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true,
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getChunkFromChunkCoords(II)Lnet/minecraft/world/chunk/Chunk;"))
-    public void onSpawnEntityInWorld(Entity entity, CallbackInfoReturnable<Boolean> cir, int i, int j, @Coerce boolean flag) {
-        org.spongepowered.api.entity.Entity spongeEntity = (org.spongepowered.api.entity.Entity) entity;
-        if (Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntitySpawn(Sponge.getGame(), spongeEntity, spongeEntity.getLocation()))
-                && !flag) {
-            cir.setReturnValue(false);
-        }
+    protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info,
+            WorldProvider providerIn, Profiler profilerIn, boolean client) {
+        super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
-    @Surrogate
-    public void onSpawnEntityInWorld(Entity entity, CallbackInfoReturnable<Boolean> cir, int i, int j) {
-        boolean flag = entity.forceSpawn || entity instanceof EntityPlayer;
-        this.onSpawnEntityInWorld(entity, cir, i, j, flag);
+    @Inject(method = "<init>", at = @At(value = "RETURN"))
+    public void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn, CallbackInfo
+            ci) {
+        VanillaDimensionManager.setWorld(dimensionId, (WorldServer) (Object) this);
     }
-
 }

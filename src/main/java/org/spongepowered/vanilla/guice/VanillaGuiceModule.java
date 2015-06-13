@@ -64,7 +64,7 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(SpongeVanilla.class).toInstance(this.instance);
         bind(Logger.class).toInstance(this.logger);
 
-        bind(PluginContainer.class).annotatedWith(named("Sponge")).toInstance(this.instance);
+        bind(PluginContainer.class).annotatedWith(named(Sponge.ECOSYSTEM_NAME)).toInstance(this.instance);
         bind(PluginContainer.class).annotatedWith(named("Minecraft")).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
