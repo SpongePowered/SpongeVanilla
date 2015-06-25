@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.common.service.scheduler.SyncScheduler;
+import org.spongepowered.common.service.scheduler.SpongeScheduler;
 import org.spongepowered.vanilla.SpongeVanilla;
 
 import java.io.File;
@@ -72,7 +72,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
     public void onTick(CallbackInfo ci) {
-        ((SyncScheduler) SyncScheduler.getInstance()).tick();
+        SpongeScheduler.getInstance().tickSyncScheduler();
     }
 
 }
