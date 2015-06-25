@@ -13,7 +13,7 @@ SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.
 * [Development Chat]: #spongedev on irc.esper.net
 
 ## Prerequisites
-* [Java] 6
+* [Java] 6+
 
 ## Cloning
 The following steps will ensure your project is cloned properly.
