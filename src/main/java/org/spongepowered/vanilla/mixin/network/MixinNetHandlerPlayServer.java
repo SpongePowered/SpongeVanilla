@@ -36,13 +36,13 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
-import org.spongepowered.api.Server;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.entity.player.PlayerChatEvent;
 import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -69,7 +69,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
                     target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
     public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
         final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity,
-                SpongeTexts.toText(component), SpongeTexts.toText((IChatComponent) ((ChatComponentTranslation) component).getFormatArgs()[1]),
+                SpongeTexts.toText(component), Texts.of((String) ((ChatComponentTranslation) component).getFormatArgs()[1]),
                 ((Player) this.playerEntity).getMessageSink());
         if (!Sponge.getGame().getEventManager().post(event)) {
             event.getSink().sendMessage(event.getNewMessage());
