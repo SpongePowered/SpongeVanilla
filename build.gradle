@@ -42,7 +42,7 @@ configurations {
 dependencies {
     compile 'jline:jline:2.12.1'
 
-    shadow 'org.ow2.asm:asm-all:5.0.3'
+    shadow 'org.ow2.asm:asm-all:5.0.4'
 }
 
 // Set main class and classpath for Minecraft server and Launchwrapper
