@@ -47,7 +47,7 @@ public class VanillaPluginContainer implements SpongePluginContainer {
         this.version = info.version();
         this.logger = LoggerFactory.getLogger(this.id);
 
-        this.instance = Sponge.getInjector().createChildInjector(new SpongePluginGuiceModule(this)).getInstance(pluginClass);
+        this.instance = Sponge.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass)).getInstance(pluginClass);
     }
 
     @Override
