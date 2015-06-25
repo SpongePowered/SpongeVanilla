@@ -32,6 +32,7 @@ import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
@@ -67,8 +68,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
     public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
-        final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText
-                (component), ((Player) this.playerEntity).getMessageSink());
+        final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity,
+                SpongeTexts.toText(component), SpongeTexts.toText((IChatComponent) ((ChatComponentTranslation) component).getFormatArgs()[1]),
+                ((Player) this.playerEntity).getMessageSink());
         if (!Sponge.getGame().getEventManager().post(event)) {
             event.getSink().sendMessage(event.getNewMessage());
         }
