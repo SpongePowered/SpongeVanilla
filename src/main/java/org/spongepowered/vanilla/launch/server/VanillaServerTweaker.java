@@ -82,6 +82,7 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addTransformerExclusion("org.apache.commons.lang3.");
 
         // SpongeAPI
+        loader.addTransformerExclusion("com.flowpowered.noise.");
         loader.addTransformerExclusion("com.flowpowered.math.");
         loader.addTransformerExclusion("org.slf4j.");
 
@@ -92,6 +93,7 @@ public final class VanillaServerTweaker implements ITweaker {
         // Configurate
         loader.addTransformerExclusion("ninja.leaping.configurate.");
         loader.addTransformerExclusion("com.typesafe.config.");
+        loader.addTransformerExclusion("org.yaml.snakeyaml.");
 
         // Sponge Launch
         loader.addTransformerExclusion("org.spongepowered.tools.");

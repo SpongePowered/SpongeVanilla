@@ -45,8 +45,8 @@ public final class VanillaServerMain {
     private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.8.jar";
     private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.8/minecraft_server.1.8.jar";
 
-    private static final String LAUNCHWRAPPER_LOCAL = "launchwrapper-1.11.jar";
-    private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/net/minecraft/launchwrapper/1.11/launchwrapper-1.11.jar";
+    private static final String LAUNCHWRAPPER_LOCAL = "launchwrapper-1.12.jar";
+    private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
 
     private VanillaServerMain() {
     }
