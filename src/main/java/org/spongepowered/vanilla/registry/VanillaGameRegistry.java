@@ -71,6 +71,7 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
             public BlockType apply(String input) {
                 for (BlockType type : VanillaGameRegistry.this.blockTypes) {
                     if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
+                        VanillaGameRegistry.this.blockTypeMappings.put(input.toLowerCase(), type);
                         return type;
                     }
                 }
