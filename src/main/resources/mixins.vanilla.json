@@ -6,6 +6,7 @@
     "priority": 1111,
     "server": [
         "MixinBootstrap",
+        "block.MixinBlock",
         "entity.MixinEntity",
         "entity.player.MixinEntityPlayer",
         "entity.player.MixinEntityPlayerMP",
