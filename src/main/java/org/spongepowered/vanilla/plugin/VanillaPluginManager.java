@@ -83,6 +83,7 @@ public class VanillaPluginManager implements PluginManager {
     }
     
     public void loadPlugins() throws IOException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
         Set<String> plugins;
 
         if (SCAN_CLASSPATH) {
@@ -91,7 +92,7 @@ public class VanillaPluginManager implements PluginManager {
             // Find plugins on the classpath
             plugins = PluginScanner.scanClassPath(Launch.classLoader);
             if (!plugins.isEmpty()) {
-                loadPlugins("classpath", plugins);
+				loadPlugins("classpath", classLoader, plugins);
             }
         }
 
@@ -104,7 +105,7 @@ public class VanillaPluginManager implements PluginManager {
                 Launch.classLoader.addURL(jar.toURI().toURL());
 
                 // Load the plugins
-                loadPlugins(jar, plugins);
+                loadPlugins(jar.toString(), classLoader, plugins);
             }
         }
     }
@@ -124,7 +125,7 @@ public class VanillaPluginManager implements PluginManager {
     public Set<PluginContainer> loadPlugins(URLClassLoader classLoader) {
     	String urls = Arrays.toString(classLoader.getURLs());
     	Set<String> plugins = PluginScanner.scanClassPath(classLoader);
-        return loadPlugins("URLClassLoader:" + urls, plugins);
+        return loadPlugins("URLClassLoader:" + urls, classLoader, plugins);
     }
     
     @Override
@@ -133,20 +134,20 @@ public class VanillaPluginManager implements PluginManager {
             Sponge.getLogger().error("Failed to unload plugin, as it wasn't loaded: {}", container);
             return false;
     	}
-    	unregisterPlugin(container);
     	SpongeGame game = Sponge.getGame();
+        eventManager.post(SpongeEventFactory.createPlugin(PluginUnloadingEvent.class, game, container));
+    	unregisterPlugin(container);
 		game.getEventManager().unregister(container.getInstance());
         game.getEventManager().unregisterPlugin(container);
-        eventManager.post(SpongeEventFactory.createPlugin(PluginUnloadingEvent.class, game, container));
         Sponge.getLogger().info("Unloaded plugin: {} {}", container.getName(), container.getVersion());
 		return true;
     }
     
-    private Set<PluginContainer> loadPlugins(Object source, Iterable<String> plugins) {
+    private Set<PluginContainer> loadPlugins(String source, ClassLoader classLoader, Iterable<String> plugins) {
         Set<PluginContainer> pluginContainers = Sets.newHashSet();
         for (String plugin : plugins) {
             try {
-                Class<?> pluginClass = Class.forName(plugin);
+                Class<?> pluginClass = classLoader.loadClass(plugin);
                 VanillaPluginContainer container = loadPlugin(pluginClass, source.toString());
                 pluginContainers.add(container);
             } catch (Throwable e) {
