@@ -29,14 +29,23 @@ import static org.spongepowered.vanilla.plugin.PluginScanner.ARCHIVE;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import net.minecraft.launchwrapper.Launch;
 import org.slf4j.Logger;
+import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.plugin.PluginLoadedEvent;
+import org.spongepowered.api.event.plugin.PluginUnloadingEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeGame;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -52,11 +61,13 @@ public class VanillaPluginManager implements PluginManager {
     public static final String SCAN_CLASSPATH_PROPERTY = "sponge.plugins.scanClasspath";
     private static final boolean SCAN_CLASSPATH = Boolean.getBoolean(SCAN_CLASSPATH_PROPERTY);
 
+	private final EventManager eventManager;
     private final Map<String, PluginContainer> plugins = Maps.newHashMap();
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
     @Inject
-    public VanillaPluginManager(@Named("Sponge") PluginContainer spongePlugin, @Named("Minecraft") PluginContainer minecraftPlugin) {
+    public VanillaPluginManager(EventManager eventManager, @Named("Sponge") PluginContainer spongePlugin, @Named("Minecraft") PluginContainer minecraftPlugin) {
+        this.eventManager = eventManager;
         registerPlugin(spongePlugin);
         registerPlugin(minecraftPlugin);
     }
@@ -66,7 +77,13 @@ public class VanillaPluginManager implements PluginManager {
         this.pluginInstances.put(plugin.getInstance(), plugin);
     }
 
+    private void unregisterPlugin(PluginContainer plugin) {
+        this.plugins.remove(plugin.getId());
+        this.pluginInstances.remove(plugin.getInstance());    	
+    }
+    
     public void loadPlugins() throws IOException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
         Set<String> plugins;
 
         if (SCAN_CLASSPATH) {
@@ -75,7 +92,7 @@ public class VanillaPluginManager implements PluginManager {
             // Find plugins on the classpath
             plugins = PluginScanner.scanClassPath(Launch.classLoader);
             if (!plugins.isEmpty()) {
-                loadPlugins("classpath", plugins);
+				loadPlugins("classpath", classLoader, plugins);
             }
         }
 
@@ -88,24 +105,56 @@ public class VanillaPluginManager implements PluginManager {
                 Launch.classLoader.addURL(jar.toURI().toURL());
 
                 // Load the plugins
-                loadPlugins(jar, plugins);
+                loadPlugins(jar.toString(), classLoader, plugins);
             }
         }
     }
 
-    private void loadPlugins(Object source, Iterable<String> plugins) {
+	@Override
+	public VanillaPluginContainer loadPlugin(Class<?> pluginClass, String source) {
+        VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
+        registerPlugin(container);
+        SpongeGame game = Sponge.getGame();
+		game.getEventManager().register(container, container.getInstance());
+        eventManager.post(SpongeEventFactory.createPlugin(PluginLoadedEvent.class, game, container));
+        Sponge.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
+		return container;
+	}
+
+    @Override
+    public Set<PluginContainer> loadPlugins(URLClassLoader classLoader) {
+    	String urls = Arrays.toString(classLoader.getURLs());
+    	Set<String> plugins = PluginScanner.scanClassPath(classLoader);
+        return loadPlugins("URLClassLoader:" + urls, classLoader, plugins);
+    }
+    
+    @Override
+    public boolean unloadPlugin(PluginContainer container) { // TODO ? throws new IllegalStateException
+    	if (!isLoaded(container.getId())) {
+            Sponge.getLogger().error("Failed to unload plugin, as it wasn't loaded: {}", container);
+            return false;
+    	}
+    	SpongeGame game = Sponge.getGame();
+        eventManager.post(SpongeEventFactory.createPlugin(PluginUnloadingEvent.class, game, container));
+    	unregisterPlugin(container);
+		game.getEventManager().unregister(container.getInstance());
+        game.getEventManager().unregisterPlugin(container);
+        Sponge.getLogger().info("Unloaded plugin: {} {}", container.getName(), container.getVersion());
+		return true;
+    }
+    
+    private Set<PluginContainer> loadPlugins(String source, ClassLoader classLoader, Iterable<String> plugins) {
+        Set<PluginContainer> pluginContainers = Sets.newHashSet();
         for (String plugin : plugins) {
             try {
-                Class<?> pluginClass = Class.forName(plugin);
-                VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
-                registerPlugin(container);
-                Sponge.getGame().getEventManager().register(container, container.getInstance());
-
-                Sponge.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
+                Class<?> pluginClass = classLoader.loadClass(plugin);
+                VanillaPluginContainer container = loadPlugin(pluginClass, source.toString());
+                pluginContainers.add(container);
             } catch (Throwable e) {
                 Sponge.getLogger().error("Failed to load plugin: {} (from {})", plugin, source, e);
             }
         }
+        return Collections.unmodifiableSet(pluginContainers);
     }
 
     @Override

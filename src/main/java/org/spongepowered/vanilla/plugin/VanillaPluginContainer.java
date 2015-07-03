@@ -40,8 +40,15 @@ public class VanillaPluginContainer implements SpongePluginContainer {
     private final Object instance;
     private final Logger logger;
 
-    public VanillaPluginContainer(Class<?> pluginClass) {
+    /**
+     * Constructor.
+     * @param pluginClass a class annotated with {@link Plugin}
+     * @throws IllegalArgumentException if pluginClass does not have the Plugin annotation
+     */
+    public VanillaPluginContainer(Class<?> pluginClass) throws IllegalArgumentException {
         Plugin info = pluginClass.getAnnotation(Plugin.class);
+        if (info == null)
+        	throw new IllegalArgumentException("Class must have org.spongepowered.api.plugin.Plugin annotation: " + pluginClass.getName());
         this.id = info.id();
         this.name = info.name();
         this.version = info.version();
