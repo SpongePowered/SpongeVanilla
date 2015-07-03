@@ -40,6 +40,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeGame;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,8 +113,9 @@ public class VanillaPluginManager implements PluginManager {
 	public VanillaPluginContainer loadPlugin(Class<?> pluginClass, String source) {
         VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
         registerPlugin(container);
-        Sponge.getGame().getEventManager().register(container, container.getInstance());
-        eventManager.post(SpongeEventFactory.createPlugin(PluginLoadedEvent.class, container));
+        SpongeGame game = Sponge.getGame();
+		game.getEventManager().register(container, container.getInstance());
+        eventManager.post(SpongeEventFactory.createPlugin(PluginLoadedEvent.class, game, container));
         Sponge.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
 		return container;
 	}
@@ -132,9 +134,10 @@ public class VanillaPluginManager implements PluginManager {
             return false;
     	}
     	unregisterPlugin(container);
-    	Sponge.getGame().getEventManager().unregister(container.getInstance());
-        Sponge.getGame().getEventManager().unregisterPlugin(container);
-        eventManager.post(SpongeEventFactory.createPlugin(PluginUnloadingEvent.class, container));
+    	SpongeGame game = Sponge.getGame();
+		game.getEventManager().unregister(container.getInstance());
+        game.getEventManager().unregisterPlugin(container);
+        eventManager.post(SpongeEventFactory.createPlugin(PluginUnloadingEvent.class, game, container));
         Sponge.getLogger().info("Unloaded plugin: {} {}", container.getName(), container.getVersion());
 		return true;
     }
