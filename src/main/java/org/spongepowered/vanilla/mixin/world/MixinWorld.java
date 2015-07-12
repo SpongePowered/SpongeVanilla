@@ -24,11 +24,16 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import com.flowpowered.math.vector.Vector3i;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,9 +41,14 @@ import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.util.VecHelper;
+import org.spongepowered.vanilla.block.VanillaBlockSnapshot;
 
 @Mixin(World.class)
-public abstract class MixinWorld {
+public abstract class MixinWorld implements org.spongepowered.api.world.World {
+
+    @Shadow
+    public abstract IBlockState getBlockState(BlockPos blockPos);
 
     @Inject(method = "spawnEntityInWorld", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getChunkFromChunkCoords(II)Lnet/minecraft/world/chunk/Chunk;"))
@@ -56,4 +66,15 @@ public abstract class MixinWorld {
         this.onSpawnEntityInWorld(entity, cir, i, j, flag);
     }
 
+    @Override
+    public BlockSnapshot getBlockSnapshot(Vector3i position) {
+        final BlockPos blockPos = VecHelper.toBlockPos(position);
+        return new VanillaBlockSnapshot((World) (Object) this, blockPos, getBlockState(blockPos));
+    }
+
+    @Override
+    public BlockSnapshot getBlockSnapshot(int x, int y, int z) {
+        final BlockPos blockPos = new BlockPos(x,y,z);
+        return new VanillaBlockSnapshot((World) (Object) this, blockPos , getBlockState(blockPos));
+    }
 }
