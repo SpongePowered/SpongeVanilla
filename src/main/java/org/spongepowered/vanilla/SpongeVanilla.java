@@ -125,7 +125,7 @@ public final class SpongeVanilla implements PluginContainer {
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             try {
-                SpongePermissionService service = new SpongePermissionService();
+                SpongePermissionService service = new SpongePermissionService(this.game);
                 // Setup default permissions
                 service.getGroupForOpLevel(2).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
                 this.game.getServiceManager().setProvider(this, PermissionService.class, service);
