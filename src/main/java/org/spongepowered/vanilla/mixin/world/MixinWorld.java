@@ -44,11 +44,10 @@ import org.spongepowered.common.Sponge;
 import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.block.VanillaBlockSnapshot;
 
-@Mixin(World.class)
+@Mixin(value = World.class, priority = 1001)
 public abstract class MixinWorld implements org.spongepowered.api.world.World {
 
-    @Shadow
-    public abstract IBlockState getBlockState(BlockPos blockPos);
+    @Shadow abstract IBlockState getBlockState(BlockPos blockPos);
 
     @Inject(method = "spawnEntityInWorld", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getChunkFromChunkCoords(II)Lnet/minecraft/world/chunk/Chunk;"))
@@ -77,5 +76,4 @@ public abstract class MixinWorld implements org.spongepowered.api.world.World {
         final BlockPos blockPos = new BlockPos(x, y, z);
         return new VanillaBlockSnapshot((World) (Object) this, blockPos , getBlockState(blockPos));
     }
-
 }

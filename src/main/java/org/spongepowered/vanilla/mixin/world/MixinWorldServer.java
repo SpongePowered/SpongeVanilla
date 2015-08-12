@@ -24,17 +24,24 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.world.WorldPreExplosionEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.vanilla.world.VanillaDimensionManager;
 
 @Mixin(WorldServer.class)
@@ -49,5 +56,16 @@ public abstract class MixinWorldServer extends World {
     public void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn, CallbackInfo
             ci) {
         VanillaDimensionManager.setWorld(dimensionId, (WorldServer) (Object) this);
+    }
+
+    @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"), locals = LocalCapture
+            .CAPTURE_FAILHARD, cancellable = true)
+    public void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
+            CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
+        final WorldPreExplosionEvent event = SpongeEventFactory.createWorldPreExplosion(Sponge.getGame(), (org.spongepowered.api.world.explosion
+                .Explosion) explosion);
+        if (Sponge.getGame().getEventManager().post(event)) {
+            cir.setReturnValue(explosion);
+        }
     }
 }
