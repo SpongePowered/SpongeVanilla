@@ -50,19 +50,19 @@ import java.util.List;
 public abstract class MixinExplosion implements org.spongepowered.api.world.explosion.Explosion {
     @Shadow private World worldObj;
     @Shadow private Entity exploder;
-    @Shadow private List affectedBlockPositions;
+    @Shadow private List<? super Object> affectedBlockPositions;
     @Shadow abstract EntityLivingBase getExplosivePlacedBy();
 
     @Inject(method = "doExplosionA", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/World;"
             + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    public void callWorldOnExplosionEvent(CallbackInfo ci, HashSet hashset, boolean flag, int j, int k, float f3, int j1, int l, int k1, int i1,
-            List list) {
+    public void callWorldOnExplosionEvent(CallbackInfo ci, HashSet<?> hashset, boolean flag, int j, int k, float f3, int j1, int l, int k1, int i1,
+            List<?> list) {
         // Minecraft -> Sponge
-        final List<Location> locations = Lists.newArrayList();
+        final List<Location<org.spongepowered.api.world.World>> locations = Lists.newArrayList();
         for (Object obj : affectedBlockPositions) {
             final BlockPos blockPos = (BlockPos) obj;
-            locations.add(new Location((org.spongepowered.api.world.World) worldObj, VecHelper.toVector(blockPos)));
+            locations.add(new Location<org.spongepowered.api.world.World>((org.spongepowered.api.world.World) worldObj, VecHelper.toVector(blockPos)));
         }
 
         // Cause -> Something placed it -> Something exploded -> boom
@@ -81,6 +81,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
             cause = null;
         }
 
+        @SuppressWarnings("unchecked")
         final WorldOnExplosionEvent event = SpongeEventFactory.createWorldOnExplosion(Sponge.getGame(), cause, this, locations,
                 (List<org.spongepowered.api.entity.Entity>) list);
         Sponge.getGame().getEventManager().post(event);
@@ -91,9 +92,9 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
         // Sponge -> Minecraft
         affectedBlockPositions.clear();
 
-        if (((org.spongepowered.api.world.explosion.Explosion) (Object) this).shouldBreakBlocks()) {
-            List<Location> postLocations = event.getLocations();
-            for (Location location : postLocations) {
+        if (this.shouldBreakBlocks()) {
+            List<Location<org.spongepowered.api.world.World>> postLocations = event.getLocations();
+            for (Location<org.spongepowered.api.world.World> location : postLocations) {
                 affectedBlockPositions.add(VecHelper.toBlockPos(location.getBlockPosition()));
             }
         }

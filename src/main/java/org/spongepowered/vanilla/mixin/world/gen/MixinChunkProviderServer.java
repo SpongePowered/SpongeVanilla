@@ -42,8 +42,8 @@ import java.util.Set;
 @Mixin(ChunkProviderServer.class)
 public abstract class MixinChunkProviderServer {
     @Shadow public WorldServer worldObj;
-    @Shadow private Set droppedChunksSet;
-    @Shadow public List loadedChunks;
+    @Shadow private Set<? super Object> droppedChunksSet;
+    @Shadow public List<?> loadedChunks;
     @Shadow public IChunkProvider serverChunkGenerator;
 
     @SuppressWarnings("unchecked")
