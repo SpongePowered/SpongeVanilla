@@ -61,13 +61,13 @@ import java.util.concurrent.FutureTask;
 public abstract class MixinMinecraftServer {
 
     @Shadow private static Logger logger;
-    @Shadow protected Queue futureTaskQueue;
+    @Shadow protected Queue<?> futureTaskQueue;
     @Shadow private ServerConfigurationManager serverConfigManager;
     @Shadow private Profiler theProfiler;
     @Shadow private int tickCounter;
     @Shadow abstract boolean getAllowNether();
     @Shadow abstract NetworkSystem getNetworkSystem();
-    @Shadow List playersOnline;
+    @Shadow List<?> playersOnline;
 
     private java.util.Hashtable<Integer, long[]> worldTickTimes = new java.util.Hashtable<Integer, long[]>();
 
@@ -97,7 +97,7 @@ public abstract class MixinMinecraftServer {
     @Overwrite
     public void updateTimeLightAndEntities() {
         this.theProfiler.startSection("jobs");
-        Queue queue = this.futureTaskQueue;
+        Queue<?> queue = this.futureTaskQueue;
 
         synchronized (this.futureTaskQueue) {
             while (!this.futureTaskQueue.isEmpty()) {

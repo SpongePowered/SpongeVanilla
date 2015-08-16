@@ -83,8 +83,9 @@ public abstract class MixinItemInWorldManager {
     public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity,
             float hitz, CallbackInfoReturnable<Boolean> ci) {
         boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
-                new Cause(null, player, null), (Player) player, new Location(((Player) player).getWorld(), VecHelper.toVector(pos)),
-                SpongeGameRegistry.directionMap.inverse().get(side), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
+                new Cause(null, player, null), (Player) player,
+            new Location<org.spongepowered.api.world.World>(((Player) player).getWorld(), VecHelper.toVector(pos)),
+            SpongeGameRegistry.directionMap.inverse().get(side), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
         if (cancelled) {
             // Short-circuit and return false
             ci.setReturnValue(false);

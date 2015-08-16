@@ -95,7 +95,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         //TODO Quote gabizou: Calculate the clicked location on the server. Hmmm, sounds fun...come back and do later -_-.
         boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
                 new Cause(null, this.playerEntity, null), (Player) this.playerEntity,
-                new Location((World) worldserver, VecHelper.toVector(packetIn.getPosition())),
+                new Location<World>((World) worldserver, VecHelper.toVector(packetIn.getPosition())),
                 SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()), EntityInteractionTypes.ATTACK, null));
         boolean revert = cancelled;
 
