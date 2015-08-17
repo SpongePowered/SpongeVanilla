@@ -162,12 +162,12 @@ public final class VanillaHooks {
             final ImmutableList.Builder<BlockTransaction> blockTransactionBuilder = ImmutableList.builder();
             for (BlockSnapshot original : copiedSnapshots) {
                 final BlockPos opposite = pos.offset(side);
-                final SpongeBlockSnapshot now = (SpongeBlockSnapshot) ((org.spongepowered.api.world.World) world).createSnapshot(opposite.getX
-                        (), opposite.getY(), opposite.getZ());
+                final SpongeBlockSnapshot now = (SpongeBlockSnapshot) ((org.spongepowered.api.world.World) world)
+                        .createSnapshot(opposite.getX(), opposite.getY(), opposite.getZ());
                 blockTransactionBuilder.add(new BlockTransaction(original, now));
             }
-            final PlaceBlockEvent event = SpongeEventFactory.createPlaceBlockEvent(Sponge.getGame(), Cause.of(player), (org.spongepowered.api
-                    .world.World) world, blockTransactionBuilder.build());
+            final PlaceBlockEvent event = SpongeEventFactory.createPlaceBlockEvent(Sponge.getGame(), Cause.of(player),
+                    (org.spongepowered.api.world.World) world, blockTransactionBuilder.build());
             // Rollback if cancelled
             if (Sponge.getGame().getEventManager().post(event)) {
                 success = false;

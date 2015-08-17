@@ -1,23 +1,14 @@
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
         maven {
             name = 'forge'
             url = 'http://files.minecraftforge.net/maven'
         }
-        maven {
-            name = 'sonatype-snapshots'
-            url = 'https://oss.sonatype.org/content/repositories/snapshots'
-        }
-        maven {
-            name = 'minecrell-snapshots'
-            url = 'http://repo.minecrell.net/snapshots'
-        }
     }
 
     dependencies {
-        classpath 'net.minecrell:VanillaGradle:2.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
         classpath('nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0') {
             exclude module: 'guava'
         }
@@ -25,12 +16,13 @@ buildscript {
     }
 }
 
-apply plugin: 'net.minecrell.vanilla'
-ext.minecraftPlugin = plugins.getPlugin('net.minecrell.vanilla')
+apply plugin: 'net.minecraftforge.gradle.tweaker-server'
+ext.minecraftPlugin = plugins.getPlugin('net.minecraftforge.gradle.tweaker-server')
+ext.DIR_MCP_MAPPINGS = net.minecraftforge.gradle.common.Constants.DIR_MCP_MAPPINGS
 apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
-    serverTweaker = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
+    tweakClass = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
 }
 
 configurations {
