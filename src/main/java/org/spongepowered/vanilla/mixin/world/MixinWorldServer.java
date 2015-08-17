@@ -63,8 +63,8 @@ public abstract class MixinWorldServer extends World {
             .CAPTURE_FAILHARD, cancellable = true)
     public void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
             CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
-        final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(Sponge.getGame(), Cause.of(this), (org.spongepowered.api.world
-                .explosion.Explosion) explosion, (org.spongepowered.api.world.World) this);
+        final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(Sponge.getGame(), Cause.of(this),
+                (org.spongepowered.api.world.explosion.Explosion) explosion, (org.spongepowered.api.world.World) this);
         if (Sponge.getGame().getEventManager().post(event)) {
             cir.setReturnValue(explosion);
         }

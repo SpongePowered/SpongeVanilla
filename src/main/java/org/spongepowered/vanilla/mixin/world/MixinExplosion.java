@@ -96,8 +96,9 @@ public abstract class MixinExplosion {
         final ImmutableList<EntitySnapshot> entitySnapshots = entitySnapshotBuilder.build();
 
         @SuppressWarnings("unchecked")
-        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(Sponge.getGame(), cause, (List<org.spongepowered.api
-                .entity.Entity>) list, entitySnapshots, spongeExplosion, (org.spongepowered.api.world.World) worldObj, blockTransactions);
+        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(Sponge.getGame(), cause,
+                (List<org.spongepowered.api.entity.Entity>) list, entitySnapshots, spongeExplosion, (org.spongepowered.api.world.World) worldObj,
+                blockTransactions);
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
 
         affectedBlockPositions.clear();
