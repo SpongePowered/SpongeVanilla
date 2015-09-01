@@ -118,7 +118,7 @@ public final class VanillaServerTweaker implements ITweaker {
         }
 
         logger.debug("Applying access transformer...");
-        Launch.blackboard.put("vanilla.at", new URL[]{getResource("common_at.cfg"), getResource("vanilla_at.cfg")});
+        Launch.blackboard.put("vanilla.at", new URL[]{ getResource("common_at.cfg"), getResource("vanilla_at.cfg") });
         loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.AccessTransformer");
 
         logger.debug("Initializing Mixin environment...");
