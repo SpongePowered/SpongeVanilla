@@ -36,9 +36,10 @@ import net.minecraft.util.ReportedException;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.state.ServerStartedEvent;
-import org.spongepowered.api.event.state.ServerStoppedEvent;
-import org.spongepowered.api.event.state.ServerStoppingEvent;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -74,24 +75,24 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
     public void onServerStarted(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.postState(ServerStartedEvent.class);
+        SpongeVanilla.INSTANCE.postState(GameStartedServerEvent.class);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
     public void onServerStopping(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.postState(ServerStoppingEvent.class);
+        SpongeVanilla.INSTANCE.postState(GameStoppingServerEvent.class);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
     public void onServerStopped(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.postState(ServerStoppedEvent.class);
+        SpongeVanilla.INSTANCE.postState(GameStoppedServerEvent.class);
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createWorldUnload(Sponge.getGame(), (World) worldserver));
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(Sponge.getGame(), Cause.of(this), (World) worldserver));
     }
 
     @Overwrite

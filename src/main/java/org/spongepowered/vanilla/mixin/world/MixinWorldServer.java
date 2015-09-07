@@ -34,7 +34,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.world.WorldPreExplosionEvent;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.world.ExplosionEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,7 +45,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.vanilla.world.VanillaDimensionManager;
 
-@Mixin(WorldServer.class)
+@Mixin(value = WorldServer.class, priority = 1001)
 public abstract class MixinWorldServer extends World {
 
     protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info,
@@ -62,8 +63,8 @@ public abstract class MixinWorldServer extends World {
             .CAPTURE_FAILHARD, cancellable = true)
     public void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
             CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
-        final WorldPreExplosionEvent event = SpongeEventFactory.createWorldPreExplosion(Sponge.getGame(), (org.spongepowered.api.world.explosion
-                .Explosion) explosion);
+        final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(Sponge.getGame(), Cause.of(this), (org.spongepowered.api.world
+                .explosion.Explosion) explosion, (org.spongepowered.api.world.World) this);
         if (Sponge.getGame().getEventManager().post(event)) {
             cir.setReturnValue(explosion);
         }

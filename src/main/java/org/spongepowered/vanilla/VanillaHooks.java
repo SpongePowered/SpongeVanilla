@@ -24,6 +24,7 @@
  */
 package org.spongepowered.vanilla;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -33,18 +34,15 @@ import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockTransaction;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.block.BlockBreakEvent;
+import org.spongepowered.api.event.block.BreakBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
-import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.common.registry.SpongeGameRegistry;
-import org.spongepowered.common.util.VecHelper;
-import org.spongepowered.vanilla.block.VanillaBlockSnapshot;
 
 public final class VanillaHooks {
 
@@ -52,7 +50,7 @@ public final class VanillaHooks {
     }
 
     /**
-     * Hook that prepares server logic for the firing of a {@link BlockBreakEvent}.
+     * Hook that prepares server logic for the firing of a {@link BreakBlockEvent}.
      *
      * @param world The world
      * @param gameType The gametype
@@ -61,8 +59,8 @@ public final class VanillaHooks {
      * @param blockFacing The face of the block
      * @return The called event
      */
-    public static PlayerBreakBlockEvent preparePlayerBreakBlockEvent(World world, WorldSettings.GameType gameType, EntityPlayerMP entityPlayer,
-                                                                     BlockPos pos, EnumFacing blockFacing) {
+    public static BreakBlockEvent prepareBreakBlockEventAsPlayer(net.minecraft.world.World world, WorldSettings.GameType gameType, EntityPlayerMP
+            entityPlayer, BlockPos pos, EnumFacing blockFacing) {
         boolean preCancelEvent = false;
         if (gameType.isCreative() && entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() instanceof ItemSword) {
             preCancelEvent = true;
@@ -87,12 +85,12 @@ public final class VanillaHooks {
             entityPlayer.playerNetServerHandler.sendPacket(packet);
         }
 
-        // TODO Support replacement block to place when break succeeds
+        final BlockSnapshot currentSnapshot = ((World) world).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
+        final BlockSnapshot defaultSnapshot = currentSnapshot.withState(BlockTypes.AIR.getDefaultState());
+        final ImmutableList<BlockTransaction> transactions = ImmutableList.<BlockTransaction>builder().add(new BlockTransaction(currentSnapshot,
+                defaultSnapshot)).build();
+        final BreakBlockEvent event = SpongeEventFactory.createBreakBlockEvent(Sponge.getGame(), Cause.of(entityPlayer), (World) world, transactions);
         // Post the block break event
-        PlayerBreakBlockEvent event = SpongeEventFactory.createPlayerBreakBlock(Sponge.getGame(), new Cause(null, entityPlayer, null),
-            (Player) entityPlayer, SpongeGameRegistry.directionMap.inverse().get(blockFacing),
-            new Location<org.spongepowered.api.world.World>((org.spongepowered.api.world.World) world,VecHelper.toVector(pos)),
-            new VanillaBlockSnapshot(world, pos, world.getBlockState(pos)), 0);
         event.setCancelled(preCancelEvent);
         Sponge.getGame().getEventManager().post(event);
         if (event.isCancelled()) {
@@ -105,6 +103,12 @@ public final class VanillaHooks {
                 Packet packet = tileentity.getDescriptionPacket();
                 if (packet != null) {
                     entityPlayer.playerNetServerHandler.sendPacket(packet);
+                }
+            }
+        } else {
+            for (BlockTransaction transaction : event.getTransactions()) {
+                if (transaction.getCustomReplacement().isPresent() && transaction.isValid()) {
+                    transaction.getFinalReplacement().restore(true, false);
                 }
             }
         }
