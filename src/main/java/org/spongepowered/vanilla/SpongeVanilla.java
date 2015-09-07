@@ -30,18 +30,18 @@ import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.ConstructionEvent;
-import org.spongepowered.api.event.state.InitializationEvent;
-import org.spongepowered.api.event.state.LoadCompleteEvent;
-import org.spongepowered.api.event.state.PostInitializationEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
-import org.spongepowered.api.event.state.ServerAboutToStartEvent;
-import org.spongepowered.api.event.state.ServerStartingEvent;
-import org.spongepowered.api.event.state.ServerStoppedEvent;
-import org.spongepowered.api.event.state.StateEvent;
+import org.spongepowered.api.event.SpongeEventFactoryUtils;
+import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
+import org.spongepowered.api.event.game.state.GameConstructionEvent;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
+import org.spongepowered.api.event.game.state.GameStateEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.permission.PermissionService;
@@ -95,14 +95,14 @@ public final class SpongeVanilla implements PluginContainer {
             SpongeBootstrap.initializeServices();
             SpongeBootstrap.preInitializeRegistry();
 
-            this.game.getEventManager().register(this, this);
-            this.game.getEventManager().register(this, this.game.getRegistry());
+            this.game.getEventManager().registerListeners(this, this);
+            this.game.getEventManager().registerListeners(this, this.game.getRegistry());
 
             Sponge.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
-            postState(ConstructionEvent.class);
+            postState(GameConstructionEvent.class);
             Sponge.getLogger().info("Initializing plugins...");
-            postState(PreInitializationEvent.class);
+            postState(GamePreInitializationEvent.class);
 
             this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(new Predicate<PermissionService>() {
 
@@ -121,7 +121,7 @@ public final class SpongeVanilla implements PluginContainer {
 
     public void initialize() {
         SpongeBootstrap.initializeRegistry();
-        postState(InitializationEvent.class);
+        postState(GameInitializationEvent.class);
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             try {
@@ -138,25 +138,25 @@ public final class SpongeVanilla implements PluginContainer {
         SerializationService service = this.game.getServiceManager().provide(SerializationService.class).get();
         ((SpongeSerializationService) service).completeRegistration();
 
-        postState(PostInitializationEvent.class);
+        postState(GamePostInitializationEvent.class);
 
         Sponge.getLogger().info("Successfully loaded and initialized plugins.");
 
-        postState(LoadCompleteEvent.class);
+        postState(GameLoadCompleteEvent.class);
     }
 
-    @Subscribe(order = Order.PRE)
-    public void onServerAboutToStart(ServerAboutToStartEvent event) {
+    @Listener(order = Order.PRE)
+    public void onServerAboutToStart(GameAboutToStartServerEvent event) {
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerEarlyCommands(this.game);
     }
 
-    @Subscribe(order = Order.PRE)
-    public void onServerStarted(ServerStartingEvent event) {
+    @Listener(order = Order.PRE)
+    public void onServerStarted(GameStartingServerEvent event) {
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
     }
 
-    @Subscribe(order = Order.PRE)
-    public void onServerStopped(ServerStoppedEvent event) throws IOException {
+    @Listener(order = Order.PRE)
+    public void onServerStopped(GameStoppedServerEvent event) throws IOException {
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
     }
 
@@ -180,7 +180,7 @@ public final class SpongeVanilla implements PluginContainer {
         return this;
     }
 
-    public void postState(Class<? extends StateEvent> type) {
-        this.game.getEventManager().post(SpongeEventFactory.createState(type, this.game));
+    public void postState(Class<? extends GameStateEvent> type) {
+        this.game.getEventManager().post(SpongeEventFactoryUtils.createState(type, this.game));
     }
 }

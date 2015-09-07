@@ -24,6 +24,8 @@
  */
 package org.spongepowered.vanilla.mixin.network;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.google.common.base.Optional;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.INetHandlerPlayServer;
@@ -32,17 +34,20 @@ import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
-import org.spongepowered.api.entity.EntityInteractionTypes;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.entity.player.PlayerChatEvent;
-import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.event.command.MessageSinkEvent;
+import org.spongepowered.api.event.inventory.UseItemStackEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackTransaction;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.sink.MessageSink;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -68,11 +73,13 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
     public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
-        final PlayerChatEvent event = SpongeEventFactory.createPlayerChat(Sponge.getGame(), (Player) this.playerEntity,
-                SpongeTexts.toText(component), Texts.of((String) ((ChatComponentTranslation) component).getFormatArgs()[1]),
-                ((Player) this.playerEntity).getMessageSink());
+        final Player spongePlayer = ((Player) playerEntity);
+        final Text message = SpongeTexts.toText(component);
+        final MessageSink sink = spongePlayer.getMessageSink();
+        final MessageSinkEvent event = SpongeEventFactory.createMessageSinkEvent(Sponge.getGame(), Cause.of(spongePlayer), message, message, sink,
+                sink);
         if (!Sponge.getGame().getEventManager().post(event)) {
-            event.getSink().sendMessage(event.getNewMessage());
+            event.getSink().sendMessage(event.getMessage());
         }
     }
 
@@ -80,10 +87,12 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
     public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
-        final PlayerQuitEvent event = SpongeEventFactory.createPlayerQuit(Sponge.getGame(), (Player) this.playerEntity, SpongeTexts.toText
-                (component), ((Player) this.playerEntity).getMessageSink());
+        final Player spongePlayer = ((Player) playerEntity);
+        final Text message = SpongeTexts.toText(component);
+        final MessageSink sink = spongePlayer.getMessageSink();
+        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(Sponge.getGame(), Cause.of
+                (spongePlayer), message, message, sink, sink, spongePlayer);
         Sponge.getGame().getEventManager().post(event);
-        event.getSink().sendMessage(event.getNewMessage());
     }
 
     @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isBlockProtected"
@@ -92,14 +101,13 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         // We'll handle all the logic here
         ci.cancel();
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
+        final Location<World> location = new Location<World>((World) worldserver, VecHelper.toVector(packetIn.getPosition()));
         //TODO Quote gabizou: Calculate the clicked location on the server. Hmmm, sounds fun...come back and do later -_-.
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
-                new Cause(null, this.playerEntity, null), (Player) this.playerEntity,
-                new Location<World>((World) worldserver, VecHelper.toVector(packetIn.getPosition())),
-                SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()), EntityInteractionTypes.ATTACK, null));
-        boolean revert = cancelled;
+        final InteractBlockEvent.Attack event = SpongeEventFactory.createInteractBlockEventAttack(Sponge.getGame(), Cause.of(playerEntity),
+                Optional.<Vector3d>absent(), location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
+        boolean revert = Sponge.getGame().getEventManager().post(event);
 
-        if (!cancelled) {
+        if (!revert) {
             if (!this.serverController.isBlockProtected(worldserver, packetIn.getPosition(), this.playerEntity) && worldserver.getWorldBorder()
                     .contains(packetIn.getPosition())) {
                 this.playerEntity.theItemInWorldManager.onBlockClicked(packetIn.getPosition(), packetIn.getFacing());
@@ -137,8 +145,10 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     public void injectBeforeItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci) {
         final MovingObjectPosition objectPosition = EntityUtils.rayTraceFromEntity(this.playerEntity, 4, 1);
         if (objectPosition != null && objectPosition.entityHit == null) {
-            this.isRightClickAirCancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteract(Sponge.getGame(),
-                    (Player) this.playerEntity, EntityInteractionTypes.USE, null));
+            // TODO Work with blood and figure out entire chain
+            final ItemStackTransaction transaction = new ItemStackTransaction(((ItemStack) playerEntity.getItemInUse()).createSnapshot());
+            final UseItemStackEvent event = SpongeEventFactory.createUseItemStackEventStart(Sponge.getGame(), Cause.of(playerEntity), transaction);
+            this.isRightClickAirCancelled = Sponge.getGame().getEventManager().post(event);
         }
     }
 

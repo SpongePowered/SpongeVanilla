@@ -99,7 +99,7 @@ public class VanillaPluginManager implements PluginManager {
                 Class<?> pluginClass = Class.forName(plugin);
                 VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
                 registerPlugin(container);
-                Sponge.getGame().getEventManager().register(container, container.getInstance());
+                Sponge.getGame().getEventManager().registerListeners(container, container.getInstance());
 
                 Sponge.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
             } catch (Throwable e) {

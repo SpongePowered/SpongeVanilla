@@ -28,6 +28,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,14 +37,15 @@ import org.spongepowered.common.Sponge;
 
 import javax.annotation.Nullable;
 
-@Mixin(net.minecraft.entity.Entity.class)
+@Mixin(value = net.minecraft.entity.Entity.class, priority = 1001)
 public abstract class MixinEntity {
-
     @Nullable private NBTTagCompound customEntityData;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     public void onConstructed(World world, CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createEntityConstructing(Sponge.getGame(), (Entity) this));
+        final Entity spongeEntity = (Entity) this;
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createConstructEntityEventPost(Sponge.getGame(), Cause.of(spongeEntity.getWorld()),
+                spongeEntity, spongeEntity.getType(), spongeEntity.getTransform()));
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",

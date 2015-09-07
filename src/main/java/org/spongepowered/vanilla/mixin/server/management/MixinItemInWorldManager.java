@@ -25,6 +25,7 @@
 package org.spongepowered.vanilla.mixin.server.management;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.google.common.base.Optional;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
@@ -41,11 +42,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import org.spongepowered.api.entity.EntityInteractionTypes;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,10 +55,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.registry.SpongeGameRegistry;
-import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.VanillaHooks;
 
-@Mixin(ItemInWorldManager.class)
+@Mixin(value = ItemInWorldManager.class, priority = 1001)
 public abstract class MixinItemInWorldManager {
 
     @Shadow public World theWorld;
@@ -72,7 +72,7 @@ public abstract class MixinItemInWorldManager {
 
     @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
     public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
-        if (VanillaHooks.preparePlayerBreakBlockEvent(this.theWorld, this.gameType, this.thisPlayerMP, pos, clickedFace).isCancelled()) {
+        if (VanillaHooks.prepareBreakBlockEventAsPlayer(this.theWorld, this.gameType, this.thisPlayerMP, pos, clickedFace).isCancelled()) {
             ci.setReturnValue(false);
         }
         this.clickedFace = null;
@@ -82,10 +82,11 @@ public abstract class MixinItemInWorldManager {
             cancellable = true)
     public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity,
             float hitz, CallbackInfoReturnable<Boolean> ci) {
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractBlock(Sponge.getGame(),
-                new Cause(null, player, null), (Player) player,
-            new Location<org.spongepowered.api.world.World>(((Player) player).getWorld(), VecHelper.toVector(pos)),
-            SpongeGameRegistry.directionMap.inverse().get(side), EntityInteractionTypes.USE, new Vector3d(hitx, hity, hitz)));
+        final Player spongePlayer = (Player) player;
+        final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
+        final InteractBlockEvent.Use event = SpongeEventFactory.createInteractBlockEventUse(Sponge.getGame(), Cause.of(player), Optional.of(new
+                Vector3d(hitx, hity, hitz)), currentSnapshot, SpongeGameRegistry.directionMap.inverse().get(side));
+        boolean cancelled = Sponge.getGame().getEventManager().post(event);
         if (cancelled) {
             // Short-circuit and return false
             ci.setReturnValue(false);

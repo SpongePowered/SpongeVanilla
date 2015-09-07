@@ -25,28 +25,22 @@
 package org.spongepowered.vanilla.mixin.entity.player;
 
 import com.google.common.collect.Maps;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import org.spongepowered.api.entity.EntityInteractionTypes;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.common.Sponge;
 import org.spongepowered.vanilla.interfaces.IMixinEntityPlayer;
 
 import java.util.HashMap;
 
-@Mixin(EntityPlayer.class)
+@Mixin(value = EntityPlayer.class, priority = 1001)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
@@ -58,25 +52,6 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
 
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
-    }
-
-    /**
-     * @author Zidane
-     *
-     * Invoke before {@code ItemStack itemstack = this.getCurrentEquippedItem()} (line 1206 in source) to fire {@link org.spongepowered.api
-     * .event.entity.player.PlayerInteractEntityEvent}.
-     * @param entity Injected entity being interacted by this player
-     * @param ci Info to provide mixin on how to handle the callback
-     */
-    @Inject(method = "interactWith",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;",
-                    opcode = 0), cancellable = true)
-    public void onInteractWith(Entity entity, CallbackInfoReturnable<Boolean> ci) {
-        boolean cancelled = Sponge.getGame().getEventManager().post(SpongeEventFactory.createPlayerInteractEntity(Sponge.getGame(), (Player) this,
-                (org.spongepowered.api.entity.Entity) entity, EntityInteractionTypes.USE, null));
-        if (cancelled) {
-            ci.setReturnValue(false);
-        }
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)

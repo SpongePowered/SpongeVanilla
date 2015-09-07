@@ -24,25 +24,30 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.Sponge;
 
-@Mixin(Chunk.class)
-public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
+@Mixin(value = Chunk.class, priority = 1001)
+public abstract class MixinChunk {
+    @Shadow private World worldObj;
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
     public void postChunkLoad(CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createChunkLoad(Sponge.getGame(), this));
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createLoadChunkEvent(Sponge.getGame(), Cause.of(worldObj), (org.spongepowered
+                .api.world.Chunk) this));
     }
 
     @Inject(method = "onChunkUnload", at = @At("RETURN"))
     public void postChunkUnload(CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createChunkUnload(Sponge.getGame(), this));
+        Sponge.getGame().getEventManager().post(SpongeEventFactory.createUnloadChunkEvent(Sponge.getGame(), Cause.of(worldObj), (org.spongepowered
+                .api.world.Chunk) this));
     }
-
 }
