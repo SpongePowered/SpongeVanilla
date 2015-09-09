@@ -24,6 +24,10 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -32,8 +36,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.vanilla.interfaces.IMixinWorld;
 
 @Mixin(value = Chunk.class, priority = 1001)
 public abstract class MixinChunk {
@@ -49,5 +55,17 @@ public abstract class MixinChunk {
     public void postChunkUnload(CallbackInfo ci) {
         Sponge.getGame().getEventManager().post(SpongeEventFactory.createUnloadChunkEvent(Sponge.getGame(), Cause.of(worldObj), (org.spongepowered
                 .api.world.Chunk) this));
+    }
+
+
+    @Redirect(method = "setBlockState", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/block/Block;onBlockAdded(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)V"))
+    public void onChunkBlockAddedCall(Block block, net.minecraft.world.World worldIn, BlockPos pos, IBlockState state) {
+        // Ignore block activations during block placement captures unless it's
+        // a BlockContainer. Prevents blocks such as TNT from activating when
+        // cancelled.
+        if (!((IMixinWorld) worldIn).isCapturingBlockSnapshots() || block instanceof BlockContainer) {
+            block.onBlockAdded(worldIn, pos, state);
+        }
     }
 }
