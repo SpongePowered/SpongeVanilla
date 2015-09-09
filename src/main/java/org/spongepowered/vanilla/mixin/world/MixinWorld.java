@@ -114,6 +114,12 @@ public abstract class MixinWorld implements IMixinWorld {
         }
     }
 
+    @Surrogate
+    public void callMarkAndNotifyBlock(BlockPos pos, IBlockState newState, int flags, CallbackInfoReturnable<Boolean> cir, Chunk chunk, Block block,
+            IBlockState iblockstate1) {
+        this.callMarkAndNotifyBlock(pos, newState, flags, cir, chunk, block, iblockstate1, null);
+    }
+
     @Override
     public boolean isCapturingBlockSnapshots() {
         return this.captureSnapshots;
