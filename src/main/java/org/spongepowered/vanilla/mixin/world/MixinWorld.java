@@ -24,13 +24,16 @@
  */
 package org.spongepowered.vanilla.mixin.world;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,11 +43,31 @@ import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
+import org.spongepowered.common.block.SpongeBlockSnapshot;
+import org.spongepowered.vanilla.interfaces.IMixinWorld;
+
+import java.util.ArrayList;
 
 @Mixin(value = World.class, priority = 1001)
-public abstract class MixinWorld implements org.spongepowered.api.world.World {
+public abstract class MixinWorld implements IMixinWorld {
 
     @Shadow abstract IBlockState getBlockState(BlockPos blockPos);
+    @Shadow private net.minecraft.world.border.WorldBorder worldBorder;
+    @Shadow private boolean isRemote;
+    @Shadow abstract void markBlockForUpdate(BlockPos pos);
+    @Shadow abstract void notifyNeighborsRespectDebug(BlockPos pos, Block block);
+    @Shadow abstract void updateComparatorOutputLevel(BlockPos pos, Block block);
+    private boolean captureSnapshots, restoreSnapshots;
+    private final ArrayList<SpongeBlockSnapshot> capturedSnapshots = new ArrayList<SpongeBlockSnapshot>();
+    private SpongeBlockSnapshot injectCacheSnapshot;
+
+    @Inject(method = "spawnEntityInWorld", at = @At("HEAD"), cancellable = true)
+    public void cancelSpawnEntityIfRestoringSnapshots(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
+        // do not drop any items while restoring blocksnapshots. Prevents dupes
+        if (!this.isRemote && (entityIn == null || (entityIn instanceof net.minecraft.entity.item.EntityItem && this.restoreSnapshots))) {
+            cir.setReturnValue(true);
+        }
+    }
 
     @Inject(method = "spawnEntityInWorld", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getChunkFromChunkCoords(II)Lnet/minecraft/world/chunk/Chunk;"))
@@ -60,5 +83,77 @@ public abstract class MixinWorld implements org.spongepowered.api.world.World {
     public void onSpawnEntityInWorld(Entity entity, CallbackInfoReturnable<Boolean> cir, int i, int j) {
         boolean flag = entity.forceSpawn || entity instanceof EntityPlayer;
         this.onSpawnEntityInWorld(entity, cir, i, j, flag);
+    }
+
+    @Inject(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setBlockState(Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/block/state/IBlockState;"))
+    public void createAndStoreBlockSnapshot(BlockPos pos, IBlockState newState, int flags, CallbackInfoReturnable<Boolean> ci) {
+        this.injectCacheSnapshot = null;
+        if (this.captureSnapshots && !((World) (Object) this).isRemote) {
+            final Location<org.spongepowered.api.world.World> location = new Location<org.spongepowered.api.world.World>(
+                    (org.spongepowered.api.world.World) this, pos.getX(), pos.getY(), pos.getZ());
+            this.injectCacheSnapshot = new SpongeBlockSnapshot(location.getBlock(), location.getExtent(), location.getBlockPosition());
+            this.capturedSnapshots.add(this.injectCacheSnapshot);
+        }
+    }
+
+    @Inject(method = "setBlockState", at = @At(value = "RETURN", ordinal = 2))
+    public void removeBlockSnapshotIfNullType(BlockPos pos, IBlockState newState, int flags, CallbackInfoReturnable<Boolean> cir) {
+        if (this.injectCacheSnapshot != null){
+            this.capturedSnapshots.remove(this.injectCacheSnapshot);
+            this.injectCacheSnapshot = null;
+        }
+    }
+
+    @Inject(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.BY, by
+            = 2), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    public void callMarkAndNotifyBlock(BlockPos pos, IBlockState newState, int flags, CallbackInfoReturnable<Boolean> cir, Chunk chunk, Block block,
+            IBlockState iblockstate1, Block block1) {
+        cir.setReturnValue(true);
+        if (this.injectCacheSnapshot == null) {
+            this.markAndNotifyBlock(pos, chunk, iblockstate1, newState, flags); // Modularize client and physics updates
+        }
+    }
+
+    @Override
+    public boolean isCapturingBlockSnapshots() {
+        return this.captureSnapshots;
+    }
+
+    @Override
+    public boolean isRestoringBlockSnapshots() {
+        return this.restoreSnapshots;
+    }
+
+    @Override
+    public void captureBlockSnapshots(boolean captureSnapshots) {
+        this.captureSnapshots = captureSnapshots;
+    }
+
+    @Override
+    public void restoreBlockSnapshots(boolean restoreSnapshots) {
+        this.restoreSnapshots = restoreSnapshots;
+    }
+
+    @Override
+    public ArrayList<SpongeBlockSnapshot> getCapturedSnapshots() {
+        return this.capturedSnapshots;
+    }
+
+    @Override
+    public void markAndNotifyBlock(BlockPos pos, Chunk chunk, IBlockState snapshotState, IBlockState newState, int flags) {
+        if ((flags & 2) != 0 && (!this.isRemote || (flags & 4) == 0) && (chunk == null || chunk.isPopulated()))
+        {
+            this.markBlockForUpdate(pos);
+        }
+
+        if (!this.isRemote && (flags & 1) != 0)
+        {
+            this.notifyNeighborsRespectDebug(pos, snapshotState.getBlock());
+
+            if (newState.getBlock().hasComparatorInputOverride())
+            {
+                this.updateComparatorOutputLevel(pos, newState.getBlock());
+            }
+        }
     }
 }

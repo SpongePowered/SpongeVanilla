@@ -12,6 +12,7 @@
         "entity.player.MixinEntityPlayerMP",
         "entity.vehicle.MixinEntityMinecart",
         "item.MixinEnchantment",
+        "item.MixinItemStack",
         "network.MixinNetHandlerPlayServer",
         "server.management.MixinItemInWorldManager",
         "server.MixinConsoleHandler",
