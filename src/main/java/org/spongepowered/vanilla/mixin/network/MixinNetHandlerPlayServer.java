@@ -58,6 +58,7 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -106,42 +107,22 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         ci.cancel();
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
         final Location<World> location = new Location<World>((World) worldserver, VecHelper.toVector(packetIn.getPosition()));
-        final Optional<BlockRayHit<World>> optBlockHit = BlockRay.from((Entity) playerEntity).end();
-        final Optional<Vector3d> optInteractionPoint = Optional.of(optBlockHit.get().getNormal());
         final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
-                optInteractionPoint, location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
-        boolean revert = Sponge.getGame().getEventManager().post(event);
+                Optional.<Vector3d>absent(), location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
+        boolean cancelled = Sponge.getGame().getEventManager().post(event);
 
-        if (!revert) {
+        if (!cancelled) {
             if (!this.serverController.isBlockProtected(worldserver, packetIn.getPosition(), this.playerEntity) && worldserver.getWorldBorder()
                     .contains(packetIn.getPosition())) {
                 this.playerEntity.theItemInWorldManager.onBlockClicked(packetIn.getPosition(), packetIn.getFacing());
             } else {
-                revert = true;
+                cancelled = true;
             }
         }
 
-        if (revert) {
+        if (cancelled) {
             this.playerEntity.playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldserver, packetIn.getPosition()));
         }
-    }
-
-    /**
-     * Invoke after {@code packetIn.getPlacedBlockDirection() == 255} (line 576 in source) to fire {@link org.spongepowered.api.event.entity
-     * .player.PlayerInteractEvent} on right click with air with item in-hand.
-     * @param packetIn Injected packet param
-     * @param ci Info to provide mixin on how to handle the callback
-     */
-    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "RETURN", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void injectBeforeItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci, WorldServer worldserver, ItemStack itemstack,
-            boolean flag, BlockPos blockpos, EnumFacing enumfacing) {
-        final Optional<Vector3d> optInteractionPoint = Optional.of(new Vector3d(packetIn.getPlacedBlockOffsetX(), packetIn
-                .getPlacedBlockOffsetY(), packetIn.getPlacedBlockOffsetZ()));
-        final BlockSnapshot current = ((World) playerEntity.worldObj).createSnapshot(blockpos.getX(), blockpos.getY(), blockpos.getZ());
-        final InteractBlockEvent.Secondary event =
-                SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
-                        SpongeGameRegistry.directionMap.inverse().get(enumfacing.getOpposite()));
-        Sponge.getGame().getEventManager().post(event);
     }
 
     /**
@@ -154,7 +135,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z",
             ordinal = 0), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     public void injectAfterItemStackCheck(C08PacketPlayerBlockPlacement packetIn, CallbackInfo ci, WorldServer worldserver, ItemStack itemstack,
-            boolean flag, BlockPos blockpos, EnumFacing enumfacing) {
+            @Coerce boolean flag, BlockPos blockpos, EnumFacing enumfacing) {
         // Handle interact logic
         ci.cancel();
 
