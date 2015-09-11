@@ -43,7 +43,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
@@ -82,9 +81,8 @@ public abstract class MixinItemInWorldManager {
             cancellable = true)
     public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity,
             float hitz, CallbackInfoReturnable<Boolean> ci) {
-        final Player spongePlayer = (Player) player;
         final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
-        final InteractBlockEvent.Use event = SpongeEventFactory.createInteractBlockEventUse(Sponge.getGame(), Cause.of(player), Optional.of(new
+        final InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(player), Optional.of(new
                 Vector3d(hitx, hity, hitz)), currentSnapshot, SpongeGameRegistry.directionMap.inverse().get(side));
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
         if (cancelled) {
