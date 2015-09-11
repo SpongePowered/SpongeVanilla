@@ -108,7 +108,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         final Location<World> location = new Location<World>((World) worldserver, VecHelper.toVector(packetIn.getPosition()));
         final Optional<BlockRayHit<World>> optBlockHit = BlockRay.from((Entity) playerEntity).end();
         final Optional<Vector3d> optInteractionPoint = Optional.of(optBlockHit.get().getNormal());
-        final InteractBlockEvent.Attack event = SpongeEventFactory.createInteractBlockEventAttack(Sponge.getGame(), Cause.of(playerEntity),
+        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
                 optInteractionPoint, location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
         boolean revert = Sponge.getGame().getEventManager().post(event);
 
@@ -138,8 +138,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         final Optional<Vector3d> optInteractionPoint = Optional.of(new Vector3d(packetIn.getPlacedBlockOffsetX(), packetIn
                 .getPlacedBlockOffsetY(), packetIn.getPlacedBlockOffsetZ()));
         final BlockSnapshot current = ((World) playerEntity.worldObj).createSnapshot(blockpos.getX(), blockpos.getY(), blockpos.getZ());
-        final InteractBlockEvent.Use event =
-                SpongeEventFactory.createInteractBlockEventUse(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
+        final InteractBlockEvent.Secondary event =
+                SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
                         SpongeGameRegistry.directionMap.inverse().get(enumfacing.getOpposite()));
         Sponge.getGame().getEventManager().post(event);
     }
@@ -176,8 +176,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 
             final Optional<BlockRayHit<World>> optBlockHit = BlockRay.from((Entity) playerEntity).filter(BlockRay.<World>onlyAirFilter()).end();
             final BlockSnapshot current = ((World) worldserver).createSnapshot(optBlockHit.get().getBlockPosition());
-            final InteractBlockEvent.Use otherEvent =
-                    SpongeEventFactory.createInteractBlockEventUse(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
+            final InteractBlockEvent.Secondary otherEvent =
+                    SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
                             SpongeGameRegistry.directionMap.inverse().get(enumfacing.getOpposite()));
             Sponge.getGame().getEventManager().post(otherEvent);
 
