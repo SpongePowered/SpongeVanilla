@@ -142,8 +142,7 @@ public final class VanillaHooks {
     public static boolean callPlaceBlockEventAsPlayer(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
             float hitY, float hitZ) {
         // Store current itemstack state
-        final org.spongepowered.api.item.inventory.ItemStack originalStack = Sponge.getGame().getRegistry().createItemBuilder().fromItemStack(
-                (org.spongepowered.api.item.inventory.ItemStack) stack).build();
+        final org.spongepowered.api.item.inventory.ItemStack originalStack = (org.spongepowered.api.item.inventory.ItemStack) stack.copy();
         ((IMixinWorld) world).captureBlockSnapshots(true);
         // Perform item use
         boolean success = stack.getItem().onItemUse(stack, player, world, pos, side, hitX, hitY, hitZ);
@@ -152,8 +151,7 @@ public final class VanillaHooks {
         // If item use is successful, process player block placement
         if (success) {
             // Store the stack after ItemUse
-            final org.spongepowered.api.item.inventory.ItemStack currentItemStack = Sponge.getGame().getRegistry().createItemBuilder().
-                    fromItemStack((org.spongepowered.api.item.inventory.ItemStack) stack).build();
+            final org.spongepowered.api.item.inventory.ItemStack currentItemStack = (org.spongepowered.api.item.inventory.ItemStack) stack.copy();
             // Set the stack back to the pre item use for event
             copyStack((ItemStack) originalStack, stack);
             final List<SpongeBlockSnapshot> copiedSnapshots = (ArrayList<SpongeBlockSnapshot>) ((IMixinWorld) world).getCapturedSnapshots().clone();
