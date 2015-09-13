@@ -24,6 +24,7 @@
  */
 package org.spongepowered.vanilla;
 
+import com.google.common.base.Objects;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.common.AbstractPlatform;
 
@@ -43,4 +44,14 @@ public class SpongeVanillaPlatform extends AbstractPlatform {
         return Type.SERVER;
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("type", getType())
+                .add("executionType", getExecutionType())
+                .add("version", getVersion())
+                .add("apiVersion", getApiVersion())
+                .add("minecraftVersion", getMinecraftVersion())
+                .toString();
+    }
 }

@@ -24,6 +24,7 @@
  */
 package org.spongepowered.vanilla;
 
+import com.google.common.base.Objects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.SaveFormatOld;
 import org.spongepowered.api.GameRegistry;
@@ -59,6 +60,13 @@ public class VanillaGame extends SpongeGame {
     @Override
     public Platform getPlatform() {
         return this.platform;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("platform", platform)
+                .toString();
     }
 
 }

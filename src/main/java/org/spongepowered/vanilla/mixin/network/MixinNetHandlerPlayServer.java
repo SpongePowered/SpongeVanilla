@@ -107,6 +107,11 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         ci.cancel();
         final WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
         final Location<World> location = new Location<World>((World) worldserver, VecHelper.toVector(packetIn.getPosition()));
+//        final BlockRay<World> blockRay = BlockRay.from((Entity) playerEntity).filter(BlockRay
+//                .<World>onlyAirFilter()).build();
+//        final Optional<Vector3d> optInteractionPoint = Optional.of(blockRay.end().get().getNormal());
+//        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
+//                optInteractionPoint, location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
         final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
                 Optional.<Vector3d>absent(), location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
