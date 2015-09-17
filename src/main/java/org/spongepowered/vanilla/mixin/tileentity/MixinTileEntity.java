@@ -31,12 +31,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.interfaces.IMixinTileEntity;
+import org.spongepowered.common.interfaces.block.tile.IMixinTileEntity;
 
 import javax.annotation.Nullable;
 
 @NonnullByDefault
-@Mixin(net.minecraft.tileentity.TileEntity.class)
+@Mixin(value = net.minecraft.tileentity.TileEntity.class, priority = 1001)
 public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
 
     @Nullable private NBTTagCompound customEntityData;

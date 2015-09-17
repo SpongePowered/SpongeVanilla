@@ -28,26 +28,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.common.interfaces.IMixinSaveHandler;
 
 import java.io.File;
 import java.io.IOException;
 
 @Mixin(value = SaveHandler.class, priority = 1001)
 public abstract class MixinSaveHandler {
-    @Shadow(remap = false) abstract void loadDimensionAndOtherData(SaveHandler handler, WorldInfo info, NBTTagCompound compound);
-    @Shadow(remap = false) abstract void loadSpongeDatData(WorldInfo info);
-
     @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     public void onLoadWorldInfoBeforeReturn0(CallbackInfoReturnable<WorldInfo> cir, File file1, NBTTagCompound nbttagcompound,
             NBTTagCompound nbttagcompound1) throws IOException {
         final WorldInfo info = new WorldInfo(nbttagcompound1);
-        loadDimensionAndOtherData((SaveHandler) (Object) this, info, nbttagcompound);
-        loadSpongeDatData(info);
+        ((IMixinSaveHandler) this).loadDimensionAndOtherData((SaveHandler) (Object) this, info, nbttagcompound);
+        ((IMixinSaveHandler) this).loadSpongeDatData(info);
         cir.setReturnValue(info);
     }
 
@@ -55,8 +52,8 @@ public abstract class MixinSaveHandler {
     public void onLoadWorldInfoBeforeReturn1(CallbackInfoReturnable<WorldInfo> cir, File file1, NBTTagCompound nbttagcompound,
             NBTTagCompound nbttagcompound1) throws IOException {
         final WorldInfo info = new WorldInfo(nbttagcompound1);
-        loadDimensionAndOtherData((SaveHandler) (Object) this, info, nbttagcompound);
-        loadSpongeDatData(info);
+        ((IMixinSaveHandler) this).loadDimensionAndOtherData((SaveHandler) (Object) this, info, nbttagcompound);
+        ((IMixinSaveHandler) this).loadSpongeDatData(info);
         cir.setReturnValue(info);
     }
 }

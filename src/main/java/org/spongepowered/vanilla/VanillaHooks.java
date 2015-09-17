@@ -139,6 +139,7 @@ public final class VanillaHooks {
      * @param hitZ The interaction point z value
      * @return True if place suceeded, false otherwise
      */
+    @SuppressWarnings("unchecked")
     public static boolean callPlaceBlockEventAsPlayer(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
             float hitY, float hitZ) {
         // Store current itemstack state
