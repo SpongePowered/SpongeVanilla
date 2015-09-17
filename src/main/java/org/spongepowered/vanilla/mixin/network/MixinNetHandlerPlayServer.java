@@ -147,7 +147,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         final ItemStackTransaction itemStackTransaction = new ItemStackTransaction(((org.spongepowered.api.item.inventory.ItemStack)
                 itemstack).createSnapshot());
         final UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Sponge.getGame(), Cause.of(playerEntity),
-                itemStackTransaction);
+                0, 0, itemStackTransaction);
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
 
         if (!cancelled) {
