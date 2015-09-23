@@ -51,7 +51,6 @@ import org.spongepowered.common.block.SpongeBlockSnapshot;
 import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.vanilla.interfaces.IMixinWorld;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -155,12 +154,13 @@ public final class VanillaHooks {
             final org.spongepowered.api.item.inventory.ItemStack currentItemStack = (org.spongepowered.api.item.inventory.ItemStack) stack.copy();
             // Set the stack back to the pre item use for event
             copyStack((ItemStack) originalStack, stack);
-            final List<SpongeBlockSnapshot> copiedSnapshots = (ArrayList<SpongeBlockSnapshot>) ((IMixinWorld) world).getCapturedSnapshots().clone();
+            final List<BlockSnapshot> copiedSnapshots = (List<BlockSnapshot>) ((IMixinWorld) world)
+                    .getCapturedSnapshots().clone();
             ((IMixinWorld) world).getCapturedSnapshots().clear();
 
             // Build the transactions
             final ImmutableList.Builder<BlockTransaction> blockTransactionBuilder = ImmutableList.builder();
-            for (SpongeBlockSnapshot original : copiedSnapshots) {
+            for (BlockSnapshot original : copiedSnapshots) {
                 final BlockPos opposite = pos.offset(side);
                 final SpongeBlockSnapshot now = (SpongeBlockSnapshot) ((org.spongepowered.api.world.World) world).createSnapshot(opposite.getX
                         (), opposite.getY(), opposite.getZ());
