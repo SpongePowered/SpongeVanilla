@@ -31,6 +31,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.Location;
@@ -43,7 +44,7 @@ import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.common.block.SpongeBlockSnapshot;
+import org.spongepowered.common.block.SpongeBlockSnapshotBuilder;
 import org.spongepowered.vanilla.interfaces.IMixinWorld;
 
 import java.util.ArrayList;
@@ -58,8 +59,8 @@ public abstract class MixinWorld implements IMixinWorld {
     @Shadow abstract void notifyNeighborsRespectDebug(BlockPos pos, Block block);
     @Shadow abstract void updateComparatorOutputLevel(BlockPos pos, Block block);
     private boolean captureSnapshots, restoreSnapshots;
-    private final ArrayList<SpongeBlockSnapshot> capturedSnapshots = new ArrayList<SpongeBlockSnapshot>();
-    private SpongeBlockSnapshot injectCacheSnapshot;
+    private final ArrayList<BlockSnapshot> capturedSnapshots = new ArrayList<BlockSnapshot>();
+    private BlockSnapshot injectCacheSnapshot;
 
     @Inject(method = "spawnEntityInWorld", at = @At("HEAD"), cancellable = true)
     public void cancelSpawnEntityIfRestoringSnapshots(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
@@ -91,7 +92,11 @@ public abstract class MixinWorld implements IMixinWorld {
         if (this.captureSnapshots && !((World) (Object) this).isRemote) {
             final Location<org.spongepowered.api.world.World> location = new Location<org.spongepowered.api.world.World>(
                     (org.spongepowered.api.world.World) this, pos.getX(), pos.getY(), pos.getZ());
-            this.injectCacheSnapshot = new SpongeBlockSnapshot(location.getBlock(), location.getExtent(), location.getBlockPosition());
+            this.injectCacheSnapshot = new SpongeBlockSnapshotBuilder()
+                    .blockState(location.getBlock())
+                    .worldId(location.getExtent().getUniqueId())
+                    .position(location.getBlockPosition())
+                    .build();
             this.capturedSnapshots.add(this.injectCacheSnapshot);
         }
     }
@@ -141,7 +146,7 @@ public abstract class MixinWorld implements IMixinWorld {
     }
 
     @Override
-    public ArrayList<SpongeBlockSnapshot> getCapturedSnapshots() {
+    public ArrayList<BlockSnapshot> getCapturedSnapshots() {
         return this.capturedSnapshots;
     }
 

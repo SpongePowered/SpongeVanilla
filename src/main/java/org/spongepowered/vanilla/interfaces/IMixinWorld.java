@@ -27,7 +27,7 @@ package org.spongepowered.vanilla.interfaces;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import org.spongepowered.common.block.SpongeBlockSnapshot;
+import org.spongepowered.api.block.BlockSnapshot;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ public interface IMixinWorld {
 
     void restoreBlockSnapshots(boolean restoreSnapshots);
 
-    ArrayList<SpongeBlockSnapshot> getCapturedSnapshots();
+    ArrayList<BlockSnapshot> getCapturedSnapshots();
 
     void markAndNotifyBlock(BlockPos pos, Chunk chunk, IBlockState snapshotState, IBlockState newState, int flags);
 }
