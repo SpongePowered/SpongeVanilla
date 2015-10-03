@@ -70,7 +70,7 @@ public abstract class MixinMinecraftServer {
     @Shadow abstract NetworkSystem getNetworkSystem();
     @Shadow List<?> playersOnline;
 
-    private java.util.Hashtable<Integer, long[]> worldTickTimes = new java.util.Hashtable<Integer, long[]>();
+    private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))

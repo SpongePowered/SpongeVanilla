@@ -60,7 +60,7 @@ public abstract class MixinChunk {
 
     @Redirect(method = "setBlockState", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/block/Block;onBlockAdded(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)V"))
-    public void onChunkBlockAddedCall(Block block, net.minecraft.world.World worldIn, BlockPos pos, IBlockState state) {
+    public void onChunkBlockAddedCall(Block block, World worldIn, BlockPos pos, IBlockState state) {
         // Ignore block activations during block placement captures unless it's
         // a BlockContainer. Prevents blocks such as TNT from activating when
         // cancelled.
