@@ -39,6 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.vanilla.interfaces.IMixinEntityPlayer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Mixin(value = EntityPlayer.class, priority = 1001)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
@@ -89,7 +90,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
             + ".foodStats:Lnet/minecraft/util/FoodStats;"))
     public void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
         final NBTTagList spawnlist = new NBTTagList();
-        for (java.util.Map.Entry<Integer, BlockPos> entry : this.spawnChunkMap.entrySet()) {
+        for (Map.Entry<Integer, BlockPos> entry : this.spawnChunkMap.entrySet()) {
             BlockPos spawn = entry.getValue();
             if (spawn == null) {
                 continue;

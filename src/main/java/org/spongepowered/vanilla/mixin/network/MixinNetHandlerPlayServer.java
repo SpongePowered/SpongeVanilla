@@ -25,7 +25,7 @@
 package org.spongepowered.vanilla.mixin.network;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -113,7 +113,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 //        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
 //                optInteractionPoint, location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
         final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
-                Optional.<Vector3d>absent(), location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
+                Optional.<Vector3d>empty(), location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
 
         if (!cancelled) {

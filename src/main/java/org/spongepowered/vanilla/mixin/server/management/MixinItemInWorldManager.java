@@ -25,7 +25,7 @@
 package org.spongepowered.vanilla.mixin.server.management;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;

@@ -27,9 +27,11 @@ package org.spongepowered.vanilla.mixin.world;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -53,7 +55,7 @@ import java.util.ArrayList;
 public abstract class MixinWorld implements IMixinWorld {
 
     @Shadow abstract IBlockState getBlockState(BlockPos blockPos);
-    @Shadow private net.minecraft.world.border.WorldBorder worldBorder;
+    @Shadow private WorldBorder worldBorder;
     @Shadow private boolean isRemote;
     @Shadow abstract void markBlockForUpdate(BlockPos pos);
     @Shadow abstract void notifyNeighborsRespectDebug(BlockPos pos, Block block);
@@ -65,7 +67,7 @@ public abstract class MixinWorld implements IMixinWorld {
     @Inject(method = "spawnEntityInWorld", at = @At("HEAD"), cancellable = true)
     public void cancelSpawnEntityIfRestoringSnapshots(Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
         // do not drop any items while restoring blocksnapshots. Prevents dupes
-        if (!this.isRemote && (entityIn == null || (entityIn instanceof net.minecraft.entity.item.EntityItem && this.restoreSnapshots))) {
+        if (!this.isRemote && (entityIn == null || (entityIn instanceof EntityItem && this.restoreSnapshots))) {
             cir.setReturnValue(true);
         }
     }

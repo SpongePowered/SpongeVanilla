@@ -27,7 +27,7 @@ package org.spongepowered.vanilla.plugin;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.spongepowered.vanilla.plugin.PluginScanner.ARCHIVE;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.Maps;
 import net.minecraft.launchwrapper.Launch;
 import org.slf4j.Logger;
@@ -116,12 +116,12 @@ public class VanillaPluginManager implements PluginManager {
             return Optional.of((PluginContainer) instance);
         }
 
-        return Optional.fromNullable(this.pluginInstances.get(instance));
+        return Optional.ofNullable(this.pluginInstances.get(instance));
     }
 
     @Override
     public Optional<PluginContainer> getPlugin(String id) {
-        return Optional.fromNullable(this.plugins.get(id));
+        return Optional.ofNullable(this.plugins.get(id));
     }
 
     @Override
