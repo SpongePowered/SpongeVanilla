@@ -24,7 +24,6 @@
  */
 package org.spongepowered.vanilla;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
@@ -104,13 +103,9 @@ public final class SpongeVanilla implements PluginContainer {
             Sponge.getLogger().info("Initializing plugins...");
             postState(GamePreInitializationEvent.class);
 
-            this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(new Predicate<PermissionService>() {
-
-                @Override
-                public boolean apply(PermissionService input) {
-                    input.registerContextCalculator(new SpongeContextCalculator());
-                    return true;
-                }
+            this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(input -> {
+                input.registerContextCalculator(new SpongeContextCalculator());
+                return true;
             });
 
             SpongeHooks.enableThreadContentionMonitoring();
