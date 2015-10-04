@@ -24,7 +24,6 @@
  */
 package org.spongepowered.vanilla.registry;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -39,7 +38,6 @@ import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.inject.Singleton;
 
 @Singleton
@@ -65,19 +63,15 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
             this.blockTypes.add((BlockType) obj);
         }
 
-        RegistryHelper.mapFields(BlockTypes.class, new Function<String, BlockType>() {
-            @Nullable
-            @Override
-            public BlockType apply(String input) {
-                for (BlockType type : VanillaGameRegistry.this.blockTypes) {
-                    if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
-                        blockTypeMappings.put(input.toLowerCase(), type);
-                        return type;
-                    }
+        RegistryHelper.mapFields(BlockTypes.class, fieldName -> {
+            for (BlockType type : VanillaGameRegistry.this.blockTypes) {
+                if (type.getName().equalsIgnoreCase("minecraft:" + fieldName)) {
+                    blockTypeMappings.put(fieldName.toLowerCase(), type);
+                    return type;
                 }
-
-                return null;
             }
+
+            return null;
         });
     }
 
@@ -86,18 +80,15 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
             this.itemTypes.add((ItemType) obj);
         }
 
-        RegistryHelper.mapFields(ItemTypes.class, new Function<String, ItemType>() {
-            @Nullable
-            @Override
-            public ItemType apply(String input) {
-                for (ItemType type : VanillaGameRegistry.this.itemTypes) {
-                    if (type.getName().equalsIgnoreCase("minecraft:" + input)) {
-                        return type;
-                    }
+        RegistryHelper.mapFields(ItemTypes.class, fieldName -> {
+            for (ItemType type : VanillaGameRegistry.this.itemTypes) {
+                if (type.getName().equalsIgnoreCase("minecraft:" + fieldName)) {
+                    return type;
                 }
-
-                return null;
             }
+
+            return null;
         });
     }
+
 }
