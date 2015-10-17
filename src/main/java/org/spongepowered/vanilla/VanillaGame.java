@@ -28,7 +28,9 @@ import com.google.common.base.Objects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.SaveFormatOld;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.GameState;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.event.EventManager;
@@ -42,6 +44,8 @@ import javax.inject.Singleton;
 
 @Singleton
 public class VanillaGame extends SpongeGame {
+
+    private GameState state = GameState.CONSTRUCTION;
 
     private final Platform platform = new SpongeVanillaPlatform(SpongeGame.MINECRAFT_VERSION,
             SpongeGame.API_VERSION, SpongeGame.IMPLEMENTATION_VERSION);
@@ -67,6 +71,21 @@ public class VanillaGame extends SpongeGame {
         return Objects.toStringHelper(this)
                 .add("platform", platform)
                 .toString();
+    }
+
+    @Override
+    public GameState getState() {
+        return this.state;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
+    }
+
+    @Override
+    public ChannelRegistrar getChannelRegistrar() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

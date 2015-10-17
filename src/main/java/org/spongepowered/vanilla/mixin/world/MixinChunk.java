@@ -39,7 +39,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.vanilla.interfaces.IMixinWorld;
 
 @Mixin(value = Chunk.class, priority = 1001)
 public abstract class MixinChunk {
@@ -58,7 +57,7 @@ public abstract class MixinChunk {
     }
 
 
-    @Redirect(method = "setBlockState", at = @At(value = "INVOKE",
+    /*@Redirect(method = "setBlockState", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/block/Block;onBlockAdded(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)V"))
     public void onChunkBlockAddedCall(Block block, World worldIn, BlockPos pos, IBlockState state) {
         // Ignore block activations during block placement captures unless it's
@@ -67,5 +66,5 @@ public abstract class MixinChunk {
         if (!((IMixinWorld) worldIn).isCapturingBlockSnapshots() || block instanceof BlockContainer) {
             block.onBlockAdded(worldIn, pos, state);
         }
-    }
+    }*/
 }

@@ -31,8 +31,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockTransaction;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
@@ -63,17 +63,17 @@ public abstract class MixinExplosion {
             List<?> list) {
         final org.spongepowered.api.world.explosion.Explosion spongeExplosion = (org.spongepowered.api.world.explosion.Explosion) this;
 
-        final ImmutableList.Builder<BlockTransaction> blockTransactionBuilder = ImmutableList.builder();
+        final ImmutableList.Builder<Transaction<BlockSnapshot>> blockTransactionBuilder = ImmutableList.builder();
 
         for (Object obj : affectedBlockPositions) {
             final BlockPos blockPos = (BlockPos) obj;
             final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldObj).createSnapshot(blockPos.getX(), blockPos.getY(),
                     blockPos.getZ());
             // TODO Is this the correct state? Would replacement state depend on blocktype?
-            blockTransactionBuilder.add(new BlockTransaction(currentSnapshot, currentSnapshot.withState(BlockTypes.AIR.getDefaultState())));
+            blockTransactionBuilder.add(new Transaction<BlockSnapshot>(currentSnapshot, currentSnapshot.withState(BlockTypes.AIR.getDefaultState())));
         }
 
-        final ImmutableList<BlockTransaction> blockTransactions = blockTransactionBuilder.build();
+        final ImmutableList<Transaction<BlockSnapshot>> blockTransactions = blockTransactionBuilder.build();
 
         Cause cause;
         final EntityLivingBase igniter = getExplosivePlacedBy();
@@ -106,9 +106,9 @@ public abstract class MixinExplosion {
         // TODO Rolling back an explosion...this will be difficult
         if (!cancelled) {
             if (spongeExplosion.shouldBreakBlocks()) {
-                for (BlockTransaction transaction : event.getTransactions()) {
+                for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
                     if (transaction.isValid()) {
-                        affectedBlockPositions.add(VecHelper.toBlockPos(transaction.getFinalReplacement().getPosition()));
+                        affectedBlockPositions.add(VecHelper.toBlockPos(transaction.getFinal().getPosition()));
                     }
                 }
             }
