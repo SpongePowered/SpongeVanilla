@@ -40,6 +40,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -48,7 +49,7 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.command.MessageSinkEvent;
 import org.spongepowered.api.event.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.item.inventory.ItemStackTransaction;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.sink.MessageSink;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -144,8 +145,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         // Handle interact logic
         ci.cancel();
 
-        final ItemStackTransaction itemStackTransaction = new ItemStackTransaction(((org.spongepowered.api.item.inventory.ItemStack)
-                itemstack).createSnapshot());
+        ItemStackSnapshot original = ((org.spongepowered.api.item.inventory.ItemStack) itemstack).createSnapshot();
+        final Transaction<ItemStackSnapshot> itemStackTransaction = new Transaction<ItemStackSnapshot>(original, original.copy());
         final UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Sponge.getGame(), Cause.of(playerEntity),
                 0, 0, itemStackTransaction);
         boolean cancelled = Sponge.getGame().getEventManager().post(event);

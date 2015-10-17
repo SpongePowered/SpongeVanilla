@@ -29,6 +29,7 @@ import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.SpongeEventFactoryUtils;
@@ -99,9 +100,9 @@ public final class SpongeVanilla implements PluginContainer {
 
             Sponge.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
-            postState(GameConstructionEvent.class);
+            postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
             Sponge.getLogger().info("Initializing plugins...");
-            postState(GamePreInitializationEvent.class);
+            postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
 
             this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(input -> {
                 input.registerContextCalculator(new SpongeContextCalculator());
@@ -116,7 +117,7 @@ public final class SpongeVanilla implements PluginContainer {
 
     public void initialize() {
         SpongeBootstrap.initializeRegistry();
-        postState(GameInitializationEvent.class);
+        postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             try {
@@ -133,11 +134,11 @@ public final class SpongeVanilla implements PluginContainer {
         SerializationService service = this.game.getServiceManager().provide(SerializationService.class).get();
         ((SpongeSerializationService) service).completeRegistration();
 
-        postState(GamePostInitializationEvent.class);
+        postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
 
         Sponge.getLogger().info("Successfully loaded and initialized plugins.");
 
-        postState(GameLoadCompleteEvent.class);
+        postState(GameLoadCompleteEvent.class, GameState.LOAD_COMPLETE);
     }
 
     @Listener(order = Order.PRE)
@@ -175,7 +176,8 @@ public final class SpongeVanilla implements PluginContainer {
         return this;
     }
 
-    public void postState(Class<? extends GameStateEvent> type) {
+    public void postState(Class<? extends GameStateEvent> type, GameState state) {
+        ((VanillaGame)Sponge.getGame()).setState(state);
         this.game.getEventManager().post(SpongeEventFactoryUtils.createState(type, this.game));
     }
 }

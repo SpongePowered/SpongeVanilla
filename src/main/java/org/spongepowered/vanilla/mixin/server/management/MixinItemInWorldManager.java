@@ -54,7 +54,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.registry.SpongeGameRegistry;
-import org.spongepowered.vanilla.VanillaHooks;
 
 @Mixin(value = ItemInWorldManager.class, priority = 1001)
 public abstract class MixinItemInWorldManager {
@@ -67,14 +66,6 @@ public abstract class MixinItemInWorldManager {
     @Inject(method = "onBlockClicked", at = @At("HEAD"))
     public void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
         clickedFace = side;
-    }
-
-    @Inject(method = "tryHarvestBlock", at = @At("HEAD"), cancellable = true)
-    public void onTryHarvestBlock(BlockPos pos, CallbackInfoReturnable<Boolean> ci) {
-        if (VanillaHooks.prepareBreakBlockEventAsPlayer(this.theWorld, this.gameType, this.thisPlayerMP, pos, clickedFace).isCancelled()) {
-            ci.setReturnValue(false);
-        }
-        this.clickedFace = null;
     }
 
     @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"),

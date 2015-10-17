@@ -35,6 +35,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -75,18 +76,18 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
     public void onServerStarted(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.postState(GameStartedServerEvent.class);
+        SpongeVanilla.INSTANCE.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
     public void onServerStopping(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.postState(GameStoppingServerEvent.class);
+        SpongeVanilla.INSTANCE.postState(GameStoppingServerEvent.class, GameState.SERVER_STOPPING);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
     public void onServerStopped(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.postState(GameStoppedServerEvent.class);
+        SpongeVanilla.INSTANCE.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
