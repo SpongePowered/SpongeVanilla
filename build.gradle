@@ -1,3 +1,4 @@
+// Gradle plugins
 buildscript {
     repositories {
         jcenter()
@@ -19,11 +20,16 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.tweaker-server'
 ext.minecraftPlugin = plugins.getPlugin('net.minecraftforge.gradle.tweaker-server')
 ext.DIR_MCP_MAPPINGS = net.minecraftforge.gradle.common.Constants.DIR_MCP_MAPPINGS
+
+// Apply shared implementation Gradle config
 apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
+    version = '1.8'
     tweakClass = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
 }
+
+version = "$minecraft.version-$apiVersion-$buildNumber"
 
 configurations {
     // While we could set this to 'runtime', Eclipse doesn't support runtime dependencies
