@@ -26,7 +26,7 @@ apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
     version = '1.8'
-    tweakClass = 'org.spongepowered.vanilla.launch.server.VanillaServerTweaker'
+    tweakClass = 'org.spongepowered.server.launch.VanillaServerTweaker'
 }
 
 version = "$minecraft.version-$apiVersion-$buildNumber"
@@ -48,7 +48,7 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.spongepowered.vanilla.launch.server.VanillaServerMain',
+                'Main-Class': 'org.spongepowered.server.launch.VanillaServerMain',
                 'Class-Path': 'minecraft_server.1.8.jar lib/launchwrapper-1.12.jar'
         )
     }

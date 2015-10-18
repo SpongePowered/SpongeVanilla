@@ -1,7 +1,7 @@
 {
     "required": true,
     "minVersion": "0.3.1",
-    "package": "org.spongepowered.vanilla.mixin",
+    "package": "org.spongepowered.server.mixin",
     "refmap": "mixins.vanilla.refmap.json",
     "priority": 1111,
     "server": [

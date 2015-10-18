@@ -50,7 +50,7 @@ import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.commons.RemappingMethodAdapter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
-import org.spongepowered.server.launch.server.VanillaServerTweaker;
+import org.spongepowered.server.launch.VanillaServerTweaker;
 
 import java.io.IOException;
 import java.net.URL;
