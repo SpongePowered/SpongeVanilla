@@ -13,7 +13,7 @@ SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.
 * [Development Chat]: #spongedev on irc.esper.net
 
 ## Prerequisites
-* [Java] 6
+* [Java] 8
 
 ## Cloning
 The following steps will ensure your project is cloned properly.
@@ -41,33 +41,19 @@ __For [Eclipse]__
 __For [IntelliJ]__
   1. Make sure you have the Gradle plugin enabled (File > Settings > Plugins).  
   2. Click File > New > Project from Existing Sources > Gradle and select the root folder for SpongeVanilla.
+  3. Select _Use customizable gradle wrapper_ if you do not have Gradle installed.
 
 ## Running
 __Note:__ The following is aimed to help you setup run configurations for Eclipse and IntelliJ, if you do not want to be able to run SpongeVanilla directly from your IDE then you can skip this.
 
 __For [Eclipse]__ 
-  1. Go to **Run > Run Configurations**.
-  2. Right-click **Java Application** and select **New**.
-  3. Set the current project.
-  4. Set the name as `Sponge (vanilla/server)` and apply the information for Server below.
-  5. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
-
+  1. Running `gradle eclipse` should have generated the run configurations automatically.
+  2. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
 __For [IntelliJ]__
-  1. Go to **Run > Edit Configurations**.
-  2. Click the green + button and select **Application**.
-  3. Set the name as `Sponge (vanilla/server)` and apply the information for Server below.
-  4. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
-
-__Server__
-
-|     Property      | Value                         |
-|:-----------------:|:------------------------------|
-|    Main class     | GradleStartServer             |
-| Program arguments | --noCoreSearch                |
-| Working directory | ./run (Included in project)   |
-| Module classpath  | SpongeVanilla (IntelliJ Only) |
-
+  1. Run `gradle genIntelliJRuns`
+  2. Restart IntelliJ IDEA or reload the project, the run configuration should now be generated.
+  3. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
 ## Building
 __Note:__ If you do not have [Gradle] installed then use ./gradlew for Unix systems or Git Bash and gradlew.bat for Windows systems in place of any 'gradle' command.
@@ -80,9 +66,9 @@ you'll only need 'spongevanilla-x.x.x-x.x-x.jar'.
 ## Updating your Clone
 The following steps will update your clone with the official repo.
 
-1. `git remote add upstream git@github.com:SpongePowered/SpongeVanilla.git`
-2. `git pull --rebase upstream master`
-3. `git submodule update --recursive`
+1. `git pull`
+2. `git submodule update --recursive`
+3. `gradle setupDecompWorkspace --refresh-dependencies`
 
 ## FAQ
 __A dependency was added, but my IDE is missing it! How do I add it?__
