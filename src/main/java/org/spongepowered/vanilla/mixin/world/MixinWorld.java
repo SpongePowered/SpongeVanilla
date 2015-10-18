@@ -15,7 +15,7 @@ public abstract class MixinWorld implements IMixinWorld {
     @Shadow
     protected WorldInfo worldInfo;
 
-    @Inject(method = "updateWeatherBody()V", remap = false, at = {
+    @Inject(method = "updateWeather()V", remap = false, at = {
             @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setThundering(Z)V"),
             @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setRaining(Z)V")
     })
