@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch.server;
+package org.spongepowered.server.launch;
 
 import net.minecraft.launchwrapper.Launch;
 import org.spongepowered.server.launch.console.VanillaConsole;
