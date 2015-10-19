@@ -108,7 +108,7 @@ public final class VanillaServerTweaker implements ITweaker {
         if (isObfuscated()) {
             logger.info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
             Launch.blackboard.put("vanilla.mappings", getResource("mappings.srg"));
-            loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.DeobfuscationTransformer");
+            loader.registerTransformer("org.spongepowered.server.launch.transformers.DeobfuscationTransformer");
             logger.debug("Runtime de-obfuscation is applied.");
         } else {
             logger.debug("Runtime de-obfuscation was not applied. Sponge is being loaded in a de-obfuscated environment.");
@@ -119,7 +119,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
         logger.debug("Applying access transformer...");
         Launch.blackboard.put("vanilla.at", new URL[]{ getResource("common_at.cfg"), getResource("vanilla_at.cfg") });
-        loader.registerTransformer("org.spongepowered.vanilla.launch.transformers.AccessTransformer");
+        loader.registerTransformer("org.spongepowered.server.launch.transformers.AccessTransformer");
 
         logger.debug("Initializing Mixin environment...");
         MixinBootstrap.init();
@@ -142,7 +142,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public String getLaunchTarget() {
-        return "org.spongepowered.vanilla.SpongeVanilla";
+        return "org.spongepowered.server.SpongeVanilla";
     }
 
     @Override
