@@ -82,6 +82,10 @@ public class VanillaGameRegistry extends SpongeGameRegistry {
 
         RegistryHelper.mapFields(ItemTypes.class, fieldName -> {
             for (ItemType type : VanillaGameRegistry.this.itemTypes) {
+                if (fieldName.equalsIgnoreCase("none")) {
+                    return NONE_ITEM;
+                }
+
                 if (type.getName().equalsIgnoreCase("minecraft:" + fieldName)) {
                     return type;
                 }
