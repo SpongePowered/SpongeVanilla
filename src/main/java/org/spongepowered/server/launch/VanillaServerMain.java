@@ -57,7 +57,7 @@ public final class VanillaServerMain {
 
         VanillaConsole.start();
         Launch.main(join(args,
-                "--tweakClass", "org.spongepowered.vanilla.launch.server.VanillaServerTweaker"
+                "--tweakClass", "org.spongepowered.server.launch.VanillaServerTweaker"
         ));
     }
 
