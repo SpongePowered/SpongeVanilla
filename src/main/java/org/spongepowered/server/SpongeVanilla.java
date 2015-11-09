@@ -95,11 +95,8 @@ public final class SpongeVanilla implements PluginContainer {
 
             // Pre-initialize registry
             game.getRegistry().preRegistryInit();
-
             SpongeBootstrap.initializeServices();
             SpongeBootstrap.preInitializeRegistry();
-            SpongeSerializationRegistry.setupSerialization(this.game);
-            SpongeBootstrap.preGameRegisterAdditionals();
 
             this.game.getEventManager().registerListeners(this, this);
             this.game.getEventManager().registerListeners(this, this.game.getRegistry());
