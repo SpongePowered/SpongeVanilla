@@ -53,6 +53,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.registry.SpongeGameRegistry;
+import org.spongepowered.common.registry.provider.DirectionFacingProvider;
 
 import java.util.Optional;
 
@@ -75,7 +76,7 @@ public abstract class MixinItemInWorldManager {
             float hitz, CallbackInfoReturnable<Boolean> ci) {
         final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
         final InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(player), Optional.of(new
-                Vector3d(hitx, hity, hitz)), currentSnapshot, SpongeGameRegistry.directionMap.inverse().get(side));
+                Vector3d(hitx, hity, hitz)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
         if (cancelled) {
             // Short-circuit and return false

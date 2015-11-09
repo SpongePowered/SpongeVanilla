@@ -65,6 +65,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.registry.SpongeGameRegistry;
+import org.spongepowered.common.registry.provider.DirectionFacingProvider;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.util.VecHelper;
 
@@ -115,7 +116,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 //        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
 //                optInteractionPoint, location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
         final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
-                Optional.<Vector3d>empty(), location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
+                Optional.<Vector3d>empty(), location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(packetIn.getFacing()).get());
         boolean cancelled = Sponge.getGame().getEventManager().post(event);
 
         if (!cancelled) {
@@ -166,7 +167,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             final BlockSnapshot current = ((World) worldserver).createSnapshot(optBlockHit.get().getBlockPosition());
             final InteractBlockEvent.Secondary otherEvent =
                     SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
-                            SpongeGameRegistry.directionMap.inverse().get(enumfacing.getOpposite()));
+                            DirectionFacingProvider.getInstance().getKey(enumfacing.getOpposite()).get());
             Sponge.getGame().getEventManager().post(otherEvent);
 
         }

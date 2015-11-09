@@ -28,7 +28,6 @@ import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -51,6 +50,8 @@ import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.SpongeBootstrap;
+import org.spongepowered.common.SpongeGame;
+import org.spongepowered.common.data.SpongeSerializationRegistry;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
@@ -67,7 +68,7 @@ public final class SpongeVanilla implements PluginContainer {
 
     public static final SpongeVanilla INSTANCE = new SpongeVanilla();
 
-    private final Game game;
+    private final SpongeGame game;
 
     private SpongeVanilla() {
         Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger("Sponge"))).getInstance(Sponge.class);
@@ -92,8 +93,13 @@ public final class SpongeVanilla implements PluginContainer {
                 }
             }
 
+            // Pre-initialize registry
+            game.getRegistry().preRegistryInit();
+
             SpongeBootstrap.initializeServices();
             SpongeBootstrap.preInitializeRegistry();
+            SpongeSerializationRegistry.setupSerialization(this.game);
+            SpongeBootstrap.preGameRegisterAdditionals();
 
             this.game.getEventManager().registerListeners(this, this);
             this.game.getEventManager().registerListeners(this, this.game.getRegistry());
@@ -180,4 +186,5 @@ public final class SpongeVanilla implements PluginContainer {
         ((VanillaGame)Sponge.getGame()).setState(state);
         this.game.getEventManager().post(SpongeEventFactoryUtils.createState(type, this.game));
     }
+
 }
