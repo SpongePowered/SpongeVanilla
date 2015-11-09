@@ -51,7 +51,6 @@ import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
-import org.spongepowered.common.data.SpongeSerializationRegistry;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
@@ -61,8 +60,9 @@ import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.server.guice.VanillaGuiceModule;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class SpongeVanilla implements PluginContainer {
 
@@ -71,7 +71,7 @@ public final class SpongeVanilla implements PluginContainer {
     private final SpongeGame game;
 
     private SpongeVanilla() {
-        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger("Sponge"))).getInstance(Sponge.class);
+        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger(Sponge.ECOSYSTEM_NAME))).getInstance(Sponge.class);
 
         this.game = Sponge.getGame();
     }
@@ -84,14 +84,9 @@ public final class SpongeVanilla implements PluginContainer {
         try {
             Sponge.getLogger().info("Loading Sponge...");
 
-            File gameDir = Sponge.getGameDirectory();
-            File pluginsDir = Sponge.getPluginsDirectory();
-
-            if (!gameDir.isDirectory() || !pluginsDir.isDirectory()) {
-                if (!pluginsDir.mkdirs()) {
-                    throw new IOException("Failed to create plugins folder");
-                }
-            }
+            Path gameDir = Sponge.getGameDir();
+            Path pluginsDir = Sponge.getPluginsDir();
+            Files.createDirectories(pluginsDir);
 
             // Pre-initialize registry
             game.getRegistry().preRegistryInit();
