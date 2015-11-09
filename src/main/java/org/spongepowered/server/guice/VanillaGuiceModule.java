@@ -40,12 +40,12 @@ import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.world.SpongeTeleportHelper;
 import org.spongepowered.server.SpongeVanilla;
 import org.spongepowered.server.VanillaGame;
 import org.spongepowered.server.plugin.MinecraftPluginContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
-import org.spongepowered.server.registry.VanillaGameRegistry;
 
 import java.io.File;
 
@@ -70,7 +70,7 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(VanillaPluginManager.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(SpongeEventManager.class).in(Scopes.SINGLETON);
-        bind(GameRegistry.class).to(VanillaGameRegistry.class).in(Scopes.SINGLETON);
+        bind(GameRegistry.class).to(SpongeGameRegistry.class).in(Scopes.SINGLETON);
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
         bind(TeleportHelper.class).to(SpongeTeleportHelper.class).in(Scopes.SINGLETON);
 

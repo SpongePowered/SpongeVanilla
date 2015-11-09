@@ -27,7 +27,8 @@ package org.spongepowered.server;
 import com.google.common.base.Objects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.SaveFormatOld;
-import org.spongepowered.api.GameRegistry;
+import org.apache.commons.lang3.NotImplementedException;
+import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.network.ChannelRegistrar;
@@ -36,6 +37,7 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.io.File;
 
@@ -51,7 +53,7 @@ public class VanillaGame extends SpongeGame {
             SpongeGame.API_VERSION, SpongeGame.IMPLEMENTATION_VERSION);
 
     @Inject
-    public VanillaGame(PluginManager pluginManager, EventManager eventManager, GameRegistry gameRegistry, ServiceManager serviceManager,
+    public VanillaGame(PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry, ServiceManager serviceManager,
             TeleportHelper teleportHelper) {
         super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
     }
@@ -67,10 +69,8 @@ public class VanillaGame extends SpongeGame {
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("platform", platform)
-                .toString();
+    public GameDictionary getGameDictionary() {
+        throw new NotImplementedException("TODO");
     }
 
     @Override
@@ -84,8 +84,14 @@ public class VanillaGame extends SpongeGame {
 
     @Override
     public ChannelRegistrar getChannelRegistrar() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new NotImplementedException("TODO");
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("platform", platform)
+                .toString();
     }
 
 }
