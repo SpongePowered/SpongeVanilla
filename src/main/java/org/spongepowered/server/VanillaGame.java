@@ -39,7 +39,7 @@ import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -59,8 +59,8 @@ public class VanillaGame extends SpongeGame {
     }
 
     @Override
-    public File getSavesDirectory() {
-        return ((SaveFormatOld) ((MinecraftServer) getServer()).getActiveAnvilConverter()).savesDirectory;
+    public Path getSavesDirectory() {
+        return ((SaveFormatOld) ((MinecraftServer) getServer()).getActiveAnvilConverter()).savesDirectory.toPath();
     }
 
     @Override

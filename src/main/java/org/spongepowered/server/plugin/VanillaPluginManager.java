@@ -25,7 +25,7 @@
 package org.spongepowered.server.plugin;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.spongepowered.server.plugin.PluginScanner.ARCHIVE;
+import static org.spongepowered.server.plugin.PluginScanner.ARCHIVE_FILTER;
 
 import com.google.common.collect.Maps;
 import net.minecraft.launchwrapper.Launch;
@@ -34,8 +34,10 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.Sponge;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -79,16 +81,18 @@ public class VanillaPluginManager implements PluginManager {
             }
         }
 
-        for (File jar : Sponge.getPluginsDirectory().listFiles(ARCHIVE)) {
-            // Search for plugins in the JAR
-            plugins = PluginScanner.scanZip(jar);
+        try (DirectoryStream<Path> dir = Files.newDirectoryStream(Sponge.getPluginsDir(), ARCHIVE_FILTER)) {
+            for (Path jar : dir) {
+                // Search for plugins in the JAR
+                plugins = PluginScanner.scanZip(jar);
 
-            if (!plugins.isEmpty()) {
-                // Add plugin to the classpath
-                Launch.classLoader.addURL(jar.toURI().toURL());
+                if (!plugins.isEmpty()) {
+                    // Add plugin to the classpath
+                    Launch.classLoader.addURL(jar.toUri().toURL());
 
-                // Load the plugins
-                loadPlugins(jar, plugins);
+                    // Load the plugins
+                    loadPlugins(jar, plugins);
+                }
             }
         }
     }

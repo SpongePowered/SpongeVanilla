@@ -48,6 +48,7 @@ import org.spongepowered.server.plugin.MinecraftPluginContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class VanillaGuiceModule extends AbstractModule {
 
@@ -75,6 +76,8 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(TeleportHelper.class).to(SpongeTeleportHelper.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
-        bind(File.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDirectory());
+        bind(Path.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDir());
+        bind(File.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDir().toFile());
     }
+
 }
