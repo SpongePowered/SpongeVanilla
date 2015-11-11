@@ -35,11 +35,13 @@ import java.io.IOException;
 public class LoggingOutputStream extends ByteArrayOutputStream {
 
     private static final String SEPARATOR = System.getProperty("line.separator");
+    private final String fqcn;
     private final Logger logger;
     private final Level level;
     boolean flush = true;
 
-    public LoggingOutputStream(Logger logger, Level level) {
+    public LoggingOutputStream(String fqcn, Logger logger, Level level) {
+        this.fqcn = fqcn;
         this.logger = checkNotNull(logger, "logger");
         this.level = checkNotNull(level, "level");
     }
@@ -62,8 +64,37 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
                 message = message.substring(0, message.length() - 1);
             }
 
-            this.logger.log(this.level, message);
+            if (this.logger.isEnabled(level)) {
+                if (this.fqcn != null) {
+                    StackTraceElement location = calculateLocation(this.fqcn);
+                    if (location != null) {
+                        this.logger.log(this.level, "[" + location + "]: " + message);
+                        return;
+                    }
+                }
+
+                this.logger.log(this.level, message);
+            }
         }
+    }
+
+    private static StackTraceElement calculateLocation(String fqcn) {
+        // Calculate location
+        StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        StackTraceElement last = null;
+        for (int i = stackTrace.length - 1; i > 0; i--) {
+            String className = stackTrace[i].getClassName();
+            if (fqcn.equals(className)) {
+                return last;
+            }
+
+            // Ignore Kotlin
+            if (!className.startsWith("kotlin.io.")) {
+                last = stackTrace[i];
+            }
+        }
+
+        return null;
     }
 
 }

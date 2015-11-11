@@ -24,59 +24,82 @@
  */
 package org.spongepowered.server.console;
 
-import com.google.common.collect.ImmutableMap;
+import static org.spongepowered.common.text.LegacyTextRepresentation.getFormattingCount;
+import static org.spongepowered.common.text.SpongeTexts.COLOR_CHAR;
+
 import net.minecraft.util.EnumChatFormatting;
 import org.fusesource.jansi.Ansi;
-import org.spongepowered.server.launch.console.VanillaConsole;
+import org.spongepowered.common.text.LegacyTextRepresentation;
 
-import java.util.Map;
-import java.util.regex.Pattern;
 
-public final class ConsoleFormatter implements VanillaConsole.Formatter {
-
-    public static final VanillaConsole.Formatter INSTANCE = new ConsoleFormatter();
+public final class ConsoleFormatter {
 
     private ConsoleFormatter() {
     }
 
     private static final String RESET = Ansi.ansi().reset().toString();
 
-    private static final ImmutableMap<Pattern, String> REPLACEMENTS = ImmutableMap.<Pattern, String>builder()
-            .put(compile(EnumChatFormatting.BLACK), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).boldOff().toString())
-            .put(compile(EnumChatFormatting.DARK_BLUE), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).boldOff().toString())
-            .put(compile(EnumChatFormatting.DARK_GREEN), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).boldOff().toString())
-            .put(compile(EnumChatFormatting.DARK_AQUA), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).boldOff().toString())
-            .put(compile(EnumChatFormatting.DARK_RED), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).boldOff().toString())
-            .put(compile(EnumChatFormatting.DARK_PURPLE), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).boldOff().toString())
-            .put(compile(EnumChatFormatting.GOLD), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).boldOff().toString())
-            .put(compile(EnumChatFormatting.GRAY), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).boldOff().toString())
-            .put(compile(EnumChatFormatting.DARK_GRAY), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).bold().toString())
-            .put(compile(EnumChatFormatting.BLUE), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).bold().toString())
-            .put(compile(EnumChatFormatting.GREEN), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).bold().toString())
-            .put(compile(EnumChatFormatting.AQUA), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).bold().toString())
-            .put(compile(EnumChatFormatting.RED), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).bold().toString())
-            .put(compile(EnumChatFormatting.LIGHT_PURPLE), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).bold().toString())
-            .put(compile(EnumChatFormatting.YELLOW), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).bold().toString())
-            .put(compile(EnumChatFormatting.WHITE), Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).bold().toString())
-            .put(compile(EnumChatFormatting.OBFUSCATED), Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString())
-            .put(compile(EnumChatFormatting.BOLD), Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE).toString())
-            .put(compile(EnumChatFormatting.STRIKETHROUGH), Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString())
-            .put(compile(EnumChatFormatting.UNDERLINE), Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString())
-            .put(compile(EnumChatFormatting.ITALIC), Ansi.ansi().a(Ansi.Attribute.ITALIC).toString())
-            .put(compile(EnumChatFormatting.RESET), Ansi.ansi().a(Ansi.Attribute.RESET).toString())
-            .build();
+    private static final String[] ansi = new String[getFormattingCount()];
 
-    private static Pattern compile(EnumChatFormatting formatting) {
-        return Pattern.compile(formatting.toString(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE);
+    static {
+        map(EnumChatFormatting.BLACK, Ansi.ansi().reset().fg(Ansi.Color.BLACK).boldOff().toString());
+        map(EnumChatFormatting.DARK_BLUE, Ansi.ansi().reset().fg(Ansi.Color.BLUE).boldOff().toString());
+        map(EnumChatFormatting.DARK_GREEN, Ansi.ansi().reset().fg(Ansi.Color.GREEN).boldOff().toString());
+        map(EnumChatFormatting.DARK_AQUA, Ansi.ansi().reset().fg(Ansi.Color.CYAN).boldOff().toString());
+        map(EnumChatFormatting.DARK_RED, Ansi.ansi().reset().fg(Ansi.Color.RED).boldOff().toString());
+        map(EnumChatFormatting.DARK_PURPLE, Ansi.ansi().reset().fg(Ansi.Color.MAGENTA).boldOff().toString());
+        map(EnumChatFormatting.GOLD, Ansi.ansi().reset().fg(Ansi.Color.YELLOW).boldOff().toString());
+        map(EnumChatFormatting.GRAY, Ansi.ansi().reset().fg(Ansi.Color.WHITE).boldOff().toString());
+        map(EnumChatFormatting.DARK_GRAY, Ansi.ansi().reset().fg(Ansi.Color.BLACK).bold().toString());
+        map(EnumChatFormatting.BLUE, Ansi.ansi().reset().fg(Ansi.Color.BLUE).bold().toString());
+        map(EnumChatFormatting.GREEN, Ansi.ansi().reset().fg(Ansi.Color.GREEN).bold().toString());
+        map(EnumChatFormatting.AQUA, Ansi.ansi().reset().fg(Ansi.Color.CYAN).bold().toString());
+        map(EnumChatFormatting.RED, Ansi.ansi().reset().fg(Ansi.Color.RED).bold().toString());
+        map(EnumChatFormatting.LIGHT_PURPLE, Ansi.ansi().reset().fg(Ansi.Color.MAGENTA).bold().toString());
+        map(EnumChatFormatting.YELLOW, Ansi.ansi().reset().fg(Ansi.Color.YELLOW).bold().toString());
+        map(EnumChatFormatting.WHITE, Ansi.ansi().reset().fg(Ansi.Color.WHITE).bold().toString());
+        map(EnumChatFormatting.OBFUSCATED, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString());
+        map(EnumChatFormatting.BOLD, Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE).toString());
+        map(EnumChatFormatting.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString());
+        map(EnumChatFormatting.UNDERLINE, Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString());
+        map(EnumChatFormatting.ITALIC, Ansi.ansi().a(Ansi.Attribute.ITALIC).toString());
+        map(EnumChatFormatting.RESET, RESET);
     }
 
-    @Override
-    public String format(String text) {
-        for (Map.Entry<Pattern, String> entry : REPLACEMENTS.entrySet()) {
-            text = entry.getKey().matcher(text).replaceAll(entry.getValue());
+    private static void map(EnumChatFormatting formatting, String ansiMapping) {
+        ansi[formatting.ordinal()] = ansiMapping;
+    }
+
+    public static String format(String text) {
+        int next = text.indexOf(COLOR_CHAR);
+        int last = text.length() - 1;
+        if (next == -1 || next == last) {
+            return text;
         }
 
-        return text + RESET;
+        StringBuilder result = new StringBuilder(text.length() + 20);
+
+        int pos = 0;
+        int format;
+        do {
+            if (pos != next) {
+                result.append(text, pos, next);
+            }
+
+            pos = next;
+
+            format = LegacyTextRepresentation.findFormat(text.charAt(next + 1));
+            if (format != -1) {
+                result.append(ansi[format]);
+                pos = next += 2;
+            } else {
+                next++;
+            }
+
+            next = text.indexOf(COLOR_CHAR, next);
+        } while (next != -1 && next < last);
+
+        return result.append(text, pos, text.length()).append(RESET).toString();
     }
 
 }

@@ -37,7 +37,6 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.launch.SpongeLaunch;
-import org.spongepowered.server.launch.console.VanillaConsole;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +56,6 @@ public final class VanillaServerTweaker implements ITweaker {
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         SpongeLaunch.initialize(gameDir != null ? gameDir.toPath() : null);
-        VanillaConsole.start();
 
         if (args != null && !args.isEmpty()) {
             this.args = args.toArray(new String[args.size()]);

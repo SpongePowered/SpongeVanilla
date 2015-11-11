@@ -31,11 +31,10 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import org.spongepowered.common.SpongeImpl;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class ConsoleCommandCompleter implements Completer {
+public final class ConsoleCommandCompleter implements Completer {
 
     private final DedicatedServer server;
 
@@ -61,14 +60,8 @@ public class ConsoleCommandCompleter implements Completer {
 
         final String input = buffer;
         @SuppressWarnings("unchecked")
-        Future<List<String>> tabComplete = this.server.callFromMainThread(new Callable<List<String>>() {
-
-            @Override
-            public List<String> call() throws Exception {
-                return ConsoleCommandCompleter.this.server
-                        .getTabCompletions(ConsoleCommandCompleter.this.server, input, ConsoleCommandCompleter.this.server.getPosition());
-            }
-        });
+        Future<List<String>> tabComplete =
+                this.server.callFromMainThread(() -> this.server.getTabCompletions(this.server, input, this.server.getPosition()));
 
         try {
             List<String> completions = tabComplete.get();
@@ -76,9 +69,7 @@ public class ConsoleCommandCompleter implements Completer {
                 candidates.addAll(completions);
             } else {
                 for (String completion : completions) {
-                    if (!completion.isEmpty()) {
-                        candidates.add(completion.charAt(0) == '/' ? completion.substring(1) : completion);
-                    }
+                    candidates.add(completion.charAt(0) == '/' ? completion.substring(1) : completion);
                 }
             }
 
@@ -86,7 +77,7 @@ public class ConsoleCommandCompleter implements Completer {
             if (pos == -1) {
                 return cursor - len;
             } else {
-                return cursor - (len - pos);
+                return cursor - len + pos;
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

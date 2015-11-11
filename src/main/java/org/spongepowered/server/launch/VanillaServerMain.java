@@ -25,7 +25,6 @@
 package org.spongepowered.server.launch;
 
 import net.minecraft.launchwrapper.Launch;
-import org.spongepowered.server.launch.console.VanillaConsole;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -55,7 +54,6 @@ public final class VanillaServerMain {
             return;
         }
 
-        VanillaConsole.start();
         Launch.main(join(args,
                 "--tweakClass", "org.spongepowered.server.launch.VanillaServerTweaker"
         ));
