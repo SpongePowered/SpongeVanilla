@@ -26,41 +26,52 @@ package org.spongepowered.server.mixin.server;
 
 import jline.console.ConsoleReader;
 import net.minecraft.server.dedicated.DedicatedServer;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.console.ConsoleCommandCompleter;
 import org.spongepowered.server.console.ConsoleFormatter;
-import org.spongepowered.server.launch.console.VanillaConsole;
+import org.spongepowered.server.launch.console.TerminalConsoleAppender;
 
 import java.io.IOException;
 
 @Mixin(targets = "net/minecraft/server/dedicated/DedicatedServer$2")
-public abstract class MixinConsoleHandler extends Thread {
+public abstract class MixinConsoleHandler {
 
     @Shadow(remap = false, aliases = {"field_72428_a", "this$0"})
     private DedicatedServer server;
 
-    @Override
-    public void run() {
-        final ConsoleReader reader = VanillaConsole.getReader();
-        VanillaConsole.setFormatter(ConsoleFormatter.INSTANCE);
-        reader.addCompleter(new ConsoleCommandCompleter(this.server));
+    @Inject(method = "run", at = @At("HEAD"), cancellable = true, remap = false)
+    public void onRun(CallbackInfo ci) {
+        final ConsoleReader reader = TerminalConsoleAppender.getReader();
 
-        String line;
-        while (!this.server.isServerStopped() && this.server.isServerRunning()) {
-            try {
-                line = reader.readLine("> ");
+        if (reader != null) {
+            TerminalConsoleAppender.setFormatter(ConsoleFormatter::format);
+            reader.addCompleter(new ConsoleCommandCompleter(this.server));
 
-                if (line != null) {
-                    line = line.trim();
-                    if (!line.isEmpty()) {
-                        this.server.addPendingCommand(line, this.server);
+            String line;
+            while (!this.server.isServerStopped() && this.server.isServerRunning()) {
+                try {
+                    line = reader.readLine("> ");
+
+                    if (line != null) {
+                        line = line.trim();
+                        if (!line.isEmpty()) {
+                            this.server.addPendingCommand(line, this.server);
+                        }
                     }
+                } catch (IOException e) {
+                    SpongeImpl.getLogger().error("Exception handling console input", e);
                 }
-            } catch (IOException e) {
-                SpongeImpl.getLogger().error("Exception handling console input", e);
             }
+
+            ci.cancel();
+        } else {
+            TerminalConsoleAppender.setFormatter(Texts::stripCodes);
         }
     }
 
