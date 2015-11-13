@@ -180,20 +180,43 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
     }
 
     @Override
-    public String map(String typeName) {
+    public String map(String className) {
         if (this.classes == null) {
-            return typeName;
+            return className;
         }
-        String name = this.classes.get(typeName);
-        return name != null ? name : typeName;
+
+        String name = this.classes.get(className);
+
+        if (name != null) {
+            return name;
+        }
+
+        // We may have no name for the inner class directly, but it should be still part of the outer class
+        int innerClassPos = className.lastIndexOf('$');
+        if (innerClassPos >= 0) {
+            return map(className.substring(0, innerClassPos)) + className.substring(innerClassPos);
+        }
+
+        return className; // Unknown class
     }
 
-    public String unmap(String typeName) {
+    public String unmap(String className) {
         if (this.classes == null) {
-            return typeName;
+            return className;
         }
-        String name = this.classes.inverse().get(typeName);
-        return name != null ? name : typeName;
+
+        String name = this.classes.inverse().get(className);
+        if (name != null) {
+            return name;
+        }
+
+        // We may have no name for the inner class directly, but it should be still part of the outer class
+        int innerClassPos = className.lastIndexOf('$');
+        if (innerClassPos >= 0) {
+            return unmap(className.substring(0, innerClassPos)) + className.substring(innerClassPos);
+        }
+
+        return className; // Unknown class
     }
 
     @Override
@@ -201,6 +224,7 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
         if (this.classes == null) {
             return fieldName;
         }
+
         Map<String, String> fields = getFieldMap(owner);
         if (fields != null) {
             String name = fields.get(fieldName + ':' + desc);
@@ -233,6 +257,7 @@ public class DeobfuscationTransformer extends Remapper implements IClassTransfor
         if (this.classes == null) {
             return methodName;
         }
+
         Map<String, String> methods = getMethodMap(owner);
         if (methods != null) {
             String name = methods.get(methodName + desc);
