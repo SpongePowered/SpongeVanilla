@@ -61,13 +61,13 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.BY, by = -24))
-    public void onServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
+    public void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.postState(GameAboutToStartServerEvent.class, GameState.SERVER_ABOUT_TO_START);
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
-    public void onServerStarting(CallbackInfoReturnable<Boolean> ci) {
+    public void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
     }
 

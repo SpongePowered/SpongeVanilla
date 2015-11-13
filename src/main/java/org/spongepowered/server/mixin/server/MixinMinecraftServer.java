@@ -75,18 +75,18 @@ public abstract class MixinMinecraftServer {
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
-    public void onServerStarted(CallbackInfo ci) {
+    public void callServerStarted(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
-    public void onServerStopping(CallbackInfo ci) {
+    public void callServerStopping(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.postState(GameStoppingServerEvent.class, GameState.SERVER_STOPPING);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
-    public void onServerStopped(CallbackInfo ci) {
+    public void callServerStopped(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
     }
 
