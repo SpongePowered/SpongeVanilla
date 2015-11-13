@@ -62,7 +62,6 @@ import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 public final class SpongeVanilla implements PluginContainer {
 
@@ -84,9 +83,7 @@ public final class SpongeVanilla implements PluginContainer {
         try {
             Sponge.getLogger().info("Loading Sponge...");
 
-            Path gameDir = Sponge.getGameDir();
-            Path pluginsDir = Sponge.getPluginsDir();
-            Files.createDirectories(pluginsDir);
+            Files.createDirectories(Sponge.getPluginsDir());
 
             // Pre-initialize registry
             game.getRegistry().preRegistryInit();
@@ -94,7 +91,6 @@ public final class SpongeVanilla implements PluginContainer {
             SpongeBootstrap.preInitializeRegistry();
 
             this.game.getEventManager().registerListeners(this, this);
-            this.game.getEventManager().registerListeners(this, this.game.getRegistry());
 
             Sponge.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
@@ -175,7 +171,7 @@ public final class SpongeVanilla implements PluginContainer {
     }
 
     public void postState(Class<? extends GameStateEvent> type, GameState state) {
-        ((VanillaGame)Sponge.getGame()).setState(state);
+        ((VanillaGame) Sponge.getGame()).setState(state);
         this.game.getEventManager().post(SpongeEventFactoryUtils.createState(type, this.game));
     }
 
