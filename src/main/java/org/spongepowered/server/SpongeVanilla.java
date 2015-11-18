@@ -98,10 +98,8 @@ public final class SpongeVanilla implements PluginContainer {
             Sponge.getLogger().info("Initializing plugins...");
             postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
 
-            this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(input -> {
-                input.registerContextCalculator(new SpongeContextCalculator());
-                return true;
-            });
+            this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(
+                    input -> input.registerContextCalculator(new SpongeContextCalculator()));
 
             SpongeHooks.enableThreadContentionMonitoring();
         } catch (IOException e) {
