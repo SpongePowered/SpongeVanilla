@@ -24,14 +24,22 @@
  */
 package org.spongepowered.server;
 
-import com.google.common.base.Objects;
+import static org.spongepowered.common.SpongeImpl.API_NAME;
+import static org.spongepowered.common.SpongeImpl.ECOSYSTEM_NAME;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import org.spongepowered.api.MinecraftVersion;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.common.AbstractPlatform;
 
-public class SpongeVanillaPlatform extends AbstractPlatform {
+@Singleton
+public class VanillaPlatform extends AbstractPlatform {
 
-    public SpongeVanillaPlatform(MinecraftVersion minecraftVersion, String apiVersion, String version) {
-        super(minecraftVersion, apiVersion, version);
+    @Inject
+    public VanillaPlatform(@Named(API_NAME) PluginContainer api, @Named(ECOSYSTEM_NAME) PluginContainer impl, MinecraftVersion minecraftVersion) {
+        super(api, impl, minecraftVersion);
     }
 
     @Override
@@ -44,14 +52,4 @@ public class SpongeVanillaPlatform extends AbstractPlatform {
         return Type.SERVER;
     }
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("type", getType())
-                .add("executionType", getExecutionType())
-                .add("version", getVersion())
-                .add("apiVersion", getApiVersion())
-                .add("minecraftVersion", getMinecraftVersion())
-                .toString();
-    }
 }

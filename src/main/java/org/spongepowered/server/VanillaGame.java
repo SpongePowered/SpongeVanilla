@@ -24,7 +24,6 @@
  */
 package org.spongepowered.server;
 
-import com.google.common.base.Objects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.SaveFormatOld;
 import org.apache.commons.lang3.NotImplementedException;
@@ -49,23 +48,15 @@ public class VanillaGame extends SpongeGame {
 
     private GameState state = GameState.CONSTRUCTION;
 
-    private final Platform platform = new SpongeVanillaPlatform(SpongeGame.MINECRAFT_VERSION,
-            SpongeGame.API_VERSION, SpongeGame.IMPLEMENTATION_VERSION);
-
     @Inject
-    public VanillaGame(PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry, ServiceManager serviceManager,
-            TeleportHelper teleportHelper) {
-        super(pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
+    public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry,
+            ServiceManager serviceManager, TeleportHelper teleportHelper) {
+        super(platform, pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
     }
 
     @Override
     public Path getSavesDirectory() {
         return ((SaveFormatOld) ((MinecraftServer) getServer()).getActiveAnvilConverter()).savesDirectory.toPath();
-    }
-
-    @Override
-    public Platform getPlatform() {
-        return this.platform;
     }
 
     @Override
@@ -85,13 +76,6 @@ public class VanillaGame extends SpongeGame {
     @Override
     public ChannelRegistrar getChannelRegistrar() {
         throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("platform", platform)
-                .toString();
     }
 
 }
