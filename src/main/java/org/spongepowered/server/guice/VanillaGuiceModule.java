@@ -31,6 +31,8 @@ import com.google.inject.Scopes;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.MinecraftVersion;
+import org.spongepowered.api.Platform;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
@@ -38,12 +40,15 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeVersion;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
+import org.spongepowered.common.plugin.SpongeApiContainer;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.world.SpongeTeleportHelper;
 import org.spongepowered.server.SpongeVanilla;
 import org.spongepowered.server.VanillaGame;
+import org.spongepowered.server.VanillaPlatform;
 import org.spongepowered.server.plugin.MinecraftPluginContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
@@ -66,9 +71,12 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(Logger.class).toInstance(this.logger);
 
         bind(PluginContainer.class).annotatedWith(named(SpongeImpl.ECOSYSTEM_NAME)).toInstance(this.instance);
+        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.API_NAME)).to(SpongeApiContainer.class).in(Scopes.SINGLETON);
         bind(PluginContainer.class).annotatedWith(named("Minecraft")).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
+        bind(MinecraftVersion.class).toInstance(SpongeVersion.MINECRAFT_VERSION);
+        bind(Platform.class).to(VanillaPlatform.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(VanillaPluginManager.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(SpongeEventManager.class).in(Scopes.SINGLETON);
         bind(GameRegistry.class).to(SpongeGameRegistry.class).in(Scopes.SINGLETON);

@@ -30,6 +30,7 @@ import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
@@ -53,6 +54,7 @@ import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeVersion;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.registry.RegistryHelper;
@@ -66,6 +68,7 @@ import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Optional;
 
 public final class SpongeVanilla implements PluginContainer {
 
@@ -162,22 +165,27 @@ public final class SpongeVanilla implements PluginContainer {
 
     @Override
     public String getId() {
-        return "sponge";
+        return SpongeImpl.ECOSYSTEM_ID;
     }
 
     @Override
     public String getName() {
-        return "Sponge";
+        return SpongeVersion.IMPLEMENTATION_NAME.orElse("SpongeVanilla");
     }
 
     @Override
     public String getVersion() {
-        return this.game.getPlatform().getVersion();
+        return SpongeVersion.IMPLEMENTATION_VERSION;
     }
 
     @Override
-    public Object getInstance() {
-        return this;
+    public Logger getLogger() {
+        return SpongeImpl.getSlf4jLogger();
+    }
+
+    @Override
+    public Optional<Object> getInstance() {
+        return Optional.of(this);
     }
 
     public void postState(Class<? extends GameStateEvent> type, GameState state) {

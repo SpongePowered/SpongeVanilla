@@ -25,12 +25,16 @@
 package org.spongepowered.server.plugin;
 
 import net.minecraft.server.MinecraftServer;
-import org.spongepowered.api.plugin.PluginContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.spongepowered.common.plugin.SpongePluginContainer;
+
+import java.util.Optional;
 
 import javax.inject.Singleton;
 
 @Singleton
-public final class MinecraftPluginContainer implements PluginContainer {
+public final class MinecraftPluginContainer extends SpongePluginContainer {
 
     protected MinecraftPluginContainer() {
     }
@@ -51,8 +55,13 @@ public final class MinecraftPluginContainer implements PluginContainer {
     }
 
     @Override
-    public Object getInstance() {
-        return MinecraftServer.getServer();
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(MinecraftServer.class);
+    }
+
+    @Override
+    public Optional<Object> getInstance() {
+        return Optional.ofNullable(MinecraftServer.getServer());
     }
 
 }
