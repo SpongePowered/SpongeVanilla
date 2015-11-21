@@ -27,6 +27,7 @@ package org.spongepowered.server.mixin.world;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -40,13 +41,10 @@ import org.spongepowered.api.event.world.ExplosionEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.common.util.VecHelper;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Mixin(value = Explosion.class, priority = 1001)
@@ -56,11 +54,11 @@ public abstract class MixinExplosion {
     @Shadow private List<? super Object> affectedBlockPositions;
     @Shadow abstract EntityLivingBase getExplosivePlacedBy();
 
-    @Inject(method = "doExplosionA", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/World;"
-            + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    public void callWorldOnExplosionEvent(CallbackInfo ci, HashSet<?> hashset, boolean flag, int j, int k, float f3, int j1, int l, int k1, int i1,
-            List<?> list) {
+    @Redirect(method = "doExplosionA", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;"
+            + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"))
+    public List<?> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
+        List<?> list = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
+
         final org.spongepowered.api.world.explosion.Explosion spongeExplosion = (org.spongepowered.api.world.explosion.Explosion) this;
 
         final ImmutableList.Builder<Transaction<BlockSnapshot>> blockTransactionBuilder = ImmutableList.builder();
@@ -70,7 +68,7 @@ public abstract class MixinExplosion {
             final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldObj).createSnapshot(blockPos.getX(), blockPos.getY(),
                     blockPos.getZ());
             // TODO Is this the correct state? Would replacement state depend on blocktype?
-            blockTransactionBuilder.add(new Transaction<BlockSnapshot>(currentSnapshot, currentSnapshot.withState(BlockTypes.AIR.getDefaultState())));
+            blockTransactionBuilder.add(new Transaction<>(currentSnapshot, currentSnapshot.withState(BlockTypes.AIR.getDefaultState())));
         }
 
         final ImmutableList<Transaction<BlockSnapshot>> blockTransactions = blockTransactionBuilder.build();
@@ -99,7 +97,7 @@ public abstract class MixinExplosion {
         final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(Sponge.getGame(), cause,
                 (List<org.spongepowered.api.entity.Entity>) list, entitySnapshots, spongeExplosion, (org.spongepowered.api.world.World) worldObj,
                 blockTransactions);
-        boolean cancelled = Sponge.getGame().getEventManager().post(event);
+        boolean cancelled = Sponge.postEvent(event);
 
         affectedBlockPositions.clear();
 
@@ -113,5 +111,7 @@ public abstract class MixinExplosion {
                 }
             }
         }
+
+        return list;
     }
 }
