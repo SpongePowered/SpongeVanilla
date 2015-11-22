@@ -128,6 +128,7 @@ public final class VanillaServerTweaker implements ITweaker {
         MixinEnvironment env = MixinEnvironment.getDefaultEnvironment()
                 .addConfiguration("mixins.common.api.json")
                 .addConfiguration("mixins.common.core.json")
+                .addConfiguration("mixins.common.bungeecord.json")
                 .addConfiguration("mixins.vanilla.json");
         env.setSide(MixinEnvironment.Side.SERVER);
 
