@@ -39,7 +39,9 @@ import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -88,6 +90,8 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
     public void callServerStopped(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
+        SpongeVanilla.INSTANCE.postState(GameStoppingEvent.class, GameState.GAME_STOPPING);
+        SpongeVanilla.INSTANCE.postState(GameStoppedEvent.class, GameState.GAME_STOPPED);
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
