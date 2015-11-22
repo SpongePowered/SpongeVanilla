@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 
 @Mixin(value = Chunk.class, priority = 1001)
 public abstract class MixinChunk {
@@ -41,13 +41,13 @@ public abstract class MixinChunk {
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
     public void postChunkLoad(CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createLoadChunkEvent(Sponge.getGame(), Cause.of(worldObj),
+        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createLoadChunkEvent(SpongeImpl.getGame(), Cause.of(worldObj),
                 (org.spongepowered.api.world.Chunk) this));
     }
 
     @Inject(method = "onChunkUnload", at = @At("RETURN"))
     public void postChunkUnload(CallbackInfo ci) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createUnloadChunkEvent(Sponge.getGame(), Cause.of(worldObj),
+        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createUnloadChunkEvent(SpongeImpl.getGame(), Cause.of(worldObj),
                 (org.spongepowered.api.world.Chunk) this));
     }
 

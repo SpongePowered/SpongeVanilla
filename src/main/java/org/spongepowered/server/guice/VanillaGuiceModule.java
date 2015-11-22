@@ -37,7 +37,7 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
 import org.spongepowered.common.registry.SpongeGameRegistry;
@@ -65,7 +65,7 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(SpongeVanilla.class).toInstance(this.instance);
         bind(Logger.class).toInstance(this.logger);
 
-        bind(PluginContainer.class).annotatedWith(named(Sponge.ECOSYSTEM_NAME)).toInstance(this.instance);
+        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.ECOSYSTEM_NAME)).toInstance(this.instance);
         bind(PluginContainer.class).annotatedWith(named("Minecraft")).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
@@ -76,8 +76,8 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(TeleportHelper.class).to(SpongeTeleportHelper.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
-        bind(Path.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDir());
-        bind(File.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDir().toFile());
+        bind(Path.class).annotatedWith(sharedRoot).toInstance(SpongeImpl.getConfigDir());
+        bind(File.class).annotatedWith(sharedRoot).toInstance(SpongeImpl.getConfigDir().toFile());
     }
 
 }

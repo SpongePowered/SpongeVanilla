@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Level;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.storage.WorldProperties;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.world.DimensionManager;
 
 import java.util.Hashtable;
@@ -48,13 +48,13 @@ public class VanillaDimensionManager extends DimensionManager {
                 if (w != null) {
                     w.saveAllChunks(true, null);
                 } else {
-                    Sponge.getLogger().log(Level.ERROR, "Unexpected world unload - world {} is already unloaded", id);
+                    SpongeImpl.getLogger().log(Level.ERROR, "Unexpected world unload - world {} is already unloaded", id);
                 }
             } catch (MinecraftException e) {
                 e.printStackTrace();
             } finally {
                 if (w != null) {
-                    Sponge.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(Sponge.getGame(), Cause.of(MinecraftServer
+                    SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(), Cause.of(MinecraftServer
                                     .getServer()), (org.spongepowered.api.world.World) w));
                     w.flush();
                     setWorld(id, null);
@@ -74,10 +74,10 @@ public class VanillaDimensionManager extends DimensionManager {
             for (World w : allWorlds) {
                 int leakCount = leakedWorlds.count(System.identityHashCode(w));
                 if (leakCount == 5) {
-                    Sponge.getLogger().log(Level.WARN, "The world {} ({}) may have leaked: first encounter (5 occurences).\n", System
+                    SpongeImpl.getLogger().log(Level.WARN, "The world {} ({}) may have leaked: first encounter (5 occurences).\n", System
                             .identityHashCode(w), w.getWorldInfo().getWorldName());
                 } else if (leakCount % 5 == 0) {
-                    Sponge.getLogger().log(Level.WARN, "The world {} ({}) may have leaked: seen {} times.\n", System.identityHashCode(w),
+                    SpongeImpl.getLogger().log(Level.WARN, "The world {} ({}) may have leaked: seen {} times.\n", System.identityHashCode(w),
                             w.getWorldInfo().getWorldName(), leakCount);
                 }
             }

@@ -42,7 +42,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.world.VanillaDimensionManager;
 
 @Mixin(value = WorldServer.class, priority = 1001)
@@ -63,9 +63,9 @@ public abstract class MixinWorldServer extends World {
             .CAPTURE_FAILHARD, cancellable = true)
     public void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
             CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
-        final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(Sponge.getGame(), Cause.of(this),
+        final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(SpongeImpl.getGame(), Cause.of(this),
                 (org.spongepowered.api.world.explosion.Explosion) explosion, (org.spongepowered.api.world.World) this);
-        if (Sponge.getGame().getEventManager().post(event)) {
+        if (SpongeImpl.getGame().getEventManager().post(event)) {
             cir.setReturnValue(explosion);
         }
     }

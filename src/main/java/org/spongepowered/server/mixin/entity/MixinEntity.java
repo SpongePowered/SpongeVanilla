@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 
 import javax.annotation.Nullable;
 
@@ -44,7 +44,7 @@ public abstract class MixinEntity {
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     public void onConstructed(World world, CallbackInfo ci) {
         final Entity spongeEntity = (Entity) this;
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createConstructEntityEventPost(Sponge.getGame(), Cause.of(spongeEntity.getWorld()),
+        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createConstructEntityEventPost(SpongeImpl.getGame(), Cause.of(spongeEntity.getWorld()),
                 spongeEntity, spongeEntity.getType(), spongeEntity.getTransform()));
     }
 

@@ -35,7 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.launch.SpongeLaunch;
 import org.spongepowered.server.launch.console.VanillaConsole;
 
@@ -46,7 +46,7 @@ import java.util.List;
 
 public final class VanillaServerTweaker implements ITweaker {
 
-    private static final Logger logger = LogManager.getLogger(Sponge.ECOSYSTEM_NAME);
+    private static final Logger logger = LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME);
 
     private String[] args = ArrayUtils.EMPTY_STRING_ARRAY;
 

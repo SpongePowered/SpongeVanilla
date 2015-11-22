@@ -51,7 +51,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.provider.DirectionFacingProvider;
 
 import java.util.Optional;
@@ -74,9 +74,9 @@ public abstract class MixinItemInWorldManager {
     public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity,
             float hitz, CallbackInfoReturnable<Boolean> ci) {
         final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
-        final InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(player), Optional.of(new
+        final InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(SpongeImpl.getGame(), Cause.of(player), Optional.of(new
                 Vector3d(hitx, hity, hitz)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
-        boolean cancelled = Sponge.getGame().getEventManager().post(event);
+        boolean cancelled = SpongeImpl.getGame().getEventManager().post(event);
         if (cancelled) {
             // Short-circuit and return false
             ci.setReturnValue(false);

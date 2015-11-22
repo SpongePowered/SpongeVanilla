@@ -42,7 +42,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.util.VecHelper;
 
 import java.util.List;
@@ -94,10 +94,10 @@ public abstract class MixinExplosion {
         final ImmutableList<EntitySnapshot> entitySnapshots = entitySnapshotBuilder.build();
 
         @SuppressWarnings("unchecked")
-        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(Sponge.getGame(), cause,
+        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(SpongeImpl.getGame(), cause,
                 (List<org.spongepowered.api.entity.Entity>) list, entitySnapshots, spongeExplosion, (org.spongepowered.api.world.World) worldObj,
                 blockTransactions);
-        boolean cancelled = Sponge.postEvent(event);
+        boolean cancelled = SpongeImpl.postEvent(event);
 
         affectedBlockPositions.clear();
 

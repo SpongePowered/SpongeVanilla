@@ -63,7 +63,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.provider.DirectionFacingProvider;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.util.VecHelper;
@@ -83,9 +83,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         final Player spongePlayer = ((Player) playerEntity);
         final Text message = SpongeTexts.toText(component);
         final MessageSink sink = spongePlayer.getMessageSink();
-        final MessageSinkEvent event = SpongeEventFactory.createMessageSinkEvent(Sponge.getGame(), Cause.of(spongePlayer), message, message, sink,
+        final MessageSinkEvent event = SpongeEventFactory.createMessageSinkEvent(SpongeImpl.getGame(), Cause.of(spongePlayer), message, message, sink,
                 sink);
-        if (!Sponge.getGame().getEventManager().post(event)) {
+        if (!SpongeImpl.getGame().getEventManager().post(event)) {
             event.getSink().sendMessage(event.getMessage());
         }
     }
@@ -97,9 +97,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         final Player spongePlayer = ((Player) playerEntity);
         final Text message = SpongeTexts.toText(component);
         final MessageSink sink = spongePlayer.getMessageSink();
-        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(Sponge.getGame(), Cause.of
+        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(SpongeImpl.getGame(), Cause.of
                 (spongePlayer), message, message, sink, sink, spongePlayer);
-        Sponge.getGame().getEventManager().post(event);
+        SpongeImpl.getGame().getEventManager().post(event);
     }
 
     @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isBlockProtected"
@@ -114,9 +114,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 //        final Optional<Vector3d> optInteractionPoint = Optional.of(blockRay.end().get().getNormal());
 //        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
 //                optInteractionPoint, location.createSnapshot(), SpongeGameRegistry.directionMap.inverse().get(packetIn.getFacing()));
-        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Sponge.getGame(), Cause.of(playerEntity),
+        final InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(SpongeImpl.getGame(), Cause.of(playerEntity),
                 Optional.<Vector3d>empty(), location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(packetIn.getFacing()).get());
-        boolean cancelled = Sponge.getGame().getEventManager().post(event);
+        boolean cancelled = SpongeImpl.getGame().getEventManager().post(event);
 
         if (!cancelled) {
             if (!this.serverController.isBlockProtected(worldserver, packetIn.getPosition(), this.playerEntity) && worldserver.getWorldBorder()
@@ -148,9 +148,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 
         ItemStackSnapshot original = ((org.spongepowered.api.item.inventory.ItemStack) itemstack).createSnapshot();
         final Transaction<ItemStackSnapshot> itemStackTransaction = new Transaction<ItemStackSnapshot>(original, original.copy());
-        final UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Sponge.getGame(), Cause.of(playerEntity),
+        final UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(SpongeImpl.getGame(), Cause.of(playerEntity),
                 0, 0, itemStackTransaction);
-        boolean cancelled = Sponge.getGame().getEventManager().post(event);
+        boolean cancelled = SpongeImpl.getGame().getEventManager().post(event);
 
         if (!cancelled) {
             // Play out item use
@@ -165,9 +165,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             final Optional<BlockRayHit<World>> optBlockHit = BlockRay.from((Entity) playerEntity).filter(BlockRay.<World>onlyAirFilter()).end();
             final BlockSnapshot current = ((World) worldserver).createSnapshot(optBlockHit.get().getBlockPosition());
             final InteractBlockEvent.Secondary otherEvent =
-                    SpongeEventFactory.createInteractBlockEventSecondary(Sponge.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
+                    SpongeEventFactory.createInteractBlockEventSecondary(SpongeImpl.getGame(), Cause.of(playerEntity), optInteractionPoint, current,
                             DirectionFacingProvider.getInstance().getKey(enumfacing.getOpposite()).get());
-            Sponge.getGame().getEventManager().post(otherEvent);
+            SpongeImpl.getGame().getEventManager().post(otherEvent);
 
         }
     }

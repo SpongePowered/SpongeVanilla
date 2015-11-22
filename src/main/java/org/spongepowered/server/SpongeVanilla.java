@@ -29,6 +29,7 @@ import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.api.GameState;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.SpongeEventFactoryUtils;
@@ -45,16 +46,16 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.SubjectData;
-import org.spongepowered.api.service.persistence.SerializationService;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.util.Tristate;
-import org.spongepowered.common.Sponge;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
+import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
-import org.spongepowered.common.service.persistence.SpongeSerializationService;
+import org.spongepowered.common.service.persistence.SpongeSerializationManager;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.server.guice.VanillaGuiceModule;
@@ -70,9 +71,15 @@ public final class SpongeVanilla implements PluginContainer {
     private final SpongeGame game;
 
     private SpongeVanilla() {
-        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger(Sponge.ECOSYSTEM_NAME))).getInstance(Sponge.class);
+        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME))).getInstance(SpongeImpl.class);
 
-        this.game = Sponge.getGame();
+        this.game = SpongeImpl.getGame();
+
+        try {
+            RegistryHelper.setFinalStatic(Sponge.class, "game", this.game);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String[] args) {
@@ -81,9 +88,9 @@ public final class SpongeVanilla implements PluginContainer {
 
     public void preInitialize() {
         try {
-            Sponge.getLogger().info("Loading Sponge...");
+            SpongeImpl.getLogger().info("Loading Sponge...");
 
-            Files.createDirectories(Sponge.getPluginsDir());
+            Files.createDirectories(SpongeImpl.getPluginsDir());
 
             // Pre-initialize registry
             game.getRegistry().preRegistryInit();
@@ -92,10 +99,10 @@ public final class SpongeVanilla implements PluginContainer {
 
             this.game.getEventManager().registerListeners(this, this);
 
-            Sponge.getLogger().info("Loading plugins...");
+            SpongeImpl.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
             postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
-            Sponge.getLogger().info("Initializing plugins...");
+            SpongeImpl.getLogger().info("Initializing plugins...");
             postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
 
             this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(
@@ -123,12 +130,11 @@ public final class SpongeVanilla implements PluginContainer {
         }
 
         SpongeBootstrap.postInitializeRegistry();
-        SerializationService service = this.game.getServiceManager().provide(SerializationService.class).get();
-        ((SpongeSerializationService) service).completeRegistration();
+        SpongeSerializationManager.getInstance().completeRegistration();
 
         postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
 
-        Sponge.getLogger().info("Successfully loaded and initialized plugins.");
+        SpongeImpl.getLogger().info("Successfully loaded and initialized plugins.");
 
         postState(GameLoadCompleteEvent.class, GameState.LOAD_COMPLETE);
     }
@@ -169,7 +175,7 @@ public final class SpongeVanilla implements PluginContainer {
     }
 
     public void postState(Class<? extends GameStateEvent> type, GameState state) {
-        ((VanillaGame) Sponge.getGame()).setState(state);
+        ((VanillaGame) SpongeImpl.getGame()).setState(state);
         this.game.getEventManager().post(SpongeEventFactoryUtils.createState(type, this.game));
     }
 

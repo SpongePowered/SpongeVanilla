@@ -28,7 +28,7 @@ import jline.console.ConsoleReader;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.console.ConsoleCommandCompleter;
 import org.spongepowered.server.console.ConsoleFormatter;
 import org.spongepowered.server.launch.console.VanillaConsole;
@@ -59,7 +59,7 @@ public abstract class MixinConsoleHandler extends Thread {
                     }
                 }
             } catch (IOException e) {
-                Sponge.getLogger().error("Exception handling console input", e);
+                SpongeImpl.getLogger().error("Exception handling console input", e);
             }
         }
     }

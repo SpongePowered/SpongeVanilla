@@ -32,7 +32,7 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.util.PathMatchers;
 
 import java.io.IOException;
@@ -79,12 +79,12 @@ final class PluginScanner {
 
         for (URL url : loader.getURLs()) {
             if (!url.getProtocol().equals("file")) {
-                Sponge.getLogger().warn("Skipping unsupported classpath source: {}", url);
+                SpongeImpl.getLogger().warn("Skipping unsupported classpath source: {}", url);
                 continue;
             }
 
             if (url.getPath().startsWith(JAVA_HOME)) {
-                Sponge.getLogger().trace("Skipping JRE classpath entry: {}", url);
+                SpongeImpl.getLogger().trace("Skipping JRE classpath entry: {}", url);
                 continue;
             }
 
@@ -92,7 +92,7 @@ final class PluginScanner {
             try {
                 source = url.toURI();
             } catch (URISyntaxException e) {
-                Sponge.getLogger().error("Failed to search for classpath plugins in {}", url);
+                SpongeImpl.getLogger().error("Failed to search for classpath plugins in {}", url);
                 continue;
             }
 
@@ -101,14 +101,14 @@ final class PluginScanner {
             }
         }
 
-        Sponge.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
+        SpongeImpl.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
         return plugins;
     }
 
     private static Set<String> scanPath(Path path) {
         Set<String> plugins = Sets.newHashSet();
         scanPath(path, plugins);
-        Sponge.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
+        SpongeImpl.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
         return plugins;
     }
 
@@ -123,7 +123,7 @@ final class PluginScanner {
     }
 
     private static void scanDirectory(Path dir, final Set<String> plugins) {
-        Sponge.getLogger().trace("Scanning {} for plugins", dir);
+        SpongeImpl.getLogger().trace("Scanning {} for plugins", dir);
 
         try {
             Files.walkFileTree(dir, ImmutableSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
@@ -143,19 +143,19 @@ final class PluginScanner {
                 }
             });
         } catch (IOException e) {
-            Sponge.getLogger().error("Failed to search for plugins in {}", dir, e);
+            SpongeImpl.getLogger().error("Failed to search for plugins in {}", dir, e);
         }
     }
 
     static Set<String> scanZip(Path path) {
         Set<String> plugins = Sets.newHashSet();
         scanZip(path, plugins);
-        Sponge.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
+        SpongeImpl.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
         return plugins;
     }
 
     private static void scanZip(Path path, Set<String> plugins) {
-        Sponge.getLogger().trace("Scanning {} for plugins", path);
+        SpongeImpl.getLogger().trace("Scanning {} for plugins", path);
 
         if (!ARCHIVE.matches(path.getFileName())) {
             return;
@@ -178,7 +178,7 @@ final class PluginScanner {
                 }
             }
         } catch (IOException e) {
-            Sponge.getLogger().error("Failed to load plugin JAR: {}", path, e);
+            SpongeImpl.getLogger().error("Failed to load plugin JAR: {}", path, e);
         }
     }
 
