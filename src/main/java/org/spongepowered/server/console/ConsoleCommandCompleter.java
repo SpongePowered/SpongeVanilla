@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import jline.console.completer.Completer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -91,7 +91,7 @@ public class ConsoleCommandCompleter implements Completer {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            Sponge.getLogger().error("Failed to tab complete", e);
+            SpongeImpl.getLogger().error("Failed to tab complete", e);
         }
 
         return cursor;

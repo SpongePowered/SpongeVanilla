@@ -49,7 +49,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.server.SpongeVanilla;
 import org.spongepowered.server.world.VanillaDimensionManager;
@@ -93,7 +93,7 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
-        Sponge.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(Sponge.getGame(), Cause.of(this), (World) worldserver));
+        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(), Cause.of(this), (World) worldserver));
     }
 
     @Overwrite

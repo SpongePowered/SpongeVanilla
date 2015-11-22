@@ -28,7 +28,7 @@ import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.SpongePluginGuiceModule;
 import org.spongepowered.common.plugin.SpongePluginContainer;
 
@@ -47,7 +47,7 @@ public class VanillaPluginContainer implements SpongePluginContainer {
         this.version = info.version();
         this.logger = LoggerFactory.getLogger(this.id);
 
-        this.instance = Sponge.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass)).getInstance(pluginClass);
+        this.instance = SpongeImpl.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass)).getInstance(pluginClass);
     }
 
     @Override

@@ -32,7 +32,7 @@ import net.minecraft.launchwrapper.Launch;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.common.Sponge;
+import org.spongepowered.common.SpongeImpl;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -72,7 +72,7 @@ public class VanillaPluginManager implements PluginManager {
         Set<String> plugins;
 
         if (SCAN_CLASSPATH) {
-            Sponge.getLogger().info("Scanning classpath for plugins...");
+            SpongeImpl.getLogger().info("Scanning classpath for plugins...");
 
             // Find plugins on the classpath
             plugins = PluginScanner.scanClassPath(Launch.classLoader);
@@ -81,7 +81,7 @@ public class VanillaPluginManager implements PluginManager {
             }
         }
 
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream(Sponge.getPluginsDir(), ARCHIVE_FILTER)) {
+        try (DirectoryStream<Path> dir = Files.newDirectoryStream(SpongeImpl.getPluginsDir(), ARCHIVE_FILTER)) {
             for (Path jar : dir) {
                 // Search for plugins in the JAR
                 plugins = PluginScanner.scanZip(jar);
@@ -103,11 +103,11 @@ public class VanillaPluginManager implements PluginManager {
                 Class<?> pluginClass = Class.forName(plugin);
                 VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
                 registerPlugin(container);
-                Sponge.getGame().getEventManager().registerListeners(container, container.getInstance());
+                SpongeImpl.getGame().getEventManager().registerListeners(container, container.getInstance());
 
-                Sponge.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
+                SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
             } catch (Throwable e) {
-                Sponge.getLogger().error("Failed to load plugin: {} (from {})", plugin, source, e);
+                SpongeImpl.getLogger().error("Failed to load plugin: {} (from {})", plugin, source, e);
             }
         }
     }
