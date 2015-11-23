@@ -25,6 +25,7 @@
 package org.spongepowered.server.launch;
 
 import static com.google.common.io.Resources.getResource;
+import static org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel.JAVA_8;
 import static org.spongepowered.server.plugin.VanillaPluginManager.SCAN_CLASSPATH_PROPERTY;
 
 import net.minecraft.launchwrapper.ITweaker;
@@ -122,6 +123,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
         logger.debug("Initializing Mixin environment...");
         MixinBootstrap.init();
+        MixinEnvironment.setCompatibilityLevel(JAVA_8);
         MixinEnvironment env = MixinEnvironment.getDefaultEnvironment()
                 .addConfiguration("mixins.common.api.json")
                 .addConfiguration("mixins.common.core.json")
