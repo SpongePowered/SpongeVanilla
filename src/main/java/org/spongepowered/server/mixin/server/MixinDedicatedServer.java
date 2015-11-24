@@ -38,6 +38,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.scheduler.SpongeScheduler;
 import org.spongepowered.server.SpongeVanilla;
 
@@ -72,13 +73,13 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.BY, by = -24))
     public void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.INSTANCE.postState(GameAboutToStartServerEvent.class, GameState.SERVER_ABOUT_TO_START);
+        SpongeImpl.postState(GameAboutToStartServerEvent.class, GameState.SERVER_ABOUT_TO_START);
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
     public void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.INSTANCE.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
+        SpongeImpl.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
     }
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))

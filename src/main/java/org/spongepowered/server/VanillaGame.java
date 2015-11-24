@@ -29,7 +29,6 @@ import net.minecraft.world.storage.SaveFormatOld;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
-import org.spongepowered.api.GameState;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.network.ChannelRegistrar;
@@ -47,8 +46,6 @@ import javax.inject.Singleton;
 @Singleton
 public class VanillaGame extends SpongeGame {
 
-    private GameState state = GameState.CONSTRUCTION;
-
     @Inject
     public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry,
             ServiceManager serviceManager, TeleportHelper teleportHelper, Logger logger) {
@@ -63,15 +60,6 @@ public class VanillaGame extends SpongeGame {
     @Override
     public GameDictionary getGameDictionary() {
         throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public GameState getState() {
-        return this.state;
-    }
-
-    public void setState(GameState state) {
-        this.state = state;
     }
 
     @Override
