@@ -35,7 +35,6 @@ import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.SpongeEventFactoryUtils;
 import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -43,7 +42,6 @@ import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.event.game.state.GameStateEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
@@ -104,9 +102,9 @@ public final class SpongeVanilla implements PluginContainer {
 
             SpongeImpl.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
-            postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
+            SpongeImpl.postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
             SpongeImpl.getLogger().info("Initializing plugins...");
-            postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
+            SpongeImpl.postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
 
             checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
                     .equals(SpongeEntityAICommonSuperclass.class));
@@ -122,7 +120,7 @@ public final class SpongeVanilla implements PluginContainer {
 
     public void initialize() {
         SpongeImpl.getRegistry().init();
-        postState(GameInitializationEvent.class, GameState.INITIALIZATION);
+        SpongeImpl.postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             try {
@@ -138,11 +136,11 @@ public final class SpongeVanilla implements PluginContainer {
         SpongeImpl.getRegistry().postInit();
         SpongeDataManager.getInstance().completeRegistration();
 
-        postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
+        SpongeImpl.postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
 
         SpongeImpl.getLogger().info("Successfully loaded and initialized plugins.");
 
-        postState(GameLoadCompleteEvent.class, GameState.LOAD_COMPLETE);
+        SpongeImpl.postState(GameLoadCompleteEvent.class, GameState.LOAD_COMPLETE);
     }
 
     @Listener(order = Order.PRE)
@@ -183,11 +181,6 @@ public final class SpongeVanilla implements PluginContainer {
     @Override
     public Optional<Object> getInstance() {
         return Optional.of(this);
-    }
-
-    public void postState(Class<? extends GameStateEvent> type, GameState state) {
-        ((VanillaGame) SpongeImpl.getGame()).setState(state);
-        this.game.getEventManager().post(SpongeEventFactoryUtils.createState(type, this.game));
     }
 
 }
