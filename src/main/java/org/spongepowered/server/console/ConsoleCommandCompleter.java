@@ -45,10 +45,6 @@ public final class ConsoleCommandCompleter implements Completer {
     @Override
     public int complete(String buffer, int cursor, List<CharSequence> candidates) {
         int len = buffer.length();
-        buffer = buffer.trim();
-        if (buffer.isEmpty()) {
-            return cursor;
-        }
 
         boolean prefix;
         if (buffer.charAt(0) != '/') {
@@ -76,6 +72,8 @@ public final class ConsoleCommandCompleter implements Completer {
             int pos = buffer.lastIndexOf(' ');
             if (pos == -1) {
                 return cursor - len;
+            } else if (prefix) {
+                return cursor - len + pos + 1;
             } else {
                 return cursor - len + pos;
             }
