@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch.transformers;
+package org.spongepowered.server.launch.transformer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.io.Resources.getResource;

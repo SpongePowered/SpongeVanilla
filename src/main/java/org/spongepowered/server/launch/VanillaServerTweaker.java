@@ -38,6 +38,7 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.launch.SpongeLaunch;
+import org.spongepowered.common.launch.transformer.SpongeSuperclassRegistry;
 
 import java.io.File;
 import java.io.IOException;
@@ -108,7 +109,7 @@ public final class VanillaServerTweaker implements ITweaker {
         if (isObfuscated()) {
             logger.info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
             Launch.blackboard.put("vanilla.mappings", getResource("mappings.srg"));
-            loader.registerTransformer("org.spongepowered.server.launch.transformers.DeobfuscationTransformer");
+            loader.registerTransformer("org.spongepowered.server.launch.transformer.DeobfuscationTransformer");
             logger.debug("Runtime de-obfuscation is applied.");
         } else {
             logger.debug("Runtime de-obfuscation was not applied. Sponge is being loaded in a de-obfuscated environment.");
@@ -119,7 +120,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
         logger.debug("Applying access transformer...");
         Launch.blackboard.put("vanilla.at", new URL[]{ getResource("common_at.cfg"), getResource("vanilla_at.cfg") });
-        loader.registerTransformer("org.spongepowered.server.launch.transformers.AccessTransformer");
+        loader.registerTransformer("org.spongepowered.server.launch.transformer.AccessTransformer");
 
         logger.debug("Initializing Mixin environment...");
         MixinBootstrap.init();
@@ -129,6 +130,11 @@ public final class VanillaServerTweaker implements ITweaker {
                 .addConfiguration("mixins.common.core.json")
                 .addConfiguration("mixins.vanilla.json");
         env.setSide(MixinEnvironment.Side.SERVER);
+
+        // Superclass transformer
+        loader.registerTransformer("org.spongepowered.common.launch.transformer.SpongeSuperclassTransformer");
+        SpongeSuperclassRegistry.registerSuperclassModification("org.spongepowered.api.entity.ai.task.AbstractAITask",
+                "org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass");
 
         logger.info("Initialization finished. Starting Minecraft server...");
     }
