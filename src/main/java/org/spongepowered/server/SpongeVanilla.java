@@ -24,6 +24,8 @@
  */
 package org.spongepowered.server;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import net.minecraft.server.MinecraftServer;
@@ -51,6 +53,7 @@ import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
@@ -105,11 +108,14 @@ public final class SpongeVanilla implements PluginContainer {
             SpongeImpl.getLogger().info("Initializing plugins...");
             postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
 
+            checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
+                    .equals(SpongeEntityAICommonSuperclass.class));
+
             this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(
                     input -> input.registerContextCalculator(new SpongeContextCalculator()));
 
             SpongeHooks.enableThreadContentionMonitoring();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw Throwables.propagate(e);
         }
     }
