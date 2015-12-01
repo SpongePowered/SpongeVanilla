@@ -30,6 +30,7 @@ import jline.console.completer.Completer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.spongepowered.common.SpongeImpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -47,7 +48,7 @@ public final class ConsoleCommandCompleter implements Completer {
         int len = buffer.length();
 
         boolean prefix;
-        if (buffer.charAt(0) != '/') {
+        if (buffer.isEmpty() || buffer.charAt(0) != '/') {
             buffer = '/' + buffer;
             prefix = false;
         } else {
@@ -61,6 +62,7 @@ public final class ConsoleCommandCompleter implements Completer {
 
         try {
             List<String> completions = tabComplete.get();
+            Collections.sort(completions);
             if (prefix) {
                 candidates.addAll(completions);
             } else {
