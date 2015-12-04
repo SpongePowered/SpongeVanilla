@@ -57,12 +57,13 @@ public abstract class MixinConsoleHandler {
             while (!this.server.isServerStopped() && this.server.isServerRunning()) {
                 try {
                     line = reader.readLine("> ");
+                    if (line == null) {
+                        break;
+                    }
 
-                    if (line != null) {
-                        line = line.trim();
-                        if (!line.isEmpty()) {
-                            this.server.addPendingCommand(line, this.server);
-                        }
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        this.server.addPendingCommand(line, this.server);
                     }
                 } catch (IOException e) {
                     SpongeImpl.getLogger().error("Exception handling console input", e);
