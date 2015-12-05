@@ -27,6 +27,7 @@ package org.spongepowered.server;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.SaveFormatOld;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Platform;
@@ -50,8 +51,8 @@ public class VanillaGame extends SpongeGame {
 
     @Inject
     public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry,
-            ServiceManager serviceManager, TeleportHelper teleportHelper) {
-        super(platform, pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper);
+            ServiceManager serviceManager, TeleportHelper teleportHelper, Logger logger) {
+        super(platform, pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper, logger);
     }
 
     @Override
