@@ -35,6 +35,12 @@ import java.io.IOException;
 public class LoggingOutputStream extends ByteArrayOutputStream {
 
     private static final String SEPARATOR = System.getProperty("line.separator");
+
+    private static final String[] ignoredPackages = {
+            "java.",
+            "kotlin.io."
+    };
+
     private final String fqcn;
     private final Logger logger;
     private final Level level;
@@ -89,7 +95,15 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
             }
 
             // Ignore Kotlin
-            if (!className.startsWith("kotlin.io.")) {
+            boolean isIgnored = false;
+            for (String ignored : ignoredPackages) {
+                if (ignored.startsWith(ignored)) {
+                    isIgnored = true;
+                    break;
+                }
+            }
+
+            if (!isIgnored) {
                 last = stackTrace[i];
             }
         }
