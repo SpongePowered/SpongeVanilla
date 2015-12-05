@@ -58,9 +58,9 @@ import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
-import org.spongepowered.common.service.persistence.SpongeSerializationManager;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
+import org.spongepowered.common.util.persistence.SpongeSerializationManager;
 import org.spongepowered.server.guice.VanillaGuiceModule;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
