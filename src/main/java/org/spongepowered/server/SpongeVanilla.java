@@ -101,7 +101,7 @@ public final class SpongeVanilla implements PluginContainer {
             // Pre-initialize registry
             game.getRegistry().preRegistryInit();
             SpongeBootstrap.initializeServices();
-            SpongeBootstrap.preInitializeRegistry();
+            SpongeImpl.getRegistry().preInit();
 
             this.game.getEventManager().registerListeners(this, this);
 
@@ -124,7 +124,7 @@ public final class SpongeVanilla implements PluginContainer {
     }
 
     public void initialize() {
-        SpongeBootstrap.initializeRegistry();
+        SpongeImpl.getRegistry().init();
         postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
@@ -138,7 +138,7 @@ public final class SpongeVanilla implements PluginContainer {
             }
         }
 
-        SpongeBootstrap.postInitializeRegistry();
+        SpongeImpl.getRegistry().postInit();
         SpongeSerializationManager.getInstance().completeRegistration();
 
         postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
