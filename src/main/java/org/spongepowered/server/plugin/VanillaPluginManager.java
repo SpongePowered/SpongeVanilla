@@ -65,7 +65,7 @@ public class VanillaPluginManager implements PluginManager {
 
     private void registerPlugin(PluginContainer plugin) {
         this.plugins.put(plugin.getId(), plugin);
-        this.pluginInstances.put(plugin.getInstance(), plugin);
+        plugin.getInstance().ifPresent(instance -> this.pluginInstances.put(instance, plugin));
     }
 
     public void loadPlugins() throws IOException {
