@@ -55,6 +55,7 @@ import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeVersion;
+import org.spongepowered.common.data.SpongeDataManager;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.registry.RegistryHelper;
@@ -62,7 +63,6 @@ import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
-import org.spongepowered.common.util.persistence.SpongeSerializationManager;
 import org.spongepowered.server.guice.VanillaGuiceModule;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
@@ -99,8 +99,9 @@ public final class SpongeVanilla implements PluginContainer {
             Files.createDirectories(SpongeImpl.getPluginsDir());
 
             // Pre-initialize registry
-            game.getRegistry().preRegistryInit();
+            this.game.getRegistry().preRegistryInit();
             SpongeBootstrap.initializeServices();
+            SpongeBootstrap.initializeCommands();
             SpongeImpl.getRegistry().preInit();
 
             this.game.getEventManager().registerListeners(this, this);
@@ -139,7 +140,7 @@ public final class SpongeVanilla implements PluginContainer {
         }
 
         SpongeImpl.getRegistry().postInit();
-        SpongeSerializationManager.getInstance().completeRegistration();
+        SpongeDataManager.getInstance().completeRegistration();
 
         postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
 
