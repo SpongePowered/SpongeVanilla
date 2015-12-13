@@ -31,15 +31,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.interfaces.IMixinEntityPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Mixin(value = EntityPlayer.class, priority = 1001)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
@@ -108,6 +116,16 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
             spawnlist.appendTag(spawndata);
         }
         tagCompound.setTag("Spawns", spawnlist);
+    }
+
+    @Inject(method = "interactWith", at = @At(value = "INVOKE", target = "net/minecraft/entity/player/EntityPlayer"
+            + ".getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;"), cancellable = true)
+    public void onInteractWith(net.minecraft.entity.Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(SpongeImpl.getGame(),
+                Cause.of(NamedCause.source(this)), Optional.empty(), (Entity) entity);
+        if (SpongeImpl.postEvent(event)) {
+            cir.setReturnValue(false);
+        }
     }
 
     public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
