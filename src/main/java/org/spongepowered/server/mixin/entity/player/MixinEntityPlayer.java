@@ -45,6 +45,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
@@ -65,6 +66,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
     @Shadow private boolean spawnForced;
     @Shadow private net.minecraft.item.ItemStack itemInUse;
     @Shadow private int itemInUseCount;
+
+    @Shadow protected abstract void onItemUseFinish();
 
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
@@ -135,15 +138,18 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
         }
     }
 
+    private Transaction<ItemStackSnapshot> createTransaction(net.minecraft.item.ItemStack stack) {
+        ItemStackSnapshot itemSnapshot = ((ItemStack) stack).createSnapshot();
+        return new Transaction<>(itemSnapshot, itemSnapshot.copy());
+    }
+
     @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "itemInUse", opcode = Opcodes.PUTFIELD), cancellable = true)
     public void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
         // Handle logic on our own
         ci.cancel();
 
-        ItemStackSnapshot itemSnapshot = ((ItemStack) stack).createSnapshot();
-        Transaction<ItemStackSnapshot> transaction = new Transaction<>(itemSnapshot, itemSnapshot.copy());
         UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
-                duration, duration, transaction);
+                duration, duration, createTransaction(stack));
 
         if (!SpongeImpl.postEvent(event)) {
             this.itemInUse = stack;
@@ -153,6 +159,43 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
                 this.setEating(true);
             }
         }
+    }
+
+    @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "itemInUseCount", opcode = Opcodes.GETFIELD))
+    public void callUseItemStackTick(CallbackInfo ci) {
+        UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+                this.itemInUseCount, this.itemInUseCount, createTransaction(this.itemInUse));
+
+        this.itemInUseCount = SpongeImpl.postEvent(event) ? -1 : event.getRemainingDuration();
+        if (this.itemInUseCount <= 0) {
+            onItemUseFinish();
+        }
+    }
+
+    @Redirect(method = "stopUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onPlayerStoppedUsing"
+            + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;I)V"))
+    public void callUseItemStackStop(net.minecraft.item.ItemStack stack, World world, EntityPlayer player, int remainingDuration) {
+        UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+                this.itemInUseCount, this.itemInUseCount, createTransaction(stack));
+
+        if (!SpongeImpl.postEvent(event)) {
+            stack.onPlayerStoppedUsing(world, player, remainingDuration);
+        }
+    }
+
+    @Redirect(method = "onItemUseFinish", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onItemUseFinish"
+            + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;"))
+    public net.minecraft.item.ItemStack callUseItemStackFinish(net.minecraft.item.ItemStack stack, World world, EntityPlayer player) {
+        net.minecraft.item.ItemStack result = stack.onItemUseFinish(world, player);
+        Transaction<ItemStackSnapshot> resultTransaction = new Transaction<>(((ItemStack) stack).createSnapshot(),
+                ((ItemStack) result).createSnapshot());
+
+        UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+                this.itemInUseCount, this.itemInUseCount, createTransaction(stack), resultTransaction);
+
+        // TODO: Handle cancellation
+        SpongeImpl.postEvent(event);
+        return (net.minecraft.item.ItemStack) event.getItemStackResult().getFinal().createStack();
     }
 
     public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
