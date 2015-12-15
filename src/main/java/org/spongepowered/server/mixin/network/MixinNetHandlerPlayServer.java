@@ -161,9 +161,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             + "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
     public boolean onAreItemStacksEqual(ItemStack stackA, ItemStack stackB) {
         // Force client to update the itemstack if event was cancelled
-        boolean result = !this.forceUpdateInventorySlot && ItemStack.areItemStacksEqual(stackA, stackB);
-        System.out.println(result);
-        return result;
+        return !this.forceUpdateInventorySlot && ItemStack.areItemStacksEqual(stackA, stackB);
     }
 
 }
