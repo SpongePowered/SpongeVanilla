@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.plugin;
 
+import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
@@ -41,6 +42,8 @@ public class VanillaPluginContainer extends SpongePluginContainer {
     private final Optional<Object> instance;
     private final Logger logger;
 
+    private final Injector injector;
+
     public VanillaPluginContainer(Class<?> pluginClass) {
         Plugin info = pluginClass.getAnnotation(Plugin.class);
         this.id = info.id();
@@ -48,8 +51,8 @@ public class VanillaPluginContainer extends SpongePluginContainer {
         this.version = info.version();
         this.logger = LoggerFactory.getLogger(this.id);
 
-        this.instance = Optional.of(
-                SpongeImpl.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass)).getInstance(pluginClass));
+        this.injector = SpongeImpl.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass));
+        this.instance = Optional.of(this.injector.getInstance(pluginClass));
     }
 
     @Override
@@ -75,6 +78,11 @@ public class VanillaPluginContainer extends SpongePluginContainer {
     @Override
     public Logger getLogger() {
         return this.logger;
+    }
+
+    @Override
+    public Injector getInjector() {
+        return this.injector;
     }
 
 }

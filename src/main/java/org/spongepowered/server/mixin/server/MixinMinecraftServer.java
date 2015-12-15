@@ -38,6 +38,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
@@ -97,7 +98,7 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
-        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(), Cause.of(this), (World) worldserver));
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)), (World) worldserver));
     }
 
     @Overwrite

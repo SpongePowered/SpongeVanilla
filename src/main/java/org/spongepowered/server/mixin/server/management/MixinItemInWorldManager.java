@@ -25,100 +25,44 @@
 package org.spongepowered.server.mixin.server.management;
 
 import com.flowpowered.math.vector.Vector3d;
-import net.minecraft.block.BlockButton;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemDoor;
-import net.minecraft.item.ItemDoublePlant;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldSettings;
-import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.provider.DirectionFacingProvider;
+import org.spongepowered.common.util.VecHelper;
 
 import java.util.Optional;
 
 @Mixin(value = ItemInWorldManager.class, priority = 1001)
 public abstract class MixinItemInWorldManager {
 
-    @Shadow public World theWorld;
+    @Shadow public net.minecraft.world.World theWorld;
     @Shadow public EntityPlayerMP thisPlayerMP;
-    @Shadow private WorldSettings.GameType gameType;
-    EnumFacing clickedFace;
 
-    @Inject(method = "onBlockClicked", at = @At("HEAD"))
+    @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
     public void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
-        clickedFace = side;
-    }
-
-    @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z"),
-            cancellable = true)
-    public void onActivateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float hitx, float hity,
-            float hitz, CallbackInfoReturnable<Boolean> ci) {
-        final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
-        final InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(SpongeImpl.getGame(), Cause.of(player), Optional.of(new
-                Vector3d(hitx, hity, hitz)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
-        boolean cancelled = SpongeImpl.getGame().getEventManager().post(event);
-        if (cancelled) {
-            // Short-circuit and return false
-            ci.setReturnValue(false);
-            final IBlockState state = worldIn.getBlockState(pos);
-
-            // Commence activation hacks
-
-            // CommandBlock GUI opens solely on the client, we need to force it close on cancellation
-            if (state.getBlock() == Blocks.command_block) {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S2EPacketCloseWindow(0));
-                return;
-            }
-
-            // Button animation presses occur on the client without server interference, we need to send down the block change
-            // to fix the button remaining pressed when right-clicking with nothing in-hand
-            if (state.getBlock() instanceof BlockButton) {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
-                return;
-            }
-
-            // Stopping the placement of a door or double plant causes artifacts (ghosts) on the top-side of the block. We need to remove it
-            if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos.up(2)));
-                return;
-            }
-
-            // Stopping a door from opening while interacting the top part will allow the door to open, we need to update the
-            // client to resolve this
-            if (state.getProperties().containsKey(BlockDoor.HALF)) {
-                boolean isLower = false;
-
-                if (state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
-                    isLower = true;
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
-                }
-
-                if (isLower) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos.up()));
-                } else {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos.down()));
-                }
-            }
+        Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector(pos));
+        InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(SpongeImpl.getGame(),
+                Cause.of(NamedCause.source(this.thisPlayerMP)), Optional.<Vector3d>empty(), location.createSnapshot(),
+                DirectionFacingProvider.getInstance().getKey(side).get());
+        if (SpongeImpl.postEvent(event)) {
+            this.thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
+            ci.cancel();
         }
     }
+
 }

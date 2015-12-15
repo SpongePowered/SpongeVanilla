@@ -35,8 +35,10 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.EntitySnapshot;
+import org.spongepowered.api.entity.projectile.Projectile;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.world.ExplosionEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,74 +46,93 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.util.VecHelper;
+import org.spongepowered.server.interfaces.IMixinExplosion;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 @Mixin(value = Explosion.class, priority = 1001)
-public abstract class MixinExplosion {
+public abstract class MixinExplosion implements org.spongepowered.api.world.explosion.Explosion, IMixinExplosion {
     @Shadow private World worldObj;
-    @Shadow private Entity exploder;
-    @Shadow private List<? super Object> affectedBlockPositions;
-    @Shadow abstract EntityLivingBase getExplosivePlacedBy();
+    @Shadow @Nullable private Entity exploder;
+    @Shadow private List<BlockPos> affectedBlockPositions;
+    @Shadow @Nullable abstract EntityLivingBase getExplosivePlacedBy();
+
+    @Override
+    public Cause createCause() {
+        Object source;
+        Object projectileSource = null;
+        Object igniter = null;
+        if (this.exploder == null) {
+            source = getWorld().getBlock(getOrigin().toInt());
+        } else {
+            source = this.exploder;
+            if (source instanceof Projectile) {
+                projectileSource = ((Projectile) this.exploder).getShooter();
+            }
+
+            // Don't use the exploder itself as igniter
+            igniter = getExplosivePlacedBy();
+            if (this.exploder == igniter) {
+                igniter = null;
+            }
+        }
+
+        if (projectileSource != null) {
+            if (igniter != null) {
+                return Cause.of(NamedCause.source(source), NamedCause.of("ProjectileSource", projectileSource), NamedCause.of("Igniter", igniter));
+            } else {
+                return Cause.of(NamedCause.source(source), NamedCause.of("ProjectileSource", projectileSource));
+            }
+        } else if (igniter != null) {
+            return Cause.of(NamedCause.source(source), NamedCause.of("Igniter", igniter));
+        } else {
+            return Cause.of(NamedCause.source(source));
+        }
+    }
 
     @Redirect(method = "doExplosionA", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;"
             + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"))
     public List<?> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
-        List<?> list = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
-
-        final org.spongepowered.api.world.explosion.Explosion spongeExplosion = (org.spongepowered.api.world.explosion.Explosion) this;
+        final List<?> affectedEntities = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
+        final org.spongepowered.api.world.World spongeWorld = (org.spongepowered.api.world.World) this.worldObj;
 
         final ImmutableList.Builder<Transaction<BlockSnapshot>> blockTransactionBuilder = ImmutableList.builder();
-
-        for (Object obj : affectedBlockPositions) {
-            final BlockPos blockPos = (BlockPos) obj;
-            final BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldObj).createSnapshot(blockPos.getX(), blockPos.getY(),
-                    blockPos.getZ());
+        for (BlockPos pos : this.affectedBlockPositions) {
+            final BlockSnapshot currentSnapshot = spongeWorld.createSnapshot(pos.getX(), pos.getY(), pos.getZ());
             // TODO Is this the correct state? Would replacement state depend on blocktype?
             blockTransactionBuilder.add(new Transaction<>(currentSnapshot, currentSnapshot.withState(BlockTypes.AIR.getDefaultState())));
         }
-
         final ImmutableList<Transaction<BlockSnapshot>> blockTransactions = blockTransactionBuilder.build();
 
-        Cause cause;
-        final EntityLivingBase igniter = getExplosivePlacedBy();
-
-        if (exploder != null && igniter != null) {
-            cause = Cause.of(igniter, exploder, worldObj);
-        } else if (exploder == null && igniter != null) {
-            cause = Cause.of(igniter, worldObj);
-        } else if (exploder != null && igniter == null) {
-            cause = Cause.of(exploder, worldObj);
-        } else {
-            cause = Cause.of(worldObj);
-        }
-
         final ImmutableList.Builder<EntitySnapshot> entitySnapshotBuilder = ImmutableList.builder();
-        for (Object obj : list) {
-            org.spongepowered.api.entity.Entity spongeEntity = (org.spongepowered.api.entity.Entity) obj;
-            entitySnapshotBuilder.add(spongeEntity.createSnapshot());
+        for (Object obj : affectedEntities) {
+            entitySnapshotBuilder.add(((org.spongepowered.api.entity.Entity) entity).createSnapshot());
         }
         final ImmutableList<EntitySnapshot> entitySnapshots = entitySnapshotBuilder.build();
 
-        @SuppressWarnings("unchecked")
-        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(SpongeImpl.getGame(), cause,
-                (List<org.spongepowered.api.entity.Entity>) list, entitySnapshots, spongeExplosion, (org.spongepowered.api.world.World) worldObj,
-                blockTransactions);
-        boolean cancelled = SpongeImpl.postEvent(event);
+        this.affectedBlockPositions.clear();
 
-        affectedBlockPositions.clear();
+        @SuppressWarnings("unchecked")
+        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(SpongeImpl.getGame(), createCause(),
+                (List<org.spongepowered.api.entity.Entity>) affectedEntities, entitySnapshots, this, (org.spongepowered.api.world.World) worldObj,
+                blockTransactions);
 
         // TODO Rolling back an explosion...this will be difficult
-        if (!cancelled) {
-            if (spongeExplosion.shouldBreakBlocks()) {
+        if (!SpongeImpl.postEvent(event)) {
+            if (shouldBreakBlocks()) {
                 for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
                     if (transaction.isValid()) {
                         affectedBlockPositions.add(VecHelper.toBlockPos(transaction.getFinal().getPosition()));
                     }
                 }
             }
+        } else {
+            // Don't hurt entities if event is cancelled
+            affectedEntities.clear();
         }
 
-        return list;
+        return affectedEntities;
     }
 }

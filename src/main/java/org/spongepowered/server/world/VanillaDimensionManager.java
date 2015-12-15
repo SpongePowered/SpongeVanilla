@@ -32,6 +32,7 @@ import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.world.storage.WorldProperties;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.world.DimensionManager;
@@ -54,8 +55,8 @@ public class VanillaDimensionManager extends DimensionManager {
                 e.printStackTrace();
             } finally {
                 if (w != null) {
-                    SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(), Cause.of(MinecraftServer
-                                    .getServer()), (org.spongepowered.api.world.World) w));
+                    SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(),
+                            Cause.of(NamedCause.source(MinecraftServer.getServer())), (org.spongepowered.api.world.World) w));
                     w.flush();
                     setWorld(id, null);
                 }

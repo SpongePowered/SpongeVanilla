@@ -48,14 +48,14 @@ public abstract class MixinChunkProviderServer {
 
     @SuppressWarnings("unchecked")
     @Overwrite
-    public void dropChunk(int p_73241_1_, int p_73241_2_) {
+    public void dropChunk(int x, int z) {
         if (this.worldObj.provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())) {
-            if (!this.worldObj.isSpawnChunk(p_73241_1_, p_73241_2_)) {
-                this.droppedChunksSet.add(ChunkCoordIntPair.chunkXZ2Int(p_73241_1_, p_73241_2_));
+            if (!this.worldObj.isSpawnChunk(x, z)) {
+                this.droppedChunksSet.add(ChunkCoordIntPair.chunkXZ2Int(x, z));
             }
         }
         else {
-            this.droppedChunksSet.add(ChunkCoordIntPair.chunkXZ2Int(p_73241_1_, p_73241_2_));
+            this.droppedChunksSet.add(ChunkCoordIntPair.chunkXZ2Int(x, z));
         }
     }
 

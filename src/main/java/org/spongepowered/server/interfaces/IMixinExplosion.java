@@ -22,23 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.world;
+package org.spongepowered.server.interfaces;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldType;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.api.event.cause.Cause;
 
-@Mixin(WorldType.class)
-public abstract class MixinWorldType {
-    @Shadow private static WorldType FLAT;
+public interface IMixinExplosion {
 
-    public int getSpawnFuzz() {
-        return Math.max(5, MinecraftServer.getServer().getSpawnProtectionSize() - 6);
-    }
+    Cause createCause();
 
-    public int getMinimumSpawnHeight(World world) {
-        return (WorldType) (Object) this == FLAT ? 4 : 64;
-    }
 }
