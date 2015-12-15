@@ -26,6 +26,7 @@ package org.spongepowered.server.mixin.server;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.NetworkSystem;
+import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
@@ -93,6 +94,14 @@ public abstract class MixinMinecraftServer {
         SpongeVanilla.INSTANCE.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
         SpongeVanilla.INSTANCE.postState(GameStoppingEvent.class, GameState.GAME_STOPPING);
         SpongeVanilla.INSTANCE.postState(GameStoppedEvent.class, GameState.GAME_STOPPED);
+    }
+
+    @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
+    public void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
+        // Don't load favicon twice
+        if (response.getFavicon() != null) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),

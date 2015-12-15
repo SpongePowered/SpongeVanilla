@@ -24,8 +24,12 @@
  */
 package org.spongepowered.server.mixin.server;
 
+import static org.spongepowered.common.SpongeVersion.MINECRAFT_VERSION;
+
+import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.util.ChatComponentText;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
@@ -57,6 +61,12 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             + "(Lnet/minecraft/server/management/ServerConfigurationManager;)V", shift = At.Shift.BY, by = -7))
     public void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.initialize();
+
+        ServerStatusResponse statusResponse = getServerStatusResponse();
+        statusResponse.setServerDescription(new ChatComponentText(getMOTD()));
+        statusResponse.setProtocolVersionInfo(
+                new ServerStatusResponse.MinecraftProtocolVersionIdentifier(MINECRAFT_VERSION.getName(), MINECRAFT_VERSION.getProtocol()));
+        addFaviconToStatusResponse(statusResponse);
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
