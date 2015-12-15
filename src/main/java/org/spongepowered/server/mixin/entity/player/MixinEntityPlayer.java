@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
@@ -56,7 +57,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Mixin(value = EntityPlayer.class, priority = 1001)
-public abstract class MixinEntityPlayer extends EntityLivingBase {
+public abstract class MixinEntityPlayer extends EntityLivingBase implements Entity {
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
     private HashMap<Integer, BlockPos> spawnChunkMap = Maps.newHashMap();
@@ -196,6 +197,15 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
         // TODO: Handle cancellation
         SpongeImpl.postEvent(event);
         return (net.minecraft.item.ItemStack) event.getItemStackResult().getFinal().createStack();
+    }
+
+    @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
+    public void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
+        SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+                ((org.spongepowered.api.world.World) this.worldObj).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);
+        if (SpongeImpl.postEvent(event)) {
+            ci.setReturnValue(EntityPlayer.EnumStatus.OTHER_PROBLEM);
+        }
     }
 
     public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
