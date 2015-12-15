@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,17 +38,18 @@ import org.spongepowered.common.SpongeImpl;
 
 @Mixin(value = Chunk.class, priority = 1001)
 public abstract class MixinChunk {
+
     @Shadow private World worldObj;
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
     public void postChunkLoad(CallbackInfo ci) {
-        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createLoadChunkEvent(SpongeImpl.getGame(), Cause.of(worldObj),
+        SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(SpongeImpl.getGame(), Cause.of(NamedCause.source(this.worldObj)),
                 (org.spongepowered.api.world.Chunk) this));
     }
 
     @Inject(method = "onChunkUnload", at = @At("RETURN"))
     public void postChunkUnload(CallbackInfo ci) {
-        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createUnloadChunkEvent(SpongeImpl.getGame(), Cause.of(worldObj),
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(SpongeImpl.getGame(), Cause.of(NamedCause.source(this.worldObj)),
                 (org.spongepowered.api.world.Chunk) this));
     }
 

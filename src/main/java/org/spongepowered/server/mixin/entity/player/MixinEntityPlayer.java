@@ -31,11 +31,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -58,6 +63,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
 
     @Shadow protected BlockPos spawnChunk;
     @Shadow private boolean spawnForced;
+    @Shadow private net.minecraft.item.ItemStack itemInUse;
+    @Shadow private int itemInUseCount;
 
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
@@ -125,6 +132,26 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
                 Cause.of(NamedCause.source(this)), Optional.empty(), (Entity) entity);
         if (SpongeImpl.postEvent(event)) {
             cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "itemInUse", opcode = Opcodes.PUTFIELD), cancellable = true)
+    public void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
+        // Handle logic on our own
+        ci.cancel();
+
+        ItemStackSnapshot itemSnapshot = ((ItemStack) stack).createSnapshot();
+        Transaction<ItemStackSnapshot> transaction = new Transaction<>(itemSnapshot, itemSnapshot.copy());
+        UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+                duration, duration, transaction);
+
+        if (!SpongeImpl.postEvent(event)) {
+            this.itemInUse = stack;
+            this.itemInUseCount = event.getRemainingDuration();
+
+            if (!this.worldObj.isRemote) {
+                this.setEating(true);
+            }
         }
     }
 

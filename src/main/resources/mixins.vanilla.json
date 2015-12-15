@@ -23,7 +23,6 @@
         "world.MixinWorld",
         "world.MixinWorldProvider",
         "world.MixinWorldServer",
-        "world.MixinWorldType",
         "world.gen.MixinChunkProviderServer",
         "world.storage.MixinSaveHandler"
     ]

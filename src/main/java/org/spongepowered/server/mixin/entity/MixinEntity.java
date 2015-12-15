@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,8 +45,8 @@ public abstract class MixinEntity {
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     public void onConstructed(World world, CallbackInfo ci) {
         final Entity spongeEntity = (Entity) this;
-        SpongeImpl.getGame().getEventManager().post(SpongeEventFactory.createConstructEntityEventPost(SpongeImpl.getGame(), Cause.of(spongeEntity.getWorld()),
-                spongeEntity, spongeEntity.getType(), spongeEntity.getTransform()));
+        SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(SpongeImpl.getGame(),
+                Cause.of(NamedCause.source(world)), spongeEntity, spongeEntity.getType(), spongeEntity.getTransform()));
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",

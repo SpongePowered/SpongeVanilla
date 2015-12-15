@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.plugin;
 
+import com.google.inject.Injector;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,11 @@ public final class MinecraftPluginContainer extends SpongePluginContainer {
     @Override
     public Optional<Object> getInstance() {
         return Optional.ofNullable(MinecraftServer.getServer());
+    }
+
+    @Override
+    public Injector getInjector() {
+        return null;
     }
 
 }
