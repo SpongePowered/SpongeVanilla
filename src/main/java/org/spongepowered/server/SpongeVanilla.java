@@ -81,11 +81,7 @@ public final class SpongeVanilla implements PluginContainer {
 
         this.game = SpongeImpl.getGame();
 
-        try {
-            RegistryHelper.setFinalStatic(Sponge.class, "game", this.game);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+        RegistryHelper.setFinalStatic(Sponge.class, "game", this.game);
     }
 
     public static void main(String[] args) {
