@@ -33,7 +33,7 @@ import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.interfaces.IMixinWorldType;
+import org.spongepowered.common.interfaces.world.IMixinWorldType;
 
 @Mixin(value = WorldProvider.class, priority = 1001)
 public abstract class MixinWorldProvider {

@@ -144,7 +144,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         return new Transaction<>(itemSnapshot, itemSnapshot.copy());
     }
 
-    @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "itemInUse", opcode = Opcodes.PUTFIELD), cancellable = true)
+    @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUse:Lnet/minecraft/item/ItemStack;", opcode = Opcodes.PUTFIELD), cancellable = true)
     public void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
         // Handle logic on our own
         ci.cancel();
@@ -162,7 +162,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "itemInUseCount", opcode = Opcodes.GETFIELD))
+    @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUseCount:I", opcode = Opcodes.GETFIELD))
     public void callUseItemStackTick(CallbackInfo ci) {
         UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(this.itemInUse));

@@ -53,14 +53,14 @@ import org.spongepowered.common.util.StaticMixinHelper;
 
 import java.util.Optional;
 
-@Mixin({EntityLivingBase.class, EntityPlayer.class, EntityPlayerMP.class})
+//@Mixin({EntityLivingBase.class, EntityPlayer.class, EntityPlayerMP.class})
 public abstract class MixinEntityLivingDeath extends EntityLivingBase {
 
     public MixinEntityLivingDeath(World worldIn) {
         super(worldIn);
     }
 
-    @Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
+    //@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
     private void callDestructEntityEventDeath(DamageSource source, CallbackInfo ci) {
         MessageSink messageSink = this instanceof Player ? ((Player) this).getMessageSink() : MessageSinks.toNone();
         Text deathMessage = SpongeTexts.toText(getCombatTracker().getDeathMessage());
