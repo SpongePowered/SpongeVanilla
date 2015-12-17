@@ -8,6 +8,7 @@
         "MixinBootstrap",
         "block.MixinBlock",
         "entity.MixinEntity",
+        "entity.living.MixinEntityLivingBase",
         "entity.player.MixinEntityPlayer",
         "entity.player.MixinEntityPlayerMP",
         "entity.vehicle.MixinEntityMinecart",

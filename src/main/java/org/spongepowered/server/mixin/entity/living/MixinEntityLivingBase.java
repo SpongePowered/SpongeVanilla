@@ -27,7 +27,6 @@ package org.spongepowered.server.mixin.entity.living;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.world.World;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -39,6 +38,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.sink.MessageSink;
 import org.spongepowered.api.text.sink.MessageSinks;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
@@ -48,15 +50,19 @@ import org.spongepowered.common.util.StaticMixinHelper;
 
 import java.util.Optional;
 
-//@Mixin({EntityLivingBase.class, EntityPlayerMP.class})
-public abstract class MixinEntityLivingDeath extends EntityLivingBase {
+@Mixin(EntityLivingBase.class)
+public abstract class MixinEntityLivingBase extends EntityLivingBase {
 
-    public MixinEntityLivingDeath(World worldIn) {
-        super(worldIn);
+    public MixinEntityLivingBase() {
+        super(null);
     }
 
-    //@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
-    private void callDestructEntityEventDeath(DamageSource source, CallbackInfo ci) {
+    @Inject(method = "onDeath", at = @At("HEAD"))
+    private void callDestructEntityLivingBase(DamageSource source, CallbackInfo ci) {
+        callDestructEntityEventDeath(source, ci);
+    }
+
+    protected void callDestructEntityEventDeath(DamageSource source, CallbackInfo ci) {
         MessageSink messageSink = this instanceof Player ? ((Player) this).getMessageSink() : MessageSinks.toNone();
         Text deathMessage = SpongeTexts.toText(getCombatTracker().getDeathMessage());
 
@@ -90,8 +96,6 @@ public abstract class MixinEntityLivingDeath extends EntityLivingBase {
             } else {
                 StaticMixinHelper.dropCause = Cause.of(NamedCause.source(this), NamedCause.of("Attacker", source));
             }
-        } else {
-            ci.cancel(); // Cancel entity death
         }
     }
 
