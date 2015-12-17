@@ -59,8 +59,8 @@ shadowJar {
 
     configurations += [project.configurations.shadow]
 
-    from minecraftPlugin.delayedFile('{SRG_DIR}/notch-srg.srg')
-    rename 'notch-srg.srg', 'mappings.srg'
+    from minecraftPlugin.delayedFile(net.minecraftforge.gradle.common.Constants.MCP_DATA_SRG)
+    rename 'joined.srg', 'mappings.srg'
 
     dependencies {
         include dependency('net.sf.jopt-simple:jopt-simple')
