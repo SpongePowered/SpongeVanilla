@@ -24,26 +24,29 @@
  */
 package org.spongepowered.server.mixin.entity.player;
 
-import com.mojang.authlib.GameProfile;
 import io.netty.util.AttributeKey;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.server.mixin.entity.living.MixinEntityLivingBase;
 
 @Mixin(EntityPlayerMP.class)
-public abstract class MixinEntityPlayerMP extends EntityPlayer {
+public abstract class MixinEntityPlayerMP extends MixinEntityLivingBase {
     @Shadow private NetHandlerPlayServer playerNetServerHandler;
     private static final AttributeKey<Boolean> FML_MARKER = AttributeKey.valueOf("fml:hasMarker");
 
-    public MixinEntityPlayerMP(World worldIn, GameProfile gameProfileIn) {
-        super(worldIn, gameProfileIn);
+    @Inject(method = "onDeath", at = @At("HEAD"))
+    private void callDestructEntityPlayerMP(DamageSource source, CallbackInfo ci) {
+        callDestructEntityEventDeath(source, ci);
     }
+
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/GameRules;getGameRuleBooleanValue(Ljava/lang/String;)Z", ordinal = 0))
