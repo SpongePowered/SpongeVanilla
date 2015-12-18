@@ -132,8 +132,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     @Inject(method = "interactWith", at = @At(value = "INVOKE", target = "net/minecraft/entity/player/EntityPlayer"
             + ".getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;"), cancellable = true)
     public void onInteractWith(net.minecraft.entity.Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(SpongeImpl.getGame(),
-                Cause.of(NamedCause.source(this)), Optional.empty(), (Entity) entity);
+        InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(Cause.of(NamedCause.source(this)),
+                Optional.empty(), (Entity) entity);
         if (SpongeImpl.postEvent(event)) {
             cir.setReturnValue(false);
         }
@@ -149,8 +149,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         // Handle logic on our own
         ci.cancel();
 
-        UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
-                duration, duration, createTransaction(stack));
+        UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)), duration, duration,
+                createTransaction(stack));
 
         if (!SpongeImpl.postEvent(event)) {
             this.itemInUse = stack;
@@ -164,7 +164,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
 
     @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUseCount:I", opcode = Opcodes.GETFIELD))
     public void callUseItemStackTick(CallbackInfo ci) {
-        UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+        UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(this.itemInUse));
 
         this.itemInUseCount = SpongeImpl.postEvent(event) ? -1 : event.getRemainingDuration();
@@ -176,7 +176,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     @Redirect(method = "stopUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onPlayerStoppedUsing"
             + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;I)V"))
     public void callUseItemStackStop(net.minecraft.item.ItemStack stack, World world, EntityPlayer player, int remainingDuration) {
-        UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+        UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(stack));
 
         if (!SpongeImpl.postEvent(event)) {
@@ -191,7 +191,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         Transaction<ItemStackSnapshot> resultTransaction = new Transaction<>(((ItemStack) stack).createSnapshot(),
                 ((ItemStack) result).createSnapshot());
 
-        UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+        UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(stack), resultTransaction);
 
         // TODO: Handle cancellation
@@ -201,7 +201,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     public void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
-        SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)),
+        SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Cause.of(NamedCause.source(this)),
                 ((org.spongepowered.api.world.World) this.worldObj).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);
         if (SpongeImpl.postEvent(event)) {
             ci.setReturnValue(EntityPlayer.EnumStatus.OTHER_PROBLEM);

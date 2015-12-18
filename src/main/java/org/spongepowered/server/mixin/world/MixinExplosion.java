@@ -115,7 +115,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
         this.affectedBlockPositions.clear();
 
         @SuppressWarnings("unchecked")
-        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(SpongeImpl.getGame(), createCause(),
+        final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(createCause(),
                 (List<org.spongepowered.api.entity.Entity>) affectedEntities, entitySnapshots, this, (org.spongepowered.api.world.World) worldObj,
                 blockTransactions);
 

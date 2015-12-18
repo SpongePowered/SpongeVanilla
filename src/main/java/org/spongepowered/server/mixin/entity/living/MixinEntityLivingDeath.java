@@ -75,8 +75,8 @@ public abstract class MixinEntityLivingDeath extends EntityLivingBase {
             cause = Cause.of(NamedCause.source(source), NamedCause.of("Victim", this));
         }
 
-        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(SpongeImpl.getGame(), cause, deathMessage,
-                deathMessage, messageSink, messageSink, (Living) this);
+        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, deathMessage, deathMessage, messageSink,
+                messageSink, (Living) this);
         if (!SpongeImpl.postEvent(event)) {
             // TODO: Fix empty messages properly
             deathMessage = event.getMessage();

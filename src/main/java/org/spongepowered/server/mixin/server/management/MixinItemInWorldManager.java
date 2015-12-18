@@ -56,9 +56,8 @@ public abstract class MixinItemInWorldManager {
     @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
     public void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
         Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector(pos));
-        InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(SpongeImpl.getGame(),
-                Cause.of(NamedCause.source(this.thisPlayerMP)), Optional.<Vector3d>empty(), location.createSnapshot(),
-                DirectionFacingProvider.getInstance().getKey(side).get());
+        InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Cause.of(NamedCause.source(this.thisPlayerMP)),
+                Optional.<Vector3d>empty(), location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(side).get());
         if (SpongeImpl.postEvent(event)) {
             this.thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
             ci.cancel();

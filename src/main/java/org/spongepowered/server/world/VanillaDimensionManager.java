@@ -55,8 +55,8 @@ public class VanillaDimensionManager extends DimensionManager {
                 e.printStackTrace();
             } finally {
                 if (w != null) {
-                    SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(),
-                            Cause.of(NamedCause.source(MinecraftServer.getServer())), (org.spongepowered.api.world.World) w));
+                    SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(MinecraftServer.getServer())),
+                            (org.spongepowered.api.world.World) w));
                     w.flush();
                     setWorld(id, null);
                 }

@@ -80,8 +80,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
         final Text message = SpongeTexts.toText(component);
         final MessageSink sink = ((Player) playerEntity).getMessageSink();
-        final MessageSinkEvent event = SpongeEventFactory.createMessageSinkEventChat(SpongeImpl.getGame(), Cause.of(NamedCause.source(playerEntity)),
-                message, message, sink, sink, message);
+        final MessageSinkEvent event = SpongeEventFactory.createMessageSinkEventChat(Cause.of(NamedCause.source(playerEntity)), message, message,
+                sink, sink, message);
         if (!SpongeImpl.postEvent(event)) {
             event.getSink().sendMessage(event.getMessage());
         }
@@ -93,7 +93,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         final Player spongePlayer = ((Player) playerEntity);
         final Text message = SpongeTexts.toText(component);
         final MessageSink sink = spongePlayer.getMessageSink();
-        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(SpongeImpl.getGame(),
+        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(
                 Cause.of(NamedCause.source(spongePlayer)), message, message, sink, sink, spongePlayer);
         SpongeImpl.postEvent(event);
     }
@@ -106,8 +106,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
         //BlockRayHit<World> blockHit = BlockRay.from((Entity) player).filter(BlockRay.<World>onlyAirFilter()).end().get();
         BlockSnapshot block = ((org.spongepowered.api.world.World) world).createSnapshot(0, 0, 0);
 
-        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(SpongeImpl.getGame(),
-                Cause.of(NamedCause.source(player)), Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
+        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
+                Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
         return !SpongeImpl.postEvent(event) && itemInWorldManager.tryUseItem(player, world, stack);
     }
 
@@ -117,9 +117,8 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     public boolean onActivateBlockOrUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world,
             @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float offsetX, float offsetY, float offsetZ) {
         BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) world).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
-        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(SpongeImpl.getGame(),
-                Cause.of(NamedCause.source(player)), Optional.of(new Vector3d(offsetX, offsetY, offsetZ)), currentSnapshot,
-                DirectionFacingProvider.getInstance().getKey(side).get());
+        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
+                Optional.of(new Vector3d(offsetX, offsetY, offsetZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
         if (SpongeImpl.postEvent(event)) {
             final IBlockState state = world.getBlockState(pos);
 
