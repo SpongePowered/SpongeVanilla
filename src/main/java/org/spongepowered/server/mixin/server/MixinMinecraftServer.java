@@ -107,7 +107,7 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(SpongeImpl.getGame(), Cause.of(NamedCause.source(this)), (World) worldserver));
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) worldserver));
     }
 
     @Overwrite

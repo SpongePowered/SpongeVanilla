@@ -45,8 +45,8 @@ public abstract class MixinEntity {
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     public void onConstructed(World world, CallbackInfo ci) {
         final Entity spongeEntity = (Entity) this;
-        SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(SpongeImpl.getGame(),
-                Cause.of(NamedCause.source(world)), spongeEntity, spongeEntity.getType(), spongeEntity.getTransform()));
+        SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Cause.of(NamedCause.source(world)), spongeEntity,
+                spongeEntity.getType(), spongeEntity.getTransform()));
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
