@@ -138,6 +138,14 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.registerTransformer("org.spongepowered.common.launch.transformer.SpongeSuperclassTransformer");
         SpongeSuperclassRegistry.registerSuperclassModification("org.spongepowered.api.entity.ai.task.AbstractAITask",
                 "org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass");
+        SpongeSuperclassRegistry.registerSuperclassModification("org.spongepowered.api.event.cause.entity.damage.source.common.AbstractDamageSource",
+                "org.spongepowered.common.event.damage.SpongeCommonDamageSource");
+        SpongeSuperclassRegistry.registerSuperclassModification(
+                "org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEntityDamageSource",
+                "org.spongepowered.common.event.damage.SpongeCommonEntityDamageSource");
+        SpongeSuperclassRegistry.registerSuperclassModification(
+                "org.spongepowered.api.event.cause.entity.damage.source.common.AbstractIndirectEntityDamageSource",
+                "org.spongepowered.common.event.damage.SpongeCommonIndirectEntityDamageSource");
 
         logger.info("Initialization finished. Starting Minecraft server...");
     }
