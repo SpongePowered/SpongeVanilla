@@ -51,6 +51,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
@@ -200,6 +201,14 @@ public abstract class MixinMinecraftServer {
 
     public Hashtable<Integer, long[]> getWorldTickTimes() {
         return this.worldTickTimes;
+    }
+
+    // TODO: Temporary fix for https://github.com/SpongePowered/SpongeVanilla/issues/196, there has to be a better fix for this
+    // (Not completely sure what is causing it yet)
+    @Redirect(method = "callFromMainThread", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/MinecraftServer;isCallingFromMinecraftThread()Z"))
+    public boolean allowRunningTasksInShutdownThread(MinecraftServer server) {
+        return server.isCallingFromMinecraftThread() || Thread.currentThread().getName().equals("Server Shutdown Thread");
     }
 
 }
