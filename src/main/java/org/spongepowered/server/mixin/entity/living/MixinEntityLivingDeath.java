@@ -36,8 +36,7 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.sink.MessageSink;
-import org.spongepowered.api.text.sink.MessageSinks;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
@@ -56,8 +55,8 @@ public abstract class MixinEntityLivingDeath extends EntityLivingBase {
 
     //@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
     private void callDestructEntityEventDeath(DamageSource source, CallbackInfo ci) {
-        MessageSink messageSink = this instanceof Player ? ((Player) this).getMessageSink() : MessageSinks.toNone();
-        Text deathMessage = SpongeTexts.toText(getCombatTracker().getDeathMessage());
+        MessageChannel originalChannel = this instanceof Player ? ((Player) this).getMessageChannel() : MessageChannel.TO_NONE;
+        Optional<Text> deathMessage = Optional.ofNullable(SpongeTexts.toText(getCombatTracker().getDeathMessage()));
 
         Optional<User> sourceCreator = Optional.empty();
 
@@ -74,14 +73,10 @@ public abstract class MixinEntityLivingDeath extends EntityLivingBase {
             cause = Cause.of(NamedCause.source(source), NamedCause.of("Victim", this));
         }
 
-        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, deathMessage, deathMessage, messageSink,
-                messageSink, (Living) this);
+        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(originalChannel),
+                deathMessage, deathMessage, (Living) this);
         if (!SpongeImpl.postEvent(event)) {
-            // TODO: Fix empty messages properly
-            deathMessage = event.getMessage();
-            if (deathMessage != Text.of()) {
-                event.getSink().sendMessage(deathMessage);
-            }
+            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
 
             // Store cause for drop event which is called after this event
             if (sourceCreator.isPresent()) {
