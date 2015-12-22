@@ -27,6 +27,7 @@ package org.spongepowered.server.mixin.entity.player;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
@@ -43,6 +44,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -67,11 +69,24 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     @Shadow private boolean spawnForced;
     @Shadow private net.minecraft.item.ItemStack itemInUse;
     @Shadow private int itemInUseCount;
+    @Shadow public InventoryPlayer inventory;
 
     @Shadow protected abstract void onItemUseFinish();
 
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
+    }
+
+    @Override
+    @Overwrite
+    public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
+        // apply forge fix "Fix issue in Player where it doen't take into
+        // account selected item"
+        if (slotIn == 0) {
+            this.inventory.mainInventory[this.inventory.currentItem] = stack;
+        } else {
+            this.inventory.armorInventory[slotIn - 1] = stack;
+        }
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
