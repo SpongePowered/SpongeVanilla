@@ -26,13 +26,15 @@ package org.spongepowered.server.mixin.server;
 
 import jline.console.ConsoleReader;
 import net.minecraft.server.dedicated.DedicatedServer;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.text.serializer.LegacyTexts;
 import org.spongepowered.server.console.ConsoleCommandCompleter;
 import org.spongepowered.server.console.ConsoleFormatter;
 import org.spongepowered.server.launch.console.TerminalConsoleAppender;
@@ -72,7 +74,7 @@ public abstract class MixinConsoleHandler {
 
             ci.cancel();
         } else {
-            TerminalConsoleAppender.setFormatter(Texts::stripCodes);
+            TerminalConsoleAppender.setFormatter(TextSerializers.LEGACY_FORMATTING_CODE::stripCodes);
         }
     }
 

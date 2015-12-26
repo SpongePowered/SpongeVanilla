@@ -24,12 +24,11 @@
  */
 package org.spongepowered.server.console;
 
-import static org.spongepowered.common.text.LegacyTextRepresentation.getFormattingCount;
 import static org.spongepowered.common.text.SpongeTexts.COLOR_CHAR;
 
 import net.minecraft.util.EnumChatFormatting;
 import org.fusesource.jansi.Ansi;
-import org.spongepowered.common.text.LegacyTextRepresentation;
+import org.spongepowered.common.text.serializer.LegacyTexts;
 
 
 public final class ConsoleFormatter {
@@ -39,7 +38,7 @@ public final class ConsoleFormatter {
 
     private static final String RESET = Ansi.ansi().reset().toString();
 
-    private static final String[] ansi = new String[getFormattingCount()];
+    private static final String[] ansi = new String[LegacyTexts.getFormattingCount()];
 
     static {
         map(EnumChatFormatting.BLACK, Ansi.ansi().reset().fg(Ansi.Color.BLACK).boldOff().toString());
@@ -88,7 +87,7 @@ public final class ConsoleFormatter {
 
             pos = next;
 
-            format = LegacyTextRepresentation.findFormat(text.charAt(next + 1));
+            format = LegacyTexts.findFormat(text.charAt(next + 1));
             if (format != -1) {
                 result.append(ansi[format]);
                 pos = next += 2;
