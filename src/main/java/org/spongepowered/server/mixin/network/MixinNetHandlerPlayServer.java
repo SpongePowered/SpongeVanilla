@@ -45,6 +45,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.InteractBlockEvent;
@@ -104,7 +105,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     public boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
         // TODO: Forge passes (0,0,0) as block when interacting with the air
         //BlockRayHit<World> blockHit = BlockRay.from((Entity) player).filter(BlockRay.<World>onlyAirFilter()).end().get();
-        BlockSnapshot block = ((org.spongepowered.api.world.World) world).createSnapshot(0, 0, 0);
+        BlockSnapshot block = ((org.spongepowered.api.world.World) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
 
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
                 Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
