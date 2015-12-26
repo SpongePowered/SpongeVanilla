@@ -36,7 +36,6 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.sink.MessageSink;
 import org.spongepowered.api.text.sink.MessageSinks;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -80,7 +79,7 @@ public abstract class MixinEntityLivingDeath extends EntityLivingBase {
         if (!SpongeImpl.postEvent(event)) {
             // TODO: Fix empty messages properly
             deathMessage = event.getMessage();
-            if (deathMessage != Texts.of()) {
+            if (deathMessage != Text.of()) {
                 event.getSink().sendMessage(deathMessage);
             }
 
