@@ -25,7 +25,9 @@
 package org.spongepowered.server.mixin.server.management;
 
 import com.flowpowered.math.vector.Vector3d;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.util.BlockPos;
@@ -41,9 +43,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.provider.DirectionFacingProvider;
 import org.spongepowered.common.util.VecHelper;
+import org.spongepowered.common.world.FakePlayer;
 
 import java.util.Optional;
 
@@ -61,6 +65,23 @@ public abstract class MixinItemInWorldManager {
         if (SpongeImpl.postEvent(event)) {
             this.thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
             ci.cancel();
+        }
+    }
+
+    // Event already fired in MixinNetHandlerPlayServer, this just handles fake
+    // players (for now)
+    @Inject(method = "activateBlockOrUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSneaking()Z", shift = At.Shift.BEFORE) , cancellable = true)
+    public void simulatedInteractBlock(EntityPlayer player, net.minecraft.world.World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float offsetX,
+            float offsetY, float offsetZ, CallbackInfoReturnable<Boolean> cir) {
+        Cause cause = FakePlayer.Controller.getCurrentCause();
+        if (cause == null) {
+            return;
+        }
+        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(cause, Optional.empty(),
+                ((World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ()), DirectionFacingProvider.directionMap.inverse().get(side));
+        if (SpongeImpl.postEvent(event)) {
+            this.thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
+            cir.setReturnValue(false);
         }
     }
 
