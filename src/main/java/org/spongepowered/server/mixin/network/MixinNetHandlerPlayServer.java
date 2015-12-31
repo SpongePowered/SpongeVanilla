@@ -35,12 +35,14 @@ import net.minecraft.item.ItemDoublePlant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.INetHandlerPlayServer;
+import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
@@ -51,15 +53,19 @@ import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.command.MessageSinkEvent;
+import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.sink.MessageSink;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.provider.DirectionFacingProvider;
 import org.spongepowered.common.text.SpongeTexts;
@@ -76,27 +82,37 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 
     private boolean forceUpdateInventorySlot;
 
+    @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
+            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    public void onProcessChatMessa(C01PacketChatMessage packet, CallbackInfo ci, String s, ChatComponentTranslation component) {
+        final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
+        final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
+        final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(Cause.of(NamedCause.source(this.playerEntity)),
+                originalChannel, Optional.of(originalChannel), message,  message, Texts.of(s));
+        if (!SpongeImpl.postEvent(event)) {
+            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
+        } else {
+            ci.cancel();
+        }
+    }
+
     @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
-    public void onProcessChatMessage(ServerConfigurationManager this$0, IChatComponent component, boolean isChat) {
-        final Text message = SpongeTexts.toText(component);
-        final MessageSink sink = ((Player) playerEntity).getMessageSink();
-        final MessageSinkEvent event = SpongeEventFactory.createMessageSinkEventChat(Cause.of(NamedCause.source(playerEntity)), message, message,
-                sink, sink, message);
-        if (!SpongeImpl.postEvent(event)) {
-            event.getSink().sendMessage(event.getMessage());
-        }
+    public void cancelSendChatMsgImpl(ServerConfigurationManager manager, IChatComponent component, boolean chat) {
+        // do nothing
     }
 
     @Redirect(method = "onDisconnect", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
     public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
-        final Player spongePlayer = ((Player) playerEntity);
-        final Text message = SpongeTexts.toText(component);
-        final MessageSink sink = spongePlayer.getMessageSink();
+        final Player player = ((Player) this.playerEntity);
+        final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
+        final MessageChannel originalChannel = player.getMessageChannel();
         final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(
-                Cause.of(NamedCause.source(spongePlayer)), message, message, sink, sink, spongePlayer);
+                Cause.of(NamedCause.source(player)), originalChannel, Optional.of(originalChannel), message, message, player);
         SpongeImpl.postEvent(event);
+        event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
     }
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
