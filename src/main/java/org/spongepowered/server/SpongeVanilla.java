@@ -46,7 +46,6 @@ import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStateEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.sql.SqlService;
@@ -54,6 +53,7 @@ import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.SpongeVersion;
 import org.spongepowered.common.data.SpongeDataManager;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
@@ -94,13 +94,14 @@ public final class SpongeVanilla implements PluginContainer {
 
             Files.createDirectories(SpongeImpl.getPluginsDir());
 
+            this.game.getEventManager().registerListeners(this, this);
+            this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
+
             // Pre-initialize registry
             this.game.getRegistry().preRegistryInit();
             SpongeBootstrap.initializeServices();
             SpongeBootstrap.initializeCommands();
             SpongeImpl.getRegistry().preInit();
-
-            this.game.getEventManager().registerListeners(this, this);
 
             SpongeImpl.getLogger().info("Loading plugins...");
             ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
@@ -111,7 +112,7 @@ public final class SpongeVanilla implements PluginContainer {
             checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
                     .equals(SpongeEntityAICommonSuperclass.class));
 
-            this.game.getServiceManager().potentiallyProvide(PermissionService.class).executeWhenPresent(
+            SpongeInternalListeners.getInstance().registerServiceCallback(PermissionService.class,
                     input -> input.registerContextCalculator(new SpongeContextCalculator()));
 
             SpongeHooks.enableThreadContentionMonitoring();
@@ -125,14 +126,11 @@ public final class SpongeVanilla implements PluginContainer {
         postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
-            try {
-                SpongePermissionService service = new SpongePermissionService(this.game);
-                // Setup default permissions
-                service.getGroupForOpLevel(2).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
-                this.game.getServiceManager().setProvider(this, PermissionService.class, service);
-            } catch (ProviderExistsException e) {
-                // It's a fallback, ignore
-            }
+            SpongePermissionService service = new SpongePermissionService(this.game);
+            // Setup default permissions
+            service.getGroupForOpLevel(1).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.selector", Tristate.TRUE);
+            service.getGroupForOpLevel(2).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
+            this.game.getServiceManager().setProvider(this, PermissionService.class, service);
         }
 
         SpongeImpl.getRegistry().postInit();
