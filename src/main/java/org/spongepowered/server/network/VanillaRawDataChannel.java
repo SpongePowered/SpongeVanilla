@@ -106,7 +106,7 @@ public class VanillaRawDataChannel extends VanillaChannelBinding implements Chan
         validate();
         final String name = getName();
         S3FPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+        for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().getPlayerList()) {
             if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);
