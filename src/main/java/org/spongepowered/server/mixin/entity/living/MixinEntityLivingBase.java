@@ -24,7 +24,9 @@
  */
 package org.spongepowered.server.mixin.entity.living;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.CombatTracker;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import org.spongepowered.api.entity.living.Living;
@@ -37,6 +39,7 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -49,7 +52,9 @@ import org.spongepowered.common.util.StaticMixinHelper;
 import java.util.Optional;
 
 @Mixin(EntityLivingBase.class)
-public abstract class MixinEntityLivingBase extends EntityLivingBase {
+public abstract class MixinEntityLivingBase extends Entity {
+
+    @Shadow public abstract CombatTracker getCombatTracker();
 
     public MixinEntityLivingBase() {
         super(null);
