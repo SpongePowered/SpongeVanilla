@@ -54,7 +54,7 @@ jar {
     manifest {
         attributes(
                 'Main-Class': 'org.spongepowered.server.launch.VersionCheckingMain',
-                'Class-Path': 'minecraft_server.1.8.jar libraries/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar'
+                'Class-Path': 'minecraft_server.1.8.9.jar libraries/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar'
         )
     }
 }
@@ -69,6 +69,8 @@ shadowJar {
     rename 'joined.srg', 'mappings.srg'
 
     dependencies {
+        include dependency('net.sf.trove4j:trove4j')
+
         include dependency('net.sf.jopt-simple:jopt-simple')
         include dependency('org.ow2.asm:asm-all')
 
