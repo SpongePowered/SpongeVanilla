@@ -43,14 +43,15 @@ public final class VanillaServerMain {
     private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.8.jar";
     private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.8/minecraft_server.1.8.jar";
 
-    private static final String LAUNCHWRAPPER_LOCAL = "launchwrapper-1.12.jar";
-    private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
+    private static final String LAUNCHWRAPPER_PATH = "net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
+    private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/" + LAUNCHWRAPPER_PATH;
 
     private VanillaServerMain() {
     }
 
     public static void main(String[] args) throws Exception {
         if (!checkMinecraft()) {
+            System.exit(1);
             return;
         }
 
@@ -67,9 +68,6 @@ public final class VanillaServerMain {
     }
 
     private static boolean checkMinecraft() throws Exception {
-        Path lib = Paths.get("lib");
-        Files.createDirectories(lib);
-
         // First check if Minecraft is already downloaded
         Path path = Paths.get(MINECRAFT_SERVER_LOCAL);
 
@@ -78,8 +76,13 @@ public final class VanillaServerMain {
             return false;
         }
 
-        path = lib.resolve(LAUNCHWRAPPER_LOCAL);
-        return Files.exists(path) || downloadVerified(LAUNCHWRAPPER_REMOTE, path);
+        path = Paths.get("libraries").resolve(LAUNCHWRAPPER_PATH);
+        if (Files.notExists(path)) {
+            Files.createDirectories(path.getParent());
+            return downloadVerified(LAUNCHWRAPPER_REMOTE, path);
+        } else {
+            return true;
+        }
     }
 
 
