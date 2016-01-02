@@ -26,6 +26,7 @@ package org.spongepowered.server.launch;
 
 import net.minecraft.launchwrapper.Launch;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
@@ -37,26 +38,55 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public final class VanillaServerMain {
+
+    private static final boolean VERIFY_CLASSPATH = !System.getProperty("spongevanilla.verify_classpath", "true").equals("false");
+    private static final boolean AUTO_DOWNLOAD_DEPS = !System.getProperty("spongevanilla.auto_dl", "true").equals("false");
+
+    private static final String LIBRARIES_DIR = "libraries";
 
     private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.8.jar";
     private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.8/minecraft_server.1.8.jar";
 
-    private static final String LAUNCHWRAPPER_PATH = "net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
-    private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net/" + LAUNCHWRAPPER_PATH;
+    private static final String LAUNCHWRAPPER_PATH = "/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
+    private static final String LAUNCHWRAPPER_LOCAL = LIBRARIES_DIR + LAUNCHWRAPPER_PATH;
+    private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net" + LAUNCHWRAPPER_PATH;
+
+    private static final String TWEAKER = "org.spongepowered.server.launch.VanillaServerTweaker";
 
     private VanillaServerMain() {
     }
 
     public static void main(String[] args) throws Exception {
-        if (!checkMinecraft()) {
-            System.exit(1);
-            return;
+        if (VERIFY_CLASSPATH) {
+            Path base = Paths.get(VanillaServerMain.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+
+            try {
+                if (!downloadMinecraft(base)) {
+                    System.err.println("Failed to load all required dependencies. Please download them manually:");
+                    System.err.println("Download " + MINECRAFT_SERVER_REMOTE + " and copy it to "
+                            + base.resolve(MINECRAFT_SERVER_LOCAL).toAbsolutePath());
+                    System.err.println("Download " + LAUNCHWRAPPER_REMOTE + " and copy it to "
+                            + base.resolve(LAUNCHWRAPPER_LOCAL).toAbsolutePath());
+                    System.exit(1);
+                    return;
+                }
+            } catch (IOException e) {
+                System.err.println("Failed to download required dependencies. Please try again later.");
+                e.printStackTrace();
+                System.exit(1);
+                return;
+            }
+        } else {
+            System.err.println("Classpath verification is disabled. The server may NOT start properly unless you have all required dependencies on "
+                    + "the classpath!");
         }
 
+
         Launch.main(join(args,
-                "--tweakClass", "org.spongepowered.server.launch.VanillaServerTweaker"
+                "--tweakClass", TWEAKER
         ));
     }
 
@@ -67,26 +97,22 @@ public final class VanillaServerMain {
         return result;
     }
 
-    private static boolean checkMinecraft() throws Exception {
-        // First check if Minecraft is already downloaded
-        Path path = Paths.get(MINECRAFT_SERVER_LOCAL);
-
-        // Download the server first
-        if (Files.notExists(path) && !downloadVerified(MINECRAFT_SERVER_REMOTE, path)) {
+    private static boolean downloadMinecraft(Path base) throws IOException, NoSuchAlgorithmException {
+        // Make sure the Minecraft server is available, or download it otherwise
+        Path path = base.resolve(MINECRAFT_SERVER_LOCAL);
+        if (Files.notExists(path) && (!AUTO_DOWNLOAD_DEPS || !downloadVerified(MINECRAFT_SERVER_REMOTE, path))) {
             return false;
         }
 
-        path = Paths.get("libraries").resolve(LAUNCHWRAPPER_PATH);
-        if (Files.notExists(path)) {
-            Files.createDirectories(path.getParent());
-            return downloadVerified(LAUNCHWRAPPER_REMOTE, path);
-        } else {
-            return true;
-        }
+        // Make sure Launchwrapper is available, or download it otherwise
+        path = base.resolve(LAUNCHWRAPPER_LOCAL);
+        return Files.exists(path) || (AUTO_DOWNLOAD_DEPS && downloadVerified(LAUNCHWRAPPER_REMOTE, path));
     }
 
 
-    private static boolean downloadVerified(String remote, Path path) throws Exception {
+    private static boolean downloadVerified(String remote, Path path) throws IOException, NoSuchAlgorithmException {
+        Files.createDirectories(path.getParent());
+
         String name = path.getFileName().toString();
         URL url = new URL(remote);
 
@@ -107,9 +133,7 @@ public final class VanillaServerMain {
                 System.out.println("Successfully downloaded " + name + " and verified checksum!");
             } else {
                 Files.delete(path);
-                System.err.println("Failed to download " + name + " (failed checksum verification).");
-                System.err.println("Please try again later.");
-                return false;
+                throw new IOException("Checksum verification failed: Expected " + expected + ", got " + hash);
             }
         }
 
