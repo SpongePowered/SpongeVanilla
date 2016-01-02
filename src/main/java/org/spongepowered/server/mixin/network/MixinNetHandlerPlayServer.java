@@ -106,7 +106,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onProcessChatMessa(C01PacketChatMessage packet, CallbackInfo ci, String s, ChatComponentTranslation component) {
+    public void onProcessChatMessage(C01PacketChatMessage packet, CallbackInfo ci, String s, IChatComponent component) {
         final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(Cause.of(NamedCause.source(this.playerEntity)),
