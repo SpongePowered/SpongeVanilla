@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeVersion;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -57,18 +58,16 @@ public class VanillaPluginManager implements PluginManager {
     private final Map<String, PluginContainer> plugins = Maps.newHashMap();
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
 
-    @Inject
-    public VanillaPluginManager(@Named("Sponge") PluginContainer spongePlugin, @Named("Minecraft") PluginContainer minecraftPlugin) {
-        registerPlugin(spongePlugin);
-        registerPlugin(minecraftPlugin);
-    }
-
     private void registerPlugin(PluginContainer plugin) {
         this.plugins.put(plugin.getId(), plugin);
         plugin.getInstance().ifPresent(instance -> this.pluginInstances.put(instance, plugin));
     }
 
     public void loadPlugins() throws IOException {
+        for (PluginContainer container : SpongeVersion.getComponents()) {
+            registerPlugin(container);
+        }
+
         Set<String> plugins;
 
         if (SCAN_CLASSPATH) {
@@ -130,7 +129,7 @@ public class VanillaPluginManager implements PluginManager {
 
     @Override
     public Logger getLogger(PluginContainer plugin) {
-        return ((VanillaPluginContainer) plugin).getLogger();
+        return plugin.getLogger();
     }
 
     @Override
