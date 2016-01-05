@@ -88,6 +88,7 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
         // Calculate location
         StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         StackTraceElement last = null;
+
         for (int i = stackTrace.length - 1; i > 0; i--) {
             String className = stackTrace[i].getClassName();
             if (fqcn.equals(className)) {
@@ -97,7 +98,7 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
             // Ignore Kotlin
             boolean isIgnored = false;
             for (String ignored : ignoredPackages) {
-                if (ignored.startsWith(ignored)) {
+                if (className.startsWith(ignored)) {
                     isIgnored = true;
                     break;
                 }
