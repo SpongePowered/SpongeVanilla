@@ -22,52 +22,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server;
+package org.spongepowered.server.network;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.storage.SaveFormatOld;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.GameDictionary;
+import com.google.common.collect.ImmutableSet;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.event.EventManager;
+import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrar;
+import org.spongepowered.api.network.ChannelRegistrationException;
 import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.world.TeleportHelper;
-import org.spongepowered.common.SpongeGame;
-import org.spongepowered.common.registry.SpongeGameRegistry;
 
-import java.nio.file.Path;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.Set;
 
 @Singleton
-public final class VanillaGame extends SpongeGame {
+public class VanillaChannelRegistrar implements ChannelRegistrar {
 
-    private final ChannelRegistrar registrar;
+    // TODO
+
+    private final PluginManager pluginManager;
 
     @Inject
-    public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry,
-            ServiceManager serviceManager, TeleportHelper teleportHelper, Logger logger, ChannelRegistrar registrar) {
-        super(platform, pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper, logger);
-        this.registrar = registrar;
+    public VanillaChannelRegistrar(PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
+
+    @Override
+    public ChannelBinding.IndexedMessageChannel createChannel(Object plugin, String channel) throws ChannelRegistrationException {
+        return new VanillaIndexedMessageChannel(this, channel, pluginManager.fromInstance(plugin).get());
     }
 
     @Override
-    public Path getSavesDirectory() {
-        return ((SaveFormatOld) ((MinecraftServer) getServer()).getActiveAnvilConverter()).savesDirectory.toPath();
+    public ChannelBinding.RawDataChannel createRawChannel(Object plugin, String channel) throws ChannelRegistrationException {
+        return new VanillaRawDataChannel(this, channel, pluginManager.fromInstance(plugin).get());
     }
 
     @Override
-    public GameDictionary getGameDictionary() {
-        throw new NotImplementedException("TODO");
+    public void unbindChannel(ChannelBinding channel) {
     }
 
     @Override
-    public ChannelRegistrar getChannelRegistrar() {
-        return this.registrar;
+    public Set<String> getRegisteredChannels(Platform.Type side) {
+        return ImmutableSet.of();
+    }
+
+    @Override
+    public boolean isChannelAvailable(String channelName) {
+        return false;
     }
 
 }
