@@ -105,6 +105,7 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
 
         // Check if we're running in de-obfuscated environment already
+        Launch.blackboard.put("vanilla.deobfuscatedEnvironment", !isObfuscated());
         logger.debug("Applying runtime de-obfuscation...");
         if (isObfuscated()) {
             logger.info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
