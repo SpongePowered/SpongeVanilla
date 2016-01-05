@@ -121,7 +121,6 @@ public final class SpongeVanilla implements PluginContainer {
 
     public void initialize() {
         SpongeImpl.getRegistry().init();
-        SpongeImpl.postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             SpongePermissionService service = new SpongePermissionService(this.game);
@@ -130,6 +129,8 @@ public final class SpongeVanilla implements PluginContainer {
             service.getGroupForOpLevel(2).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
             this.game.getServiceManager().setProvider(this, PermissionService.class, service);
         }
+
+        SpongeImpl.postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         SpongeImpl.getRegistry().postInit();
         SpongeDataManager.getInstance().completeRegistration();
