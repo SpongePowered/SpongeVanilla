@@ -34,6 +34,7 @@ import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.event.EventManager;
+import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
@@ -49,6 +50,7 @@ import org.spongepowered.common.world.SpongeTeleportHelper;
 import org.spongepowered.server.SpongeVanilla;
 import org.spongepowered.server.VanillaGame;
 import org.spongepowered.server.VanillaPlatform;
+import org.spongepowered.server.network.VanillaChannelRegistrar;
 import org.spongepowered.server.plugin.MinecraftPluginContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
@@ -82,6 +84,7 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(GameRegistry.class).to(SpongeGameRegistry.class).in(Scopes.SINGLETON);
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
         bind(TeleportHelper.class).to(SpongeTeleportHelper.class).in(Scopes.SINGLETON);
+        bind(ChannelRegistrar.class).to(VanillaChannelRegistrar.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
         bind(Path.class).annotatedWith(sharedRoot).toInstance(SpongeImpl.getConfigDir());
