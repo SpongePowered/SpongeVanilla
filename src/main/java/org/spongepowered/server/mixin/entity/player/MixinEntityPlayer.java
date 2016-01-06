@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.mixin.entity.player;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,8 +33,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.cause.Cause;
@@ -52,11 +55,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.server.interfaces.IMixinEntityPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 @Mixin(value = EntityPlayer.class, priority = 1001)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements Entity {
@@ -65,6 +71,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     private HashMap<Integer, BlockPos> spawnChunkMap = Maps.newHashMap();
     private HashMap<Integer, Boolean> spawnForcedMap = Maps.newHashMap();
 
+    @Shadow public BlockPos playerLocation;
     @Shadow protected BlockPos spawnChunk;
     @Shadow private boolean spawnForced;
     @Shadow private net.minecraft.item.ItemStack itemInUse;
@@ -72,6 +79,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     @Shadow public InventoryPlayer inventory;
 
     @Shadow protected abstract void onItemUseFinish();
+    @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
@@ -221,6 +229,58 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         if (SpongeImpl.postEvent(event)) {
             ci.setReturnValue(EntityPlayer.EnumStatus.OTHER_PROBLEM);
         }
+    }
+
+    // TODO: Consider replacing this with an overwrite because it is just weird.
+
+    @Nullable private Transform<org.spongepowered.api.world.World> newLocation;
+    private float wakeUpWidth;
+    private float wakeUpHeight;
+    @Nullable private BlockSnapshot bed;
+
+    @Redirect(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setSize(FF)V"))
+    private void onWakeUpPlayerSetSize(EntityPlayer self, float width, float height) {
+        // Let the player sleep until we asked our event listeners
+        this.wakeUpWidth = width;
+        this.wakeUpHeight = height;
+    }
+
+    @Redirect(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setPosition(DDD)V"))
+    private void onWakeUpPlayerSetPosition(EntityPlayer self, double x, double y, double z) {
+        this.newLocation = getTransform().setPosition(new Vector3d(x, y, z));
+    }
+
+    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "sleeping:Z" , opcode = Opcodes.PUTFIELD), cancellable = true)
+    private void onWakeUpPlayer(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
+        this.bed = getWorld().createSnapshot(VecHelper.toVector(this.playerLocation));
+        SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Cause.of(NamedCause.source(this)), this.bed,
+                Optional.ofNullable(this.newLocation), this, setSpawn);
+
+        if (SpongeImpl.postEvent(event)) {
+            this.newLocation = null;
+            this.bed = null;
+            ci.cancel(); // No worries! You can continue sleeping; sweet dreams!
+        } else {
+            // Time to get up!
+            this.setSize(this.wakeUpWidth, this.wakeUpHeight);
+            this.newLocation = event.getSpawnTransform().orElse(null);
+            if (this.newLocation != null) {
+                this.setTransform(this.newLocation);
+            }
+        }
+    }
+
+    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "sleepTimer:I", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER),
+            cancellable = true)
+    private void onWakeUpPlayerFinish(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
+        SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Cause.of(NamedCause.source(this)), this.bed, this));
+        if (setSpawn) {
+            this.setSpawnPoint(this.newLocation != null ? VecHelper.toBlockPos(this.newLocation.getPosition()) : this.playerLocation, false);
+        }
+
+        this.newLocation = null;
+        this.bed = null;
+        ci.cancel();
     }
 
     public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
