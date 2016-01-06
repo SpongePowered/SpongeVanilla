@@ -39,6 +39,11 @@
             <AppenderRef ref="Console" level="warn"/>
             <AppenderRef ref="File"/>
         </Logger>
+        <!-- Hide HikariCP messages unless it's a real problem -->
+        <Logger name="com.zaxxer.hikari" level="all" additivity="false">
+            <AppenderRef ref="Console" level="warn"/>
+            <AppenderRef ref="File"/>
+        </Logger>
 
         <!-- Log all other messages with prefix -->
         <Root level="all">
