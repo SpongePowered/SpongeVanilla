@@ -24,6 +24,9 @@
  */
 package org.spongepowered.server.plugin;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Objects;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +39,8 @@ import java.util.Optional;
 
 public class VanillaPluginContainer extends SpongePluginContainer {
 
+    private final Object source;
+
     private final String id;
     private final String name;
     private final String version;
@@ -44,7 +49,9 @@ public class VanillaPluginContainer extends SpongePluginContainer {
 
     private final Injector injector;
 
-    public VanillaPluginContainer(Class<?> pluginClass) {
+    public VanillaPluginContainer(Object source, Class<?> pluginClass) {
+        this.source = checkNotNull(source, "source");
+
         Plugin info = pluginClass.getAnnotation(Plugin.class);
         this.id = info.id();
         this.name = info.name();
@@ -83,6 +90,12 @@ public class VanillaPluginContainer extends SpongePluginContainer {
     @Override
     public Injector getInjector() {
         return this.injector;
+    }
+
+    @Override
+    protected Objects.ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("source", this.source);
     }
 
 }

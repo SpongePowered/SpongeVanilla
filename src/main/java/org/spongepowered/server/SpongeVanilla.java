@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
@@ -43,7 +44,6 @@ import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.sql.SqlService;
@@ -56,6 +56,7 @@ import org.spongepowered.common.SpongeVersion;
 import org.spongepowered.common.data.SpongeDataManager;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
+import org.spongepowered.common.plugin.SpongePluginContainer;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
@@ -68,7 +69,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 
-public final class SpongeVanilla implements PluginContainer {
+public final class SpongeVanilla extends SpongePluginContainer {
 
     public static final SpongeVanilla INSTANCE = new SpongeVanilla();
 
@@ -180,6 +181,11 @@ public final class SpongeVanilla implements PluginContainer {
     @Override
     public Optional<Object> getInstance() {
         return Optional.of(this);
+    }
+
+    @Override
+    public Injector getInjector() {
+        return SpongeImpl.getInjector();
     }
 
 }
