@@ -32,6 +32,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.ChatComponentText;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -80,6 +81,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
     public void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeImpl.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
+        SpongeImpl.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
     }
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
