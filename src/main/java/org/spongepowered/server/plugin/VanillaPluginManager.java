@@ -45,8 +45,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
@@ -100,7 +98,7 @@ public class VanillaPluginManager implements PluginManager {
         for (String plugin : plugins) {
             try {
                 Class<?> pluginClass = Class.forName(plugin);
-                VanillaPluginContainer container = new VanillaPluginContainer(pluginClass);
+                VanillaPluginContainer container = new VanillaPluginContainer(source, pluginClass);
                 registerPlugin(container);
                 SpongeImpl.getGame().getEventManager().registerListeners(container, container.getInstance().get());
 
