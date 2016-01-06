@@ -250,7 +250,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         this.newLocation = getTransform().setPosition(new Vector3d(x, y, z));
     }
 
-    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "sleeping:Z" , opcode = Opcodes.PUTFIELD), cancellable = true)
+    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;sleeping:Z" ,
+            opcode = Opcodes.PUTFIELD), cancellable = true)
     private void onWakeUpPlayer(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
         this.bed = getWorld().createSnapshot(VecHelper.toVector(this.playerLocation));
         SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Cause.of(NamedCause.source(this)), this.bed,
@@ -270,8 +271,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "sleepTimer:I", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER),
-            cancellable = true)
+    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;sleepTimer:I",
+            opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER), cancellable = true)
     private void onWakeUpPlayerFinish(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
         SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Cause.of(NamedCause.source(this)), this.bed, this));
         if (setSpawn) {
