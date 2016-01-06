@@ -40,7 +40,6 @@ import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.world.World;
@@ -75,12 +74,6 @@ public abstract class MixinMinecraftServer {
     @Shadow List<?> playersOnline;
 
     private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
-
-    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
-            + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
-    public void callServerStarted(CallbackInfo ci) {
-        SpongeImpl.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
-    }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
