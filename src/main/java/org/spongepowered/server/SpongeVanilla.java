@@ -42,6 +42,7 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.service.permission.PermissionService;
@@ -148,12 +149,12 @@ public final class SpongeVanilla extends SpongePluginContainer {
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerEarlyCommands(this.game);
     }
 
-    @Listener(order = Order.PRE)
-    public void onServerStarted(GameStartingServerEvent event) {
+    @Listener(order = Order.POST)
+    public void onServerStarted(GameStartedServerEvent event) {
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
     }
 
-    @Listener(order = Order.PRE)
+    @Listener(order = Order.POST)
     public void onServerStopped(GameStoppedServerEvent event) throws IOException {
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
     }
