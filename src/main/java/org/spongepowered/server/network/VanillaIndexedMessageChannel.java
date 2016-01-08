@@ -24,15 +24,19 @@
  */
 package org.spongepowered.server.network;
 
+import net.minecraft.network.PacketBuffer;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.network.Message;
 import org.spongepowered.api.network.MessageHandler;
+import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
 
 public class VanillaIndexedMessageChannel extends VanillaChannelBinding implements ChannelBinding.IndexedMessageChannel {
+
+    // TODO
 
     public VanillaIndexedMessageChannel(ChannelRegistrar registrar, String name, PluginContainer owner) {
         super(registrar, name, owner);
@@ -50,6 +54,11 @@ public class VanillaIndexedMessageChannel extends VanillaChannelBinding implemen
 
     @Override
     public <M extends Message> void registerMessage(Class<M> messageClass, int messageId, Platform.Type side, MessageHandler<M> handler) {
+
+    }
+
+    @Override
+    public void post(RemoteConnection connection, PacketBuffer payload) {
 
     }
 

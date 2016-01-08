@@ -22,32 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.network;
+package org.spongepowered.server.interfaces;
 
-import static com.google.common.base.Preconditions.checkState;
+public interface IMixinNetHandlerPlayServer {
 
-import net.minecraft.network.PacketBuffer;
-import org.spongepowered.api.network.ChannelRegistrar;
-import org.spongepowered.api.network.RemoteConnection;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.common.network.SpongeNetworkManager;
-
-public abstract class VanillaChannelBinding extends SpongeNetworkManager.AbstractChannelBinding {
-
-    private boolean valid = true;
-
-    public VanillaChannelBinding(ChannelRegistrar registrar, String channelName, PluginContainer owner) {
-        super(registrar, channelName, owner);
-    }
-
-    protected void validate() {
-        checkState(this.valid, "Channel binding in invalid state (was it unbound?)");
-    }
-
-    final void invalidate() {
-        this.valid = false;
-    }
-
-    public abstract void post(RemoteConnection connection, PacketBuffer payload);
+    boolean supportsChannel(String name);
 
 }
