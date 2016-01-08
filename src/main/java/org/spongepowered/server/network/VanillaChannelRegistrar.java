@@ -54,8 +54,12 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
 
     private final Map<String, VanillaChannelBinding> channels = Maps.newHashMap();
 
+    private static boolean isReservedChannel(String name) {
+        return name.startsWith(INTERNAL_PREFIX) || name.equals(REGISTER_CHANNEL) || name.equals(UNREGISTER_CHANNEL);
+    }
+
     private void validateChannel(String name) {
-        if (name.startsWith(INTERNAL_PREFIX) || name.equals(REGISTER_CHANNEL) || name.equals(UNREGISTER_CHANNEL)) {
+        if (isReservedChannel(name)) {
             throw new ChannelRegistrationException("Reserved channels cannot be registered by plugins");
         }
 
@@ -119,8 +123,8 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
     }
 
     @Override
-    public boolean isChannelAvailable(String channelName) {
-        return !channelName.startsWith(INTERNAL_PREFIX);
+    public boolean isChannelAvailable(String name) {
+        return !isReservedChannel(name) && !this.channels.containsKey(name);
     }
 
     public void post(RemoteConnection connection, C17PacketCustomPayload packet) {
