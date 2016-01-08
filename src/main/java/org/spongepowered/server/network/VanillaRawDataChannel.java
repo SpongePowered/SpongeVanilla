@@ -24,17 +24,29 @@
  */
 package org.spongepowered.server.network;
 
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelBuf;
 import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.network.RawDataListener;
+import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class VanillaRawDataChannel extends VanillaChannelBinding implements ChannelBinding.RawDataChannel {
+
+    private final Set<RawDataListener> listeners = new HashSet<>();
 
     public VanillaRawDataChannel(ChannelRegistrar registrar, String name, PluginContainer owner) {
         super(registrar, name, owner);
@@ -42,31 +54,67 @@ public class VanillaRawDataChannel extends VanillaChannelBinding implements Chan
 
     @Override
     public void addListener(RawDataListener listener) {
-
+        validate();
+        this.listeners.add(listener);
     }
 
     @Override
     public void addListener(Platform.Type side, RawDataListener listener) {
-
+        if (side == Platform.Type.SERVER) {
+            addListener(listener);
+        }
     }
 
     @Override
     public void removeListener(RawDataListener listener) {
+        validate();
+        this.listeners.remove(listener);
+    }
 
+    @Override
+    public void post(RemoteConnection connection, PacketBuffer payload) {
+        final ChannelBuf buf = (ChannelBuf) payload;
+        for (RawDataListener listener : listeners) {
+            listener.handlePayload(buf, connection, Platform.Type.SERVER);
+        }
+    }
+
+    private S3FPacketCustomPayload createPacket(Consumer<ChannelBuf> consumer) {
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        consumer.accept((ChannelBuf) buffer);
+        return new S3FPacketCustomPayload(getName(), buffer);
     }
 
     @Override
     public void sendTo(Player player, Consumer<ChannelBuf> payload) {
-
+        validate();
+        final EntityPlayerMP playerMP = (EntityPlayerMP) player;
+        if (((IMixinNetHandlerPlayServer) playerMP.playerNetServerHandler).supportsChannel(getName())) {
+            playerMP.playerNetServerHandler.sendPacket(createPacket(payload));
+        }
     }
 
     @Override
     public void sendToServer(Consumer<ChannelBuf> payload) {
-
+        validate();
+        // Nothing to do here
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void sendToAll(Consumer<ChannelBuf> payload) {
+        validate();
+        final String name = getName();
+        S3FPacketCustomPayload packet = null;
+        for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+            if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
+                if (packet == null) {
+                    packet = createPacket(payload);
+                }
 
+                player.playerNetServerHandler.sendPacket(packet);
+            }
+        }
     }
+
 }
