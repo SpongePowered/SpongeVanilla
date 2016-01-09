@@ -26,7 +26,6 @@ package org.spongepowered.server;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.minecraft.server.MinecraftServer;
@@ -87,37 +86,33 @@ public final class SpongeVanilla extends SpongePluginContainer {
         MinecraftServer.main(args);
     }
 
-    public void preInitialize() {
-        try {
-            SpongeImpl.getLogger().info("Loading Sponge...");
+    public void preInitialize() throws Exception {
+        SpongeImpl.getLogger().info("Loading Sponge...");
 
-            Files.createDirectories(SpongeImpl.getPluginsDir());
+        Files.createDirectories(SpongeImpl.getPluginsDir());
 
-            this.game.getEventManager().registerListeners(this, this);
-            this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
+        this.game.getEventManager().registerListeners(this, this);
+        this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
 
-            // Pre-initialize registry
-            this.game.getRegistry().preRegistryInit();
-            SpongeBootstrap.initializeServices();
-            SpongeBootstrap.initializeCommands();
-            SpongeImpl.getRegistry().preInit();
+        // Pre-initialize registry
+        this.game.getRegistry().preRegistryInit();
+        SpongeBootstrap.initializeServices();
+        SpongeBootstrap.initializeCommands();
+        SpongeImpl.getRegistry().preInit();
 
-            SpongeImpl.getLogger().info("Loading plugins...");
-            ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
-            SpongeImpl.postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
-            SpongeImpl.getLogger().info("Initializing plugins...");
-            SpongeImpl.postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
+        SpongeImpl.getLogger().info("Loading plugins...");
+        ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
+        SpongeImpl.postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
+        SpongeImpl.getLogger().info("Initializing plugins...");
+        SpongeImpl.postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
 
-            checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
-                    .equals(SpongeEntityAICommonSuperclass.class));
+        checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
+                .equals(SpongeEntityAICommonSuperclass.class));
 
-            SpongeInternalListeners.getInstance().registerServiceCallback(PermissionService.class,
-                    input -> input.registerContextCalculator(new SpongeContextCalculator()));
+        SpongeInternalListeners.getInstance().registerServiceCallback(PermissionService.class,
+                input -> input.registerContextCalculator(new SpongeContextCalculator()));
 
-            SpongeHooks.enableThreadContentionMonitoring();
-        } catch (IOException | ClassNotFoundException e) {
-            throw Throwables.propagate(e);
-        }
+        SpongeHooks.enableThreadContentionMonitoring();
     }
 
     public void initialize() {
