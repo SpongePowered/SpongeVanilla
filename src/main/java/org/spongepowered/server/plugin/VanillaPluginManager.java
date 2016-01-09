@@ -41,6 +41,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -67,6 +68,7 @@ public class VanillaPluginManager implements PluginManager {
         }
 
         Set<String> plugins;
+        Set<String> loadedPlugins = new HashSet<>();
 
         if (SCAN_CLASSPATH) {
             SpongeImpl.getLogger().info("Scanning classpath for plugins...");
@@ -74,7 +76,7 @@ public class VanillaPluginManager implements PluginManager {
             // Find plugins on the classpath
             plugins = PluginScanner.scanClassPath(Launch.classLoader);
             if (!plugins.isEmpty()) {
-                loadPlugins("classpath", plugins);
+                loadPlugins("classpath", loadedPlugins, plugins);
             }
         }
 
@@ -88,18 +90,24 @@ public class VanillaPluginManager implements PluginManager {
                     Launch.classLoader.addURL(jar.toUri().toURL());
 
                     // Load the plugins
-                    loadPlugins(jar, plugins);
+                    loadPlugins(jar, loadedPlugins, plugins);
                 }
             }
         }
     }
 
-    private void loadPlugins(Object source, Iterable<String> plugins) {
+    private void loadPlugins(Object source, Set<String> loadedPlugins, Iterable<String> plugins) {
         for (String plugin : plugins) {
+            if (loadedPlugins.contains(plugin)) {
+                SpongeImpl.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, source);
+                continue;
+            }
+
             try {
                 Class<?> pluginClass = Class.forName(plugin);
                 VanillaPluginContainer container = new VanillaPluginContainer(source, pluginClass);
                 registerPlugin(container);
+                loadedPlugins.add(plugin);
                 SpongeImpl.getGame().getEventManager().registerListeners(container, container.getInstance().get());
 
                 SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
