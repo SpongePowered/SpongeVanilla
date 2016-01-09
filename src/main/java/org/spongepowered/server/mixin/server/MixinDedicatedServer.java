@@ -44,6 +44,7 @@ import org.spongepowered.common.scheduler.SpongeScheduler;
 import org.spongepowered.server.SpongeVanilla;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.Proxy;
 
 @Mixin(DedicatedServer.class)
@@ -55,7 +56,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
-    public void onServerLoad(CallbackInfoReturnable<Boolean> ci) {
+    public void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
         SpongeVanilla.INSTANCE.preInitialize();
     }
 
