@@ -33,8 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -42,7 +40,9 @@ import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.sql.SqlService;
@@ -91,7 +91,6 @@ public final class SpongeVanilla extends SpongePluginContainer {
 
         Files.createDirectories(SpongeImpl.getPluginsDir());
 
-        this.game.getEventManager().registerListeners(this, this);
         this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
 
         // Pre-initialize registry
@@ -138,18 +137,23 @@ public final class SpongeVanilla extends SpongePluginContainer {
         SpongeImpl.postState(GameLoadCompleteEvent.class, GameState.LOAD_COMPLETE);
     }
 
-    @Listener(order = Order.PRE)
-    public void onServerAboutToStart(GameAboutToStartServerEvent event) {
+    public void onServerAboutToStart() {
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerEarlyCommands(this.game);
+        SpongeImpl.postState(GameAboutToStartServerEvent.class, GameState.SERVER_ABOUT_TO_START);
     }
 
-    @Listener(order = Order.POST)
-    public void onServerStarted(GameStartedServerEvent event) {
+    public void onServerStarting() {
+        SpongeImpl.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
+        SpongeImpl.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
     }
 
-    @Listener(order = Order.POST)
-    public void onServerStopped(GameStoppedServerEvent event) throws IOException {
+    public void onServerStopping() {
+        SpongeImpl.postState(GameStoppingServerEvent.class, GameState.SERVER_STOPPING);
+    }
+
+    public void onServerStopped() throws IOException {
+        SpongeImpl.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
     }
 
