@@ -75,7 +75,11 @@ public class VanillaRawDataChannel extends VanillaChannelBinding implements Chan
     public void post(RemoteConnection connection, PacketBuffer payload) {
         final ChannelBuf buf = (ChannelBuf) payload;
         for (RawDataListener listener : listeners) {
-            listener.handlePayload(buf, connection, Platform.Type.SERVER);
+            try {
+                listener.handlePayload(buf, connection, Platform.Type.SERVER);
+            } catch (Throwable e) {
+                getOwner().getLogger().error("Could not pass payload on channel '{}' to {}", getName(), getOwner(), e);
+            }
         }
     }
 
