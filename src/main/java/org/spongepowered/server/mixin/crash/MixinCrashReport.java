@@ -39,7 +39,7 @@ public abstract class MixinCrashReport {
 
     @Shadow private CrashReportCategory theReportCategory;
 
-    @Inject(method = "populateEnvironment", at = @At("RETURN"))
+    @Inject(method = "populateEnvironment", at = @At("RETURN"), require = 1)
     private void onPopulateEnvironment(CallbackInfo ci) {
         this.theReportCategory.addCrashSectionCallable("Plugins", () -> {
             StringBuilder result = new StringBuilder(64);

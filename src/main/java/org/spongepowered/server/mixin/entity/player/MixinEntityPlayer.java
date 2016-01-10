@@ -97,7 +97,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true, require = 1)
     public void onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
         if (this.dimension != 0) {
             setSpawnChunk(pos, forced, this.dimension);
@@ -105,7 +105,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    @Inject(method = "clonePlayer", at = @At("RETURN"))
+    @Inject(method = "clonePlayer", at = @At("RETURN"), require = 1)
     public void onClonePlayerEnd(EntityPlayer oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
         this.spawnChunkMap = ((IMixinEntityPlayer) oldPlayer).getSpawnChunkMap();
         this.spawnForcedMap = ((IMixinEntityPlayer) oldPlayer).getSpawnForcedMap();
@@ -167,7 +167,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         return new Transaction<>(itemSnapshot, itemSnapshot.copy());
     }
 
-    @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUse:Lnet/minecraft/item/ItemStack;", opcode = Opcodes.PUTFIELD), cancellable = true)
+    @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUse:Lnet/minecraft/item/ItemStack;", opcode = Opcodes.PUTFIELD), cancellable = true, require = 1)
     public void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
         // Handle logic on our own
         ci.cancel();
@@ -185,7 +185,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUseCount:I", opcode = Opcodes.GETFIELD))
+    @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUseCount:I", opcode = Opcodes.GETFIELD), require = 1)
     public void callUseItemStackTick(CallbackInfo ci) {
         UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(this.itemInUse));
@@ -222,7 +222,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         return (net.minecraft.item.ItemStack) event.getItemStackResult().getFinal().createStack();
     }
 
-    @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true, require = 1)
     public void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
         SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Cause.of(NamedCause.source(this)),
                 ((org.spongepowered.api.world.World) this.worldObj).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);

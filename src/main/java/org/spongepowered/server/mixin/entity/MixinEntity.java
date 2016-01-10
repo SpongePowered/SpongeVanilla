@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 public abstract class MixinEntity {
     @Nullable private NBTTagCompound customEntityData;
 
-    @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
+    @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false, require = 1)
     public void onConstructed(World world, CallbackInfo ci) {
         final Entity spongeEntity = (Entity) this;
         SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Cause.of(NamedCause.source(world)), spongeEntity,
@@ -50,7 +50,7 @@ public abstract class MixinEntity {
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"), require = 1)
     public void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey("ForgeData")) {
             this.customEntityData = tagCompound.getCompoundTag("ForgeData");
@@ -58,7 +58,7 @@ public abstract class MixinEntity {
     }
 
     @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"), require = 1)
     public void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (this.customEntityData != null) {
             tagCompound.setTag("ForgeData", this.customEntityData);

@@ -42,14 +42,14 @@ public abstract class MixinEntityPlayerMP extends MixinEntityLivingBase {
     @Shadow private NetHandlerPlayServer playerNetServerHandler;
     private static final AttributeKey<Boolean> FML_MARKER = AttributeKey.valueOf("fml:hasMarker");
 
-    @Inject(method = "onDeath", at = @At("HEAD"))
+    @Inject(method = "onDeath", at = @At("HEAD"), require = 1)
     private void callDestructEntityPlayerMP(DamageSource source, CallbackInfo ci) {
         callDestructEntityEventDeath(source, ci);
     }
 
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/GameRules;getGameRuleBooleanValue(Ljava/lang/String;)Z", ordinal = 0))
+            target = "Lnet/minecraft/world/GameRules;getGameRuleBooleanValue(Ljava/lang/String;)Z", ordinal = 0), require = 1)
     public boolean onGetGameRules(GameRules gameRules, String gameRule) {
         return false; // Suppress death messages since this is handled together with the event calling
     }

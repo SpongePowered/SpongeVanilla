@@ -60,7 +60,7 @@ public abstract class MixinChunkProviderServer {
     }
 
     @Inject(method = "unloadQueuedChunks", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", remap = false),
-            cancellable = true)
+            cancellable = true, require = 1)
     public void onUnloadQueuedChunks(CallbackInfoReturnable<Boolean> cir) {
         if (this.loadedChunks.size() == 0 && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())){
             VanillaDimensionManager.unloadWorld(this.worldObj.provider.getDimensionId());
