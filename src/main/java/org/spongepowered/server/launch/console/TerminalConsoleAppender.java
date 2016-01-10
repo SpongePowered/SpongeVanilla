@@ -27,6 +27,8 @@ package org.spongepowered.server.launch.console;
 import static jline.TerminalFactory.OFF;
 import static jline.console.ConsoleReader.RESET_LINE;
 import static org.apache.logging.log4j.core.helpers.Booleans.parseBoolean;
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.Color.YELLOW;
 
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
@@ -42,6 +44,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.IOException;
@@ -52,6 +55,10 @@ import java.util.function.Function;
 
 @Plugin(name = "TerminalConsole", category = "Core", elementType = "appender", printObject = true)
 public class TerminalConsoleAppender extends AbstractAppender {
+
+    public static final String ANSI_RESET = Ansi.ansi().reset().toString();
+    private static final String ANSI_ERROR = Ansi.ansi().fg(RED).bold().toString();
+    private static final String ANSI_WARN = Ansi.ansi().fg(YELLOW).bold().toString();
 
     private static final boolean ENABLE_JLINE = PropertiesUtil.getProperties().getBooleanProperty("jline.enable", true);
     private static final boolean REDIRECT_OUT = PropertiesUtil.getProperties().getBooleanProperty("sponge.logging.redirect", true);
@@ -165,7 +172,14 @@ public class TerminalConsoleAppender extends AbstractAppender {
     }
 
     protected String formatEvent(LogEvent event) {
-        return formatter.apply(getLayout().toSerializable(event).toString());
+        String formatted = formatter.apply(getLayout().toSerializable(event).toString());
+        final int level = event.getLevel().intLevel();
+        if (level <= Level.ERROR.intLevel()) {
+            return ANSI_ERROR + formatted + ANSI_RESET;
+        } else if (level <= Level.WARN.intLevel()) {
+            return ANSI_WARN + formatted + ANSI_RESET;
+        }
+        return formatted;
     }
 
 }
