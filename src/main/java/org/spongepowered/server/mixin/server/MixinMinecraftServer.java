@@ -36,12 +36,9 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.GameState;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -78,12 +75,12 @@ public abstract class MixinMinecraftServer {
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
     public void callServerStopping(CallbackInfo ci) {
-        SpongeImpl.postState(GameStoppingServerEvent.class, GameState.SERVER_STOPPING);
+        SpongeVanilla.INSTANCE.onServerStopping();
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
-    public void callServerStopped(CallbackInfo ci) {
-        SpongeImpl.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
+    public void callServerStopped(CallbackInfo ci) throws Exception {
+        SpongeVanilla.INSTANCE.onServerStopped();
     }
 
     @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
