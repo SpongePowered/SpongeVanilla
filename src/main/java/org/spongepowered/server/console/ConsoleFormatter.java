@@ -25,18 +25,18 @@
 package org.spongepowered.server.console;
 
 import static org.spongepowered.common.text.SpongeTexts.COLOR_CHAR;
+import static org.spongepowered.server.launch.console.TerminalConsoleAppender.ANSI_RESET;
 
 import net.minecraft.util.EnumChatFormatting;
 import org.fusesource.jansi.Ansi;
 import org.spongepowered.common.text.serializer.LegacyTexts;
-
 
 public final class ConsoleFormatter {
 
     private ConsoleFormatter() {
     }
 
-    private static final String RESET = Ansi.ansi().reset().toString();
+    private static final String RESET = ANSI_RESET;
 
     private static final String[] ansi = new String[LegacyTexts.getFormattingCount()];
 
