@@ -60,7 +60,7 @@ public abstract class MixinEntityLivingBase extends Entity {
         super(null);
     }
 
-    @Inject(method = "onDeath", at = @At("HEAD"))
+    @Inject(method = "onDeath", at = @At("HEAD"), require = 1)
     private void callDestructEntityLivingBase(DamageSource source, CallbackInfo ci) {
         callDestructEntityEventDeath(source, ci);
     }

@@ -49,13 +49,13 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
-            args = "ldc=Loading properties", remap = false))
+            args = "ldc=Loading properties", remap = false), require = 1)
     public void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
         SpongeVanilla.INSTANCE.preInitialize();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;setConfigManager"
-            + "(Lnet/minecraft/server/management/ServerConfigurationManager;)V", shift = At.Shift.BY, by = -7))
+            + "(Lnet/minecraft/server/management/ServerConfigurationManager;)V", shift = At.Shift.BY, by = -7), require = 1)
     public void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.initialize();
 
@@ -67,18 +67,18 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
-            + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.BY, by = -24))
+            + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.BY, by = -24), require = 1)
     public void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerAboutToStart();
     }
 
     @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
-            + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
+            + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER), require = 1)
     public void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerStarting();
     }
 
-    @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
+    @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"), require = 1)
     public void onTick(CallbackInfo ci) {
         SpongeScheduler.getInstance().tickSyncScheduler();
     }

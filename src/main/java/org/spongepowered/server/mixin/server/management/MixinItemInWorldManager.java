@@ -53,7 +53,7 @@ public abstract class MixinItemInWorldManager {
     @Shadow public net.minecraft.world.World theWorld;
     @Shadow public EntityPlayerMP thisPlayerMP;
 
-    @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true, require = 1)
     public void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
         Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector(pos));
         InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Cause.of(NamedCause.source(this.thisPlayerMP)),
