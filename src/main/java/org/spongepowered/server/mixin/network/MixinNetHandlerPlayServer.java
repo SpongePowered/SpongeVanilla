@@ -105,7 +105,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
 
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
-            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, require = 1)
     public void onProcessChatMessa(C01PacketChatMessage packet, CallbackInfo ci, String s, ChatComponentTranslation component) {
         final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
@@ -119,26 +119,14 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
     }
 
     @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
+            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"), require = 1)
     public void cancelSendChatMsgImpl(ServerConfigurationManager manager, IChatComponent component, boolean chat) {
         // do nothing
     }
 
-    @Redirect(method = "onDisconnect", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
-    public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
-        final Player player = ((Player) this.playerEntity);
-        final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
-        final MessageChannel originalChannel = player.getMessageChannel();
-        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(
-                Cause.of(NamedCause.source(player)), originalChannel, Optional.of(originalChannel), message, message, player);
-        SpongeImpl.postEvent(event);
-        event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
-    }
-
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
-                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
+                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"), require = 1)
     public boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
         // TODO: Forge passes (0,0,0) as block when interacting with the air
         //BlockRayHit<World> blockHit = BlockRay.from((Entity) player).filter(BlockRay.<World>onlyAirFilter()).end().get();
@@ -149,9 +137,10 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
         return !SpongeImpl.postEvent(event) && itemInWorldManager.tryUseItem(player, world, stack);
     }
 
-    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
+    // TODO: Merge this in some way wth the corresponding SpongeCommon redirect.
+    /*@Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
-                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"))
+                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"), require = 1)
     public boolean onActivateBlockOrUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world,
             @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float offsetX, float offsetY, float offsetZ) {
         BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) world).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
@@ -192,16 +181,16 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
         // This is necessary because we filter the second packet sent when interacting with a block
         return itemInWorldManager.activateBlockOrUseItem(player, world, stack, pos, side, offsetX, offsetY, offsetZ)
                 || itemInWorldManager.tryUseItem(player, world, stack);
-    }
+    }*/
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areItemStacksEqual"
-            + "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
+            + "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"), require = 1)
     public boolean onAreItemStacksEqual(ItemStack stackA, ItemStack stackB) {
         // Force client to update the itemstack if event was cancelled
         return !this.forceUpdateInventorySlot && ItemStack.areItemStacksEqual(stackA, stackB);
     }
 
-    @Inject(method = "processVanilla250Packet", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "processVanilla250Packet", at = @At("HEAD"), cancellable = true, require = 1)
     private void onProcessPluginMessage(C17PacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {

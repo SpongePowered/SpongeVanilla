@@ -39,7 +39,7 @@ import java.io.IOException;
 
 @Mixin(value = SaveHandler.class, priority = 1001)
 public abstract class MixinSaveHandler {
-    @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true, require = 1)
     public void onLoadWorldInfoBeforeReturn0(CallbackInfoReturnable<WorldInfo> cir, File file1, NBTTagCompound nbttagcompound,
             NBTTagCompound nbttagcompound1) throws IOException {
         final WorldInfo info = new WorldInfo(nbttagcompound1);
@@ -48,7 +48,7 @@ public abstract class MixinSaveHandler {
         cir.setReturnValue(info);
     }
 
-    @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true, require = 1)
     public void onLoadWorldInfoBeforeReturn1(CallbackInfoReturnable<WorldInfo> cir, File file1, NBTTagCompound nbttagcompound,
             NBTTagCompound nbttagcompound1) throws IOException {
         final WorldInfo info = new WorldInfo(nbttagcompound1);

@@ -53,14 +53,14 @@ public abstract class MixinWorldServer extends World {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
+    @Inject(method = "<init>", at = @At(value = "RETURN"), require = 1)
     public void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
             CallbackInfo ci) {
         VanillaDimensionManager.setWorld(dimensionId, (WorldServer) (Object) this);
     }
 
     @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"),
-            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true, require = 1)
     public void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
             CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
         final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(((IMixinExplosion) explosion).createCause(),

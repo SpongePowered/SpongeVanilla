@@ -41,13 +41,13 @@ public abstract class MixinChunk {
 
     @Shadow private World worldObj;
 
-    @Inject(method = "onChunkLoad", at = @At("RETURN"))
+    @Inject(method = "onChunkLoad", at = @At("RETURN"), require = 1)
     public void postChunkLoad(CallbackInfo ci) {
         SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.worldObj)),
                 (org.spongepowered.api.world.Chunk) this));
     }
 
-    @Inject(method = "onChunkUnload", at = @At("RETURN"))
+    @Inject(method = "onChunkUnload", at = @At("RETURN"), require = 1)
     public void postChunkUnload(CallbackInfo ci) {
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.worldObj)),
                 (org.spongepowered.api.world.Chunk) this));

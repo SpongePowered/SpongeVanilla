@@ -45,7 +45,7 @@ public abstract class MixinConsoleHandler {
     @Shadow(remap = false, aliases = {"field_72428_a", "this$0"})
     private DedicatedServer server;
 
-    @Inject(method = "run", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "run", at = @At("HEAD"), cancellable = true, remap = false, require = 1)
     public void onRun(CallbackInfo ci) {
         final ConsoleReader reader = TerminalConsoleAppender.getReader();
 

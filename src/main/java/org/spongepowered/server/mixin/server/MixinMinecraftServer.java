@@ -73,17 +73,17 @@ public abstract class MixinMinecraftServer {
     private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
-            ordinal = 0, shift = At.Shift.BY, by = -9))
+            ordinal = 0, shift = At.Shift.BY, by = -9), require = 1)
     public void callServerStopping(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.onServerStopping();
     }
 
-    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
+    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"), require = 1)
     public void callServerStopped(CallbackInfo ci) throws Exception {
         SpongeVanilla.INSTANCE.onServerStopped();
     }
 
-    @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true, require = 1)
     public void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
         // Don't load favicon twice
         if (response.getFavicon() != null) {
@@ -92,7 +92,7 @@ public abstract class MixinMinecraftServer {
     }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
-            locals = LocalCapture.CAPTURE_FAILHARD)
+            locals = LocalCapture.CAPTURE_FAILHARD, require = 1)
     public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) worldserver));
     }
