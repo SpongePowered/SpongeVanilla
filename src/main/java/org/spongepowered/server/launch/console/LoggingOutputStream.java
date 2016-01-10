@@ -95,6 +95,10 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
                 return last;
             }
 
+            if (className.equals("java.lang.Throwable") && stackTrace[i].getMethodName().equals("printStackTrace")) {
+                return null;
+            }
+
             // Ignore Kotlin
             boolean isIgnored = false;
             for (String ignored : ignoredPackages) {
