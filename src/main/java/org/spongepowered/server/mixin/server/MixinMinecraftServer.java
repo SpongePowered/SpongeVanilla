@@ -68,18 +68,21 @@ public abstract class MixinMinecraftServer {
     @Shadow abstract boolean getAllowNether();
     @Shadow abstract NetworkSystem getNetworkSystem();
     @Shadow List<?> playersOnline;
-    @Shadow private boolean worldIsBeingDeleted;
+    @Shadow private boolean serverStopped;
 
     private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
+
+    @Inject(method = "stopServer()V", at = @At("HEAD"), cancellable = true)
+    public void preventDoubleStop(CallbackInfo ci) {
+        if (this.serverStopped) {
+            ci.cancel();
+        }
+    }
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", ordinal = 0,
             shift = At.Shift.AFTER, remap = false))
     public void callServerStopping(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.onServerStopping();
-
-        // Prevent the server from getting stopped twice.
-        // Note: No, we are not going to delete the world here...
-        this.worldIsBeingDeleted = true;
     }
 
     @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
