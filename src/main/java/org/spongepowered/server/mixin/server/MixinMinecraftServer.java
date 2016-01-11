@@ -73,7 +73,7 @@ public abstract class MixinMinecraftServer {
     private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
-            ordinal = 0, shift = At.Shift.BY, by = -9))
+            ordinal = 0, shift = At.Shift.BEFORE))
     public void callServerStopping(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.onServerStopping();
     }
