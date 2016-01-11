@@ -45,7 +45,6 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
@@ -69,18 +68,18 @@ public abstract class MixinMinecraftServer {
     @Shadow abstract boolean getAllowNether();
     @Shadow abstract NetworkSystem getNetworkSystem();
     @Shadow List<?> playersOnline;
+    @Shadow private boolean worldIsBeingDeleted;
 
     private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
 
-    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
-            ordinal = 0, shift = At.Shift.BEFORE))
+    @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", ordinal = 0,
+            shift = At.Shift.AFTER, remap = false))
     public void callServerStopping(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.onServerStopping();
-    }
 
-    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
-    public void callServerStopped(CallbackInfo ci) throws Exception {
-        SpongeVanilla.INSTANCE.onServerStopped();
+        // Prevent the server from getting stopped twice.
+        // Note: No, we are not going to delete the world here...
+        this.worldIsBeingDeleted = true;
     }
 
     @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
@@ -187,14 +186,6 @@ public abstract class MixinMinecraftServer {
 
     public Hashtable<Integer, long[]> getWorldTickTimes() {
         return this.worldTickTimes;
-    }
-
-    // TODO: Temporary fix for https://github.com/SpongePowered/SpongeVanilla/issues/196, there has to be a better fix for this
-    // (Not completely sure what is causing it yet)
-    @Redirect(method = "callFromMainThread", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/MinecraftServer;isCallingFromMinecraftThread()Z"))
-    public boolean allowRunningTasksInShutdownThread(MinecraftServer server) {
-        return server.isCallingFromMinecraftThread() || Thread.currentThread().getName().equals("Server Shutdown Thread");
     }
 
 }
