@@ -128,7 +128,6 @@ public final class SpongeVanilla extends SpongePluginContainer {
         SpongeImpl.postState(GameInitializationEvent.class, GameState.INITIALIZATION);
 
         SpongeImpl.getRegistry().postInit();
-        SpongeDataManager.getInstance().completeRegistration();
 
         SpongeImpl.postState(GamePostInitializationEvent.class, GameState.POST_INITIALIZATION);
 

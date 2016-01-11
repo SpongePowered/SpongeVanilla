@@ -238,19 +238,19 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     private float wakeUpHeight;
     @Nullable private BlockSnapshot bed;
 
-    @Redirect(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setSize(FF)V"))
+    @Redirect(method = "wakeUpPlayer(ZZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setSize(FF)V"))
     private void onWakeUpPlayerSetSize(EntityPlayer self, float width, float height) {
         // Let the player sleep until we asked our event listeners
         this.wakeUpWidth = width;
         this.wakeUpHeight = height;
     }
 
-    @Redirect(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setPosition(DDD)V"))
+    @Redirect(method = "wakeUpPlayer(ZZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setPosition(DDD)V"))
     private void onWakeUpPlayerSetPosition(EntityPlayer self, double x, double y, double z) {
         this.newLocation = getTransform().setPosition(new Vector3d(x, y, z));
     }
 
-    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;sleeping:Z" ,
+    @Inject(method = "wakeUpPlayer(ZZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;sleeping:Z" ,
             opcode = Opcodes.PUTFIELD), cancellable = true)
     private void onWakeUpPlayer(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
         this.bed = getWorld().createSnapshot(VecHelper.toVector(this.playerLocation));

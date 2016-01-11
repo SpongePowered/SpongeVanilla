@@ -68,6 +68,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -90,6 +91,12 @@ import javax.annotation.Nullable;
 @Mixin(value = NetHandlerPlayServer.class, priority = 1001)
 public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INetHandlerPlayServer, IMixinNetHandlerPlayServer {
 
+    private static final String ACTIVATE_BLOCK_OR_USE_ITEM =
+            "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
+            + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z";
+    private static final String
+            PROCESS_BLOCK_PLACEMENT =
+            "processPlayerBlockPlacement(Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;)V";
     @Shadow private EntityPlayerMP playerEntity;
     @Shadow private MinecraftServer serverController;
 
@@ -124,22 +131,10 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
         // do nothing
     }
 
-    @Redirect(method = "onDisconnect", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsg(Lnet/minecraft/util/IChatComponent;)V"))
-    public void onDisconnectHandler(ServerConfigurationManager this$0, IChatComponent component) {
-        final Player player = ((Player) this.playerEntity);
-        final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
-        final MessageChannel originalChannel = player.getMessageChannel();
-        final ClientConnectionEvent.Disconnect event = SpongeEventFactory.createClientConnectionEventDisconnect(
-                Cause.of(NamedCause.source(player)), originalChannel, Optional.of(originalChannel), message, message, player);
-        SpongeImpl.postEvent(event);
-        event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
-    }
-
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
-    public boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
+    private boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
         // TODO: Forge passes (0,0,0) as block when interacting with the air
         //BlockRayHit<World> blockHit = BlockRay.from((Entity) player).filter(BlockRay.<World>onlyAirFilter()).end().get();
         BlockSnapshot block = ((org.spongepowered.api.world.World) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
@@ -149,16 +144,14 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
         return !SpongeImpl.postEvent(event) && itemInWorldManager.tryUseItem(player, world, stack);
     }
 
-    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
-                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"))
-    public boolean onActivateBlockOrUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world,
-            @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float offsetX, float offsetY, float offsetZ) {
-        BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) world).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
+    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = ACTIVATE_BLOCK_OR_USE_ITEM))
+    public boolean onActivateBlockOrUseItem(ItemInWorldManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn, ItemStack stack,
+            BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+        BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
-                Optional.of(new Vector3d(offsetX, offsetY, offsetZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
+                Optional.of(new Vector3d(hitX, hitY, hitZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
         if (SpongeImpl.postEvent(event)) {
-            final IBlockState state = world.getBlockState(pos);
+            final IBlockState state = worldIn.getBlockState(pos);
 
             if (state.getBlock() == Blocks.command_block) {
                 // CommandBlock GUI opens solely on the client, we need to force it close on cancellation
@@ -168,15 +161,15 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
                 // Stopping a door from opening while interacting the top part will allow the door to open, we need to update the
                 // client to resolve this
                 if (state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(world, pos.up()));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldIn, pos.up()));
                 } else {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(world, pos.down()));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldIn, pos.down()));
                 }
 
             } else if (stack != null) {
                 // Stopping the placement of a door or double plant causes artifacts (ghosts) on the top-side of the block. We need to remove it
                 if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(world, pos.up(2)));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldIn, pos.up(2)));
                 }
             }
 
@@ -190,13 +183,13 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
         // Try placing the block or using the item on the block
         // If that is not successful, try to use the item without a block instead
         // This is necessary because we filter the second packet sent when interacting with a block
-        return itemInWorldManager.activateBlockOrUseItem(player, world, stack, pos, side, offsetX, offsetY, offsetZ)
-                || itemInWorldManager.tryUseItem(player, world, stack);
+        return itemManager.activateBlockOrUseItem(player, worldIn, stack, pos, side, hitX, hitY, hitZ)
+                || itemManager.tryUseItem(player, worldIn, stack);
     }
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areItemStacksEqual"
             + "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
-    public boolean onAreItemStacksEqual(ItemStack stackA, ItemStack stackB) {
+    private boolean onAreItemStacksEqual(ItemStack stackA, ItemStack stackB) {
         // Force client to update the itemstack if event was cancelled
         return !this.forceUpdateInventorySlot && ItemStack.areItemStacksEqual(stackA, stackB);
     }
