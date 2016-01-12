@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.mixin.server;
 
-import static org.spongepowered.common.SpongeVersion.MINECRAFT_VERSION;
+import static org.spongepowered.common.SpongeImpl.MINECRAFT_VERSION;
 
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.server.MinecraftServer;
