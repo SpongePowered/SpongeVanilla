@@ -51,7 +51,6 @@ import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeInternalListeners;
-import org.spongepowered.common.SpongeVersion;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.plugin.SpongePluginContainer;
@@ -162,12 +161,12 @@ public final class SpongeVanilla extends SpongePluginContainer {
 
     @Override
     public String getName() {
-        return SpongeVersion.IMPLEMENTATION_NAME.orElse("SpongeVanilla");
+        return SpongeImpl.IMPLEMENTATION_NAME.orElse("SpongeVanilla");
     }
 
     @Override
     public String getVersion() {
-        return SpongeVersion.IMPLEMENTATION_VERSION;
+        return SpongeImpl.IMPLEMENTATION_VERSION;
     }
 
     @Override

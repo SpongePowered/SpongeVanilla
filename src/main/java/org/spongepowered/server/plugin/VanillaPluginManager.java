@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.SpongeVersion;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -63,7 +62,7 @@ public class VanillaPluginManager implements PluginManager {
     }
 
     public void loadPlugins() throws IOException {
-        for (PluginContainer container : SpongeVersion.getComponents()) {
+        for (PluginContainer container : SpongeImpl.getInternalPlugins()) {
             registerPlugin(container);
         }
 

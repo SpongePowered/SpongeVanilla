@@ -41,7 +41,6 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.SpongeVersion;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
 import org.spongepowered.common.plugin.SpongeApiContainer;
@@ -77,7 +76,7 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(PluginContainer.class).annotatedWith(named("Minecraft")).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
-        bind(MinecraftVersion.class).toInstance(SpongeVersion.MINECRAFT_VERSION);
+        bind(MinecraftVersion.class).toInstance(SpongeImpl.MINECRAFT_VERSION);
         bind(Platform.class).to(VanillaPlatform.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(VanillaPluginManager.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(SpongeEventManager.class).in(Scopes.SINGLETON);

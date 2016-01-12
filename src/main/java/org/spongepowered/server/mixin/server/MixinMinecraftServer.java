@@ -30,9 +30,9 @@ import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
@@ -131,7 +131,7 @@ public abstract class MixinMinecraftServer {
                     this.theProfiler.startSection("timeSync");
                     this.serverConfigManager.sendPacketToAllPlayersInDimension(
                             new S03PacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
-                                    worldserver.getGameRules().getGameRuleBooleanValue("doDaylightCycle")), worldserver.provider.getDimensionId());
+                                    worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.getDimensionId());
                     this.theProfiler.endSection();
                 }
 
@@ -171,7 +171,7 @@ public abstract class MixinMinecraftServer {
         this.theProfiler.endStartSection("tickables");
 
         for (j = 0; j < this.playersOnline.size(); ++j) {
-            ((IUpdatePlayerListBox) this.playersOnline.get(j)).update();
+            ((ITickable) this.playersOnline.get(j)).update();
         }
 
         this.theProfiler.endSection();
