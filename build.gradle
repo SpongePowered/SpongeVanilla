@@ -47,6 +47,7 @@ configurations {
 
 dependencies {
     compile 'org.ow2.asm:asm-debug-all:5.0.4'
+    compile 'net.sf.jopt-simple:jopt-simple:4.9'
     compile 'jline:jline:2.13'
 
     shadow 'org.ow2.asm:asm-all:5.0.4'

@@ -68,14 +68,17 @@ public abstract class MixinMinecraftServer {
     @Shadow abstract boolean getAllowNether();
     @Shadow abstract NetworkSystem getNetworkSystem();
     @Shadow List<?> playersOnline;
-    @Shadow private boolean serverStopped;
+    private boolean skipServerStop;
 
     private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
 
     @Inject(method = "stopServer()V", at = @At("HEAD"), cancellable = true)
     public void preventDoubleStop(CallbackInfo ci) {
-        if (this.serverStopped) {
+        if (this.skipServerStop) {
             ci.cancel();
+        } else {
+            // Prevent the server from stopping twice
+            this.skipServerStop = true;
         }
     }
 
