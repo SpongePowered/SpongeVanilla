@@ -62,7 +62,9 @@ jar {
     }
 }
 
-shadowJar {
+ats += 'vanilla_at.cfg'
+
+ext.shadowConfig = {
     // Include production log4j2.xml
     rename 'log4j2_prod.xml', 'log4j2.xml'
 
@@ -82,3 +84,5 @@ shadowJar {
         include dependency('jline:jline')
     }
 }
+shadowJar shadowConfig
+shadowDeobfJar shadowConfig
