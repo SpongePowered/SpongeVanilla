@@ -127,6 +127,7 @@ public final class VanillaServerTweaker implements ITweaker {
         MixinEnvironment.setCompatibilityLevel(JAVA_8);
         MixinEnvironment env = MixinEnvironment.getDefaultEnvironment()
                 .addConfiguration("mixins.common.api.json")
+                .addConfiguration("mixins.common.authlib.json")
                 .addConfiguration("mixins.common.core.json")
                 .addConfiguration("mixins.common.bungeecord.json")
                 .addConfiguration("mixins.common.eulashutdown.json")
