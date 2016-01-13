@@ -129,7 +129,6 @@ public final class VanillaServerTweaker implements ITweaker {
                 .addConfiguration("mixins.common.api.json")
                 .addConfiguration("mixins.common.core.json")
                 .addConfiguration("mixins.common.bungeecord.json")
-                .addConfiguration("mixins.common.eulashutdown.json")
                 .addConfiguration("mixins.common.timings.json")
                 .addConfiguration("mixins.vanilla.json");
         env.setSide(MixinEnvironment.Side.SERVER);
