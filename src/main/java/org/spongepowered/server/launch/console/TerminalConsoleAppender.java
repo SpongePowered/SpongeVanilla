@@ -173,11 +173,14 @@ public class TerminalConsoleAppender extends AbstractAppender {
 
     protected String formatEvent(LogEvent event) {
         String formatted = formatter.apply(getLayout().toSerializable(event).toString());
-        final int level = event.getLevel().intLevel();
-        if (level <= Level.ERROR.intLevel()) {
-            return ANSI_ERROR + formatted + ANSI_RESET;
-        } else if (level <= Level.WARN.intLevel()) {
-            return ANSI_WARN + formatted + ANSI_RESET;
+        if (reader != null) {
+            // Colorize log messages if supported
+            final int level = event.getLevel().intLevel();
+            if (level <= Level.ERROR.intLevel()) {
+                return ANSI_ERROR + formatted + ANSI_RESET;
+            } else if (level <= Level.WARN.intLevel()) {
+                return ANSI_WARN + formatted + ANSI_RESET;
+            }
         }
         return formatted;
     }
