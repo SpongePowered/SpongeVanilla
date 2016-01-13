@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-20160116.192356-17'
         classpath('nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0') {
             exclude module: 'guava'
         }
@@ -24,10 +24,6 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle.tweaker-server'
-apply plugin: 'org.spongepowered.mixin'
-
-ext.minecraftPlugin = plugins.getPlugin('net.minecraftforge.gradle.tweaker-server')
-ext.DIR_MCP_MAPPINGS = net.minecraftforge.gradle.common.Constants.DIR_MCP_MAPPINGS
 
 // Apply shared implementation Gradle config
 apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
@@ -36,8 +32,9 @@ minecraft {
     version = '1.8.9'
     tweakClass = 'org.spongepowered.server.launch.VanillaServerTweaker'
 }
+ats += 'vanilla_at.cfg'
 
-version = "$minecraft.version-$apiVersion-$buildNumber"
+version = "$minecraft.version-$apiSuffix-$buildNumber"
 
 configurations {
     // While we could set this to 'runtime', Eclipse doesn't support runtime dependencies
@@ -69,7 +66,7 @@ shadowJar {
 
     configurations += [project.configurations.shadow]
 
-    from minecraftPlugin.delayedFile(net.minecraftforge.gradle.common.Constants.MCP_DATA_SRG)
+    from plugins.getPlugin('net.minecraftforge.gradle.tweaker-server').delayedFile(net.minecraftforge.gradle.common.Constants.MCP_DATA_SRG)
     rename 'joined.srg', 'mappings.srg'
 
     dependencies {

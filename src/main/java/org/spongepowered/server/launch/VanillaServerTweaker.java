@@ -123,8 +123,8 @@ public final class VanillaServerTweaker implements ITweaker {
 
         try {
             // Apply our access transformers
-            AccessTransformers.register(getResource("common_at.cfg"));
-            AccessTransformers.register(getResource("vanilla_at.cfg"));
+            AccessTransformers.register(getResource("META-INF/common_at.cfg"));
+            AccessTransformers.register(getResource("META-INF/vanilla_at.cfg"));
 
             // Apply access transformers from command line
             for (String at : options.valuesOf(ACCESS_TRANSFORMER)) {
