@@ -31,7 +31,6 @@ import static org.spongepowered.server.plugin.VanillaPluginManager.SCAN_CLASSPAT
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -49,19 +48,19 @@ public final class VanillaServerTweaker implements ITweaker {
 
     private static final Logger logger = LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME);
 
-    private String[] args = ArrayUtils.EMPTY_STRING_ARRAY;
-
     public static Logger getLogger() {
         return logger;
     }
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
-        SpongeLaunch.initialize(gameDir != null ? gameDir.toPath() : null);
-
-        if (args != null && !args.isEmpty()) {
-            this.args = args.toArray(new String[args.size()]);
+        VanillaCommandLine.parse(args);
+        List<String> unrecognizedOptions = VanillaCommandLine.getUnrecognizedOptions();
+        if (!unrecognizedOptions.isEmpty()) {
+            logger.warn("Found unrecognized command line option(s): {}", unrecognizedOptions);
         }
+
+        SpongeLaunch.initialize();
     }
 
     @Override
@@ -72,9 +71,15 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("io.netty.");
         loader.addClassLoaderExclusion("jline.");
         loader.addClassLoaderExclusion("org.fusesource.");
+        loader.addClassLoaderExclusion("joptsimple.");
 
-        // Don't allow libraries to be transformed
-        loader.addTransformerExclusion("joptsimple.");
+        // Sponge Launch
+        loader.addTransformerExclusion("org.spongepowered.tools.");
+        loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
+        loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
+
+        // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
+        loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
 
         // Minecraft Server libraries
         loader.addTransformerExclusion("com.google.gson.");
@@ -95,14 +100,6 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addTransformerExclusion("ninja.leaping.configurate.");
         loader.addTransformerExclusion("com.typesafe.config.");
         loader.addTransformerExclusion("org.yaml.snakeyaml.");
-
-        // Sponge Launch
-        loader.addTransformerExclusion("org.spongepowered.tools.");
-        loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
-        loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
-
-        // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
-        loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
 
         // Check if we're running in de-obfuscated environment already
         logger.debug("Applying runtime de-obfuscation...");
@@ -164,7 +161,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public String[] getLaunchArguments() {
-        return this.args;
+        return new String[0];
     }
 
 }

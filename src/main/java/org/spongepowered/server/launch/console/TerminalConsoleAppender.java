@@ -29,9 +29,12 @@ import static jline.console.ConsoleReader.RESET_LINE;
 import static org.apache.logging.log4j.core.helpers.Booleans.parseBoolean;
 import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.Color.YELLOW;
+import static org.spongepowered.server.launch.VanillaCommandLine.NO_JLINE;
+import static org.spongepowered.server.launch.VanillaCommandLine.NO_REDIRECT_STDOUT;
 
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
+import joptsimple.OptionSet;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
@@ -46,6 +49,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
+import org.spongepowered.server.launch.VanillaCommandLine;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -61,7 +65,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
     private static final String ANSI_WARN = Ansi.ansi().fg(YELLOW).bold().toString();
 
     private static final boolean ENABLE_JLINE = PropertiesUtil.getProperties().getBooleanProperty("jline.enable", true);
-    private static final boolean REDIRECT_OUT = PropertiesUtil.getProperties().getBooleanProperty("sponge.logging.redirect", true);
+    private static final boolean REDIRECT_OUT = PropertiesUtil.getProperties().getBooleanProperty("sponge.logging.redirect_stdout", true);
 
     private static final PrintStream out = System.out;
 
@@ -110,7 +114,20 @@ public class TerminalConsoleAppender extends AbstractAppender {
         if (!initialized && reader == null) {
             initialized = true;
 
-            if (ENABLE_JLINE) {
+            boolean enableJline = ENABLE_JLINE;
+            boolean redirectOut = REDIRECT_OUT;
+
+            OptionSet options = VanillaCommandLine.getOptions().orElse(null);
+            if (options != null) {
+                if (options.has(NO_JLINE)) {
+                    enableJline = false;
+                }
+                if (options.has(NO_REDIRECT_STDOUT)) {
+                    redirectOut = false;
+                }
+            }
+
+            if (enableJline) {
                 final boolean hasConsole = System.console() != null;
                 if (hasConsole) {
                     try {
@@ -145,7 +162,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
                 }
             }
 
-            if (REDIRECT_OUT) {
+            if (redirectOut) {
                 System.setOut(new LoggingPrintStream(LogManager.getLogger("STDOUT"), Level.INFO));
                 System.setErr(new LoggingPrintStream(LogManager.getLogger("STDERR"), Level.ERROR));
             }

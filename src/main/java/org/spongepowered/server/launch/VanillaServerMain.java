@@ -24,6 +24,17 @@
  */
 package org.spongepowered.server.launch;
 
+import static org.spongepowered.server.launch.VanillaCommandLine.HELP;
+import static org.spongepowered.server.launch.VanillaCommandLine.NO_DOWNLOAD;
+import static org.spongepowered.server.launch.VanillaCommandLine.NO_JLINE;
+import static org.spongepowered.server.launch.VanillaCommandLine.NO_VERIFY_CLASSPATH;
+import static org.spongepowered.server.launch.VanillaCommandLine.TWEAK_CLASS;
+import static org.spongepowered.server.launch.VanillaCommandLine.VERSION;
+
+import jline.Terminal;
+import jline.TerminalFactory;
+import joptsimple.BuiltinHelpFormatter;
+import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.Launch;
 
 import java.io.IOException;
@@ -39,11 +50,9 @@ import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public final class VanillaServerMain {
-
-    private static final boolean VERIFY_CLASSPATH = !System.getProperty("spongevanilla.verify_classpath", "true").equals("false");
-    private static final boolean AUTO_DOWNLOAD_DEPS = !System.getProperty("spongevanilla.auto_dl", "true").equals("false");
 
     private static final String LIBRARIES_DIR = "libraries";
 
@@ -54,17 +63,39 @@ public final class VanillaServerMain {
     private static final String LAUNCHWRAPPER_LOCAL = LIBRARIES_DIR + LAUNCHWRAPPER_PATH;
     private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net" + LAUNCHWRAPPER_PATH;
 
+    private static final String TWEAK_ARGUMENT = "--tweakClass";
     private static final String TWEAKER = "org.spongepowered.server.launch.VanillaServerTweaker";
 
     private VanillaServerMain() {
     }
 
     public static void main(String[] args) throws Exception {
-        if (VERIFY_CLASSPATH) {
+        OptionSet options = VanillaCommandLine.parse(args);
+        if (options.has(HELP)) {
+            if (options.has(NO_JLINE) || System.console() == null) {
+                // We have no supported terminal, print help with default terminal width
+                VanillaCommandLine.printHelp(System.err);
+            } else {
+                // Terminal is (very likely) supported, use the terminal width provided by jline
+                Terminal terminal = TerminalFactory.get();
+                VanillaCommandLine.printHelp(new BuiltinHelpFormatter(terminal.getWidth(), 3), System.err);
+            }
+            return;
+        } else if (options.has(VERSION)) {
+            final Package pack = VanillaServerMain.class.getPackage();
+            System.out.println(pack.getImplementationTitle() + ' ' + pack.getImplementationVersion());
+            System.out.println(pack.getSpecificationTitle() + ' ' + pack.getSpecificationVersion());
+            return;
+        }
+
+        // Download/verify Minecraft server installation if necessary and not disabled
+        if (!options.has(NO_VERIFY_CLASSPATH)) {
+            // Get the location of our jar
             Path base = Paths.get(VanillaServerMain.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
 
             try {
-                if (!downloadMinecraft(base)) {
+                // Download dependencies
+                if (!downloadMinecraft(base, !options.has(NO_DOWNLOAD))) {
                     System.err.println("Failed to load all required dependencies. Please download them manually:");
                     System.err.println("Download " + MINECRAFT_SERVER_REMOTE + " and copy it to "
                             + base.resolve(MINECRAFT_SERVER_LOCAL).toAbsolutePath());
@@ -84,29 +115,37 @@ public final class VanillaServerMain {
                     + "the classpath!");
         }
 
-
-        Launch.main(join(args,
-                "--tweakClass", TWEAKER
-        ));
+        Launch.main(getLaunchArguments(TWEAKER, options.valuesOf(TWEAK_CLASS)));
     }
 
-    private static String[] join(String[] args, String... prefix) {
-        String[] result = new String[prefix.length + args.length];
-        System.arraycopy(prefix, 0, result, 0, prefix.length);
-        System.arraycopy(args, 0, result, prefix.length, args.length);
+    private static String[] getLaunchArguments(String primaryTweaker, List<String> tweakers) {
+        if (tweakers.isEmpty()) {
+            return new String[]{TWEAK_ARGUMENT, primaryTweaker};
+        }
+
+        String[] result = new String[tweakers.size() * 2 + 2];
+        result[0] = TWEAK_ARGUMENT;
+        result[1] = primaryTweaker;
+
+        int i = 2;
+        for (String tweaker : tweakers) {
+            result[i++] = TWEAK_ARGUMENT;
+            result[i++] = tweaker;
+        }
+
         return result;
     }
 
-    private static boolean downloadMinecraft(Path base) throws IOException, NoSuchAlgorithmException {
+    private static boolean downloadMinecraft(Path base, boolean autoDownload) throws IOException, NoSuchAlgorithmException {
         // Make sure the Minecraft server is available, or download it otherwise
         Path path = base.resolve(MINECRAFT_SERVER_LOCAL);
-        if (Files.notExists(path) && (!AUTO_DOWNLOAD_DEPS || !downloadVerified(MINECRAFT_SERVER_REMOTE, path))) {
+        if (Files.notExists(path) && (!autoDownload || !downloadVerified(MINECRAFT_SERVER_REMOTE, path))) {
             return false;
         }
 
         // Make sure Launchwrapper is available, or download it otherwise
         path = base.resolve(LAUNCHWRAPPER_LOCAL);
-        return Files.exists(path) || (AUTO_DOWNLOAD_DEPS && downloadVerified(LAUNCHWRAPPER_REMOTE, path));
+        return Files.exists(path) || (autoDownload && downloadVerified(LAUNCHWRAPPER_REMOTE, path));
     }
 
 

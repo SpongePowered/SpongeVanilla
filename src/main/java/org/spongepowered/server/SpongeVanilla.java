@@ -25,10 +25,17 @@
 package org.spongepowered.server;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.spongepowered.server.launch.VanillaCommandLine.BONUS_CHEST;
+import static org.spongepowered.server.launch.VanillaCommandLine.PORT;
+import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_DIR;
+import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_NAME;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import joptsimple.OptionSet;
+import net.minecraft.init.Bootstrap;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameState;
@@ -60,8 +67,10 @@ import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.server.guice.VanillaGuiceModule;
+import org.spongepowered.server.launch.VanillaCommandLine;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
@@ -81,7 +90,35 @@ public final class SpongeVanilla extends SpongePluginContainer {
     }
 
     public static void main(String[] args) {
-        MinecraftServer.main(args);
+        OptionSet options = VanillaCommandLine.parse(args);
+
+        // Note: This launches the server instead of MinecraftServer.main
+        // Keep command line options up-to-date with Vanilla
+        try {
+            Bootstrap.register();
+
+            File worldDir = options.has(WORLD_DIR) ? options.valueOf(WORLD_DIR) : new File(".");
+            final DedicatedServer server = new DedicatedServer(worldDir);
+
+            if (options.has(WORLD_NAME)) {
+                server.setFolderName(options.valueOf(WORLD_NAME));
+            }
+
+            if (options.has(PORT)) {
+                server.setServerPort(options.valueOf(PORT));
+            }
+
+            if (options.has(BONUS_CHEST)) {
+                server.canCreateBonusChest(true);
+            }
+
+            server.startServerThread();
+            server.isServerStopped();
+            Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer));
+        } catch (Exception e) {
+            SpongeImpl.getLogger().fatal("Failed to start the Minecraft server", e);
+            System.exit(1);
+        }
     }
 
     public void preInitialize() throws Exception {
