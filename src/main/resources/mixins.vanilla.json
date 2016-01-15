@@ -1,6 +1,6 @@
 {
     "required": true,
-    "minVersion": "0.4",
+    "minVersion": "0.3.1",
     "package": "org.spongepowered.server.mixin",
     "refmap": "mixins.vanilla.refmap.json",
     "priority": 1111,
@@ -27,8 +27,5 @@
         "world.MixinWorldServer",
         "world.gen.MixinChunkProviderServer",
         "world.storage.MixinSaveHandler"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+    ]
 }
