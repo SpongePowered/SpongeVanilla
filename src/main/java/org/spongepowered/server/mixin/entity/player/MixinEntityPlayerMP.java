@@ -49,7 +49,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityLivingBase {
 
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/GameRules;getGameRuleBooleanValue(Ljava/lang/String;)Z", ordinal = 0))
+            target = "Lnet/minecraft/world/GameRules;getBoolean(Ljava/lang/String;)Z", ordinal = 0))
     public boolean onGetGameRules(GameRules gameRules, String gameRule) {
         return false; // Suppress death messages since this is handled together with the event calling
     }
