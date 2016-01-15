@@ -113,7 +113,6 @@ public final class SpongeVanilla extends SpongePluginContainer {
             }
 
             server.startServerThread();
-            server.isServerStopped();
             Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer));
         } catch (Exception e) {
             SpongeImpl.getLogger().fatal("Failed to start the Minecraft server", e);

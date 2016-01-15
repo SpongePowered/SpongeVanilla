@@ -38,6 +38,7 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.launch.SpongeLaunch;
 import org.spongepowered.common.launch.transformer.SpongeSuperclassRegistry;
+import org.spongepowered.server.launch.console.TerminalConsoleAppender;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +56,8 @@ public final class VanillaServerTweaker implements ITweaker {
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         VanillaCommandLine.parse(args);
+        TerminalConsoleAppender.initialize();
+
         List<String> unrecognizedOptions = VanillaCommandLine.getUnrecognizedOptions();
         if (!unrecognizedOptions.isEmpty()) {
             logger.warn("Found unrecognized command line option(s): {}", unrecognizedOptions);

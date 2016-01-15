@@ -110,21 +110,28 @@ public class TerminalConsoleAppender extends AbstractAppender {
 
     @Override
     public void start() {
+        super.start();
+
+        // We can start directly if our options are already present
+        if (VanillaCommandLine.getOptions().isPresent()) {
+            initialize();
+        }
+    }
+
+    public static void initialize() {
         // Initialize the reader if that hasn't happened yet
-        if (!initialized && reader == null) {
+        if (!initialized) {
             initialized = true;
 
             boolean enableJline = ENABLE_JLINE;
             boolean redirectOut = REDIRECT_OUT;
 
-            OptionSet options = VanillaCommandLine.getOptions().orElse(null);
-            if (options != null) {
-                if (options.has(NO_JLINE)) {
-                    enableJline = false;
-                }
-                if (options.has(NO_REDIRECT_STDOUT)) {
-                    redirectOut = false;
-                }
+            OptionSet options = VanillaCommandLine.getOptions().get();
+            if (options.has(NO_JLINE)) {
+                enableJline = false;
+            }
+            if (options.has(NO_REDIRECT_STDOUT)) {
+                redirectOut = false;
             }
 
             if (enableJline) {
@@ -167,12 +174,15 @@ public class TerminalConsoleAppender extends AbstractAppender {
                 System.setErr(new LoggingPrintStream(LogManager.getLogger("STDERR"), Level.ERROR));
             }
         }
-
-        super.start();
     }
 
     @Override
     public void append(LogEvent event) {
+        if (!initialized) {
+            out.print(getLayout().toSerializable(event).toString());
+            return;
+        }
+
         if (reader != null) {
             try {
                 Writer out = reader.getOutput();
