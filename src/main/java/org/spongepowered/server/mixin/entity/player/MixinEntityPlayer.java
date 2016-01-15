@@ -26,9 +26,12 @@ package org.spongepowered.server.mixin.entity.player;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Maps;
+import net.minecraft.block.BlockBed;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
@@ -62,8 +65,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 @Mixin(value = EntityPlayer.class, priority = 1001)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements Entity {
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
@@ -77,6 +78,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     @Shadow private net.minecraft.item.ItemStack itemInUse;
     @Shadow private int itemInUseCount;
     @Shadow public InventoryPlayer inventory;
+    @Shadow protected boolean sleeping;
+    @Shadow private int sleepTimer;
 
     @Shadow protected abstract void onItemUseFinish();
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
@@ -231,7 +234,76 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    // TODO: Consider replacing this with an overwrite because it is just weird.
+    /**
+     * @author Minecrell
+     * @reason Implements the post sleeping events.
+     */
+    @Overwrite
+    public void wakeUpPlayer(boolean immediately, boolean updateWorldFlag, boolean setSpawn) {
+        // Sponge start (Set size after event call)
+        //this.setSize(0.6F, 1.8F);
+        Transform<org.spongepowered.api.world.World> newLocation = null;
+        // Sponge end
+
+        IBlockState iblockstate = this.worldObj.getBlockState(this.playerLocation);
+
+        if (this.playerLocation != null && iblockstate.getBlock() == Blocks.bed) {
+            // Sponge start (Change block state after event call)
+            //this.worldObj.setBlockState(this.playerLocation, iblockstate.withProperty(BlockBed.OCCUPIED, Boolean.valueOf(false)), 4);
+            // Sponge end
+            BlockPos blockpos = BlockBed.getSafeExitLocation(this.worldObj, this.playerLocation, 0);
+
+            if (blockpos == null) {
+                blockpos = this.playerLocation.up();
+            }
+
+            // Sponge start (Store position for later)
+            /*this.setPosition((double) ((float) blockpos.getX() + 0.5F), (double) ((float) blockpos.getY() + 0.1F),
+                    (double) ((float) blockpos.getZ() + 0.5F));*/
+            newLocation = getTransform().setPosition(new Vector3d(blockpos.getX() + 0.5F, blockpos.getY() + 0.1F, blockpos.getZ() + 0.5F));
+            // Sponge end
+        }
+
+        // Sponge start
+        BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector(this.playerLocation));
+        SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Cause.of(NamedCause.source(this)), bed,
+                Optional.ofNullable(newLocation), this, setSpawn);
+
+        if (SpongeImpl.postEvent(event)) {
+            return;
+        }
+
+        // It's time to get up!
+
+        // Moved from above
+        this.setSize(0.6F, 1.8F);
+        this.worldObj.setBlockState(this.playerLocation, iblockstate.withProperty(BlockBed.OCCUPIED, false), 4);
+
+        // Teleport player
+        event.getSpawnTransform().ifPresent(this::setTransform);
+        // Sponge end
+
+        this.sleeping = false;
+
+        if (!this.worldObj.isRemote && updateWorldFlag) {
+            this.worldObj.updateAllPlayersSleepingFlag();
+        }
+
+        this.sleepTimer = immediately ? 0 : 100;
+
+        // Sponge start
+        SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Cause.of(NamedCause.source(this)), bed, this));
+        // Sponge end
+
+        if (setSpawn) {
+            // Sponge start
+            //this.setSpawnPoint(this.playerLocation, false);
+            this.setSpawnPoint(newLocation != null ? VecHelper.toBlockPos(newLocation.getPosition()) : this.playerLocation, false);
+            // Sponge end
+        }
+    }
+
+    /*// TODO: Consider replacing this with an overwrite because it is just weird.
 
     @Nullable private Transform<org.spongepowered.api.world.World> newLocation;
     private float wakeUpWidth;
@@ -282,7 +354,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         this.newLocation = null;
         this.bed = null;
         ci.cancel();
-    }
+    }*/
 
     public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
         if (dimension == 0) {
