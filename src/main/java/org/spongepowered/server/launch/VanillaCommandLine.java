@@ -53,12 +53,17 @@ public final class VanillaCommandLine {
     public static final OptionSpec<Void> NO_VERIFY_CLASSPATH = parser.accepts("no-verify-classpath",
             "Don't check the classpath for required dependencies");
 
-    // Launchwrapper
-    public static final OptionSpec<String> TWEAK_CLASS = parser.accepts("tweakClass", "Tweak class(es) to load").withRequiredArg();
-
     // Console
     public static final OptionSpec<Void> NO_JLINE = parser.accepts("no-jline", "Disable advanced jline terminal");
     public static final OptionSpec<Void> NO_REDIRECT_STDOUT = parser.accepts("no-redirect-stdout", "Don't redirect standard output to the logger");
+
+    // Launchwrapper
+    public static final OptionSpec<String> TWEAK_CLASS = parser.accepts("tweakClass", "Tweak class(es) to load").withRequiredArg();
+
+    public static final OptionSpec<String> ACCESS_TRANSFORMER = parser.acceptsAll(asList("access-transformer", "at"),
+            "Additional access transformer files to apply").withRequiredArg();
+
+    public static final OptionSpec<Void> SCAN_CLASSPATH = parser.accepts("scan-classpath", "Scan classpath for plugins in production");
 
     // Vanilla Minecraft Server options
     // Note: --singleplayer and --demo are unsupported on SpongeVanilla (and probably have no use on the dedicated server anyway)

@@ -25,33 +25,28 @@
 package org.spongepowered.server.plugin;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.spongepowered.server.plugin.PluginScanner.ARCHIVE_FILTER;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import net.minecraft.launchwrapper.Launch;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.inject.Singleton;
 
 @Singleton
 public class VanillaPluginManager implements PluginManager {
-
-    public static final String SCAN_CLASSPATH_PROPERTY = "sponge.plugins.scanClasspath";
-    private static final boolean SCAN_CLASSPATH = Boolean.getBoolean(SCAN_CLASSPATH_PROPERTY);
 
     private final Map<String, PluginContainer> plugins = Maps.newHashMap();
     private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
@@ -66,47 +61,24 @@ public class VanillaPluginManager implements PluginManager {
             registerPlugin(container);
         }
 
-        Set<String> plugins;
-        Set<String> loadedPlugins = new HashSet<>();
-
-        if (SCAN_CLASSPATH) {
-            SpongeImpl.getLogger().info("Scanning classpath for plugins...");
-
-            // Find plugins on the classpath
-            plugins = PluginScanner.scanClassPath(Launch.classLoader);
-            if (!plugins.isEmpty()) {
-                loadPlugins("classpath", loadedPlugins, plugins);
-            }
-        }
-
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream(SpongeImpl.getPluginsDir(), ARCHIVE_FILTER)) {
-            for (Path jar : dir) {
-                // Search for plugins in the JAR
-                plugins = PluginScanner.scanZip(jar);
-
-                if (!plugins.isEmpty()) {
-                    // Add plugin to the classpath
-                    Launch.classLoader.addURL(jar.toUri().toURL());
-
-                    // Load the plugins
-                    loadPlugins(jar, loadedPlugins, plugins);
-                }
-            }
-        }
+        VanillaLaunchPluginManager.getPlugins().asMap().forEach(this::loadPlugins);
     }
 
-    private void loadPlugins(Object source, Set<String> loadedPlugins, Iterable<String> plugins) {
-        for (String plugin : plugins) {
-            if (loadedPlugins.contains(plugin)) {
-                SpongeImpl.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, source);
-                continue;
+    private void loadPlugins(Object source, Iterable<String> plugins) {
+        if (source instanceof Path) {
+            try {
+                // Add JAR to classpath
+                Launch.classLoader.addURL(((Path) source).toUri().toURL());
+            } catch (MalformedURLException e) {
+                throw Throwables.propagate(e);
             }
+        }
 
+        for (String plugin : plugins) {
             try {
                 Class<?> pluginClass = Class.forName(plugin);
                 VanillaPluginContainer container = new VanillaPluginContainer(source, pluginClass);
                 registerPlugin(container);
-                loadedPlugins.add(plugin);
                 SpongeImpl.getGame().getEventManager().registerListeners(container, container.getInstance().get());
 
                 SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);

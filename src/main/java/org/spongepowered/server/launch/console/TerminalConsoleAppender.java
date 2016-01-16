@@ -65,7 +65,6 @@ public class TerminalConsoleAppender extends AbstractAppender {
     private static final String ANSI_WARN = Ansi.ansi().fg(YELLOW).bold().toString();
 
     private static final boolean ENABLE_JLINE = PropertiesUtil.getProperties().getBooleanProperty("jline.enable", true);
-    private static final boolean REDIRECT_OUT = PropertiesUtil.getProperties().getBooleanProperty("sponge.logging.redirect_stdout", true);
 
     private static final PrintStream out = System.out;
 
@@ -123,18 +122,9 @@ public class TerminalConsoleAppender extends AbstractAppender {
         if (!initialized) {
             initialized = true;
 
-            boolean enableJline = ENABLE_JLINE;
-            boolean redirectOut = REDIRECT_OUT;
-
             OptionSet options = VanillaCommandLine.getOptions().get();
-            if (options.has(NO_JLINE)) {
-                enableJline = false;
-            }
-            if (options.has(NO_REDIRECT_STDOUT)) {
-                redirectOut = false;
-            }
 
-            if (enableJline) {
+            if (ENABLE_JLINE && !options.has(NO_JLINE)) {
                 final boolean hasConsole = System.console() != null;
                 if (hasConsole) {
                     try {
@@ -169,7 +159,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
                 }
             }
 
-            if (redirectOut) {
+            if (!options.has(NO_REDIRECT_STDOUT)) {
                 System.setOut(new LoggingPrintStream(LogManager.getLogger("STDOUT"), Level.INFO));
                 System.setErr(new LoggingPrintStream(LogManager.getLogger("STDERR"), Level.ERROR));
             }
