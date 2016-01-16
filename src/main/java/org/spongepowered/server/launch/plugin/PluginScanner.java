@@ -22,18 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.plugin;
+package org.spongepowered.server.launch.plugin;
 
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.server.util.PathMatchers;
+import org.spongepowered.server.launch.VanillaLaunch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +49,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -74,17 +73,17 @@ final class PluginScanner {
     }
 
     static Set<String> scanClassPath(URLClassLoader loader) {
-        Set<URI> sources = Sets.newHashSet();
-        Set<String> plugins = Sets.newHashSet();
+        Set<URI> sources = new HashSet<>();
+        Set<String> plugins = new HashSet<>();
 
         for (URL url : loader.getURLs()) {
             if (!url.getProtocol().equals("file")) {
-                SpongeImpl.getLogger().warn("Skipping unsupported classpath source: {}", url);
+                VanillaLaunch.getLogger().warn("Skipping unsupported classpath source: {}", url);
                 continue;
             }
 
             if (url.getPath().startsWith(JAVA_HOME)) {
-                SpongeImpl.getLogger().trace("Skipping JRE classpath entry: {}", url);
+                VanillaLaunch.getLogger().trace("Skipping JRE classpath entry: {}", url);
                 continue;
             }
 
@@ -92,7 +91,7 @@ final class PluginScanner {
             try {
                 source = url.toURI();
             } catch (URISyntaxException e) {
-                SpongeImpl.getLogger().error("Failed to search for classpath plugins in {}", url);
+                VanillaLaunch.getLogger().error("Failed to search for classpath plugins in {}", url);
                 continue;
             }
 
@@ -101,14 +100,7 @@ final class PluginScanner {
             }
         }
 
-        SpongeImpl.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
-        return plugins;
-    }
-
-    private static Set<String> scanPath(Path path) {
-        Set<String> plugins = Sets.newHashSet();
-        scanPath(path, plugins);
-        SpongeImpl.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
+        VanillaLaunch.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
         return plugins;
     }
 
@@ -123,7 +115,7 @@ final class PluginScanner {
     }
 
     private static void scanDirectory(Path dir, final Set<String> plugins) {
-        SpongeImpl.getLogger().trace("Scanning {} for plugins", dir);
+        VanillaLaunch.getLogger().trace("Scanning {} for plugins", dir);
 
         try {
             Files.walkFileTree(dir, ImmutableSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
@@ -143,42 +135,46 @@ final class PluginScanner {
                 }
             });
         } catch (IOException e) {
-            SpongeImpl.getLogger().error("Failed to search for plugins in {}", dir, e);
+            VanillaLaunch.getLogger().error("Failed to search for plugins in {}", dir, e);
         }
     }
 
-    static Set<String> scanZip(Path path) {
-        Set<String> plugins = Sets.newHashSet();
-        scanZip(path, plugins);
-        SpongeImpl.getLogger().trace("Found {} plugin(s): {}", plugins.size(), plugins);
-        return plugins;
-    }
-
     private static void scanZip(Path path, Set<String> plugins) {
-        SpongeImpl.getLogger().trace("Scanning {} for plugins", path);
-
         if (!ARCHIVE.matches(path.getFileName())) {
             return;
         }
 
         // Open the zip file so we can scan for plugins
         try (ZipFile zip = new ZipFile(path.toFile())) {
-            Enumeration<? extends ZipEntry> entries = zip.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                if (entry.isDirectory() || !entry.getName().endsWith(CLASS_EXTENSION)) {
-                    continue;
-                }
+            scanZip(path, zip, plugins);
+        } catch (IOException e) {
+            VanillaLaunch.getLogger().error("Failed to scan plugin JAR: {}", path, e);
+        }
+    }
 
-                try (InputStream in = zip.getInputStream(entry)) {
-                    String plugin = findPlugin(in);
-                    if (plugin != null) {
-                        plugins.add(plugin);
-                    }
+    static Set<String> scanZip(Path path, ZipFile zip) throws IOException {
+        Set<String> plugins = new HashSet<>();
+        scanZip(path, zip, plugins);
+        VanillaLaunch.getLogger().trace("Found {} plugin(s) in {}: {}", plugins.size(), path, plugins);
+        return plugins;
+    }
+
+    static void scanZip(Path path, ZipFile zip, Set<String> plugins) throws IOException {
+        VanillaLaunch.getLogger().trace("Scanning {} for plugins", path);
+
+        Enumeration<? extends ZipEntry> entries = zip.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+            if (entry.isDirectory() || !entry.getName().endsWith(CLASS_EXTENSION)) {
+                continue;
+            }
+
+            try (InputStream in = zip.getInputStream(entry)) {
+                String plugin = findPlugin(in);
+                if (plugin != null) {
+                    plugins.add(plugin);
                 }
             }
-        } catch (IOException e) {
-            SpongeImpl.getLogger().error("Failed to load plugin JAR: {}", path, e);
         }
     }
 

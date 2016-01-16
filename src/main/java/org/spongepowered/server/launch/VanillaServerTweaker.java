@@ -25,33 +25,32 @@
 package org.spongepowered.server.launch;
 
 import static com.google.common.io.Resources.getResource;
-import static org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel.JAVA_8;
-import static org.spongepowered.server.plugin.VanillaPluginManager.SCAN_CLASSPATH_PROPERTY;
+import static org.spongepowered.asm.mixin.MixinEnvironment.Side.SERVER;
+import static org.spongepowered.server.launch.VanillaCommandLine.ACCESS_TRANSFORMER;
+import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_CLASSPATH;
 
+import com.google.common.base.Throwables;
+import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.asm.mixin.extensibility.IRemapper;
 import org.spongepowered.common.launch.SpongeLaunch;
-import org.spongepowered.common.launch.transformer.SpongeSuperclassRegistry;
 import org.spongepowered.server.launch.console.TerminalConsoleAppender;
+import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
+import org.spongepowered.server.launch.transformer.at.AccessTransformers;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public final class VanillaServerTweaker implements ITweaker {
 
-    private static final Logger logger = LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME);
-
-    public static Logger getLogger() {
-        return logger;
-    }
+    private static final String FORGE_GRADLE_CSV_DIR = "net.minecraftforge.gradle.GradleStart.csvDir";
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
@@ -60,98 +59,116 @@ public final class VanillaServerTweaker implements ITweaker {
 
         List<String> unrecognizedOptions = VanillaCommandLine.getUnrecognizedOptions();
         if (!unrecognizedOptions.isEmpty()) {
-            logger.warn("Found unrecognized command line option(s): {}", unrecognizedOptions);
+            VanillaLaunch.getLogger().warn("Found unrecognized command line option(s): {}", unrecognizedOptions);
         }
-
-        SpongeLaunch.initialize();
     }
 
     @Override
     public void injectIntoClassLoader(LaunchClassLoader loader) {
-        logger.info("Initializing Sponge...");
+        VanillaLaunch.getLogger().info("Initializing Sponge...");
 
         // We shouldn't load these through Launchwrapper as they use native dependencies
         loader.addClassLoaderExclusion("io.netty.");
         loader.addClassLoaderExclusion("jline.");
         loader.addClassLoaderExclusion("org.fusesource.");
-        loader.addClassLoaderExclusion("joptsimple.");
 
         // Sponge Launch
-        loader.addTransformerExclusion("org.spongepowered.tools.");
+        loader.addClassLoaderExclusion("joptsimple.");
+        loader.addClassLoaderExclusion("com.google.common.");
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
 
         // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
 
-        // Minecraft Server libraries
-        loader.addTransformerExclusion("com.google.gson.");
-        loader.addTransformerExclusion("org.apache.commons.codec.");
-        loader.addTransformerExclusion("org.apache.commons.io.");
-        loader.addTransformerExclusion("org.apache.commons.lang3.");
-
-        // SpongeAPI
-        loader.addTransformerExclusion("com.flowpowered.noise.");
-        loader.addTransformerExclusion("com.flowpowered.math.");
+        // Don't allow our libraries to be transformed
+        loader.addTransformerExclusion("com.google.");
+        loader.addTransformerExclusion("org.apache.");
+        loader.addTransformerExclusion("com.flowpowered.");
         loader.addTransformerExclusion("org.slf4j.");
-
+        loader.addTransformerExclusion("gnu.trove.");
         // Guice
-        loader.addTransformerExclusion("com.google.inject.");
         loader.addTransformerExclusion("org.aopalliance.");
-
         // Configurate
         loader.addTransformerExclusion("ninja.leaping.configurate.");
         loader.addTransformerExclusion("com.typesafe.config.");
         loader.addTransformerExclusion("org.yaml.snakeyaml.");
+        // Database connectors
+        loader.addTransformerExclusion("com.zaxxer.hikari.");
+        loader.addTransformerExclusion("org.h2.");
+        loader.addTransformerExclusion("org.mariadb.");
+        loader.addTransformerExclusion("org.sqlite.");
+
+        OptionSet options = VanillaCommandLine.getOptions().get();
+        boolean scanClasspath = options.has(SCAN_CLASSPATH);
 
         // Check if we're running in de-obfuscated environment already
-        logger.debug("Applying runtime de-obfuscation...");
+        VanillaLaunch.getLogger().debug("Applying runtime de-obfuscation...");
         if (isObfuscated()) {
-            logger.info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
-            Launch.blackboard.put("vanilla.mappings", getResource("mappings.srg"));
-            loader.registerTransformer("org.spongepowered.server.launch.transformer.DeobfuscationTransformer");
-            logger.debug("Runtime de-obfuscation is applied.");
+            // Enable Notch->Searge deobfuscation
+            VanillaLaunch.getLogger().info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
+            Launch.blackboard.put("vanilla.srg_mappings", getResource("mappings.srg"));
+            loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.NotchDeobfuscationTransformer");
         } else {
-            logger.debug("Runtime de-obfuscation was not applied. Sponge is being loaded in a de-obfuscated environment.");
+            // Enable Searge->MCP deobfuscation (if running in ForgeGradle)
+            String mcpDir = System.getProperty(FORGE_GRADLE_CSV_DIR);
+            if (mcpDir != null) {
+                Launch.blackboard.put("vanilla.mcp_mappings", Paths.get(mcpDir));
+                loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.SeargeDeobfuscationTransformer");
+            }
 
             // Enable plugin classpath scanning in deobfuscated environment
-            System.setProperty(SCAN_CLASSPATH_PROPERTY, "true");
+            scanClasspath = true;
         }
 
-        logger.debug("Applying access transformer...");
-        Launch.blackboard.put("vanilla.at", new URL[]{ getResource("common_at.cfg"), getResource("vanilla_at.cfg") });
-        loader.registerTransformer("org.spongepowered.server.launch.transformer.AccessTransformer");
+        try {
+            // Apply our access transformers
+            AccessTransformers.register(getResource("common_at.cfg"));
+            AccessTransformers.register(getResource("vanilla_at.cfg"));
 
-        logger.debug("Initializing Mixin environment...");
-        MixinBootstrap.init();
-        MixinEnvironment.setCompatibilityLevel(JAVA_8);
-        MixinEnvironment env = MixinEnvironment.getDefaultEnvironment()
-                .addConfiguration("mixins.common.api.json")
-                .addConfiguration("mixins.common.core.json")
-                .addConfiguration("mixins.common.bungeecord.json")
-                .addConfiguration("mixins.common.timings.json")
-                .addConfiguration("mixins.vanilla.json");
-        env.setSide(MixinEnvironment.Side.SERVER);
+            // Apply access transformers from command line
+            for (String at : options.valuesOf(ACCESS_TRANSFORMER)) {
+                // First check if the AT exists as file
+                Path path = Paths.get(at);
+                if (Files.isReadable(path)) {
+                    AccessTransformers.register(path);
+                } else {
+                    // Try as resource in classpath instead
+                    AccessTransformers.register(getResource(at));
+                }
+            }
+
+            // Search for plugins (and apply access transformers if available)
+            VanillaLaunchPluginManager.findPlugins(scanClasspath);
+        } catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
+
+        VanillaLaunch.getLogger().debug("Applying access transformer...");
+        loader.registerTransformer("org.spongepowered.server.launch.transformer.at.AccessTransformer");
+
+        VanillaLaunch.getLogger().debug("Initializing Mixin environment...");
+        MixinEnvironment env = SpongeLaunch.setupMixinEnvironment()
+                .addConfiguration("mixins.vanilla.json")
+                .setSide(SERVER);
+
+        // Add our remapper to Mixin's remapper chain
+        IRemapper remapper = VanillaLaunch.getRemapper();
+        if (remapper != null) {
+            env.getRemappers().add(remapper);
+        }
 
         // Superclass transformer
-        loader.registerTransformer("org.spongepowered.common.launch.transformer.SpongeSuperclassTransformer");
-        SpongeSuperclassRegistry.registerSuperclassModification("org.spongepowered.api.entity.ai.task.AbstractAITask",
-                "org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass");
-        SpongeSuperclassRegistry.registerSuperclassModification("org.spongepowered.api.event.cause.entity.damage.source.common.AbstractDamageSource",
-                "org.spongepowered.common.event.damage.SpongeCommonDamageSource");
-        SpongeSuperclassRegistry.registerSuperclassModification(
-                "org.spongepowered.api.event.cause.entity.damage.source.common.AbstractEntityDamageSource",
-                "org.spongepowered.common.event.damage.SpongeCommonEntityDamageSource");
-        SpongeSuperclassRegistry.registerSuperclassModification(
-                "org.spongepowered.api.event.cause.entity.damage.source.common.AbstractIndirectEntityDamageSource",
-                "org.spongepowered.common.event.damage.SpongeCommonIndirectEntityDamageSource");
+        loader.registerTransformer(SpongeLaunch.SUPERCLASS_TRANSFORMER);
+        SpongeLaunch.setupSuperClassTransformer();
 
-        logger.info("Initialization finished. Starting Minecraft server...");
+        VanillaLaunch.getLogger().info("Initialization finished. Starting Minecraft server...");
     }
 
     private static boolean isObfuscated() {
         try {
-            return Launch.classLoader.getClassBytes("net.minecraft.world.World") == null;
+            // If the dedicated server class exists in the de-obfuscated name, we're likely in dev env
+            return Launch.classLoader.getClassBytes("net.minecraft.server.dedicated.DedicatedServer") == null;
         } catch (IOException ignored) {
             return true;
         }

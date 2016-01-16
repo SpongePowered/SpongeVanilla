@@ -22,28 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.util;
+package org.spongepowered.server.launch.transformer.deobf;
 
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
+import net.minecraft.launchwrapper.IClassTransformer;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.Remapper;
+import org.objectweb.asm.commons.RemappingClassAdapter;
+import org.spongepowered.server.launch.VanillaLaunch;
 
-public final class PathMatchers {
+abstract class DeobfuscationTransformer extends Remapper implements IClassTransformer, SrgRemapper {
 
-    private PathMatchers() {
+    DeobfuscationTransformer() {
+        VanillaLaunch.setRemapper(this);
     }
 
-    public static PathMatcher create(String pattern) {
-        return FileSystems.getDefault().getPathMatcher(pattern);
+    @Override
+    public final byte[] transform(String name, String transformedName, byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+
+        ClassReader reader = new ClassReader(bytes);
+        ClassWriter writer = new ClassWriter(reader, 0);
+        reader.accept(createRemappingClassAdapter(reader, writer), ClassReader.EXPAND_FRAMES);
+        return writer.toByteArray();
     }
 
-    public static DirectoryStream.Filter<Path> createFilter(final String pattern) {
-        return createFilter(create(pattern));
-    }
-
-    public static DirectoryStream.Filter<Path> createFilter(final PathMatcher matcher) {
-        return entry -> matcher.matches(entry.getFileName());
+    RemappingClassAdapter createRemappingClassAdapter(ClassReader reader, ClassVisitor cv) {
+        return new RemappingClassAdapter(cv, this);
     }
 
 }
