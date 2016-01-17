@@ -72,7 +72,6 @@ import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Optional;
 
 public final class SpongeVanilla extends SpongePluginContainer {
@@ -122,8 +121,6 @@ public final class SpongeVanilla extends SpongePluginContainer {
 
     public void preInitialize() throws Exception {
         SpongeImpl.getLogger().info("Loading Sponge...");
-
-        Files.createDirectories(SpongeImpl.getPluginsDir());
 
         this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
 

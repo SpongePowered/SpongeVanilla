@@ -68,35 +68,41 @@ public final class VanillaLaunchPluginManager {
             }
         }
 
-        if (pluginClasses == null) {
-            pluginClasses = new HashSet<>();
-        }
+        Path pluginsDir = SpongeLaunch.getPluginsDir();
+        if (Files.exists(pluginsDir)) {
+            if (pluginClasses == null) {
+                pluginClasses = new HashSet<>();
+            }
 
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream(SpongeLaunch.getPluginsDir(), ARCHIVE_FILTER)) {
-            for (Path path : dir) {
-                // Search for plugins in the JAR
-                try (JarFile jar = new JarFile(path.toFile())) {
-                    Set<String> plugins = PluginScanner.scanZip(path, jar);
+            try (DirectoryStream<Path> dir = Files.newDirectoryStream(SpongeLaunch.getPluginsDir(), ARCHIVE_FILTER)) {
+                for (Path path : dir) {
+                    // Search for plugins in the JAR
+                    try (JarFile jar = new JarFile(path.toFile())) {
+                        Set<String> plugins = PluginScanner.scanZip(path, jar);
 
-                    Iterator<String> itr = plugins.iterator();
-                    while (itr.hasNext()) {
-                        String plugin = itr.next();
-                        if (!pluginClasses.add(plugin)) {
-                            VanillaLaunch.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, path);
-                            itr.remove();
+                        Iterator<String> itr = plugins.iterator();
+                        while (itr.hasNext()) {
+                            String plugin = itr.next();
+                            if (!pluginClasses.add(plugin)) {
+                                VanillaLaunch.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, path);
+                                itr.remove();
+                            }
                         }
-                    }
 
-                    if (!plugins.isEmpty()) {
-                        found.putAll(path, plugins);
+                        if (!plugins.isEmpty()) {
+                            found.putAll(path, plugins);
 
-                        // Look for access transformers
-                        PluginAccessTransformers.register(path, jar);
+                            // Look for access transformers
+                            PluginAccessTransformers.register(path, jar);
+                        }
+                    } catch (IOException e) {
+                        VanillaLaunch.getLogger().error("Failed to scan plugin JAR: {}", path, e);
                     }
-                } catch (IOException e) {
-                    VanillaLaunch.getLogger().error("Failed to scan plugin JAR: {}", path, e);
                 }
             }
+        } else {
+            // Create plugin folder
+            Files.createDirectories(pluginsDir);
         }
 
         plugins = ImmutableSetMultimap.copyOf(found);
