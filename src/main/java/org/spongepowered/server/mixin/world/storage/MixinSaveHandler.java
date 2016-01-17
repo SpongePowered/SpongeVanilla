@@ -37,23 +37,19 @@ import org.spongepowered.common.interfaces.IMixinSaveHandler;
 import java.io.File;
 import java.io.IOException;
 
-@Mixin(value = SaveHandler.class, priority = 1001)
-public abstract class MixinSaveHandler {
-    @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void onLoadWorldInfoBeforeReturn0(CallbackInfoReturnable<WorldInfo> cir, File file1, NBTTagCompound nbttagcompound,
-            NBTTagCompound nbttagcompound1) throws IOException {
-        final WorldInfo info = new WorldInfo(nbttagcompound1);
-        ((IMixinSaveHandler) this).loadDimensionAndOtherData((SaveHandler) (Object) this, info, nbttagcompound);
-        ((IMixinSaveHandler) this).loadSpongeDatData(info);
+@Mixin(SaveHandler.class)
+public abstract class MixinSaveHandler implements IMixinSaveHandler {
+
+    @Inject(method = "loadWorldInfo", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true, at = {
+            @At(value = "RETURN", ordinal = 0),
+            @At(value = "RETURN", ordinal = 1)
+    })
+    private void onLoadWorldInfoBeforeReturn(CallbackInfoReturnable<WorldInfo> cir, File file, NBTTagCompound root, NBTTagCompound data)
+            throws IOException {
+        final WorldInfo info = new WorldInfo(data);
+        this.loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
+        this.loadSpongeDatData(info);
         cir.setReturnValue(info);
     }
 
-    @Inject(method = "loadWorldInfo", at = @At(value = "RETURN", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void onLoadWorldInfoBeforeReturn1(CallbackInfoReturnable<WorldInfo> cir, File file1, NBTTagCompound nbttagcompound,
-            NBTTagCompound nbttagcompound1) throws IOException {
-        final WorldInfo info = new WorldInfo(nbttagcompound1);
-        ((IMixinSaveHandler) this).loadDimensionAndOtherData((SaveHandler) (Object) this, info, nbttagcompound);
-        ((IMixinSaveHandler) this).loadSpongeDatData(info);
-        cir.setReturnValue(info);
-    }
 }

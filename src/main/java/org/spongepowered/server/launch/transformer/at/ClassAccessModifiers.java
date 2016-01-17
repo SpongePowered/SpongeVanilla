@@ -31,16 +31,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 final class ClassAccessModifiers {
 
-    final AccessModifier modifier;
-    private final AccessModifier fieldModifier;
-    private final AccessModifier methodModifier;
+    @Nullable final AccessModifier modifier;
+    @Nullable private final AccessModifier fieldModifier;
+    @Nullable private final AccessModifier methodModifier;
 
     private final ImmutableMap<String, AccessModifier> fields;
     private final ImmutableMap<String, AccessModifier> methods;
 
-    private ClassAccessModifiers(AccessModifier modifier, AccessModifier fieldModifier, AccessModifier methodModifier,
+    private ClassAccessModifiers(@Nullable AccessModifier modifier, @Nullable AccessModifier fieldModifier, @Nullable AccessModifier methodModifier,
             ImmutableMap<String, AccessModifier> fields, ImmutableMap<String, AccessModifier> methods) {
         this.modifier = modifier;
         this.fieldModifier = fieldModifier;
@@ -49,24 +51,27 @@ final class ClassAccessModifiers {
         this.methods = methods;
     }
 
+    @Nullable
     AccessModifier getField(String name) {
         AccessModifier modifier = fields.get(name);
         return modifier != null ? modifier : fieldModifier;
     }
 
+    @Nullable
     AccessModifier getMethod(String name, String desc) {
         return getMethod(name.concat(desc));
     }
 
+    @Nullable
     AccessModifier getMethod(String identifier) {
         AccessModifier modifier = methods.get(identifier);
         return modifier != null ? modifier : methodModifier;
     }
 
     static final class Builder {
-        private AccessModifier modifier;
-        private AccessModifier fieldModifier;
-        private AccessModifier methodModifier;
+        @Nullable private AccessModifier modifier;
+        @Nullable private AccessModifier fieldModifier;
+        @Nullable private AccessModifier methodModifier;
 
         private final Map<String, AccessModifier> fields = new HashMap<>();
         private final Map<String, AccessModifier> methods = new HashMap<>();
@@ -91,7 +96,7 @@ final class ClassAccessModifiers {
             methods.put(identifier, modifier.merge(methods.get(identifier)));
         }
 
-        private static ImmutableMap<String, AccessModifier> build(Map<String, AccessModifier> map, AccessModifier base,
+        private static ImmutableMap<String, AccessModifier> build(Map<String, AccessModifier> map, @Nullable AccessModifier base,
                 Function<String, String> remapper) {
             ImmutableMap.Builder<String, AccessModifier> builder = ImmutableMap.builder();
             for (Map.Entry<String, AccessModifier> entry : map.entrySet()) {

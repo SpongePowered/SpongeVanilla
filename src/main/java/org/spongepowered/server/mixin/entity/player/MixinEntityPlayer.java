@@ -25,7 +25,10 @@
 package org.spongepowered.server.mixin.entity.player;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.google.common.collect.Maps;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -58,22 +61,19 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.data.util.NbtDataUtil;
+import org.spongepowered.common.interfaces.IMixinEntityPlayer;
 import org.spongepowered.common.util.VecHelper;
-import org.spongepowered.server.interfaces.IMixinEntityPlayer;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-@Mixin(value = EntityPlayer.class, priority = 1001)
-public abstract class MixinEntityPlayer extends EntityLivingBase implements Entity {
-    private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+import javax.annotation.Nullable;
 
-    private HashMap<Integer, BlockPos> spawnChunkMap = Maps.newHashMap();
-    private HashMap<Integer, Boolean> spawnForcedMap = Maps.newHashMap();
+@Mixin(EntityPlayer.class)
+public abstract class MixinEntityPlayer extends EntityLivingBase implements IMixinEntityPlayer {
 
-    @Shadow public BlockPos playerLocation;
-    @Shadow protected BlockPos spawnChunk;
+    @Shadow @Nullable public BlockPos playerLocation;
+    @Shadow @Nullable protected BlockPos spawnChunk;
     @Shadow private boolean spawnForced;
     @Shadow private net.minecraft.item.ItemStack itemInUse;
     @Shadow private int itemInUseCount;
@@ -84,80 +84,121 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     @Shadow protected abstract void onItemUseFinish();
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
+    private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+
+    private TIntObjectMap<BlockPos> spawnChunkMap = new TIntObjectHashMap<>();
+    private TIntSet spawnForcedSet = new TIntHashSet();
+
     protected MixinEntityPlayer(World worldIn) {
         super(worldIn);
     }
 
+    /**
+     * @author Minecrell
+     * @reason Return the appropriate bed location for the current dimension
+     */
+    @Overwrite @Nullable
+    public BlockPos getBedLocation() {
+        return getBedLocation(this.dimension);
+    }
+
     @Override
+    public BlockPos getBedLocation(int dimension) {
+        return dimension == 0 ? this.spawnChunk : this.spawnChunkMap.get(dimension);
+    }
+
+    /**
+     * @author Minecrell
+     * @reason Return the appropriate spawn forced flag for the current dimension
+     */
     @Overwrite
-    public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
-        // apply forge fix "Fix issue in Player where it doen't take into
-        // account selected item"
-        if (slotIn == 0) {
-            this.inventory.mainInventory[this.inventory.currentItem] = stack;
-        } else {
-            this.inventory.armorInventory[slotIn - 1] = stack;
-        }
+    public boolean isSpawnForced() {
+        return isSpawnForced(this.dimension);
+    }
+
+    @Override
+    public boolean isSpawnForced(int dimension) {
+        return dimension == 0 ? this.spawnForced : this.spawnForcedSet.contains(dimension);
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
-    public void onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
+    private void onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
         if (this.dimension != 0) {
             setSpawnChunk(pos, forced, this.dimension);
             ci.cancel();
         }
     }
 
+    public void setSpawnChunk(@Nullable BlockPos pos, boolean forced, int dimension) {
+        if (dimension == 0) {
+            if (pos != null) {
+                this.spawnChunk = pos;
+                this.spawnForced = forced;
+            } else {
+                this.spawnChunk = null;
+                this.spawnForced = false;
+            }
+        } else if (pos != null) {
+            this.spawnChunkMap.put(dimension, pos);
+            if (forced) {
+                this.spawnForcedSet.add(dimension);
+            } else {
+                this.spawnForcedSet.remove(dimension);
+            }
+        } else {
+            this.spawnChunkMap.remove(dimension);
+            this.spawnForcedSet.remove(dimension);
+        }
+    }
+
     @Inject(method = "clonePlayer", at = @At("RETURN"))
-    public void onClonePlayerEnd(EntityPlayer oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
-        this.spawnChunkMap = ((IMixinEntityPlayer) oldPlayer).getSpawnChunkMap();
-        this.spawnForcedMap = ((IMixinEntityPlayer) oldPlayer).getSpawnForcedMap();
+    private void onClonePlayerReturn(EntityPlayer oldPlayerMc, boolean respawnFromEnd, CallbackInfo ci) {
+        MixinEntityPlayer oldPlayer = (MixinEntityPlayer) (Object) oldPlayerMc;
+        this.spawnChunkMap = oldPlayer.spawnChunkMap;
+        this.spawnForcedSet = oldPlayer.spawnForcedSet;
 
-        final NBTTagCompound old = ((IMixinEntityPlayer) oldPlayer).getEntityData();
+        final NBTTagCompound old = oldPlayer.getEntityData();
         if (old.hasKey(PERSISTED_NBT_TAG)) {
-            ((IMixinEntityPlayer) this).getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
+            this.getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
         }
     }
 
-    @Inject(method = "readEntityFromNBT", at = @At(value = "FIELD", target = "net.minecraft.entity.player.EntityPlayer"
-            + ".foodStats:Lnet/minecraft/util/FoodStats;"))
-    public void onReadEntityFromNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
-        final NBTTagList spawnlist = tagCompound.getTagList("Spawns", 10);
-        for (int i = 0; i < spawnlist.tagCount(); i++) {
-            final NBTTagCompound spawndata = spawnlist.getCompoundTagAt(i);
-            int spawndim = spawndata.getInteger("Dim");
-            this.spawnChunkMap.put(spawndim, new BlockPos(spawndata.getInteger("SpawnX"), spawndata.getInteger("SpawnY"), spawndata.getInteger("SpawnZ")));
-            this.spawnForcedMap.put(spawndim, spawndata.getBoolean("SpawnForced"));
+    @Inject(method = "readEntityFromNBT", at = @At("RETURN"))
+    private void onReadEntityFromNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
+        final NBTTagList spawnList = tagCompound.getTagList("Spawns", NbtDataUtil.TAG_COMPOUND);
+        for (int i = 0; i < spawnList.tagCount(); i++) {
+            final NBTTagCompound spawnData = spawnList.getCompoundTagAt(i);
+            int spawnDim = spawnData.getInteger("Dim");
+            this.spawnChunkMap.put(spawnDim,
+                    new BlockPos(spawnData.getInteger("SpawnX"), spawnData.getInteger("SpawnY"), spawnData.getInteger("SpawnZ")));
+            if (spawnData.getBoolean("SpawnForced")) {
+                this.spawnForcedSet.add(spawnDim);
+            }
         }
     }
 
-    @Inject(method = "writeEntityToNBT", at = @At(value = "FIELD", target = "net.minecraft.entity.player.EntityPlayer"
-            + ".foodStats:Lnet/minecraft/util/FoodStats;"))
-    public void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
-        final NBTTagList spawnlist = new NBTTagList();
-        for (Map.Entry<Integer, BlockPos> entry : this.spawnChunkMap.entrySet()) {
-            BlockPos spawn = entry.getValue();
-            if (spawn == null) {
-                continue;
-            }
-            Boolean forced = this.spawnForcedMap.get(entry.getKey());
-            if (forced == null) {
-                forced = false;
-            }
-            NBTTagCompound spawndata = new NBTTagCompound();
-            spawndata.setInteger("Dim", entry.getKey());
-            spawndata.setInteger("SpawnX", spawn.getX());
-            spawndata.setInteger("SpawnY", spawn.getY());
-            spawndata.setInteger("SpawnZ", spawn.getZ());
-            spawndata.setBoolean("SpawnForced", forced);
-            spawnlist.appendTag(spawndata);
-        }
-        tagCompound.setTag("Spawns", spawnlist);
+    @Inject(method = "writeEntityToNBT", at = @At("RETURN"))
+    private void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
+        final NBTTagList spawnList = new NBTTagList();
+        this.spawnChunkMap.forEachEntry((dim, spawn) -> {
+            NBTTagCompound spawnData = new NBTTagCompound();
+            spawnData.setInteger("Dim", dim);
+            spawnData.setInteger("SpawnX", spawn.getX());
+            spawnData.setInteger("SpawnY", spawn.getY());
+            spawnData.setInteger("SpawnZ", spawn.getZ());
+            spawnData.setBoolean("SpawnForced", spawnForcedSet.contains(dim));
+            spawnList.appendTag(spawnData);
+            return true;
+        });
+        tagCompound.setTag("Spawns", spawnList);
     }
+
+
+    // Event injectors
 
     @Inject(method = "interactWith", at = @At(value = "INVOKE", target = "net/minecraft/entity/player/EntityPlayer"
             + ".getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;"), cancellable = true)
-    public void onInteractWith(net.minecraft.entity.Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    private void onInteractWith(net.minecraft.entity.Entity entity, CallbackInfoReturnable<Boolean> cir) {
         InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(Cause.of(NamedCause.source(this)),
                 Optional.empty(), (Entity) entity);
         if (SpongeImpl.postEvent(event)) {
@@ -171,7 +212,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     }
 
     @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUse:Lnet/minecraft/item/ItemStack;", opcode = Opcodes.PUTFIELD), cancellable = true)
-    public void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
+    private void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
         // Handle logic on our own
         ci.cancel();
 
@@ -189,7 +230,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     }
 
     @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUseCount:I", opcode = Opcodes.GETFIELD))
-    public void callUseItemStackTick(CallbackInfo ci) {
+    private void callUseItemStackTick(CallbackInfo ci) {
         UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(this.itemInUse));
 
@@ -201,7 +242,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
 
     @Redirect(method = "stopUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onPlayerStoppedUsing"
             + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;I)V"))
-    public void callUseItemStackStop(net.minecraft.item.ItemStack stack, World world, EntityPlayer player, int remainingDuration) {
+    private void callUseItemStackStop(net.minecraft.item.ItemStack stack, World world, EntityPlayer player, int remainingDuration) {
         UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
                 this.itemInUseCount, this.itemInUseCount, createTransaction(stack));
 
@@ -212,7 +253,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
 
     @Redirect(method = "onItemUseFinish", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onItemUseFinish"
             + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;"))
-    public net.minecraft.item.ItemStack callUseItemStackFinish(net.minecraft.item.ItemStack stack, World world, EntityPlayer player) {
+    private net.minecraft.item.ItemStack callUseItemStackFinish(net.minecraft.item.ItemStack stack, World world, EntityPlayer player) {
         net.minecraft.item.ItemStack result = stack.onItemUseFinish(world, player);
         Transaction<ItemStackSnapshot> resultTransaction = new Transaction<>(((ItemStack) stack).createSnapshot(),
                 ((ItemStack) result).createSnapshot());
@@ -226,7 +267,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
     }
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
-    public void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
+    private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
         SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Cause.of(NamedCause.source(this)),
                 ((org.spongepowered.api.world.World) this.worldObj).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);
         if (SpongeImpl.postEvent(event)) {
@@ -303,89 +344,20 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements Enti
         }
     }
 
-    /*// TODO: Consider replacing this with an overwrite because it is just weird.
+    // Vanilla fixes
 
-    @Nullable private Transform<org.spongepowered.api.world.World> newLocation;
-    private float wakeUpWidth;
-    private float wakeUpHeight;
-    @Nullable private BlockSnapshot bed;
-
-    @Redirect(method = "wakeUpPlayer(ZZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setSize(FF)V"))
-    private void onWakeUpPlayerSetSize(EntityPlayer self, float width, float height) {
-        // Let the player sleep until we asked our event listeners
-        this.wakeUpWidth = width;
-        this.wakeUpHeight = height;
-    }
-
-    @Redirect(method = "wakeUpPlayer(ZZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setPosition(DDD)V"))
-    private void onWakeUpPlayerSetPosition(EntityPlayer self, double x, double y, double z) {
-        this.newLocation = getTransform().setPosition(new Vector3d(x, y, z));
-    }
-
-    @Inject(method = "wakeUpPlayer(ZZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;sleeping:Z" ,
-            opcode = Opcodes.PUTFIELD), cancellable = true)
-    private void onWakeUpPlayer(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
-        this.bed = getWorld().createSnapshot(VecHelper.toVector(this.playerLocation));
-        SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Cause.of(NamedCause.source(this)), this.bed,
-                Optional.ofNullable(this.newLocation), this, setSpawn);
-
-        if (SpongeImpl.postEvent(event)) {
-            this.newLocation = null;
-            this.bed = null;
-            ci.cancel(); // No worries! You can continue sleeping; sweet dreams!
+    /**
+     * @author simon816
+     * @reason Fix player's ArmorEquipable methods not setting the right slot
+     */
+    @Override
+    public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
+        // Fix issue in player where it doesn't take into account selected item
+        if (slotIn == 0) {
+            this.inventory.mainInventory[this.inventory.currentItem] = stack;
         } else {
-            // Time to get up!
-            this.setSize(this.wakeUpWidth, this.wakeUpHeight);
-            this.newLocation = event.getSpawnTransform().orElse(null);
-            if (this.newLocation != null) {
-                this.setTransform(this.newLocation);
-            }
+            this.inventory.armorInventory[slotIn - 1] = stack;
         }
     }
 
-    @Inject(method = "wakeUpPlayer", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;sleepTimer:I",
-            opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER), cancellable = true)
-    private void onWakeUpPlayerFinish(boolean immediately, boolean updateWorldFlag, boolean setSpawn, CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Cause.of(NamedCause.source(this)), this.bed, this));
-        if (setSpawn) {
-            this.setSpawnPoint(this.newLocation != null ? VecHelper.toBlockPos(this.newLocation.getPosition()) : this.playerLocation, false);
-        }
-
-        this.newLocation = null;
-        this.bed = null;
-        ci.cancel();
-    }*/
-
-    public void setSpawnChunk(BlockPos pos, boolean forced, int dimension) {
-        if (dimension == 0) {
-            if (pos != null) {
-                this.spawnChunk = pos;
-                this.spawnForced = forced;
-            } else {
-                this.spawnChunk = null;
-                this.spawnForced = false;
-            }
-            return;
-        }
-
-        if (pos != null) {
-            this.spawnChunkMap.put(dimension, pos);
-            this.spawnForcedMap.put(dimension, forced);
-        } else {
-            this.spawnChunkMap.remove(dimension);
-            this.spawnForcedMap.remove(dimension);
-        }
-    }
-
-    public BlockPos getBedLocation(int dimension) {
-        return dimension == 0 ? this.spawnChunk : this.spawnChunkMap.get(dimension);
-    }
-
-    public boolean isSpawnForced(int dimension) {
-        if (this.dimension == 0) {
-            return this.spawnForced;
-        }
-        final Boolean forced = this.spawnForcedMap.get(dimension);
-        return forced == null ? false : forced;
-    }
 }

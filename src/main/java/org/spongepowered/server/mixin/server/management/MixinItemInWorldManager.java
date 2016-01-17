@@ -47,14 +47,14 @@ import org.spongepowered.common.util.VecHelper;
 
 import java.util.Optional;
 
-@Mixin(value = ItemInWorldManager.class, priority = 1001)
+@Mixin(ItemInWorldManager.class)
 public abstract class MixinItemInWorldManager {
 
     @Shadow public net.minecraft.world.World theWorld;
     @Shadow public EntityPlayerMP thisPlayerMP;
 
     @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
-    public void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
+    private void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
         Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector(pos));
         InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Cause.of(NamedCause.source(this.thisPlayerMP)),
                 Optional.<Vector3d>empty(), location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(side).get());

@@ -36,16 +36,14 @@ import org.spongepowered.common.interfaces.world.IMixinWorld;
 @Mixin(World.class)
 public abstract class MixinWorld implements IMixinWorld {
 
-    @Shadow
-    protected WorldInfo worldInfo;
+    @Shadow protected WorldInfo worldInfo;
 
     @Inject(method = "updateWeather", at = {
             @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setThundering(Z)V"),
             @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setRaining(Z)V")
     })
-    private void onUpdateWeatherBody(CallbackInfo ci) {
+    private void onUpdateWeather(CallbackInfo ci) {
         this.setWeatherStartTime(this.worldInfo.getWorldTotalTime());
     }
-
 
 }

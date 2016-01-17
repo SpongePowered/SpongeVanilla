@@ -52,8 +52,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-@Mixin(value = Explosion.class, priority = 1001)
+@Mixin(Explosion.class)
 public abstract class MixinExplosion implements org.spongepowered.api.world.explosion.Explosion, IMixinExplosion {
+
     @Shadow private World worldObj;
     @Shadow @Nullable private Entity exploder;
     @Shadow private List<BlockPos> affectedBlockPositions;
@@ -94,7 +95,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
 
     @Redirect(method = "doExplosionA", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;"
             + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"))
-    public List<?> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
+    private List<?> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
         final List<?> affectedEntities = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
         final org.spongepowered.api.world.World spongeWorld = (org.spongepowered.api.world.World) this.worldObj;
 
@@ -137,4 +138,5 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
 
         return affectedEntities;
     }
+
 }

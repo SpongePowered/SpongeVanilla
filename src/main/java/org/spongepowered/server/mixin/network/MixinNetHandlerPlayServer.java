@@ -40,7 +40,6 @@ import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemDoublePlant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S23PacketBlockChange;
@@ -83,15 +82,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-@Mixin(value = NetHandlerPlayServer.class, priority = 1001)
-public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INetHandlerPlayServer, IMixinNetHandlerPlayServer {
+import javax.annotation.Nullable;
 
-    private static final String ACTIVATE_BLOCK_OR_USE_ITEM =
-            "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
-            + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z";
-    private static final String
-            PROCESS_BLOCK_PLACEMENT =
-            "processPlayerBlockPlacement(Lnet/minecraft/network/play/client/C08PacketPlayerBlockPlacement;)V";
+@Mixin(NetHandlerPlayServer.class)
+public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMixinNetHandlerPlayServer {
+
     @Shadow private EntityPlayerMP playerEntity;
     @Shadow private MinecraftServer serverController;
 
@@ -108,7 +103,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onProcessChatMessage(C01PacketChatMessage packet, CallbackInfo ci, String s, IChatComponent component) {
+    private void onProcessChatMessage(C01PacketChatMessage packet, CallbackInfo ci, String s, IChatComponent component) {
         final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(Cause.of(NamedCause.source(this.playerEntity)),
@@ -122,16 +117,14 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
 
     @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
-    public void cancelSendChatMsgImpl(ServerConfigurationManager manager, IChatComponent component, boolean chat) {
-        // do nothing
+    private void cancelSendChatMsgImpl(ServerConfigurationManager manager, IChatComponent component, boolean chat) {
+        // Do nothing
     }
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
     private boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
-        // TODO: Forge passes (0,0,0) as block when interacting with the air
-        //BlockRayHit<World> blockHit = BlockRay.from((Entity) player).filter(BlockRay.<World>onlyAirFilter()).end().get();
         BlockSnapshot block = ((org.spongepowered.api.world.World) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
 
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
@@ -139,9 +132,11 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, INe
         return !SpongeImpl.postEvent(event) && itemInWorldManager.tryUseItem(player, world, stack);
     }
 
-    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = ACTIVATE_BLOCK_OR_USE_ITEM))
-    public boolean onActivateBlockOrUseItem(ItemInWorldManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn, ItemStack stack,
-            BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
+                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"))
+    private boolean onActivateBlockOrUseItem(ItemInWorldManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn,
+            @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
                 Optional.of(new Vector3d(hitX, hitY, hitZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());

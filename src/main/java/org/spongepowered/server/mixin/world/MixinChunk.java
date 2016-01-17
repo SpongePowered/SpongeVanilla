@@ -36,32 +36,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 
-@Mixin(value = Chunk.class, priority = 1001)
-public abstract class MixinChunk {
+@Mixin(Chunk.class)
+public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
 
     @Shadow private World worldObj;
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
-    public void postChunkLoad(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.worldObj)),
-                (org.spongepowered.api.world.Chunk) this));
+    private void postChunkLoad(CallbackInfo ci) {
+        SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.worldObj)), this));
     }
 
     @Inject(method = "onChunkUnload", at = @At("RETURN"))
-    public void postChunkUnload(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.worldObj)),
-                (org.spongepowered.api.world.Chunk) this));
+    private void postChunkUnload(CallbackInfo ci) {
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.worldObj)), this));
     }
 
-
-    /*@Redirect(method = "setBlockState", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/block/Block;onBlockAdded(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/block/state/IBlockState;)V"))
-    public void onChunkBlockAddedCall(Block block, World worldIn, BlockPos pos, IBlockState state) {
-        // Ignore block activations during block placement captures unless it's
-        // a BlockContainer. Prevents blocks such as TNT from activating when
-        // cancelled.
-        if (!((IMixinWorld) worldIn).isCapturingBlockSnapshots() || block instanceof BlockContainer) {
-            block.onBlockAdded(worldIn, pos, state);
-        }
-    }*/
 }

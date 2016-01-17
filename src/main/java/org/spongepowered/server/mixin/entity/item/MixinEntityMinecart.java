@@ -22,37 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch;
+package org.spongepowered.server.mixin.entity.item;
 
-import static com.google.common.base.Preconditions.checkState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.common.interfaces.IMixinMinecart;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.server.launch.transformer.deobf.SrgRemapper;
+@Mixin(EntityMinecart.class)
+public abstract class MixinEntityMinecart extends Entity implements IMixinMinecart {
 
-import javax.annotation.Nullable;
+    private double maxSpeed;
 
-public final class VanillaLaunch {
-
-    private VanillaLaunch() {
+    protected MixinEntityMinecart(World worldIn) {
+        super(worldIn);
     }
 
-    private static final Logger logger = LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME);
-    @Nullable private static SrgRemapper remapper;
-
-    public static Logger getLogger() {
-        return logger;
-    }
-
-    @Nullable
-    public static SrgRemapper getRemapper() {
-        return remapper;
-    }
-
-    public static void setRemapper(SrgRemapper newRemapper) {
-        checkState(remapper == null, "Remapper was already set");
-        VanillaLaunch.remapper = newRemapper;
+    @Override
+    public double getMaximumMinecartSpeed() {
+        return this.maxSpeed;
     }
 
 }

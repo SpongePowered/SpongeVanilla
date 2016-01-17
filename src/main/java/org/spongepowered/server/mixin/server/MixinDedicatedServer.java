@@ -56,12 +56,12 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
-    public void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
+    private void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
         SpongeVanilla.INSTANCE.preInitialize();
     }
 
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
-    public void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
+    private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
         statusResponse.setServerDescription(new ChatComponentText(getMOTD()));
@@ -71,22 +71,22 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     }
 
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = SET_PROPERTY, ordinal = 2, shift = At.Shift.AFTER))
-    public void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
+    private void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerAboutToStart();
     }
 
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
-    public void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
+    private void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerStarting();
     }
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
-    public void onTick(CallbackInfo ci) {
+    private void onTick(CallbackInfo ci) {
         SpongeScheduler.getInstance().tickSyncScheduler();
     }
 
     @Inject(method = "systemExitNow", at = @At(value = "HEAD"))
-    public void callServerStopped(CallbackInfo ci) throws Exception {
+    private void callServerStopped(CallbackInfo ci) throws Exception {
         SpongeVanilla.INSTANCE.onServerStopped();
     }
 

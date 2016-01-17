@@ -32,14 +32,16 @@ import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.spongepowered.server.launch.VanillaLaunch;
 
+import javax.annotation.Nullable;
+
 abstract class DeobfuscationTransformer extends Remapper implements IClassTransformer, SrgRemapper {
 
     DeobfuscationTransformer() {
         VanillaLaunch.setRemapper(this);
     }
 
-    @Override
-    public final byte[] transform(String name, String transformedName, byte[] bytes) {
+    @Override @Nullable
+    public final byte[] transform(String name, String transformedName, @Nullable byte[] bytes) {
         if (bytes == null) {
             return null;
         }

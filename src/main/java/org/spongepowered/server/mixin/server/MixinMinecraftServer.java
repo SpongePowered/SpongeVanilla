@@ -48,6 +48,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.interfaces.IMixinMinecraftServer;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.server.SpongeVanilla;
 import org.spongepowered.server.world.VanillaDimensionManager;
@@ -58,7 +59,7 @@ import java.util.Queue;
 import java.util.concurrent.FutureTask;
 
 @Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer {
+public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Shadow private static Logger logger;
     @Shadow protected Queue<?> futureTaskQueue;
@@ -68,12 +69,12 @@ public abstract class MixinMinecraftServer {
     @Shadow abstract boolean getAllowNether();
     @Shadow abstract NetworkSystem getNetworkSystem();
     @Shadow List<?> playersOnline;
-    private boolean skipServerStop;
 
-    private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<Integer, long[]>();
+    private boolean skipServerStop;
+    private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<>();
 
     @Inject(method = "stopServer()V", at = @At("HEAD"), cancellable = true)
-    public void preventDoubleStop(CallbackInfo ci) {
+    private void preventDoubleStop(CallbackInfo ci) {
         if (this.skipServerStop) {
             ci.cancel();
         } else {
@@ -84,12 +85,12 @@ public abstract class MixinMinecraftServer {
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", ordinal = 0,
             shift = At.Shift.AFTER, remap = false))
-    public void callServerStopping(CallbackInfo ci) {
+    private void callServerStopping(CallbackInfo ci) {
         SpongeVanilla.INSTANCE.onServerStopping();
     }
 
     @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
-    public void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
+    private void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
         // Don't load favicon twice
         if (response.getFavicon() != null) {
             ci.cancel();
@@ -98,7 +99,7 @@ public abstract class MixinMinecraftServer {
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    public void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
+    private void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) worldserver));
     }
 
@@ -180,16 +181,26 @@ public abstract class MixinMinecraftServer {
         this.theProfiler.endSection();
     }
 
+    /**
+     * @author Minecrell
+     * @reason Sets the server brand name to SpongeVanilla
+     */
     @Overwrite
     public String getServerModName() {
         return SpongeVanilla.INSTANCE.getName();
     }
 
+    /**
+     * @author Minecrell
+     * @reason Logs chat messages with legacy color codes to show colored
+     *     messages in the console
+     */
     @Overwrite
     public void addChatMessage(IChatComponent component) {
         logger.info(SpongeTexts.toLegacy(component));
     }
 
+    @Override
     public Hashtable<Integer, long[]> getWorldTickTimes() {
         return this.worldTickTimes;
     }

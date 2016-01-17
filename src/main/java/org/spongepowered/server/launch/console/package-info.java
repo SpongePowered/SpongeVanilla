@@ -22,29 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.entity.vehicle;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.world.World;
-import org.spongepowered.api.entity.vehicle.minecart.Minecart;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.common.interfaces.IMixinMinecart;
-
-@NonnullByDefault
-@Mixin(EntityMinecart.class)
-public abstract class MixinEntityMinecart extends Entity implements Minecart, IMixinMinecart {
-
-    private double maxSpeed;
-
-    protected MixinEntityMinecart(World worldIn) {
-        super(worldIn);
-    }
-
-    @Override
-    public double getMaximumMinecartSpeed() {
-        return this.maxSpeed;
-    }
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.launch.console;

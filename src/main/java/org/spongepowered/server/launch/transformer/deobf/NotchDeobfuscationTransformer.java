@@ -48,6 +48,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 public final class NotchDeobfuscationTransformer extends DeobfuscationTransformer implements IClassNameTransformer {
 
     private final ImmutableBiMap<String, String> classes;
@@ -127,6 +129,7 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
         return fieldName;
     }
 
+    @Nullable
     private Map<String, String> getFieldMap(String owner) {
         Map<String, String> result = this.fields.get(owner);
         if (result != null) {
@@ -151,6 +154,7 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
         return methodName;
     }
 
+    @Nullable
     private Map<String, String> getMethodMap(String owner) {
         Map<String, String> result = this.methods.get(owner);
         if (result != null) {
@@ -211,7 +215,7 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
         }
     }
 
-    private void createSuperMaps(ClassReader reader, String name, String superName, String[] interfaces) {
+    private void createSuperMaps(ClassReader reader, String name, @Nullable String superName, @Nullable String[] interfaces) {
         loadedClasses.add(name);
 
         Map<String, String> fields = new HashMap<>();

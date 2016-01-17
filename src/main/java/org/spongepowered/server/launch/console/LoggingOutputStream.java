@@ -32,6 +32,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.annotation.Nullable;
+
 public class LoggingOutputStream extends ByteArrayOutputStream {
 
     private static final String SEPARATOR = System.getProperty("line.separator");
@@ -41,12 +43,12 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
             "kotlin.io."
     };
 
-    private final String fqcn;
+    @Nullable private final String fqcn;
     private final Logger logger;
     private final Level level;
     boolean flush = true;
 
-    public LoggingOutputStream(String fqcn, Logger logger, Level level) {
+    public LoggingOutputStream(@Nullable String fqcn, Logger logger, Level level) {
         this.fqcn = fqcn;
         this.logger = checkNotNull(logger, "logger");
         this.level = checkNotNull(level, "level");

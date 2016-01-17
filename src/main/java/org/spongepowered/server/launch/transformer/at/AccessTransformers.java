@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public final class AccessTransformers {
 
     private AccessTransformers() {
@@ -54,6 +56,7 @@ public final class AccessTransformers {
 
     private static final char WILDCARD = '*';
 
+    @Nullable
     private static Map<String, ClassAccessModifiers.Builder> rules = new HashMap<>();
 
     private static void verifyState() {

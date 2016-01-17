@@ -28,13 +28,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.world.ExplosionEvent;
+import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -45,28 +44,24 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.interfaces.IMixinExplosion;
 import org.spongepowered.server.world.VanillaDimensionManager;
 
-@Mixin(value = WorldServer.class, priority = 1001)
-public abstract class MixinWorldServer extends World {
-
-    protected MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info,
-            WorldProvider providerIn, Profiler profilerIn, boolean client) {
-        super(saveHandlerIn, info, providerIn, profilerIn, client);
-    }
+@Mixin(WorldServer.class)
+public abstract class MixinWorldServer implements World {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    public void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
+    private void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
             CallbackInfo ci) {
         VanillaDimensionManager.setWorld(dimensionId, (WorldServer) (Object) this);
     }
 
     @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
+    private void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
             CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
         final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(((IMixinExplosion) explosion).createCause(),
-                (org.spongepowered.api.world.explosion.Explosion) explosion, (org.spongepowered.api.world.World) this);
+                (org.spongepowered.api.world.explosion.Explosion) explosion, this);
         if (SpongeImpl.postEvent(event)) {
             cir.setReturnValue(explosion);
         }
     }
+
 }

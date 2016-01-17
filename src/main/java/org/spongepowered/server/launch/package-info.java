@@ -22,25 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server;
-
-import net.minecraft.item.ItemStack;
-import org.spongepowered.api.data.manipulator.DataManipulator;
-
-import java.util.Collection;
-
-public final class VanillaHooks {
-
-    private VanillaHooks() {
-    }
-
-    // This method may be un-needed now
-    private static void copyStack(ItemStack source, ItemStack target) {
-        target.stackSize = source.stackSize;
-        // TODO May need to clear manipulators from source stack sans durability
-        final Collection<DataManipulator<?, ?>> manipulators = ((org.spongepowered.api.item.inventory.ItemStack) source).getContainers();
-        for (DataManipulator<?, ?> manipulator : manipulators) {
-            ((org.spongepowered.api.item.inventory.ItemStack) target).offer((DataManipulator) manipulator);
-        }
-    }
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.launch;

@@ -57,6 +57,8 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 @Plugin(name = "TerminalConsole", category = "Core", elementType = "appender", printObject = true)
 public class TerminalConsoleAppender extends AbstractAppender {
 
@@ -69,15 +71,16 @@ public class TerminalConsoleAppender extends AbstractAppender {
     private static final PrintStream out = System.out;
 
     private static boolean initialized;
-    private static ConsoleReader reader;
+    @Nullable private static ConsoleReader reader;
 
+    @Nullable
     public static ConsoleReader getReader() {
         return reader;
     }
 
     private static Function<String, String> formatter = Function.identity();
 
-    public static void setFormatter(Function<String, String> format) {
+    public static void setFormatter(@Nullable Function<String, String> format) {
         formatter = format != null ? format : Function.identity();
     }
 
@@ -89,7 +92,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
     public static TerminalConsoleAppender createAppender(
             @PluginAttribute("name") String name,
             @PluginElement("Filters") Filter filter,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Layout") @Nullable Layout<? extends Serializable> layout,
             @PluginAttribute("ignoreExceptions") String ignore) {
 
         if (name == null) {

@@ -22,37 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch;
+package org.spongepowered.server.mixin.world;
 
-import static com.google.common.base.Preconditions.checkState;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldType;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.common.interfaces.world.IMixinWorldType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.server.launch.transformer.deobf.SrgRemapper;
+@Mixin(WorldType.class)
+public abstract class MixinWorldType implements IMixinWorldType {
 
-import javax.annotation.Nullable;
-
-public final class VanillaLaunch {
-
-    private VanillaLaunch() {
-    }
-
-    private static final Logger logger = LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME);
-    @Nullable private static SrgRemapper remapper;
-
-    public static Logger getLogger() {
-        return logger;
-    }
-
-    @Nullable
-    public static SrgRemapper getRemapper() {
-        return remapper;
-    }
-
-    public static void setRemapper(SrgRemapper newRemapper) {
-        checkState(remapper == null, "Remapper was already set");
-        VanillaLaunch.remapper = newRemapper;
+    @Override
+    public int getSpawnFuzz() {
+        return Math.max(5, MinecraftServer.getServer().getSpawnProtectionSize() - 6);
     }
 
 }

@@ -36,6 +36,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 
+import javax.annotation.Nullable;
+
 public final class AccessTransformer implements IClassTransformer {
 
     private final ImmutableMap<String, ClassAccessModifiers> modifiers;
@@ -44,8 +46,8 @@ public final class AccessTransformer implements IClassTransformer {
         this.modifiers = AccessTransformers.build();
     }
 
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
+    @Override @Nullable
+    public byte[] transform(String name, String transformedName, @Nullable byte[] bytes) {
         if (bytes == null) {
             return null;
         }
@@ -64,7 +66,7 @@ public final class AccessTransformer implements IClassTransformer {
     private static class AccessTransformingClassAdapter extends ClassVisitor {
 
         private final ClassAccessModifiers modifiers;
-        private String name;
+        @Nullable private String name;
 
         public AccessTransformingClassAdapter(ClassVisitor cv, ClassAccessModifiers modifiers) {
             super(ASM5, cv);

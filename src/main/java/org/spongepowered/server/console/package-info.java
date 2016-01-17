@@ -22,17 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.interfaces;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-
-import java.util.HashMap;
-
-public interface IMixinEntityPlayer extends org.spongepowered.common.interfaces.IMixinEntityPlayer {
-    NBTTagCompound getEntityData();
-
-    HashMap<Integer, BlockPos> getSpawnChunkMap();
-
-    HashMap<Integer, Boolean> getSpawnForcedMap();
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.console;

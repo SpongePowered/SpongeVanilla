@@ -47,7 +47,7 @@ public abstract class MixinConsoleHandler {
     private DedicatedServer server;
 
     @Inject(method = "run", at = @At("HEAD"), cancellable = true, remap = false)
-    public void onRun(CallbackInfo ci) {
+    private void onRun(CallbackInfo ci) {
         final ConsoleReader reader = TerminalConsoleAppender.getReader();
 
         if (reader != null) {

@@ -43,11 +43,14 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import javax.annotation.Nullable;
+
 public final class VanillaLaunchPluginManager {
 
     private VanillaLaunchPluginManager() {
     }
 
+    @Nullable
     private static ImmutableSetMultimap<Object, String> plugins;
 
     public static void findPlugins(boolean scanClasspath) throws IOException {

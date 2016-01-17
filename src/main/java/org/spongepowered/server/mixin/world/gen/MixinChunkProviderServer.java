@@ -39,14 +39,14 @@ import org.spongepowered.server.world.VanillaDimensionManager;
 import java.util.List;
 import java.util.Set;
 
-@Mixin(value = ChunkProviderServer.class, priority = 1001)
+@Mixin(ChunkProviderServer.class)
 public abstract class MixinChunkProviderServer {
+
     @Shadow public WorldServer worldObj;
     @Shadow private Set<? super Object> droppedChunksSet;
     @Shadow public List<?> loadedChunks;
     @Shadow public IChunkProvider serverChunkGenerator;
 
-    @SuppressWarnings("unchecked")
     @Overwrite
     public void dropChunk(int x, int z) {
         if (this.worldObj.provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())) {
@@ -61,10 +61,11 @@ public abstract class MixinChunkProviderServer {
 
     @Inject(method = "unloadQueuedChunks", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", remap = false),
             cancellable = true)
-    public void onUnloadQueuedChunks(CallbackInfoReturnable<Boolean> cir) {
+    private void onUnloadQueuedChunks(CallbackInfoReturnable<Boolean> cir) {
         if (this.loadedChunks.size() == 0 && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())){
             VanillaDimensionManager.unloadWorld(this.worldObj.provider.getDimensionId());
             cir.setReturnValue(this.serverChunkGenerator.unloadQueuedChunks());
         }
     }
+
 }

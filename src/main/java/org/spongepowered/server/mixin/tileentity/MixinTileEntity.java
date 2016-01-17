@@ -25,8 +25,7 @@
 package org.spongepowered.server.mixin.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
-import org.spongepowered.api.block.tileentity.TileEntity;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
+import net.minecraft.tileentity.TileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -35,43 +34,31 @@ import org.spongepowered.common.interfaces.block.tile.IMixinTileEntity;
 
 import javax.annotation.Nullable;
 
-@NonnullByDefault
-@Mixin(value = net.minecraft.tileentity.TileEntity.class, priority = 1001)
-public abstract class MixinTileEntity implements TileEntity, IMixinTileEntity {
+@Mixin(TileEntity.class)
+public abstract class MixinTileEntity implements IMixinTileEntity {
 
-    @Nullable private NBTTagCompound customEntityData;
+    @Nullable private NBTTagCompound customTileData;
+
+    @Override
+    public NBTTagCompound getTileData() {
+        if (this.customTileData == null) {
+            this.customTileData = new NBTTagCompound();
+        }
+        return this.customTileData;
+    }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
-    public void endReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+    private void endReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey("ForgeData")) {
-            this.customEntityData = tagCompound.getCompoundTag("ForgeData");
+            this.customTileData = tagCompound.getCompoundTag("ForgeData");
         }
     }
 
     @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
-    public void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
-        if (this.customEntityData != null) {
-            tagCompound.setTag("ForgeData", this.customEntityData);
+    private void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+        if (this.customTileData != null) {
+            tagCompound.setTag("ForgeData", this.customTileData);
         }
     }
 
-    /**
-     * Gets the SpongeData NBT tag, used for additional data not stored in the
-     * vanilla tag.
-     *
-     * <p>Modifying this tag will affect the data stored.</p>
-     *
-     * @return The data tag
-     */
-    @Override
-    public final NBTTagCompound getSpongeData() {
-        if (this.customEntityData == null) {
-            this.customEntityData = new NBTTagCompound();
-        }
-
-        if (!this.customEntityData.hasKey("SpongeData", 10)) {
-            this.customEntityData.setTag("SpongeData", new NBTTagCompound());
-        }
-        return this.customEntityData.getCompoundTag("SpongeData");
-    }
 }
