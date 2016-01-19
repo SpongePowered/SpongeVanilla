@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.function.Function;
 
 public final class SrgReader {
 
@@ -51,9 +52,19 @@ public final class SrgReader {
 
     private static final int MIN_LINE_LENGTH = 7;
 
+    private final Function<String, String> targetRemapper;
+
     private final ImmutableBiMap.Builder<String, String> classes = ImmutableBiMap.builder();
     private final ImmutableTable.Builder<String, String, String> fields = ImmutableTable.builder();
     private final ImmutableTable.Builder<String, String, String> methods = ImmutableTable.builder();
+
+    public SrgReader() {
+        this(null);
+    }
+
+    public SrgReader(Function<String, String> targetRemapper) {
+        this.targetRemapper = targetRemapper;
+    }
 
     public void read(URL resource) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), UTF_8))) {
@@ -72,19 +83,27 @@ public final class SrgReader {
             String prefix = parts.next();
 
             if (prefix.startsWith(CLASS_MAPPING_KEY)) {
-                classes.put(parts.next(), parts.next());
+                this.classes.put(parts.next(), remapTarget(parts.next()));
             } else if (prefix.startsWith(FIELD_MAPPING_KEY)) {
                 String[] source = parseMember(parts.next());
                 String[] mapped = parseMember(parts.next());
-                fields.put(source[0], source[1], mapped[1]);
+                this.fields.put(source[0], source[1], mapped[1]);
             } else if (prefix.startsWith(METHOD_MAPPING_KEY)) {
                 // Note: Destination descriptor is ignored on purpose (we don't need it)
                 String[] source = parseMember(parts.next());
                 String desc = parts.next();
                 String[] mapped = parseMember(parts.next());
-                methods.put(source[0], source[1].concat(desc), mapped[1]);
+                this.methods.put(source[0], source[1].concat(desc), mapped[1]);
             }
         }
+    }
+
+    private String remapTarget(String target) {
+        String result = null;
+        if (this.targetRemapper != null) {
+            result = this.targetRemapper.apply(target);
+        }
+        return result != null ? result : target;
     }
 
     private static String[] parseMember(String member) {

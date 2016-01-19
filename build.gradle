@@ -18,7 +18,7 @@ buildscript {
             exclude module: 'guava'
         }
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
-        classpath 'org.spongepowered:spongegradle:0.2-SNAPSHOT'
+        classpath 'org.spongepowered:spongegradle:0.3-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.2-SNAPSHOT'
     }
 }
@@ -78,5 +78,22 @@ shadowJar {
         include dependency('com.typesafe:config')
 
         include dependency('jline:jline')
+    }
+}
+
+task('genAnonInnerClassMappings', type: GenerateAnonInnerClassMappings) {
+    dependsOn 'setupDecompWorkspace'
+    outFile = new File(sourceSets.main.resources.srcDirs.first(), 'anon_inner_classes.properties')
+
+    // This class does not even exist on the server; however the SRG mappings include them
+    // That is currently causing our transformer to fail to load the mappings
+    // TODO: Fix this in a better way
+    extra['net/minecraft/network/NetworkSystem$5'] = 'net/minecraft/network/NetworkSystem$99'
+}
+
+afterEvaluate {
+    genAnonInnerClassMappings {
+        deobfJar = decompileMc.inJar
+        recompJar = recompileMc.outJar
     }
 }
