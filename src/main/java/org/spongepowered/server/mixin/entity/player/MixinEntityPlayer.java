@@ -186,7 +186,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements IMix
             spawnData.setInteger("SpawnX", spawn.getX());
             spawnData.setInteger("SpawnY", spawn.getY());
             spawnData.setInteger("SpawnZ", spawn.getZ());
-            spawnData.setBoolean("SpawnForced", spawnForcedSet.contains(dim));
+            spawnData.setBoolean("SpawnForced", this.spawnForcedSet.contains(dim));
             spawnList.appendTag(spawnData);
             return true;
         });
@@ -332,16 +332,13 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements IMix
 
         this.sleepTimer = immediately ? 0 : 100;
 
+        if (setSpawn) {
+            this.setSpawnPoint(this.playerLocation, false);
+        }
+
         // Sponge start
         SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Cause.of(NamedCause.source(this)), bed, this));
         // Sponge end
-
-        if (setSpawn) {
-            // Sponge start
-            //this.setSpawnPoint(this.playerLocation, false);
-            this.setSpawnPoint(newLocation != null ? VecHelper.toBlockPos(newLocation.getPosition()) : this.playerLocation, false);
-            // Sponge end
-        }
     }
 
     // Vanilla fixes

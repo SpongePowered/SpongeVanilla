@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.mixin.world;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -58,7 +59,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
         }
         int spawnFuzzHalf = spawnFuzz / 2;
 
-        if (!hasNoSky && !isAdventure) {
+        if (!this.hasNoSky && !isAdventure) {
             ret = this.worldObj.getTopSolidOrLiquidBlock(
                     ret.add(this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz, 0, this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz));
         }
@@ -67,8 +68,13 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
     }
 
     @Override
+    public int getRespawnDimension(EntityPlayerMP player) {
+        return 0;
+    }
+
+    @Override
     public int getHeight() {
-        return hasNoSky ? 128 : 256;
+        return this.hasNoSky ? 128 : 256;
     }
 
     @Override
