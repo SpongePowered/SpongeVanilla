@@ -15,6 +15,7 @@
         "entity.player.MixinEntityPlayerMP",
         "item.MixinEnchantment",
         "network.MixinNetHandlerPlayServer",
+        "server.dedicated.MixinServerHangWatchdog",
         "server.management.MixinItemInWorldManager",
         "server.MixinConsoleHandler",
         "server.MixinDedicatedServer",
