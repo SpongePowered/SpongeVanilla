@@ -49,8 +49,6 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     private static final String SET_PROPERTY = "Lnet/minecraft/server/dedicated/PropertyManager;setProperty(Ljava/lang/String;Ljava/lang/Object;)V";
     private static final String LOAD_ALL_WORLDS = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
             + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V";
-    private static final String LOAD_ALL_WORLDS_PRODUCTION = "Lnet/minecraft/server/dedicated/DedicatedServer;"
-            + "func_71247_a(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V";
 
     protected MixinDedicatedServer(File workDir, Proxy proxy, File profileCacheDir) {
         super(workDir, proxy, profileCacheDir);
@@ -77,12 +75,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         SpongeVanilla.INSTANCE.onServerAboutToStart();
     }
 
-    // TODO: LOAD_ALL_WORLDS is getting reobfuscated to the method on MinecraftServer
-    // However, the method calls the method on DedicatedServer and not on MinecraftServer
-    @Inject(method = "startServer()Z", at = {
-            @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER, remap = false),
-            @At(value = "INVOKE", target = LOAD_ALL_WORLDS_PRODUCTION, shift = At.Shift.AFTER, remap = false)
-    })
+    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
     public void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerStarting();
     }
