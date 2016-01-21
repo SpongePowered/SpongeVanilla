@@ -34,6 +34,7 @@ import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ReportedException;
+import net.minecraft.util.Util;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -108,13 +109,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.theProfiler.startSection("jobs");
         Queue<?> queue = this.futureTaskQueue;
 
-        synchronized (this.futureTaskQueue) {
-            while (!this.futureTaskQueue.isEmpty()) {
-                try {
-                    ((FutureTask) this.futureTaskQueue.poll()).run();
-                } catch (Throwable throwable2) {
-                    logger.fatal(throwable2);
-                }
+        synchronized (this.futureTaskQueue)
+        {
+            while (!this.futureTaskQueue.isEmpty())
+            {
+                Util.runTask((FutureTask)this.futureTaskQueue.poll(), logger);
             }
         }
 
