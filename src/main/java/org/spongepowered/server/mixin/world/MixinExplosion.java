@@ -95,8 +95,8 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
 
     @Redirect(method = "doExplosionA", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;"
             + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"))
-    private List<?> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
-        final List<?> affectedEntities = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
+    private List<Entity> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
+        final List<Entity> affectedEntities = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
         final org.spongepowered.api.world.World spongeWorld = (org.spongepowered.api.world.World) this.worldObj;
 
         final ImmutableList.Builder<Transaction<BlockSnapshot>> blockTransactionBuilder = ImmutableList.builder();
@@ -110,8 +110,8 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
         final ImmutableList<Transaction<BlockSnapshot>> blockTransactions = blockTransactionBuilder.build();
 
         final ImmutableList.Builder<EntitySnapshot> entitySnapshotBuilder = ImmutableList.builder();
-        for (Object obj : affectedEntities) {
-            entitySnapshotBuilder.add(((org.spongepowered.api.entity.Entity) entity).createSnapshot());
+        for (Entity affectedEntity : affectedEntities) {
+            entitySnapshotBuilder.add(((org.spongepowered.api.entity.Entity) affectedEntity).createSnapshot());
         }
         final ImmutableList<EntitySnapshot> entitySnapshots = entitySnapshotBuilder.build();
 
@@ -119,7 +119,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
 
         @SuppressWarnings("unchecked")
         final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(createCause(),
-                (List<org.spongepowered.api.entity.Entity>) affectedEntities, entitySnapshots, this, (org.spongepowered.api.world.World) worldObj,
+                (List) affectedEntities, entitySnapshots, this, (org.spongepowered.api.world.World) worldObj,
                 blockTransactions);
 
         // TODO Rolling back an explosion...this will be difficult
