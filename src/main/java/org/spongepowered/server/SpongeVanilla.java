@@ -66,6 +66,7 @@ import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
+import org.spongepowered.common.world.storage.SpongePlayerDataHandler;
 import org.spongepowered.server.guice.VanillaGuiceModule;
 import org.spongepowered.server.launch.VanillaCommandLine;
 import org.spongepowered.server.plugin.VanillaPluginManager;
@@ -176,6 +177,7 @@ public final class SpongeVanilla extends SpongePluginContainer {
         SpongeImpl.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
         SpongeImpl.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
         ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
+        SpongePlayerDataHandler.init();
     }
 
     public void onServerStopping() {
