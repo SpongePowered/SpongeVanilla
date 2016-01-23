@@ -58,6 +58,16 @@ public class VanillaIndexedMessageChannel extends VanillaChannelBinding implemen
     }
 
     @Override
+    public <M extends Message> void addHandler(Class<M> messageClass, Platform.Type side, MessageHandler<M> handler) {
+
+    }
+
+    @Override
+    public <M extends Message> void addHandler(Class<M> messageClass, MessageHandler<M> handler) {
+
+    }
+
+    @Override
     public void post(RemoteConnection connection, PacketBuffer payload) {
 
     }
