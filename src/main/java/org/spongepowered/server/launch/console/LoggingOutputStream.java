@@ -40,6 +40,7 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
 
     private static final String[] ignoredPackages = {
             "java.",
+            "sun.",
             "kotlin.io."
     };
 
