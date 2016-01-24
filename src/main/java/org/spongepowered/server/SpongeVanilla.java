@@ -60,6 +60,7 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
+import org.spongepowered.common.network.message.SpongeMessageHandler;
 import org.spongepowered.common.plugin.SpongePluginContainer;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
@@ -146,6 +147,7 @@ public final class SpongeVanilla extends SpongePluginContainer {
         SpongeHooks.enableThreadContentionMonitoring();
 
         Sponge.getEventManager().registerListeners(SpongeImpl.getPlugin(), Sponge.getChannelRegistrar());
+        SpongeMessageHandler.init();
     }
 
     public void initialize() {
