@@ -195,12 +195,16 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         if (name.equals(REGISTER_CHANNEL)) {
             final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
             for (String channel : CHANNEL_SPLITTER.split(channels)) {
-                registeredChannels.add(channel);
+                if (this.registeredChannels.add(channel)) {
+                    SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(Cause.of(NamedCause.source(this)), channel));
+                }
             }
         } else if (name.equals(UNREGISTER_CHANNEL)) {
             final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
             for (String channel : CHANNEL_SPLITTER.split(channels)) {
-                registeredChannels.remove(channel);
+                if (this.registeredChannels.remove(channel)) {
+                    SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventUnregister(Cause.of(NamedCause.source(this)), channel));
+                }
             }
         } else {
             // Custom channel
