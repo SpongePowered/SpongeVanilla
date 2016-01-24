@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.network;
 
+import com.google.common.collect.Sets;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
@@ -39,14 +40,12 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class VanillaRawDataChannel extends VanillaChannelBinding implements ChannelBinding.RawDataChannel {
+public final class VanillaRawDataChannel extends VanillaChannelBinding implements ChannelBinding.RawDataChannel {
 
-    private final Set<RawDataListener> listeners = new HashSet<>();
+    private final Set<RawDataListener> listeners = Sets.newIdentityHashSet();
 
     public VanillaRawDataChannel(ChannelRegistrar registrar, String name, PluginContainer owner) {
         super(registrar, name, owner);
@@ -74,7 +73,7 @@ public class VanillaRawDataChannel extends VanillaChannelBinding implements Chan
     @Override
     public void post(RemoteConnection connection, PacketBuffer payload) {
         final ChannelBuf buf = (ChannelBuf) payload;
-        for (RawDataListener listener : listeners) {
+        for (RawDataListener listener : this.listeners) {
             try {
                 listener.handlePayload(buf, connection, Platform.Type.SERVER);
             } catch (Throwable e) {
@@ -110,7 +109,7 @@ public class VanillaRawDataChannel extends VanillaChannelBinding implements Chan
         validate();
         final String name = getName();
         S3FPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().getPlayerList()) {
+        for (EntityPlayerMP player : MinecraftServer.getServer().getConfigurationManager().getPlayerList()) {
             if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);

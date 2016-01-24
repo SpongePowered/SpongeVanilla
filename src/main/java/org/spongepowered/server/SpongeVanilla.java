@@ -144,6 +144,8 @@ public final class SpongeVanilla extends SpongePluginContainer {
                 input -> input.registerContextCalculator(new SpongeContextCalculator()));
 
         SpongeHooks.enableThreadContentionMonitoring();
+
+        Sponge.getEventManager().registerListeners(SpongeImpl.getPlugin(), Sponge.getChannelRegistrar());
     }
 
     public void initialize() {

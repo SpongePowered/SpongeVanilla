@@ -26,19 +26,28 @@ package org.spongepowered.server.network;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrationException;
 import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.common.network.SpongeNetworkManager;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,8 +60,9 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
     public static final String UNREGISTER_CHANNEL = "UNREGISTER";
 
     public static final char CHANNEL_SEPARATOR = '\0';
+    private static final Joiner CHANNEL_JOINER = Joiner.on(CHANNEL_SEPARATOR);
 
-    private final Map<String, VanillaChannelBinding> channels = Maps.newHashMap();
+    private final Map<String, VanillaChannelBinding> channels = new HashMap<>();
 
     private static boolean isReservedChannel(String name) {
         return name.startsWith(INTERNAL_PREFIX) || name.equals(REGISTER_CHANNEL) || name.equals(UNREGISTER_CHANNEL);
@@ -63,7 +73,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
             throw new ChannelRegistrationException("Reserved channels cannot be registered by plugins");
         }
 
-        ChannelBinding current = channels.get(name);
+        ChannelBinding current = this.channels.get(name);
         if (current != null) {
             throw new ChannelRegistrationException("Channel '" + name + "' is already registered by " + current.getOwner());
         }
@@ -86,7 +96,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         validateChannel(name);
         VanillaIndexedMessageChannel channel = new VanillaIndexedMessageChannel(this, name, container);
         registerChannel(channel);
-        return new VanillaIndexedMessageChannel(this, name, container);
+        return channel;
     }
 
     @Override
@@ -116,7 +126,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
     @Override
     public Set<String> getRegisteredChannels(Platform.Type side) {
         if (side == Platform.Type.SERVER) {
-            return ImmutableSet.copyOf(channels.keySet());
+            return ImmutableSet.copyOf(this.channels.keySet());
         } else {
             return ImmutableSet.of();
         }
@@ -132,6 +142,16 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         if (binding != null) {
             binding.post(connection, packet.getBufferData());
         }
+    }
+
+    @Listener(order = Order.PRE)
+    public void onPlayerJoin(ClientConnectionEvent.Join event) {
+        EntityPlayerMP player = (EntityPlayerMP) event.getTargetEntity();
+
+        // Register our channel list on the client
+        String channels = CHANNEL_JOINER.join(this.channels.keySet());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(channels.getBytes(StandardCharsets.UTF_8)));
+        player.playerNetServerHandler.sendPacket(new S3FPacketCustomPayload(REGISTER_CHANNEL, buffer));
     }
 
 }
