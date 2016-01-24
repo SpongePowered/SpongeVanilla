@@ -174,7 +174,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         // If that is not successful, try to use the item without a block instead
         // This is necessary because we filter the second packet sent when interacting with a block
         return itemManager.activateBlockOrUseItem(player, worldIn, stack, pos, side, hitX, hitY, hitZ)
-                || itemManager.tryUseItem(player, worldIn, stack);
+                || (stack != null && itemManager.tryUseItem(player, worldIn, stack));
     }
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areItemStacksEqual"
