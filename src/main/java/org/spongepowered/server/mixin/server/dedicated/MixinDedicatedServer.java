@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.server;
+package org.spongepowered.server.mixin.server.dedicated;
 
 import static org.spongepowered.common.SpongeImpl.MINECRAFT_VERSION;
 

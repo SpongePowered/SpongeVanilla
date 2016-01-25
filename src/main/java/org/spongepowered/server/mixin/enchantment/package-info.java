@@ -22,21 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.item;
-
-import org.spongepowered.api.item.Enchantment;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-
-@Mixin(net.minecraft.enchantment.Enchantment.class)
-public abstract class MixinEnchantment implements Enchantment {
-
-    @Shadow public abstract boolean canApply(net.minecraft.item.ItemStack stack);
-
-    @Override
-    public boolean canBeAppliedToStack(ItemStack stack) {
-        return canApply((net.minecraft.item.ItemStack) stack);
-    }
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.mixin.enchantment;

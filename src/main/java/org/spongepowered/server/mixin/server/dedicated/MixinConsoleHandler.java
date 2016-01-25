@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.server;
+package org.spongepowered.server.mixin.server.dedicated;
 
 import jline.console.ConsoleReader;
 import net.minecraft.server.dedicated.DedicatedServer;

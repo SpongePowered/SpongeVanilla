@@ -22,33 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.world;
+package org.spongepowered.server.mixin.enchantment;
 
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.item.Enchantment;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.SpongeImpl;
 
-@Mixin(Chunk.class)
-public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
+@Mixin(net.minecraft.enchantment.Enchantment.class)
+public abstract class MixinEnchantment implements Enchantment {
 
-    @Shadow private World worldObj;
+    @Shadow public abstract boolean canApply(net.minecraft.item.ItemStack stack);
 
-    @Inject(method = "onChunkLoad", at = @At("RETURN"))
-    private void postChunkLoad(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.worldObj)), this));
-    }
-
-    @Inject(method = "onChunkUnload", at = @At("RETURN"))
-    private void postChunkUnload(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.worldObj)), this));
+    @Override
+    public boolean canBeAppliedToStack(ItemStack stack) {
+        return canApply((net.minecraft.item.ItemStack) stack);
     }
 
 }
