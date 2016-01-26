@@ -60,8 +60,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         SpongeVanilla.INSTANCE.preInitialize();
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-            target = "Lnet/minecraft/server/dedicated/DedicatedPlayerList;<init>(Lnet/minecraft/server/dedicated/DedicatedServer;)V"))
+    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
     private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
