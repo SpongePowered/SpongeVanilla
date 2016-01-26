@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.function.Function;
 
 public final class SrgReader {
 
@@ -52,19 +51,9 @@ public final class SrgReader {
 
     private static final int MIN_LINE_LENGTH = 7;
 
-    private final Function<String, String> targetRemapper;
-
     private final ImmutableBiMap.Builder<String, String> classes = ImmutableBiMap.builder();
     private final ImmutableTable.Builder<String, String, String> fields = ImmutableTable.builder();
     private final ImmutableTable.Builder<String, String, String> methods = ImmutableTable.builder();
-
-    public SrgReader() {
-        this(null);
-    }
-
-    public SrgReader(Function<String, String> targetRemapper) {
-        this.targetRemapper = targetRemapper;
-    }
 
     public void read(URL resource) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream(), UTF_8))) {
@@ -83,7 +72,7 @@ public final class SrgReader {
             String prefix = parts.next();
 
             if (prefix.startsWith(CLASS_MAPPING_KEY)) {
-                this.classes.put(parts.next(), remapTarget(parts.next()));
+                this.classes.put(parts.next(), parts.next());
             } else if (prefix.startsWith(FIELD_MAPPING_KEY)) {
                 String[] source = parseMember(parts.next());
                 String[] mapped = parseMember(parts.next());
@@ -96,14 +85,6 @@ public final class SrgReader {
                 this.methods.put(source[0], source[1].concat(desc), mapped[1]);
             }
         }
-    }
-
-    private String remapTarget(String target) {
-        String result = null;
-        if (this.targetRemapper != null) {
-            result = this.targetRemapper.apply(target);
-        }
-        return result != null ? result : target;
     }
 
     private static String[] parseMember(String member) {

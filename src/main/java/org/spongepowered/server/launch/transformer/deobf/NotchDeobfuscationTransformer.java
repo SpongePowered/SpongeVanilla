@@ -38,7 +38,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
-import org.spongepowered.server.launch.transformer.deobf.reader.AnonInnerClassMappingsReader;
 import org.spongepowered.server.launch.transformer.deobf.reader.SrgReader;
 
 import java.io.IOException;
@@ -63,16 +62,8 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
 
     public NotchDeobfuscationTransformer() throws IOException {
         URL mappings = (URL) Launch.blackboard.get("vanilla.srg_mappings");
-        URL anonInnerClassMap = (URL) Launch.blackboard.get("vanilla.anon_inner_class_map");
 
-        SrgReader reader;
-        if (anonInnerClassMap != null) {
-            ImmutableMap<String, String> innerClasses = AnonInnerClassMappingsReader.read(anonInnerClassMap);
-            reader = new SrgReader(innerClasses::get);
-        } else {
-            reader = new SrgReader();
-        }
-
+        SrgReader reader = new SrgReader();
         reader.read(mappings);
 
         this.classes = reader.getClasses();
