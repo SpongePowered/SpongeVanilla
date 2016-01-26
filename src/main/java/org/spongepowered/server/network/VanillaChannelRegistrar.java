@@ -30,16 +30,13 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Singleton;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrationException;
 import org.spongepowered.api.network.RemoteConnection;
@@ -144,14 +141,11 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         }
     }
 
-    @Listener(order = Order.PRE)
-    public void onPlayerJoin(ClientConnectionEvent.Join event) {
-        EntityPlayerMP player = (EntityPlayerMP) event.getTargetEntity();
-
+    public void registerChannels(NetHandlerPlayServer netHandler) {
         // Register our channel list on the client
         String channels = CHANNEL_JOINER.join(this.channels.keySet());
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(channels.getBytes(StandardCharsets.UTF_8)));
-        player.playerNetServerHandler.sendPacket(new S3FPacketCustomPayload(REGISTER_CHANNEL, buffer));
+        netHandler.sendPacket(new S3FPacketCustomPayload(REGISTER_CHANNEL, buffer));
     }
 
 }

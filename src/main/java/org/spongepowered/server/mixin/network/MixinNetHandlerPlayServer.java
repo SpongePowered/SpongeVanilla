@@ -102,6 +102,11 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         return this.registeredChannels.contains(name);
     }
 
+    @Inject(method = "<init>*", at = @At("RETURN"))
+    private void registerChannels(CallbackInfo ci) {
+        ((VanillaChannelRegistrar) Sponge.getChannelRegistrar()).registerChannels((NetHandlerPlayServer) (Object) this);
+    }
+
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)

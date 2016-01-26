@@ -146,7 +146,6 @@ public final class SpongeVanilla extends SpongePluginContainer {
 
         SpongeHooks.enableThreadContentionMonitoring();
 
-        Sponge.getEventManager().registerListeners(SpongeImpl.getPlugin(), Sponge.getChannelRegistrar());
         SpongeMessageHandler.init();
     }
 
