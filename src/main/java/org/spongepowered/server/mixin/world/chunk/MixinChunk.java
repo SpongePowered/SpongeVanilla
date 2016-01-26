@@ -29,6 +29,7 @@ import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,7 +40,7 @@ import org.spongepowered.common.SpongeImpl;
 @Mixin(Chunk.class)
 public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
 
-    @Shadow private World worldObj;
+    @Shadow @Final private World worldObj;
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
     private void postChunkLoad(CallbackInfo ci) {

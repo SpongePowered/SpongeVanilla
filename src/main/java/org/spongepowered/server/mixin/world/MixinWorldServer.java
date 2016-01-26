@@ -47,7 +47,7 @@ import org.spongepowered.server.world.VanillaDimensionManager;
 @Mixin(WorldServer.class)
 public abstract class MixinWorldServer implements World {
 
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
+    @Inject(method = "<init>", at = @At("RETURN"))
     private void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
             CallbackInfo ci) {
         VanillaDimensionManager.setWorld(dimensionId, (WorldServer) (Object) this);

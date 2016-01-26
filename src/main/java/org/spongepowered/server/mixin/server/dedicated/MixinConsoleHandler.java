@@ -26,6 +26,7 @@ package org.spongepowered.server.mixin.server.dedicated;
 
 import jline.console.ConsoleReader;
 import net.minecraft.server.dedicated.DedicatedServer;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,7 +44,7 @@ import java.io.IOException;
 @Mixin(targets = "net/minecraft/server/dedicated/DedicatedServer$2")
 public abstract class MixinConsoleHandler {
 
-    @Shadow(remap = false, aliases = {"field_72428_a", "this$0"})
+    @Shadow(remap = false, aliases = {"field_72428_a", "this$0"}) @Final
     private DedicatedServer server;
 
     @Inject(method = "run", at = @At("HEAD"), cancellable = true, remap = false)

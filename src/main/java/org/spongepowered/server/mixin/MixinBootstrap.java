@@ -31,6 +31,10 @@ import org.spongepowered.asm.mixin.Overwrite;
 @Mixin(Bootstrap.class)
 public abstract class MixinBootstrap {
 
+    /**
+     * @author Minecrell
+     * @reason Remove STDOUT to logger redirection, already handled by SpongeVanilla.
+     */
     @Overwrite
     private static void redirectOutputToLog() {
         // We do that on our own

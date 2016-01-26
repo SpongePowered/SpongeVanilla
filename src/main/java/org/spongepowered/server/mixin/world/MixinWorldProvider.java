@@ -41,7 +41,7 @@ import org.spongepowered.common.interfaces.world.IMixinWorldType;
 public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvider {
 
     @Shadow protected World worldObj;
-    @Shadow public WorldType terrainType;
+    @Shadow private WorldType terrainType;
     @Shadow protected boolean hasNoSky;
 
     @Override

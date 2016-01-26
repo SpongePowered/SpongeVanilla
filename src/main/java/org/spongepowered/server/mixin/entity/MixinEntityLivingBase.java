@@ -56,7 +56,7 @@ public abstract class MixinEntityLivingBase extends Entity {
 
     @Shadow public abstract CombatTracker getCombatTracker();
 
-    public MixinEntityLivingBase() {
+    protected MixinEntityLivingBase() {
         super(null);
     }
 

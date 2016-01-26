@@ -24,45 +24,38 @@
  */
 package org.spongepowered.server.mixin.world.gen;
 
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderServer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.server.world.VanillaDimensionManager;
 
 import java.util.List;
-import java.util.Set;
 
 @Mixin(ChunkProviderServer.class)
 public abstract class MixinChunkProviderServer {
 
-    @Shadow public WorldServer worldObj;
-    @Shadow private Set<? super Object> droppedChunksSet;
-    @Shadow public List<?> loadedChunks;
-    @Shadow public IChunkProvider serverChunkGenerator;
+    @Shadow private IChunkProvider serverChunkGenerator;
+    @Shadow private List<Chunk> loadedChunks;
+    @Shadow private WorldServer worldObj;
 
-    @Overwrite
-    public void dropChunk(int x, int z) {
-        if (this.worldObj.provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())) {
-            if (!this.worldObj.isSpawnChunk(x, z)) {
-                this.droppedChunksSet.add(ChunkCoordIntPair.chunkXZ2Int(x, z));
-            }
-        }
-        else {
-            this.droppedChunksSet.add(ChunkCoordIntPair.chunkXZ2Int(x, z));
-        }
+    // Optionally unload spawn chunks if not specified in the world configuration
+    @Redirect(method = "dropChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProvider;canRespawnHere()Z"))
+    private boolean onCanRespawnHere(WorldProvider provider) {
+        return provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(provider.getDimensionId());
     }
 
     @Inject(method = "unloadQueuedChunks", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", remap = false),
             cancellable = true)
     private void onUnloadQueuedChunks(CallbackInfoReturnable<Boolean> cir) {
-        if (this.loadedChunks.size() == 0 && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())){
+        if (this.loadedChunks.isEmpty() && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())) {
             VanillaDimensionManager.unloadWorld(this.worldObj.provider.getDimensionId());
             cir.setReturnValue(this.serverChunkGenerator.unloadQueuedChunks());
         }

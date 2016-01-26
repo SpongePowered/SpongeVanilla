@@ -72,14 +72,14 @@ import javax.annotation.Nullable;
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements IMixinEntityPlayer {
 
+    @Shadow public InventoryPlayer inventory;
+    @Shadow protected boolean sleeping;
     @Shadow @Nullable public BlockPos playerLocation;
-    @Shadow @Nullable protected BlockPos spawnChunk;
+    @Shadow private int sleepTimer;
+    @Shadow @Nullable private BlockPos spawnChunk;
     @Shadow private boolean spawnForced;
     @Shadow private net.minecraft.item.ItemStack itemInUse;
     @Shadow private int itemInUseCount;
-    @Shadow public InventoryPlayer inventory;
-    @Shadow protected boolean sleeping;
-    @Shadow private int sleepTimer;
 
     @Shadow protected abstract void onItemUseFinish();
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);

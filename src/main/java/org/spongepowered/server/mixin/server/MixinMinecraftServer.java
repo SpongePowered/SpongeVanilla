@@ -41,6 +41,7 @@ import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.world.World;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -62,17 +63,42 @@ import java.util.concurrent.FutureTask;
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
-    @Shadow private static Logger logger;
-    @Shadow protected Queue<?> futureTaskQueue;
+    @Shadow @Final private static Logger logger;
+    @Shadow @Final private List<ITickable> playersOnline;
+    @Shadow @Final public Profiler theProfiler;
     @Shadow private ServerConfigurationManager serverConfigManager;
-    @Shadow private Profiler theProfiler;
     @Shadow private int tickCounter;
-    @Shadow abstract boolean getAllowNether();
-    @Shadow abstract NetworkSystem getNetworkSystem();
-    @Shadow List<?> playersOnline;
+    @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
+
+    @Shadow public abstract boolean getAllowNether();
+    @Shadow public abstract NetworkSystem getNetworkSystem();
 
     private boolean skipServerStop;
-    private Hashtable<Integer, long[]> worldTickTimes = new Hashtable<>();
+    private final Hashtable<Integer, long[]> worldTickTimes = new Hashtable<>();
+
+    /**
+     * @author Minecrell
+     * @reason Sets the server brand name to SpongeVanilla
+     */
+    @Overwrite
+    public String getServerModName() {
+        return SpongeVanilla.INSTANCE.getName();
+    }
+
+    /**
+     * @author Minecrell
+     * @reason Logs chat messages with legacy color codes to show colored
+     *     messages in the console
+     */
+    @Overwrite
+    public void addChatMessage(IChatComponent component) {
+        logger.info(SpongeTexts.toLegacy(component));
+    }
+
+    @Override
+    public Hashtable<Integer, long[]> getWorldTickTimes() {
+        return this.worldTickTimes;
+    }
 
     @Inject(method = "stopServer()V", at = @At("HEAD"), cancellable = true)
     private void preventDoubleStop(CallbackInfo ci) {
@@ -104,30 +130,33 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) worldserver));
     }
 
+    /**
+     * @author Zidane
+     * @reason Handles ticking the additional worlds loaded by Sponge.
+     */
     @Overwrite
     public void updateTimeLightAndEntities() {
         this.theProfiler.startSection("jobs");
-        Queue<?> queue = this.futureTaskQueue;
 
-        synchronized (this.futureTaskQueue)
-        {
-            while (!this.futureTaskQueue.isEmpty())
-            {
-                Util.runTask((FutureTask)this.futureTaskQueue.poll(), logger);
+        synchronized (this.futureTaskQueue) {
+            while (!this.futureTaskQueue.isEmpty()) {
+                Util.runTask(this.futureTaskQueue.poll(), logger);
             }
         }
 
         this.theProfiler.endStartSection("levels");
-        int j;
 
+        // Sponge start - Iterate over all our dimensions
         Integer[] ids = VanillaDimensionManager.getIDs(this.tickCounter % 200 == 0);
-
-        for (j = 0; j < ids.length; ++j) {
+        for (int j = 0; j < ids.length; ++j) {
             int id = ids[j];
+            // Sponge end
             long i = System.nanoTime();
 
             if (j == 0 || this.getAllowNether()) {
+                // Sponge start - Get world from our dimension manager
                 WorldServer worldserver = VanillaDimensionManager.getWorldFromDimId(id);
+                // Sponge end
                 this.theProfiler.startSection(worldserver.getWorldInfo().getWorldName());
 
                 if (this.tickCounter % 20 == 0) {
@@ -139,12 +168,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 }
 
                 this.theProfiler.startSection("tick");
-                CrashReport crashreport;
 
                 try {
                     worldserver.tick();
                 } catch (Throwable throwable1) {
-                    crashreport = CrashReport.makeCrashReport(throwable1, "Exception ticking world");
+                    CrashReport crashreport = CrashReport.makeCrashReport(throwable1, "Exception ticking world");
                     worldserver.addWorldInfoToCrashReport(crashreport);
                     throw new ReportedException(crashreport);
                 }
@@ -152,9 +180,9 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 try {
                     worldserver.updateEntities();
                 } catch (Throwable throwable) {
-                    crashreport = CrashReport.makeCrashReport(throwable, "Exception ticking world entities");
-                    worldserver.addWorldInfoToCrashReport(crashreport);
-                    throw new ReportedException(crashreport);
+                    CrashReport crashreport1 = CrashReport.makeCrashReport(throwable, "Exception ticking world entities");
+                    worldserver.addWorldInfoToCrashReport(crashreport1);
+                    throw new ReportedException(crashreport1);
                 }
 
                 this.theProfiler.endSection();
@@ -163,45 +191,28 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 this.theProfiler.endSection();
                 this.theProfiler.endSection();
             }
+
+            // Sponge start - Write tick times to our custom map
             this.worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
+            // Sponge end
         }
+
+        // Sponge start - Unload requested worlds
         this.theProfiler.endStartSection("dim_unloading");
         VanillaDimensionManager.unloadWorlds(this.worldTickTimes);
+        // Sponge end
+
         this.theProfiler.endStartSection("connection");
         this.getNetworkSystem().networkTick();
         this.theProfiler.endStartSection("players");
         this.serverConfigManager.onTick();
         this.theProfiler.endStartSection("tickables");
 
-        for (j = 0; j < this.playersOnline.size(); ++j) {
-            ((ITickable) this.playersOnline.get(j)).update();
+        for (int k = 0; k < this.playersOnline.size(); ++k) {
+            this.playersOnline.get(k).update();
         }
 
         this.theProfiler.endSection();
-    }
-
-    /**
-     * @author Minecrell
-     * @reason Sets the server brand name to SpongeVanilla
-     */
-    @Overwrite
-    public String getServerModName() {
-        return SpongeVanilla.INSTANCE.getName();
-    }
-
-    /**
-     * @author Minecrell
-     * @reason Logs chat messages with legacy color codes to show colored
-     *     messages in the console
-     */
-    @Overwrite
-    public void addChatMessage(IChatComponent component) {
-        logger.info(SpongeTexts.toLegacy(component));
-    }
-
-    @Override
-    public Hashtable<Integer, long[]> getWorldTickTimes() {
-        return this.worldTickTimes;
     }
 
 }

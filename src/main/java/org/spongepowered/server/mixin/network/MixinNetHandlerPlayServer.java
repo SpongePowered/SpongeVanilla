@@ -64,6 +64,8 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.world.extent.Extent;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -87,8 +89,8 @@ import javax.annotation.Nullable;
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMixinNetHandlerPlayServer {
 
-    @Shadow private EntityPlayerMP playerEntity;
-    @Shadow private MinecraftServer serverController;
+    @Shadow @Final private MinecraftServer serverController;
+    @Shadow public EntityPlayerMP playerEntity;
 
     private static final Splitter CHANNEL_SPLITTER = Splitter.on(CHANNEL_SEPARATOR);
 
@@ -97,7 +99,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
 
     @Override
     public boolean supportsChannel(String name) {
-        return registeredChannels.contains(name);
+        return this.registeredChannels.contains(name);
     }
 
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
@@ -125,7 +127,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
     private boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
-        BlockSnapshot block = ((org.spongepowered.api.world.World) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
+        BlockSnapshot block = ((Extent) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
 
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
                 Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
@@ -137,7 +139,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"))
     private boolean onActivateBlockOrUseItem(ItemInWorldManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn,
             @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-        BlockSnapshot currentSnapshot = ((org.spongepowered.api.world.World) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
+        BlockSnapshot currentSnapshot = ((Extent) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
                 Optional.of(new Vector3d(hitX, hitY, hitZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
         if (SpongeImpl.postEvent(event)) {
