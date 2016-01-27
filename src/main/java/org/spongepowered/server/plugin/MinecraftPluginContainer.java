@@ -25,6 +25,7 @@
 package org.spongepowered.server.plugin;
 
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +33,10 @@ import org.spongepowered.common.plugin.SpongePluginContainer;
 
 import java.util.Optional;
 
-import javax.inject.Singleton;
-
 @Singleton
 public final class MinecraftPluginContainer extends SpongePluginContainer {
 
-    protected MinecraftPluginContainer() {
+    MinecraftPluginContainer() {
     }
 
     @Override

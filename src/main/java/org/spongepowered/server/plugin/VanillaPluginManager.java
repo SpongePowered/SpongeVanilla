@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
+import com.google.inject.Singleton;
 import net.minecraft.launchwrapper.Launch;
 import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -42,8 +43,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.inject.Singleton;
 
 @Singleton
 public class VanillaPluginManager implements PluginManager {

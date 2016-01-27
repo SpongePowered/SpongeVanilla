@@ -24,6 +24,8 @@
  */
 package org.spongepowered.server;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import net.minecraft.server.MinecraftServer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Logger;
@@ -39,19 +41,14 @@ import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.nio.file.Path;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 @Singleton
 public final class VanillaGame extends SpongeGame {
 
-    private final ChannelRegistrar registrar;
-
     @Inject
-    public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager, SpongeGameRegistry gameRegistry,
-            ServiceManager serviceManager, TeleportHelper teleportHelper, Logger logger, ChannelRegistrar registrar) {
-        super(platform, pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper, logger);
-        this.registrar = registrar;
+    public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager,
+            SpongeGameRegistry gameRegistry, ServiceManager serviceManager, TeleportHelper teleportHelper,
+            ChannelRegistrar channelRegistrar, Logger logger) {
+        super(platform, pluginManager, eventManager, gameRegistry, serviceManager, teleportHelper, channelRegistrar, logger);
     }
 
     @Override
@@ -62,11 +59,6 @@ public final class VanillaGame extends SpongeGame {
     @Override
     public GameDictionary getGameDictionary() {
         throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public ChannelRegistrar getChannelRegistrar() {
-        return this.registrar;
     }
 
 }
