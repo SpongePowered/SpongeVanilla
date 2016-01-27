@@ -25,7 +25,6 @@
 package org.spongepowered.server;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.storage.SaveFormatOld;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
@@ -57,7 +56,7 @@ public final class VanillaGame extends SpongeGame {
 
     @Override
     public Path getSavesDirectory() {
-        return ((SaveFormatOld) ((MinecraftServer) getServer()).getActiveAnvilConverter()).savesDirectory.toPath();
+        return MinecraftServer.getServer().anvilFile.toPath();
     }
 
     @Override
