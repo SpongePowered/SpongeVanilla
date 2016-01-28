@@ -1,7 +1,6 @@
 // Gradle plugins
 buildscript {
     repositories {
-        mavenLocal()
         jcenter()
         maven {
             name = 'forge'
