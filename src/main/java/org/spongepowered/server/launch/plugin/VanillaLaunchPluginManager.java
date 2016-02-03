@@ -29,6 +29,7 @@ import static org.spongepowered.server.launch.plugin.PluginScanner.ARCHIVE_FILTE
 
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.SetMultimap;
 import org.spongepowered.common.launch.SpongeLaunch;
 import org.spongepowered.server.launch.VanillaLaunch;
@@ -38,8 +39,10 @@ import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -77,30 +80,35 @@ public final class VanillaLaunchPluginManager {
                 pluginClasses = new HashSet<>();
             }
 
+            List<Path> paths;
             try (DirectoryStream<Path> dir = Files.newDirectoryStream(SpongeLaunch.getPluginsDir(), ARCHIVE_FILTER)) {
-                for (Path path : dir) {
-                    // Search for plugins in the JAR
-                    try (JarFile jar = new JarFile(path.toFile())) {
-                        Set<String> plugins = PluginScanner.scanZip(path, jar);
+                paths = Lists.newArrayList(dir);
+            }
 
-                        Iterator<String> itr = plugins.iterator();
-                        while (itr.hasNext()) {
-                            String plugin = itr.next();
-                            if (!pluginClasses.add(plugin)) {
-                                VanillaLaunch.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, path);
-                                itr.remove();
-                            }
+            Collections.sort(paths);
+
+            for (Path path : paths) {
+                // Search for plugins in the JAR
+                try (JarFile jar = new JarFile(path.toFile())) {
+                    Set<String> plugins = PluginScanner.scanZip(path, jar);
+
+                    Iterator<String> itr = plugins.iterator();
+                    while (itr.hasNext()) {
+                        String plugin = itr.next();
+                        if (!pluginClasses.add(plugin)) {
+                            VanillaLaunch.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, path);
+                            itr.remove();
                         }
-
-                        if (!plugins.isEmpty()) {
-                            found.putAll(path, plugins);
-
-                            // Look for access transformers
-                            PluginAccessTransformers.register(path, jar);
-                        }
-                    } catch (IOException e) {
-                        VanillaLaunch.getLogger().error("Failed to scan plugin JAR: {}", path, e);
                     }
+
+                    if (!plugins.isEmpty()) {
+                        found.putAll(path, plugins);
+
+                        // Look for access transformers
+                        PluginAccessTransformers.register(path, jar);
+                    }
+                } catch (IOException e) {
+                    VanillaLaunch.getLogger().error("Failed to scan plugin JAR: {}", path, e);
                 }
             }
         } else {
