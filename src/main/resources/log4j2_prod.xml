@@ -40,7 +40,7 @@
             <AppenderRef ref="File"/>
         </Logger>
         <!-- Hide HikariCP messages unless it's a real problem -->
-        <Logger name="com.zaxxer.hikari" level="all" additivity="false">
+        <Logger name="com.zaxxer.hikari" level="info" additivity="false">
             <AppenderRef ref="Console" level="warn"/>
             <AppenderRef ref="File"/>
         </Logger>
