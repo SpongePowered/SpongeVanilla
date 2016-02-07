@@ -25,9 +25,12 @@
 package org.spongepowered.server.mixin.world;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.network.Packet;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
@@ -37,6 +40,7 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -45,7 +49,11 @@ import org.spongepowered.server.interfaces.IMixinExplosion;
 import org.spongepowered.server.world.VanillaDimensionManager;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer implements World {
+public abstract class MixinWorldServer extends net.minecraft.world.World {
+
+    private MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
+        super(saveHandlerIn, info, providerIn, profilerIn, client);
+    }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
@@ -58,10 +66,18 @@ public abstract class MixinWorldServer implements World {
     private void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
             CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
         final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(((IMixinExplosion) explosion).createCause(),
-                (org.spongepowered.api.world.explosion.Explosion) explosion, this);
+                (org.spongepowered.api.world.explosion.Explosion) explosion, (World) this);
         if (SpongeImpl.postEvent(event)) {
             cir.setReturnValue(explosion);
         }
+    }
+
+    // Prevent wrong weather changes getting sent to players in other (unaffected) dimensions
+    // This causes "phantom rain" on the client, sunny and rainy weather at the same time
+    @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
+    private void onSendWeatherPacket(ServerConfigurationManager manager, Packet packet) {
+        manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionId());
     }
 
 }
