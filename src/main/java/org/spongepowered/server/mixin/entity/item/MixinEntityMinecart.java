@@ -68,17 +68,17 @@ public abstract class MixinEntityMinecart extends Entity implements IMixinMineca
      * Logically, these should be assigning when the motions are being applied during
      * air drag.
      */
-    @Redirect(method = "moveDerailedMinecart", at = @At(value = "FIELD", target = MINECART_MOTION_X_FIELD, opcode = Opcodes.PUTFIELD, ordinal = 1))
+    @Redirect(method = "moveDerailedMinecart", at = @At(value = "FIELD", target = MINECART_MOTION_X_FIELD, opcode = Opcodes.PUTFIELD, ordinal = 2))
     private void onGetDragAirX(EntityMinecart self, double modifier) {
         self.motionX *= this.airborneMod.getX();
     }
 
-    @Redirect(method = "moveDerailedMinecart", at = @At(value = "FIELD", target = MINECART_MOTION_Y_FIELD, opcode = Opcodes.PUTFIELD, ordinal = 0))
+    @Redirect(method = "moveDerailedMinecart", at = @At(value = "FIELD", target = MINECART_MOTION_Y_FIELD, opcode = Opcodes.PUTFIELD, ordinal = 1))
     private void onGetDragAirY(EntityMinecart self, double modifier) {
         self.motionY *= this.airborneMod.getY();
     }
 
-    @Redirect(method = "moveDerailedMinecart", at = @At(value = "FIELD", target = MINECART_MOTION_Z_FIELD, opcode = Opcodes.PUTFIELD, ordinal = 1))
+    @Redirect(method = "moveDerailedMinecart", at = @At(value = "FIELD", target = MINECART_MOTION_Z_FIELD, opcode = Opcodes.PUTFIELD, ordinal = 2))
     private void onGetDragAirZ(EntityMinecart self, double modifier) {
         self.motionZ *= this.airborneMod.getZ();
     }
