@@ -55,6 +55,7 @@ public final class VanillaCommandLine {
 
     // Console
     public static final OptionSpec<Void> NO_JLINE = parser.accepts("no-jline", "Disable advanced jline terminal");
+    public static final OptionSpec<Void> FORCE_JLINE = parser.accepts("force-jline", "Force using advanced terminal for unsupported environments");
     public static final OptionSpec<Void> NO_REDIRECT_STDOUT = parser.accepts("no-redirect-stdout", "Don't redirect standard output to the logger");
 
     // Launchwrapper

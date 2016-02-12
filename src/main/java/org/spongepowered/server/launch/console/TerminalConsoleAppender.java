@@ -29,6 +29,7 @@ import static jline.console.ConsoleReader.RESET_LINE;
 import static org.apache.logging.log4j.core.helpers.Booleans.parseBoolean;
 import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.Color.YELLOW;
+import static org.spongepowered.server.launch.VanillaCommandLine.FORCE_JLINE;
 import static org.spongepowered.server.launch.VanillaCommandLine.NO_JLINE;
 import static org.spongepowered.server.launch.VanillaCommandLine.NO_REDIRECT_STDOUT;
 
@@ -145,7 +146,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
                     // Enable jline2 only on IntelliJ IDEA to prevent that.
                     //      Also see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=76936
 
-                    if (hasConsole || System.getProperty("java.class.path").contains("idea_rt.jar")) {
+                    if (hasConsole || options.has(FORCE_JLINE) ||  System.getProperty("java.class.path").contains("idea_rt.jar")) {
                         // Disable advanced jline features
                         TerminalFactory.configure(OFF);
                         TerminalFactory.reset();
