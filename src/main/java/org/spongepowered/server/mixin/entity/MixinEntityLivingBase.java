@@ -87,7 +87,7 @@ public abstract class MixinEntityLivingBase extends Entity {
         DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(originalChannel),
                 deathMessage, deathMessage, (Living) this);
         if (!SpongeImpl.postEvent(event)) {
-            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
+            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(this, text)));
 
             // Store cause for drop event which is called after this event
             if (sourceCreator.isPresent()) {
