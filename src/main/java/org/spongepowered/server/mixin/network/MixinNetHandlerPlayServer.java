@@ -117,7 +117,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(Cause.of(NamedCause.source(this.playerEntity)),
                 originalChannel, Optional.of(originalChannel), message,  message, Text.of(s));
         if (!SpongeImpl.postEvent(event)) {
-            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text, ChatTypes.CHAT)));
+            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(this.playerEntity, text, ChatTypes.CHAT)));
         } else {
             ci.cancel();
         }
