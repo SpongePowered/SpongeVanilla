@@ -48,6 +48,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
@@ -60,6 +61,7 @@ import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -112,12 +114,14 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onProcessChatMessage(C01PacketChatMessage packet, CallbackInfo ci, String s, IChatComponent component) {
-        final Optional<Text> message = Optional.ofNullable(SpongeTexts.toText(component));
+        final Text[] message = SpongeTexts.splitChatMessage((ChatComponentTranslation) component); // safe cast
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
-        final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(Cause.of(NamedCause.source(this.playerEntity)),
-                originalChannel, Optional.of(originalChannel), message,  message, Text.of(s));
-        if (!SpongeImpl.postEvent(event)) {
-            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(this.playerEntity, text, ChatTypes.CHAT)));
+        final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
+                Cause.of(NamedCause.source(this.playerEntity)), originalChannel, Optional.of(originalChannel),
+                new MessageEvent.MessageFormatter(message[0], message[1]), Text.of(s), false
+        );
+        if (!SpongeImpl.postEvent(event) && !event.isMessageCancelled()) {
+            event.getChannel().ifPresent(channel -> channel.send(this.playerEntity, event.getMessage(), ChatTypes.CHAT));
         } else {
             ci.cancel();
         }
