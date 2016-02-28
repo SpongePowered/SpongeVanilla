@@ -22,48 +22,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.plugin;
+package org.spongepowered.server.launch.plugin.asm;
 
-import static org.spongepowered.common.SpongeImpl.GAME_ID;
-import static org.spongepowered.common.SpongeImpl.GAME_NAME;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.objectweb.asm.Opcodes.ASM5;
 
-import com.google.inject.Singleton;
-import net.minecraft.server.MinecraftServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spongepowered.common.plugin.AbstractPluginContainer;
+import org.spongepowered.plugin.meta.PluginMetadata;
 
-import java.util.Optional;
+final class DependencyAnnotationVisitor extends WarningAnnotationVisitor {
 
-@Singleton
-public final class MinecraftPluginContainer extends AbstractPluginContainer {
+    private final PluginMetadata metadata;
 
-    MinecraftPluginContainer() {
+    private String id;
+    private String version;
+    private boolean optional;
+
+    DependencyAnnotationVisitor(String className, PluginMetadata metadata) {
+        super(ASM5, className);
+        this.metadata = metadata;
     }
 
     @Override
-    public String getId() {
-        return GAME_ID;
+    String getAnnotation() {
+        return "@Dependency";
     }
 
     @Override
-    public String getName() {
-        return GAME_NAME;
+    public void visit(String name, Object value) {
+        checkNotNull(name, "name");
+        switch (name) {
+            case "id":
+                this.id = (String) value;
+                return;
+            case "version":
+                this.version = (String) value;
+                return;
+            case "optional":
+                this.optional = (boolean) value;
+                return;
+            default:
+                super.visit(name, value);
+        }
     }
 
     @Override
-    public Optional<String> getVersion() {
-        return Optional.of(MinecraftServer.getServer().getMinecraftVersion());
-    }
-
-    @Override
-    public Logger getLogger() {
-        return LoggerFactory.getLogger(MinecraftServer.class);
-    }
-
-    @Override
-    public Optional<Object> getInstance() {
-        return Optional.ofNullable(MinecraftServer.getServer());
+    public void visitEnd() {
+        // TODO: Load order
+        this.metadata.loadAfter(new PluginMetadata.Dependency(this.id, this.version), this.optional);
     }
 
 }

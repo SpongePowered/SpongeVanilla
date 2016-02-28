@@ -24,31 +24,38 @@
  */
 package org.spongepowered.server.plugin;
 
+import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 import net.minecraft.launchwrapper.Launch;
-import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.plugin.meta.PluginMetadata;
+import org.spongepowered.server.launch.plugin.PluginCandidate;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Singleton
 public class VanillaPluginManager implements PluginManager {
 
-    private final Map<String, PluginContainer> plugins = Maps.newHashMap();
-    private final Map<Object, PluginContainer> pluginInstances = Maps.newIdentityHashMap();
+    private final Map<String, PluginContainer> plugins = new HashMap<>();
+    private final Map<Object, PluginContainer> pluginInstances = new IdentityHashMap<>();
 
     private void registerPlugin(PluginContainer plugin) {
         this.plugins.put(plugin.getId(), plugin);
@@ -60,30 +67,95 @@ public class VanillaPluginManager implements PluginManager {
             registerPlugin(container);
         }
 
-        VanillaLaunchPluginManager.getPlugins().asMap().forEach(this::loadPlugins);
+        Map<String, PluginCandidate> candidateMap = VanillaLaunchPluginManager.getPlugins();
+
+        try {
+            for (PluginCandidate candidate : PluginSorter.sort(checkRequirements(candidateMap))) {
+                loadPlugin(candidate);
+            }
+        } catch (Throwable e) {
+            throw PluginReporter.crash(e, candidateMap.values());
+        }
     }
 
-    private void loadPlugins(Object source, Iterable<String> plugins) {
-        if (source instanceof Path) {
-            try {
-                // Add JAR to classpath
-                Launch.classLoader.addURL(((Path) source).toUri().toURL());
-            } catch (MalformedURLException e) {
-                throw Throwables.propagate(e);
+    private Set<PluginCandidate> checkRequirements(Map<String, PluginCandidate> candidates) {
+        Set<PluginCandidate> successfulCandidates = new HashSet<>(candidates.size());
+        List<PluginCandidate> failedCandidates = new ArrayList<>();
+
+        for (PluginCandidate candidate : candidates.values()) {
+            if (candidate.collectDependencies(this.plugins, candidates)) {
+                successfulCandidates.add(candidate);
+            } else {
+                failedCandidates.add(candidate);
             }
         }
 
-        for (String plugin : plugins) {
-            try {
-                Class<?> pluginClass = Class.forName(plugin);
-                VanillaPluginContainer container = new VanillaPluginContainer(source, pluginClass);
-                registerPlugin(container);
-                SpongeImpl.getGame().getEventManager().registerListeners(container, container.getInstance().get());
+        if (failedCandidates.isEmpty()) {
+            return successfulCandidates; // Nothing to do, all requirements satisfied
+        }
 
-                SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", container.getName(), container.getVersion(), source);
-            } catch (Throwable e) {
-                SpongeImpl.getLogger().error("Failed to load plugin: {} (from {})", plugin, source, e);
+        PluginCandidate candidate;
+        boolean updated;
+        while (true) {
+            updated = false;
+            Iterator<PluginCandidate> itr = successfulCandidates.iterator();
+            while (itr.hasNext()) {
+                candidate = itr.next();
+                if (candidate.updateRequirements()) {
+                    updated = true;
+                    itr.remove();
+                    failedCandidates.add(candidate);
+                }
             }
+
+            if (updated) {
+                // Update failed candidates as well
+                failedCandidates.forEach(PluginCandidate::updateRequirements);
+            } else {
+                break;
+            }
+        }
+
+        for (PluginCandidate failed : failedCandidates) {
+            if (failed.isInvalid()) {
+                SpongeImpl.getLogger().error("Plugin '{}' from {} cannot be loaded because it is invalid", failed.getId(), failed.getDisplaySource());
+            } else {
+                SpongeImpl.getLogger().error("Cannot load plugin '{}' from {} because it is missing the required dependencies {}",
+                        failed.getId(), failed.getDisplaySource(), PluginReporter.formatRequirements(failed.getMissingRequirements()));
+            }
+        }
+
+        return successfulCandidates;
+    }
+
+    private void loadPlugin(PluginCandidate candidate) {
+        final String id = candidate.getId();
+
+        if (candidate.getSource().isPresent()) {
+            try {
+                // Add JAR to classpath
+                Launch.classLoader.addURL(candidate.getSource().get().toUri().toURL());
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Failed to add plugin '" + id + "' from " + candidate.getDisplaySource() + " to classpath", e);
+            }
+        }
+
+        final PluginMetadata metadata = candidate.getMetadata();
+        final String name = firstNonNull(metadata.getName(), id);
+        final String version = firstNonNull(metadata.getVersion(), "unknown");
+
+        try {
+            Class<?> pluginClass = Class.forName(candidate.getPluginClass());
+            PluginContainer container = new VanillaPluginContainer(id, pluginClass,
+                    metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getAuthors(),
+                    candidate.getSource());
+
+            registerPlugin(container);
+            Sponge.getEventManager().registerListeners(container, container.getInstance().get());
+
+            SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", name, version, candidate.getDisplaySource());
+        } catch (Throwable e) {
+            SpongeImpl.getLogger().error("Failed to load plugin: {} {} (from {})", name, version, candidate.getDisplaySource(), e);
         }
     }
 
@@ -101,11 +173,6 @@ public class VanillaPluginManager implements PluginManager {
     @Override
     public Optional<PluginContainer> getPlugin(String id) {
         return Optional.ofNullable(this.plugins.get(id));
-    }
-
-    @Override
-    public Logger getLogger(PluginContainer plugin) {
-        return plugin.getLogger();
     }
 
     @Override

@@ -25,26 +25,15 @@
 package org.spongepowered.server.launch.plugin;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.spongepowered.server.launch.plugin.PluginScanner.ARCHIVE_FILTER;
 
-import com.google.common.collect.ImmutableSetMultimap;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.SetMultimap;
 import org.spongepowered.common.launch.SpongeLaunch;
 import org.spongepowered.server.launch.VanillaLaunch;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -54,21 +43,19 @@ public final class VanillaLaunchPluginManager {
     }
 
     @Nullable
-    private static ImmutableSetMultimap<Object, String> plugins;
+    private static Map<String, PluginCandidate> plugins;
 
     public static void findPlugins(boolean scanClasspath) throws IOException {
-        SetMultimap<Object, String> found = LinkedHashMultimap.create();
-        Set<String> pluginClasses = null;
-
         VanillaLaunch.getLogger().info("Searching for plugins...");
+
+        PluginScanner pluginScanner = new PluginScanner();
 
         if (scanClasspath) {
             VanillaLaunch.getLogger().info("Scanning classpath for plugins...");
 
             ClassLoader loader = VanillaLaunch.class.getClassLoader();
             if (loader instanceof URLClassLoader) {
-                pluginClasses = PluginScanner.scanClassPath((URLClassLoader) loader);
-                found.putAll("classpath", pluginClasses);
+                pluginScanner.scanClassPath((URLClassLoader) loader);
             } else {
                 VanillaLaunch.getLogger().error("Cannot search for plugins on classpath: Unsupported class loader: {}", loader.getClass());
             }
@@ -76,53 +63,19 @@ public final class VanillaLaunchPluginManager {
 
         Path pluginsDir = SpongeLaunch.getPluginsDir();
         if (Files.exists(pluginsDir)) {
-            if (pluginClasses == null) {
-                pluginClasses = new HashSet<>();
-            }
-
-            List<Path> paths;
-            try (DirectoryStream<Path> dir = Files.newDirectoryStream(SpongeLaunch.getPluginsDir(), ARCHIVE_FILTER)) {
-                paths = Lists.newArrayList(dir);
-            }
-
-            Collections.sort(paths);
-
-            for (Path path : paths) {
-                // Search for plugins in the JAR
-                try (JarFile jar = new JarFile(path.toFile())) {
-                    Set<String> plugins = PluginScanner.scanZip(path, jar);
-
-                    Iterator<String> itr = plugins.iterator();
-                    while (itr.hasNext()) {
-                        String plugin = itr.next();
-                        if (!pluginClasses.add(plugin)) {
-                            VanillaLaunch.getLogger().warn("Skipping duplicate plugin class {} from {}", plugin, path);
-                            itr.remove();
-                        }
-                    }
-
-                    if (!plugins.isEmpty()) {
-                        found.putAll(path, plugins);
-
-                        // Look for access transformers
-                        PluginAccessTransformers.register(path, jar);
-                    }
-                } catch (IOException e) {
-                    VanillaLaunch.getLogger().error("Failed to scan plugin JAR: {}", path, e);
-                }
-            }
+            pluginScanner.scanDirectory(pluginsDir);
         } else {
             // Create plugin folder
             Files.createDirectories(pluginsDir);
         }
 
-        plugins = ImmutableSetMultimap.copyOf(found);
+        plugins = pluginScanner.getPlugins();
         VanillaLaunch.getLogger().info("{} plugin(s) found", plugins.size());
     }
 
-    public static ImmutableSetMultimap<Object, String> getPlugins() {
+    public static Map<String, PluginCandidate> getPlugins() {
         checkState(plugins != null, "Plugin folder was not scanned yet");
-        ImmutableSetMultimap<Object, String> result = plugins;
+        Map<String, PluginCandidate> result = plugins;
         plugins = null;
         return result;
     }

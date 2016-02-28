@@ -24,8 +24,8 @@
  */
 package org.spongepowered.server;
 
-import static org.spongepowered.common.SpongeImpl.API_NAME;
-import static org.spongepowered.common.SpongeImpl.ECOSYSTEM_NAME;
+import static org.spongepowered.common.SpongeImpl.API_ID;
+import static org.spongepowered.common.SpongeImpl.ECOSYSTEM_ID;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -38,7 +38,7 @@ import org.spongepowered.common.AbstractPlatform;
 public class VanillaPlatform extends AbstractPlatform {
 
     @Inject
-    public VanillaPlatform(@Named(API_NAME) PluginContainer api, @Named(ECOSYSTEM_NAME) PluginContainer impl, MinecraftVersion minecraftVersion) {
+    public VanillaPlatform(@Named(API_ID) PluginContainer api, @Named(ECOSYSTEM_ID) PluginContainer impl, MinecraftVersion minecraftVersion) {
         super(api, impl, minecraftVersion);
     }
 

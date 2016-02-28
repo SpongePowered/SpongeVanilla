@@ -22,48 +22,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.plugin;
+package org.spongepowered.server.launch.plugin.asm;
 
-import static org.spongepowered.common.SpongeImpl.GAME_ID;
-import static org.spongepowered.common.SpongeImpl.GAME_NAME;
+import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.AnnotationVisitor;
+import org.spongepowered.server.launch.VanillaLaunch;
 
-import com.google.inject.Singleton;
-import net.minecraft.server.MinecraftServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spongepowered.common.plugin.AbstractPluginContainer;
+abstract class WarningAnnotationVisitor extends AnnotationVisitor {
 
-import java.util.Optional;
+    private static final Logger logger = VanillaLaunch.getLogger();
 
-@Singleton
-public final class MinecraftPluginContainer extends AbstractPluginContainer {
+    final String className;
 
-    MinecraftPluginContainer() {
+    protected WarningAnnotationVisitor(int api, String className) {
+        super(api);
+        this.className = className;
+    }
+
+    abstract String getAnnotation();
+
+    @Override
+    public void visit(String name, Object value) {
+        logger.warn("Found unknown {} annotation element in {}: {} = {}", getAnnotation(), this.className, name, value);
     }
 
     @Override
-    public String getId() {
-        return GAME_ID;
+    public void visitEnum(String name, String desc, String value) {
+        logger.warn("Found unknown {} annotation element in {}: {} ({}) = {}", getAnnotation(), this.className, name, desc, value);
     }
 
     @Override
-    public String getName() {
-        return GAME_NAME;
+    public AnnotationVisitor visitAnnotation(String name, String desc) {
+        logger.warn("Found unknown {} annotation element in {}: {} ({})", getAnnotation(), this.className, name, desc);
+        return null;
     }
 
     @Override
-    public Optional<String> getVersion() {
-        return Optional.of(MinecraftServer.getServer().getMinecraftVersion());
-    }
-
-    @Override
-    public Logger getLogger() {
-        return LoggerFactory.getLogger(MinecraftServer.class);
-    }
-
-    @Override
-    public Optional<Object> getInstance() {
-        return Optional.ofNullable(MinecraftServer.getServer());
+    public AnnotationVisitor visitArray(String name) {
+        logger.warn("Found unknown {} annotation element in {}: {}", getAnnotation(), this.className, name);
+        return null;
     }
 
 }

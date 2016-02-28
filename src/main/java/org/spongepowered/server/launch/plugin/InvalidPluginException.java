@@ -24,34 +24,21 @@
  */
 package org.spongepowered.server.launch.plugin;
 
-import com.google.common.base.Splitter;
+public final class InvalidPluginException extends RuntimeException {
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.Manifest;
-
-final class PluginAccessTransformers {
-
-    private static final String KEY = "FMLAT";
-    private static final Splitter VALUE_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
-    private static final String LOCATION = "META-INF/";
-
-    private PluginAccessTransformers() {
+    public InvalidPluginException() {
     }
 
-    static Set<String> find(Manifest manifest) {
-        String ats = manifest.getMainAttributes().getValue(KEY);
-        if (ats == null) {
-            return Collections.emptySet();
-        }
+    public InvalidPluginException(String message) {
+        super(message);
+    }
 
-        Set<String> result = new HashSet<>();
-        for (String at : VALUE_SPLITTER.split(ats)) {
-            result.add(LOCATION + at);
-        }
+    public InvalidPluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-        return result;
+    public InvalidPluginException(Throwable cause) {
+        super(cause);
     }
 
 }

@@ -22,24 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch.plugin;
+package org.spongepowered.server.plugin;
 
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
+import org.spongepowered.common.util.graph.DirectedGraph;
+import org.spongepowered.common.util.graph.TopologicalOrder;
+import org.spongepowered.server.launch.plugin.PluginCandidate;
 
-final class PathMatchers {
+import java.util.List;
 
-    private PathMatchers() {
+final class PluginSorter {
+
+    private PluginSorter() {
     }
 
-    static PathMatcher create(String pattern) {
-        return FileSystems.getDefault().getPathMatcher(pattern);
-    }
+    static List<PluginCandidate> sort(Iterable<PluginCandidate> candidates) {
+        DirectedGraph<PluginCandidate> graph = new DirectedGraph<>();
 
-    static DirectoryStream.Filter<Path> createFilter(final PathMatcher matcher) {
-        return entry -> matcher.matches(entry.getFileName());
+        for (PluginCandidate candidate : candidates) {
+            graph.add(candidate);
+            for (PluginCandidate dependency : candidate.getDependencies()) {
+                graph.addEdge(candidate, dependency);
+            }
+        }
+
+        return TopologicalOrder.createOrderedLoad(graph);
     }
 
 }
