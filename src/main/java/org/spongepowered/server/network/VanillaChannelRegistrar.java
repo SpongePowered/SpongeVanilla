@@ -32,10 +32,10 @@ import com.google.inject.Singleton;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.management.PlayerList;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrationException;
@@ -80,7 +80,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         final String name = channel.getName();
         this.channels.put(name, channel);
 
-        ServerConfigurationManager manager = MinecraftServer.getServer().getConfigurationManager();
+        PlayerList manager = MinecraftServer.getServer().getConfigurationManager();
         if (manager != null) {
             manager.sendPacketToAllPlayers(getRegPacket(name));
         }
@@ -114,7 +114,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         checkState(binding != null, "Channel is already unbound");
         binding.invalidate();
 
-        ServerConfigurationManager manager = MinecraftServer.getServer().getConfigurationManager();
+        PlayerList manager = MinecraftServer.getServer().getConfigurationManager();
         if (manager != null) {
             manager.sendPacketToAllPlayers(getUnregPacket(name));
         }
@@ -134,7 +134,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         return !isReservedChannel(name) && !this.channels.containsKey(name);
     }
 
-    public void post(RemoteConnection connection, C17PacketCustomPayload packet) {
+    public void post(RemoteConnection connection, CPacketCustomPayload packet) {
         VanillaChannelBinding binding = this.channels.get(packet.getChannelName());
         if (binding != null) {
             binding.post(connection, packet.getBufferData());
@@ -145,7 +145,7 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         // Register our channel list on the client
         String channels = CHANNEL_JOINER.join(this.channels.keySet());
         PacketBuffer buffer = new PacketBuffer(Unpooled.wrappedBuffer(channels.getBytes(StandardCharsets.UTF_8)));
-        netHandler.sendPacket(new S3FPacketCustomPayload(REGISTER_CHANNEL, buffer));
+        netHandler.sendPacket(new SPacketCustomPayload(REGISTER_CHANNEL, buffer));
     }
 
 }

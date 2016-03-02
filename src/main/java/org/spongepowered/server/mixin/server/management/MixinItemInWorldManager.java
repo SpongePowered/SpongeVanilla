@@ -26,10 +26,10 @@ package org.spongepowered.server.mixin.server.management;
 
 import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.server.management.ItemInWorldManager;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
@@ -47,7 +47,7 @@ import org.spongepowered.common.util.VecHelper;
 
 import java.util.Optional;
 
-@Mixin(ItemInWorldManager.class)
+@Mixin(PlayerInteractionManager.class)
 public abstract class MixinItemInWorldManager {
 
     @Shadow public net.minecraft.world.World theWorld;
@@ -55,11 +55,11 @@ public abstract class MixinItemInWorldManager {
 
     @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
     private void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
-        Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector(pos));
+        Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector3i(pos));
         InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Cause.of(NamedCause.source(this.thisPlayerMP)),
                 Optional.<Vector3d>empty(), location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(side).get());
         if (SpongeImpl.postEvent(event)) {
-            this.thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(this.theWorld, pos));
+            this.thisPlayerMP.playerNetServerHandler.sendPacket(new SPacketBlockChange(this.theWorld, pos));
             ci.cancel();
         }
     }

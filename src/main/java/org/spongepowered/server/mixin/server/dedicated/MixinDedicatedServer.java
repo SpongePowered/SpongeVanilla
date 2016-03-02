@@ -29,7 +29,7 @@ import static org.spongepowered.common.SpongeImpl.MINECRAFT_VERSION;
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -64,9 +64,9 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
-        statusResponse.setServerDescription(new ChatComponentText(getMOTD()));
+        statusResponse.setServerDescription(new TextComponentString(getMOTD()));
         statusResponse.setProtocolVersionInfo(
-                new ServerStatusResponse.MinecraftProtocolVersionIdentifier(MINECRAFT_VERSION.getName(), MINECRAFT_VERSION.getProtocol()));
+                new ServerStatusResponse.Version(MINECRAFT_VERSION.getName(), MINECRAFT_VERSION.getProtocol()));
         addFaviconToStatusResponse(statusResponse);
     }
 

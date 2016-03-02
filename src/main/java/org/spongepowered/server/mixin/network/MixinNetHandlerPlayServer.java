@@ -37,20 +37,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
-import net.minecraft.item.ItemDoublePlant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.client.C01PacketChatMessage;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.network.play.server.S2EPacketCloseWindow;
+import net.minecraft.network.play.client.CPacketChatMessage;
+import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ItemInWorldManager;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -113,8 +114,8 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onProcessChatMessage(C01PacketChatMessage packet, CallbackInfo ci, String s, IChatComponent component) {
-        final Text[] message = SpongeTexts.splitChatMessage((ChatComponentTranslation) component); // safe cast
+    private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
+        final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
                 Cause.of(NamedCause.source(this.playerEntity)), originalChannel, Optional.of(originalChannel),
@@ -129,25 +130,25 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
 
     @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
-    private void cancelSendChatMsgImpl(ServerConfigurationManager manager, IChatComponent component, boolean chat) {
+    private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
     }
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
-    private boolean tryUseItem(ItemInWorldManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
+    private boolean tryUseItem(PlayerInteractionManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
         BlockSnapshot block = ((Extent) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
 
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
                 Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
-        return !SpongeImpl.postEvent(event) && itemInWorldManager.tryUseItem(player, world, stack);
+        return !SpongeImpl.postEvent(event) && itemInWorldManager.func_187250_a(player, world, stack, EnumHand.MAIN_HAND) == EnumActionResult.SUCCESS;
     }
 
     @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
                     + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"))
-    private boolean onActivateBlockOrUseItem(ItemInWorldManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn,
+    private boolean onActivateBlockOrUseItem(PlayerInteractionManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn,
             @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
         BlockSnapshot currentSnapshot = ((Extent) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
@@ -157,15 +158,15 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
 
             if (state.getBlock() == Blocks.command_block) {
                 // CommandBlock GUI opens solely on the client, we need to force it close on cancellation
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S2EPacketCloseWindow(0));
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketCloseWindow(0));
 
             } else if (state.getProperties().containsKey(BlockDoor.HALF)) {
                 // Stopping a door from opening while interacting the top part will allow the door to open, we need to update the
                 // client to resolve this
                 if (state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldIn, pos.up()));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketBlockChange(worldIn, pos.up()));
                 } else {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldIn, pos.down()));
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketBlockChange(worldIn, pos.down()));
                 }
 
             } else if (stack != null) {
@@ -197,7 +198,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     }
 
     @Inject(method = "processVanilla250Packet", at = @At("HEAD"), cancellable = true)
-    private void onProcessPluginMessage(C17PacketCustomPayload packet, CallbackInfo ci) {
+    private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {
             return;

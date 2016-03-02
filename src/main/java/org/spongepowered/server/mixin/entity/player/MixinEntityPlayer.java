@@ -36,7 +36,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
@@ -302,7 +302,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         }
 
         // Sponge start
-        BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector(this.playerLocation));
+        BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector3i(this.playerLocation));
         SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Cause.of(NamedCause.source(this)), bed,
                 Optional.ofNullable(newLocation), this, setSpawn);
 
