@@ -78,11 +78,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     /**
      * @author Minecrell
-     * @reason Sets the server brand name to SpongeVanilla
+     * @reason Sets the server brand name to 'sponge'
      */
     @Overwrite
     public String getServerModName() {
-        return SpongeVanilla.INSTANCE.getName();
+        return SpongeVanilla.INSTANCE.getId();
     }
 
     /**

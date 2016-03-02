@@ -199,7 +199,7 @@ public final class SpongeVanilla extends SpongePluginContainer {
 
     @Override
     public String getName() {
-        return SpongeImpl.ECOSYSTEM_ID;
+        return SpongeImpl.IMPLEMENTATION_NAME.orElse("SpongeVanilla");
     }
 
     @Override
