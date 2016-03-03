@@ -101,7 +101,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
 
         final ImmutableList.Builder<Transaction<BlockSnapshot>> blockTransactionBuilder = ImmutableList.builder();
         for (BlockPos pos : this.affectedBlockPositions) {
-            if (world.isValid(pos)) {
+            if (world.isBlockLoaded(pos, false)) {
                 final BlockSnapshot currentSnapshot = spongeWorld.createSnapshot(pos.getX(), pos.getY(), pos.getZ());
                 // TODO Is this the correct state? Would replacement state depend on blocktype?
                 blockTransactionBuilder.add(new Transaction<>(currentSnapshot, currentSnapshot.withState(BlockTypes.AIR.getDefaultState())));

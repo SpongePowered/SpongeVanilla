@@ -49,14 +49,14 @@ public abstract class MixinChunkProviderServer {
     // Optionally unload spawn chunks if not specified in the world configuration
     @Redirect(method = "dropChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProvider;canRespawnHere()Z"))
     private boolean onCanRespawnHere(WorldProvider provider) {
-        return provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(provider.getDimensionId());
+        return provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(provider.getDimensionType().getId());
     }
 
     @Inject(method = "unloadQueuedChunks", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", remap = false),
             cancellable = true)
     private void onUnloadQueuedChunks(CallbackInfoReturnable<Boolean> cir) {
-        if (this.loadedChunks.isEmpty() && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())) {
-            VanillaDimensionManager.unloadWorld(this.worldObj.provider.getDimensionId());
+        if (this.loadedChunks.isEmpty() && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())) {
+            VanillaDimensionManager.unloadWorld(this.worldObj.provider.getDimensionType().getId());
             cir.setReturnValue(this.serverChunkGenerator.unloadQueuedChunks());
         }
     }

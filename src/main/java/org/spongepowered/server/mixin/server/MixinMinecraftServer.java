@@ -170,9 +170,9 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
                 if (this.tickCounter % 20 == 0) {
                     this.theProfiler.startSection("timeSync");
-                    this.serverConfigManager.sendPacketToAllPlayersInDimension(
+                    this.serverConfigManager.sendPacketToAllPlayersInDimension (
                             new SPacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
-                                    worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.func_186058_p().func_186068_a());
+                                    worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.getDimensionType().getId());
                     this.theProfiler.endSection();
                 }
 

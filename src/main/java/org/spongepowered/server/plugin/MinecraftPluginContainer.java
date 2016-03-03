@@ -31,6 +31,7 @@ import com.google.inject.Singleton;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.common.plugin.AbstractPluginContainer;
 
 import java.util.Optional;
@@ -53,7 +54,7 @@ public final class MinecraftPluginContainer extends AbstractPluginContainer {
 
     @Override
     public Optional<String> getVersion() {
-        return Optional.of(MinecraftServer.getServer().getMinecraftVersion());
+        return Optional.of(((MinecraftServer) Sponge.getServer()).getMinecraftVersion());
     }
 
     @Override
@@ -63,7 +64,7 @@ public final class MinecraftPluginContainer extends AbstractPluginContainer {
 
     @Override
     public Optional<Object> getInstance() {
-        return Optional.ofNullable(MinecraftServer.getServer());
+        return Optional.of(Sponge.getServer());
     }
 
 }

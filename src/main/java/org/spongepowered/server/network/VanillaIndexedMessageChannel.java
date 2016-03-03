@@ -36,9 +36,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrar;
@@ -131,7 +132,7 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
         }
     }
 
-    private S3FPacketCustomPayload createPacket(Message message) {
+    private SPacketCustomPayload createPacket(Message message) {
         Class<? extends Message> messageClass = message.getClass();
         IndexedMessageType<?> type = this.messageClasses.get(messageClass);
         checkNotNull(type, "Unknown message type %s of %s", messageClass, message);
@@ -141,7 +142,7 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
         buffer.markWriterIndex();
         message.writeTo(SpongeNetworkManager.toChannelBuf(buffer));
 
-        return new S3FPacketCustomPayload(getName(), buffer);
+        return new SPacketCustomPayload(getName(), buffer);
     }
 
     @Override
@@ -163,8 +164,8 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
     public void sendToAll(Message message) {
         validate();
         final String name = getName();
-        S3FPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : MinecraftServer.getServer().getConfigurationManager().getPlayerList()) {
+        SPacketCustomPayload packet = null;
+        for (EntityPlayerMP player : ((MinecraftServer) Sponge.getServer()).getPlayerList().getPlayerList()) {
             if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(message);

@@ -28,9 +28,10 @@ import com.google.common.collect.Sets;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelBuf;
@@ -82,10 +83,10 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
         }
     }
 
-    private S3FPacketCustomPayload createPacket(Consumer<ChannelBuf> consumer) {
+    private SPacketCustomPayload createPacket(Consumer<ChannelBuf> consumer) {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         consumer.accept((ChannelBuf) buffer);
-        return new S3FPacketCustomPayload(getName(), buffer);
+        return new SPacketCustomPayload(getName(), buffer);
     }
 
     @Override
@@ -108,8 +109,8 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
     public void sendToAll(Consumer<ChannelBuf> payload) {
         validate();
         final String name = getName();
-        S3FPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : MinecraftServer.getServer().getConfigurationManager().getPlayerList()) {
+        SPacketCustomPayload packet = null;
+        for (EntityPlayerMP player : ((MinecraftServer) Sponge.getServer()).getPlayerList().getPlayerList()) {
             if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);

@@ -37,6 +37,7 @@ import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrationException;
 import org.spongepowered.api.network.RemoteConnection;
@@ -80,9 +81,9 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         final String name = channel.getName();
         this.channels.put(name, channel);
 
-        PlayerList manager = MinecraftServer.getServer().getConfigurationManager();
-        if (manager != null) {
-            manager.sendPacketToAllPlayers(getRegPacket(name));
+        PlayerList playerList = ((MinecraftServer) Sponge.getServer()).getPlayerList();
+        if (playerList != null) {
+            playerList.sendPacketToAllPlayers(getRegPacket(name));
         }
     }
 
@@ -114,9 +115,9 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         checkState(binding != null, "Channel is already unbound");
         binding.invalidate();
 
-        PlayerList manager = MinecraftServer.getServer().getConfigurationManager();
-        if (manager != null) {
-            manager.sendPacketToAllPlayers(getUnregPacket(name));
+        PlayerList playerList = ((MinecraftServer) Sponge.getServer()).getPlayerList();
+        if (playerList != null) {
+            playerList.sendPacketToAllPlayers(getUnregPacket(name));
         }
     }
 

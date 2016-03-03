@@ -25,11 +25,11 @@
 package org.spongepowered.server.world;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Level;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
@@ -55,7 +55,7 @@ public class VanillaDimensionManager extends DimensionManager {
                 e.printStackTrace();
             } finally {
                 if (w != null) {
-                    SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(MinecraftServer.getServer())),
+                    SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(Sponge.getServer())),
                             (org.spongepowered.api.world.World) w));
                     w.flush();
                     setWorld(id, null);
