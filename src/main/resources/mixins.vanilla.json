@@ -29,8 +29,5 @@
         "world.chunk.MixinChunk",
         "world.gen.MixinChunkProviderServer",
         "world.storage.MixinSaveHandler"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+    ]
 }
