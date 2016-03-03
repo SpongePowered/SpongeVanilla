@@ -31,10 +31,15 @@ import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_DIR;
 import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_NAME;
 
 import com.google.inject.Guice;
+import com.mojang.authlib.GameProfileRepository;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import joptsimple.OptionSet;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.management.PlayerProfileCache;
+import net.minecraft.util.datafix.DataFixesManager;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameState;
@@ -73,7 +78,9 @@ import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.Optional;
+import java.util.UUID;
 
 public final class SpongeVanilla extends AbstractPluginContainer {
 
@@ -98,7 +105,13 @@ public final class SpongeVanilla extends AbstractPluginContainer {
             Bootstrap.register();
 
             File worldDir = options.has(WORLD_DIR) ? options.valueOf(WORLD_DIR) : new File(".");
-            final DedicatedServer server = new DedicatedServer(worldDir);
+            YggdrasilAuthenticationService
+                    yggdrasilauthenticationservice = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
+            MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
+            GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
+            PlayerProfileCache playerprofilecache = new PlayerProfileCache(gameprofilerepository, new File(worldDir, MinecraftServer.USER_CACHE_FILE.getName()));
+
+            final DedicatedServer server = new DedicatedServer(worldDir, DataFixesManager.func_188279_a(), yggdrasilauthenticationservice, minecraftsessionservice, gameprofilerepository, playerprofilecache);
 
             if (options.has(WORLD_NAME)) {
                 server.setFolderName(options.valueOf(WORLD_NAME));
@@ -171,14 +184,14 @@ public final class SpongeVanilla extends AbstractPluginContainer {
     }
 
     public void onServerAboutToStart() {
-        ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerEarlyCommands(this.game);
+        ((IMixinServerCommandManager) ((MinecraftServer) Sponge.getServer()).getCommandManager()).registerEarlyCommands(this.game);
         SpongeImpl.postState(GameAboutToStartServerEvent.class, GameState.SERVER_ABOUT_TO_START);
     }
 
     public void onServerStarting() {
         SpongeImpl.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
         SpongeImpl.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
-        ((IMixinServerCommandManager) MinecraftServer.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
+        ((IMixinServerCommandManager) ((MinecraftServer) Sponge.getServer()).getCommandManager()).registerLowPriorityCommands(this.game);
         SpongePlayerDataHandler.init();
     }
 
