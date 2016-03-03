@@ -343,6 +343,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
      * @author simon816
      * @reason Fix player's ArmorEquipable methods not setting the right slot
      */
+    // TODO: Revist this when updating for 1.9's refactored interaction handling
     /*@Override
     public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
         // Fix issue in player where it doesn't take into account selected item
