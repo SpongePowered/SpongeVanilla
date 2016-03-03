@@ -343,7 +343,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
      * @author simon816
      * @reason Fix player's ArmorEquipable methods not setting the right slot
      */
-    @Override
+    /*@Override
     public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
         // Fix issue in player where it doesn't take into account selected item
         if (slotIn == 0) {
@@ -351,6 +351,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         } else {
             this.inventory.armorInventory[slotIn - 1] = stack;
         }
-    }
+    }*/
 
 }
