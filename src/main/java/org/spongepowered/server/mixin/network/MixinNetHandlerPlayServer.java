@@ -36,6 +36,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -171,8 +172,8 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
 
             } else if (stack != null) {
                 // Stopping the placement of a door or double plant causes artifacts (ghosts) on the top-side of the block. We need to remove it
-                if (stack.getItem() instanceof ItemDoor || stack.getItem() instanceof ItemDoublePlant) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(worldIn, pos.up(2)));
+                if (stack.getItem() instanceof ItemDoor || Item.getItemFromBlock(Blocks.double_plant).equals(stack.getItem())) {
+                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketBlockChange(worldIn, pos.up(2)));
                 }
             }
 

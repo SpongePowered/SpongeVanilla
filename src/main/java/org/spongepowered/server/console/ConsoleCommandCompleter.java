@@ -58,7 +58,7 @@ public final class ConsoleCommandCompleter implements Completer {
         final String input = buffer;
         @SuppressWarnings("unchecked")
         Future<List<String>> tabComplete =
-                this.server.callFromMainThread(() -> this.server.getTabCompletions(this.server, input, this.server.getPosition()));
+                this.server.callFromMainThread(() -> this.server.func_184104_a(this.server, input, this.server.getPosition(), false));
 
         try {
             List<String> completions = tabComplete.get();

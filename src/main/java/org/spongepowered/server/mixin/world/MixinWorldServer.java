@@ -29,7 +29,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
@@ -78,7 +77,7 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
     private void onSendWeatherPacket(PlayerList manager, Packet packet) {
-        manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionId());
+        manager.sendPacketToAllPlayersInDimension(packet, this.provider.func_186058_p().func_186068_a());
     }
 
 }
