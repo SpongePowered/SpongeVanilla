@@ -25,6 +25,7 @@
 package org.spongepowered.server;
 
 import static com.google.common.base.Preconditions.checkState;
+import static net.minecraft.server.MinecraftServer.USER_CACHE_FILE;
 import static org.spongepowered.server.launch.VanillaCommandLine.BONUS_CHEST;
 import static org.spongepowered.server.launch.VanillaCommandLine.PORT;
 import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_DIR;
@@ -82,9 +83,12 @@ import java.net.Proxy;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 public final class SpongeVanilla extends AbstractPluginContainer {
 
     public static final SpongeVanilla INSTANCE = new SpongeVanilla();
+    @Nullable private static MinecraftServer server;
 
     private final SpongeGame game;
 
@@ -96,7 +100,17 @@ public final class SpongeVanilla extends AbstractPluginContainer {
         RegistryHelper.setFinalStatic(Sponge.class, "game", this.game);
     }
 
+    public static boolean isServerAvailable() {
+        return server != null;
+    }
+
+    public static MinecraftServer getServer() {
+        checkState(server != null, "Attempting to get server while it is unavailable!");
+        return server;
+    }
+
     public static void main(String[] args) {
+        checkState(server == null, "Server was already initialized");
         OptionSet options = VanillaCommandLine.parse(args);
 
         // Note: This launches the server instead of MinecraftServer.main
@@ -105,13 +119,14 @@ public final class SpongeVanilla extends AbstractPluginContainer {
             Bootstrap.register();
 
             File worldDir = options.has(WORLD_DIR) ? options.valueOf(WORLD_DIR) : new File(".");
-            YggdrasilAuthenticationService
-                    yggdrasilauthenticationservice = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
-            MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
-            GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
-            PlayerProfileCache playerprofilecache = new PlayerProfileCache(gameprofilerepository, new File(worldDir, MinecraftServer.USER_CACHE_FILE.getName()));
 
-            final DedicatedServer server = new DedicatedServer(worldDir, DataFixesManager.func_188279_a(), yggdrasilauthenticationservice, minecraftsessionservice, gameprofilerepository, playerprofilecache);
+            YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
+            MinecraftSessionService sessionService = authenticationService.createMinecraftSessionService();
+            GameProfileRepository profileRepository = authenticationService.createProfileRepository();
+            PlayerProfileCache profileCache = new PlayerProfileCache(profileRepository, new File(worldDir, USER_CACHE_FILE.getName()));
+
+            server = new DedicatedServer(worldDir, DataFixesManager.func_188279_a(), // TODO: func_188279_a -> createFixer
+                    authenticationService, sessionService, profileRepository, profileCache);
 
             if (options.has(WORLD_NAME)) {
                 server.setFolderName(options.valueOf(WORLD_NAME));
