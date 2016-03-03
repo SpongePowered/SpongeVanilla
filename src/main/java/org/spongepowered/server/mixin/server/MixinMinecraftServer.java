@@ -69,6 +69,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow private PlayerList serverConfigManager;
     @Shadow private int tickCounter;
     @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
+    @Shadow public WorldServer[] worldServers;
 
     @Shadow public abstract boolean getAllowNether();
     @Shadow public abstract NetworkSystem getNetworkSystem();
@@ -118,7 +119,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         SpongeVanilla.INSTANCE.onServerStopping();
     }
 
-    @Inject(method = "addFaviconToStatusResponse", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "applyServerIconToResponse", at = @At("HEAD"), cancellable = true)
     private void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
         // Don't load favicon twice
         if (response.getFavicon() != null) {
@@ -128,8 +129,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void callWorldUnload(CallbackInfo ci, int i, WorldServer worldserver) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) worldserver));
+    private void callWorldUnload(CallbackInfo ci, int i) {
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) this.worldServers[i]));
     }
 
     /**
