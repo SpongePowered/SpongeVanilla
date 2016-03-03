@@ -28,15 +28,20 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.network.NetworkSystem;
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
+import net.minecraft.network.play.server.SPacketTimeUpdate;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
@@ -53,6 +58,7 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.server.SpongeVanilla;
+import org.spongepowered.server.VanillaGame;
 import org.spongepowered.server.world.VanillaDimensionManager;
 
 import java.util.Hashtable;
@@ -66,7 +72,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow @Final private static Logger logger;
     @Shadow @Final private List<ITickable> playersOnline;
     @Shadow @Final public Profiler theProfiler;
-    @Shadow private ServerConfigurationManager serverConfigManager;
+    @Shadow private PlayerList serverConfigManager;
     @Shadow private int tickCounter;
     @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
 
@@ -75,6 +81,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     private boolean skipServerStop;
     private final Hashtable<Integer, long[]> worldTickTimes = new Hashtable<>();
+
+    private static final String DEDICATED_SERVER_INIT = "Lnet/minecraft/server/dedicated/DedicatedServer.<init> (Ljava/io/File;Lnet/minecraft/util/datafix/DataFixer;Lcom/mojang/authlib/yggdrasil/YggdrasilAuthenticationService;Lcom/mojang/authlib/minecraft/MinecraftSessionService;Lcom/mojang/authlib/GameProfileRepository;Lnet/minecraft/server/management/PlayerProfileCache;)V";
 
     /**
      * @author Minecrell
@@ -91,7 +99,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
      *     messages in the console
      */
     @Overwrite
-    public void addChatMessage(IChatComponent component) {
+    public void addChatMessage(ITextComponent component) {
         logger.info(SpongeTexts.toLegacy(component));
     }
 
@@ -130,6 +138,10 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) worldserver));
     }
 
+    @Inject(method = "main", at = @At(value = "INVOKE", target = DEDICATED_SERVER_INIT, shift = At.Shift.AFTER), locals = LocalCapture.PRINT)
+    public void onInitDedicatedServer(String[] ags, CallbackInfo ci, int some, int random, int locals, int here, DedicatedServer server) {
+        ((VanillaGame) SpongeImpl.getGame()).setServer((Server) server);
+    }
     /**
      * @author Zidane
      * @reason Handles ticking the additional worlds loaded by Sponge.
@@ -162,8 +174,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 if (this.tickCounter % 20 == 0) {
                     this.theProfiler.startSection("timeSync");
                     this.serverConfigManager.sendPacketToAllPlayersInDimension(
-                            new S03PacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
-                                    worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.getDimensionId());
+                            new SPacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
+                                    worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.func_186058_p().func_186068_a());
                     this.theProfiler.endSection();
                 }
 

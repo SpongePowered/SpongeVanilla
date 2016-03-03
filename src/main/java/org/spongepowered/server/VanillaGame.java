@@ -24,13 +24,16 @@
  */
 package org.spongepowered.server;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.plugin.PluginManager;
@@ -44,6 +47,8 @@ import java.nio.file.Path;
 @Singleton
 public final class VanillaGame extends SpongeGame {
 
+    private Server server;
+
     @Inject
     public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager,
             SpongeGameRegistry gameRegistry, ServiceManager serviceManager, TeleportHelper teleportHelper,
@@ -53,7 +58,26 @@ public final class VanillaGame extends SpongeGame {
 
     @Override
     public Path getSavesDirectory() {
-        return MinecraftServer.getServer().anvilFile.toPath();
+        return ((MinecraftServer) this.getServer()).anvilFile.toPath();
+    }
+
+    @Override
+    public boolean isServerAvailable() {
+        return this.server != null;
+    }
+
+    @Override
+    public Server getServer() {
+        Preconditions.checkState(this.server != null, "Attempting to get server while it is unavailable!");
+        return this.server;
+    }
+
+    public void setServer(Server server) {
+        Preconditions.checkNotNull(server, "Server cannot be null!");
+        if (this.server != null) {
+            throw new IllegalStateException("Attempting to set server when it is already set!");
+        }
+        this.server = server;
     }
 
     @Override
