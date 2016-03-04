@@ -40,6 +40,7 @@ import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.world.ExplosionEvent;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,7 +58,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
 
     @Shadow private World worldObj;
     @Shadow @Nullable private Entity exploder;
-    @Shadow private List<BlockPos> affectedBlockPositions;
+    @Shadow @Final private List<BlockPos> affectedBlockPositions;
     @Shadow @Nullable abstract EntityLivingBase getExplosivePlacedBy();
 
     @Override
@@ -94,7 +95,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
     }
 
     @Redirect(method = "doExplosionA", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;"
-            + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"))
+            + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;)Ljava/util/List;"))
     private List<Entity> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
         final List<Entity> affectedEntities = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
         final org.spongepowered.api.world.World spongeWorld = (org.spongepowered.api.world.World) this.worldObj;
