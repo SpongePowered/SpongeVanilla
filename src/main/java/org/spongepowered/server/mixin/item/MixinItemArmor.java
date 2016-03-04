@@ -30,15 +30,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 // TODO 1.9: Re-enable this if necessary (it shouldn't be)
-@Mixin(ItemArmor.class)
+//@Mixin(ItemArmor.class)
 public abstract class MixinItemArmor {
 
-    @ModifyArg(method = "onItemRightClick",
+    /*@ModifyArg(method = "onItemRightClick",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer.setItemStackToSlot (Lnet/minecraft/inventory/EntityEquipmentSlot;Lnet/minecraft/item/ItemStack;)V"))
     private int onSetCurrentItemOrArmor(int pos) {
         // Increase armor position by one because our fix in MixinEntityPlayer.setCurrentItemOrArmor
         // handles armor positions differently.
         return pos + 1;
-    }
+    }*/
 
 }
