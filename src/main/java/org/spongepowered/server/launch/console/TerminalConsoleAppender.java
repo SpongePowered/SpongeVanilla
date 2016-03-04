@@ -164,8 +164,8 @@ public class TerminalConsoleAppender extends AbstractAppender {
             }
 
             if (!options.has(NO_REDIRECT_STDOUT)) {
-                System.setOut(new LoggingPrintStream(LogManager.getLogger("STDOUT"), Level.INFO));
-                System.setErr(new LoggingPrintStream(LogManager.getLogger("STDERR"), Level.ERROR));
+                System.setOut(new LoggingPrintStream(System.out, LogManager.getLogger("STDOUT"), Level.INFO));
+                System.setErr(new LoggingPrintStream(System.err, LogManager.getLogger("STDERR"), Level.ERROR));
             }
         }
     }
@@ -173,7 +173,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         if (!initialized) {
-            out.print(getLayout().toSerializable(event).toString());
+            out.print(getLayout().toSerializable(event));
             return;
         }
 

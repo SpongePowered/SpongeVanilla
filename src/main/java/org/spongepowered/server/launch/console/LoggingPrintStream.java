@@ -37,8 +37,8 @@ public class LoggingPrintStream extends PrintStream {
 
     private final LoggingOutputStream out;
 
-    public LoggingPrintStream(Logger logger, Level level) {
-        this(new LoggingOutputStream(FQCN, logger, level));
+    public LoggingPrintStream(PrintStream out, Logger logger, Level level) {
+        this(new LoggingOutputStream(out, logger, level, FQCN));
     }
 
     public LoggingPrintStream(LoggingOutputStream out) {
