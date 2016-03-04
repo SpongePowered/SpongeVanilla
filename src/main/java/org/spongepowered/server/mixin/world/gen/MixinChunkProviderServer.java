@@ -24,41 +24,60 @@
  */
 package org.spongepowered.server.mixin.world.gen;
 
-import net.minecraft.world.WorldProvider;
+import com.google.common.collect.Lists;
+import net.minecraft.util.LongHashMap;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.gen.ChunkProviderServer;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.server.world.VanillaDimensionManager;
 
 import java.util.List;
+import java.util.Set;
 
 @Mixin(ChunkProviderServer.class)
 public abstract class MixinChunkProviderServer {
 
-    @Shadow private IChunkProvider serverChunkGenerator;
-    @Shadow private List<Chunk> loadedChunks;
-    @Shadow private WorldServer worldObj;
+    @Shadow @Final public WorldServer worldObj;
+    @Shadow @Final private Set<Long> droppedChunksSet;
+    @Shadow public IChunkGenerator chunkGenerator;
+    @Shadow @Final private IChunkLoader chunkLoader;
+    @Shadow @Final private LongHashMap<Chunk> id2ChunkMap;
+    public final List<Chunk> loadedChunks = Lists.<Chunk>newArrayList();
+    @Shadow abstract void saveChunkData(Chunk chunkIn);
+    @Shadow abstract void saveChunkExtraData(Chunk chunkIn);
 
-    // Optionally unload spawn chunks if not specified in the world configuration
-    @Redirect(method = "dropChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldProvider;canRespawnHere()Z"))
-    private boolean onCanRespawnHere(WorldProvider provider) {
-        return provider.canRespawnHere() && VanillaDimensionManager.shouldLoadSpawn(provider.getDimensionType().getId());
-    }
+    /**
+     * Author: Zidane
+     * Purpose:
+     *  - Check droppedChunksSet first before iterating 100 times "just because"
+     */
+    @Overwrite
+    public boolean unloadQueuedChunks() {
+        // Sponge start -
+        if (!this.worldObj.disableLevelSaving && !this.droppedChunksSet.isEmpty()) {
+            for (int i = 0; i < 100; ++i) {
+                Long olong = (Long) this.droppedChunksSet.iterator().next();
+                Chunk chunk = (Chunk) this.id2ChunkMap.getValueByKey(olong.longValue());
 
-    @Inject(method = "unloadQueuedChunks", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", remap = false),
-            cancellable = true)
-    private void onUnloadQueuedChunks(CallbackInfoReturnable<Boolean> cir) {
-        if (this.loadedChunks.isEmpty() && !VanillaDimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())) {
-            VanillaDimensionManager.unloadWorld(this.worldObj.provider.getDimensionType().getId());
-            cir.setReturnValue(this.serverChunkGenerator.unloadQueuedChunks());
+                if (chunk != null) {
+                    chunk.onChunkUnload();
+                    this.saveChunkData(chunk);
+                    this.saveChunkExtraData(chunk);
+                    this.id2ChunkMap.remove(olong.longValue());
+                    this.loadedChunks.remove(chunk);
+                }
+
+                this.droppedChunksSet.remove(olong);
+            }
         }
-    }
 
+        this.chunkLoader.chunkTick();
+
+        return false;
+    }
 }
