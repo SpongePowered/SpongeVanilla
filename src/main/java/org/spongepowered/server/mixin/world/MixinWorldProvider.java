@@ -43,6 +43,17 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
     @Shadow protected World worldObj;
     @Shadow private WorldType terrainType;
     @Shadow protected boolean hasNoSky;
+    int dimensionId;
+
+    @Override
+    public int getDimensionId() {
+        return dimensionId;
+    }
+
+    @Override
+    public void setDimensionId(int dim) {
+        this.dimensionId = dim;
+    }
 
     @Override
     public BlockPos getRandomizedSpawnPoint() {
