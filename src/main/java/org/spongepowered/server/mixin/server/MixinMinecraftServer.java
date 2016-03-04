@@ -66,7 +66,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow @Final private static Logger logger;
     @Shadow @Final private List<ITickable> playersOnline;
     @Shadow @Final public Profiler theProfiler;
-    @Shadow private PlayerList serverConfigManager;
+    @Shadow private PlayerList playerList;
     @Shadow private int tickCounter;
     @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
     @Shadow public WorldServer[] worldServers;
@@ -164,7 +164,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
                 if (this.tickCounter % 20 == 0) {
                     this.theProfiler.startSection("timeSync");
-                    this.serverConfigManager.sendPacketToAllPlayersInDimension (
+                    this.playerList.sendPacketToAllPlayersInDimension (
                             new SPacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
                                     worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.getDimensionType().getId());
                     this.theProfiler.endSection();
@@ -208,7 +208,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.theProfiler.endStartSection("connection");
         this.getNetworkSystem().networkTick();
         this.theProfiler.endStartSection("players");
-        this.serverConfigManager.onTick();
+        this.playerList.onTick();
         this.theProfiler.endStartSection("tickables");
 
         for (int k = 0; k < this.playersOnline.size(); ++k) {
