@@ -29,8 +29,10 @@ import static org.spongepowered.common.SpongeImpl.MINECRAFT_VERSION;
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.dedicated.PropertyManager;
 import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -51,6 +53,8 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         super(null, null, null, null, null, null, null);
     }
 
+    @Shadow private PropertyManager settings;
+
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
     private void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
@@ -59,6 +63,10 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
     private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
+        if (this.getFolderName() == null) {
+            this.setFolderName(this.settings.getStringProperty("level-name", "world"));
+        }
+
         SpongeVanilla.INSTANCE.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
         statusResponse.setServerDescription(new TextComponentString(getMOTD()));

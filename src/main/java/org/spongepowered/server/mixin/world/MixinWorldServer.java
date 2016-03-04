@@ -75,7 +75,7 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     // Prevent wrong weather changes getting sent to players in other (unaffected) dimensions
     // This causes "phantom rain" on the client, sunny and rainy weather at the same time
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
+            target = "Lnet/minecraft/server/management/PlayerList;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
     private void onSendWeatherPacket(PlayerList manager, Packet packet) {
         manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionType().getId());
     }
