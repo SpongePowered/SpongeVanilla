@@ -14,7 +14,6 @@
         "entity.item.MixinEntityMinecart",
         "entity.player.MixinEntityPlayer",
         "entity.player.MixinEntityPlayerMP",
-        "item.MixinItemArmor",
         "network.MixinNetHandlerPlayServer",
         "server.MixinMinecraftServer",
         "server.dedicated.MixinConsoleHandler",
