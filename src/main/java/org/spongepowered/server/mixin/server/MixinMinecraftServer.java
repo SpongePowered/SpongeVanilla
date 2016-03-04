@@ -77,15 +77,13 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     private boolean skipServerStop;
     private final Hashtable<Integer, long[]> worldTickTimes = new Hashtable<>();
 
-    private static final String DEDICATED_SERVER_INIT = "Lnet/minecraft/server/dedicated/DedicatedServer.<init> (Ljava/io/File;Lnet/minecraft/util/datafix/DataFixer;Lcom/mojang/authlib/yggdrasil/YggdrasilAuthenticationService;Lcom/mojang/authlib/minecraft/MinecraftSessionService;Lcom/mojang/authlib/GameProfileRepository;Lnet/minecraft/server/management/PlayerProfileCache;)V";
-
     /**
      * @author Minecrell
-     * @reason Sets the server brand name to SpongeVanilla
+     * @reason Sets the server brand name to 'sponge'
      */
     @Overwrite
     public String getServerModName() {
-        return SpongeVanilla.INSTANCE.getName();
+        return SpongeVanilla.INSTANCE.getId();
     }
 
     /**

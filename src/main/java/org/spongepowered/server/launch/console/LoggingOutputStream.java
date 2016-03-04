@@ -26,11 +26,13 @@ package org.spongepowered.server.launch.console;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import javax.annotation.Nullable;
 
@@ -38,18 +40,22 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
 
     private static final String SEPARATOR = System.getProperty("line.separator");
 
+    private static final ImmutableSet<String> IGNORED_CLASSES = ImmutableSet.of("org.spongepowered.asm.util.PrettyPrinter");
+
     private static final String[] ignoredPackages = {
             "java.",
             "sun.",
             "kotlin.io."
     };
 
+    private final PrintStream out;
     @Nullable private final String fqcn;
     private final Logger logger;
     private final Level level;
     boolean flush = true;
 
-    public LoggingOutputStream(@Nullable String fqcn, Logger logger, Level level) {
+    public LoggingOutputStream(PrintStream out, Logger logger, Level level, @Nullable String fqcn) {
+        this.out = checkNotNull(out, "out");
         this.fqcn = fqcn;
         this.logger = checkNotNull(logger, "logger");
         this.level = checkNotNull(level, "level");
@@ -73,11 +79,16 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
                 message = message.substring(0, message.length() - 1);
             }
 
-            if (this.logger.isEnabled(level)) {
+            if (this.logger.isEnabled(this.level)) {
                 if (this.fqcn != null) {
                     StackTraceElement location = calculateLocation(this.fqcn);
                     if (location != null) {
-                        this.logger.log(this.level, "[" + location + "]: " + message);
+                        if (IGNORED_CLASSES.contains(location.getClassName())) {
+                            this.out.println(message);
+                        } else {
+                            this.logger.log(this.level, "[" + location + "]: " + message);
+                        }
+
                         return;
                     }
                 }
