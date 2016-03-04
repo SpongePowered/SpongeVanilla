@@ -36,6 +36,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -78,10 +79,11 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     @Shadow private int sleepTimer;
     @Shadow @Nullable private BlockPos spawnChunk;
     @Shadow private boolean spawnForced;
-    @Shadow private net.minecraft.item.ItemStack itemInUse;
+    // TODO - 1.9 interact refactor
+    /*@Shadow private net.minecraft.item.ItemStack itemInUse;
     @Shadow private int itemInUseCount;
 
-    @Shadow protected abstract void onItemUseFinish();
+    @Shadow protected abstract void onItemUseFinish();*/
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
@@ -192,9 +194,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     // Event injectors
 
-    @Inject(method = "interactWith", at = @At(value = "INVOKE", target = "net/minecraft/entity/player/EntityPlayer"
-            + ".getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;"), cancellable = true)
-    private void onInteractWith(net.minecraft.entity.Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "func_184822_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getHeldItem(Lnet/minecraft/util/EnumHand;)Lnet/minecraft/item/ItemStack;"), cancellable = true)
+    private void onInteractWith(net.minecraft.entity.Entity entity, net.minecraft.item.ItemStack stack, EnumHand hand, CallbackInfoReturnable<Boolean> cir) {
         InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(Cause.of(NamedCause.source(this)),
                 Optional.empty(), (Entity) entity);
         if (SpongeImpl.postEvent(event)) {
@@ -207,6 +208,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         return new Transaction<>(itemSnapshot, itemSnapshot.copy());
     }
 
+    // TODO - revisit with refator for 1.9 item hnteract handling
+    /*
     @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUse:Lnet/minecraft/item/ItemStack;", opcode = Opcodes.PUTFIELD), cancellable = true)
     private void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
         // Handle logic on our own
@@ -260,7 +263,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         // TODO: Handle cancellation
         SpongeImpl.postEvent(event);
         return (net.minecraft.item.ItemStack) event.getItemStackResult().getFinal().createStack();
-    }
+    }*/
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {

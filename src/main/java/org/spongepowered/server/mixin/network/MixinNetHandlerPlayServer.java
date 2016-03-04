@@ -89,7 +89,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     }
 
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
+            target = "Lnet/minecraft/server/management/PlayerList;sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
         final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
@@ -106,7 +106,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     }
 
     @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
+            target = "Lnet/minecraft/server/management/PlayerList;sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
     private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
     }
