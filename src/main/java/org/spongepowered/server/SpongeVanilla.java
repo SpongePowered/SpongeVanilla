@@ -125,7 +125,7 @@ public final class SpongeVanilla extends AbstractPluginContainer {
             GameProfileRepository profileRepository = authenticationService.createProfileRepository();
             PlayerProfileCache profileCache = new PlayerProfileCache(profileRepository, new File(worldDir, USER_CACHE_FILE.getName()));
 
-            server = new DedicatedServer(worldDir, DataFixesManager.func_188279_a(),
+            server = new DedicatedServer(worldDir, DataFixesManager.createFixer(),
                     authenticationService, sessionService, profileRepository, profileCache);
 
             if (options.has(WORLD_NAME)) {
