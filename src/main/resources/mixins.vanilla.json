@@ -27,5 +27,8 @@
         "world.MixinWorldType",
         "world.chunk.MixinChunk",
         "world.storage.MixinSaveHandler"
-    ]
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }
