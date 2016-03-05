@@ -76,3 +76,6 @@ CL: net/minecraft/network/datasync/DataSerializers$5 net/minecraft/network/datas
 CL: net/minecraft/network/datasync/DataSerializers$4 net/minecraft/network/datasync/DataSerializers$8
 CL: net/minecraft/network/datasync/DataSerializers$3 net/minecraft/network/datasync/DataSerializers$7
 CL: net/minecraft/network/datasync/DataSerializers$2 net/minecraft/network/datasync/DataSerializers$6
+
+# TODO: Temporary mapping so Bootstrap mixin injection target gets properly added to the refmap
+MD: net/minecraft/init/Bootstrap$11/dispenseStack (Lnet/minecraft/dispenser/IBlockSource;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack; net/minecraft/init/Bootstrap$11/func_82487_b (Lnet/minecraft/dispenser/IBlockSource;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;
