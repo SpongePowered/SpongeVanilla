@@ -33,15 +33,11 @@ import net.minecraft.world.storage.WorldInfo;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.interfaces.IMixinSaveHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 @Mixin(SaveHandler.class)
 public abstract class MixinSaveHandler implements IMixinSaveHandler {
@@ -52,7 +48,7 @@ public abstract class MixinSaveHandler implements IMixinSaveHandler {
         try {
             NBTTagCompound root = CompressedStreamTools.readCompressed(new FileInputStream(file));
             NBTTagCompound data = root.getCompoundTag("Data");
-            WorldInfo info = new WorldInfo(fixer.func_188257_a(FixTypes.LEVEL, data));
+            WorldInfo info = new WorldInfo(fixer.process(FixTypes.LEVEL, data));
 
             this.loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
             this.loadSpongeDatData(info);
