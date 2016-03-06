@@ -31,6 +31,7 @@ import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -47,6 +48,7 @@ import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.asm.mixin.Mixin;
@@ -200,67 +202,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         }
     }
 
-    private Transaction<ItemStackSnapshot> createTransaction(net.minecraft.item.ItemStack stack) {
-        ItemStackSnapshot itemSnapshot = ((ItemStack) stack).createSnapshot();
-        return new Transaction<>(itemSnapshot, itemSnapshot.copy());
-    }
-
-    // TODO - revisit with refator for 1.9 item hnteract handling
-    /*
-    @Inject(method = "setItemInUse", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUse:Lnet/minecraft/item/ItemStack;", opcode = Opcodes.PUTFIELD), cancellable = true)
-    private void onSetItemInUse(net.minecraft.item.ItemStack stack, int duration, CallbackInfo ci) {
-        // Handle logic on our own
-        ci.cancel();
-
-        UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)), duration, duration,
-                createTransaction(stack));
-
-        if (!SpongeImpl.postEvent(event)) {
-            this.itemInUse = stack;
-            this.itemInUseCount = event.getRemainingDuration();
-
-            if (!this.worldObj.isRemote) {
-                this.setEating(true);
-            }
-        }
-    }
-
-    @Inject(method = "onUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/EntityPlayer;itemInUseCount:I", opcode = Opcodes.GETFIELD))
-    private void callUseItemStackTick(CallbackInfo ci) {
-        UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
-                this.itemInUseCount, this.itemInUseCount, createTransaction(this.itemInUse));
-
-        this.itemInUseCount = SpongeImpl.postEvent(event) ? -1 : event.getRemainingDuration();
-        if (this.itemInUseCount <= 0) {
-            onItemUseFinish();
-        }
-    }
-
-    @Redirect(method = "stopUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onPlayerStoppedUsing"
-            + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;I)V"))
-    private void callUseItemStackStop(net.minecraft.item.ItemStack stack, World world, EntityPlayer player, int remainingDuration) {
-        UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
-                this.itemInUseCount, this.itemInUseCount, createTransaction(stack));
-
-        if (!SpongeImpl.postEvent(event)) {
-            stack.onPlayerStoppedUsing(world, player, remainingDuration);
-        }
-    }
-
-    @Redirect(method = "onItemUseFinish", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onItemUseFinish"
-            + "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;"))
-    private net.minecraft.item.ItemStack callUseItemStackFinish(net.minecraft.item.ItemStack stack, World world, EntityPlayer player) {
-        net.minecraft.item.ItemStack result = stack.onItemUseFinish(world, player);
-        Transaction<ItemStackSnapshot> resultTransaction = new Transaction<>(((ItemStack) stack).createSnapshot(),
-                ((ItemStack) result).createSnapshot());
-
-        UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(Cause.of(NamedCause.source(this)),
-                this.itemInUseCount, this.itemInUseCount, createTransaction(stack), resultTransaction);
-
-        // TODO: Handle cancellation
-        SpongeImpl.postEvent(event);
-        return (net.minecraft.item.ItemStack) event.getItemStackResult().getFinal().createStack();
-    }*/
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
@@ -336,22 +277,5 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Cause.of(NamedCause.source(this)), bed, this));
         // Sponge end
     }
-
-    // Vanilla fixes
-
-    /**
-     * @author simon816
-     * @reason Fix player's ArmorEquipable methods not setting the right slot
-     */
-    // TODO: Revist this when updating for 1.9's refactored interaction handling
-    /*@Override
-    public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
-        // Fix issue in player where it doesn't take into account selected item
-        if (slotIn == 0) {
-            this.inventory.mainInventory[this.inventory.currentItem] = stack;
-        } else {
-            this.inventory.armorInventory[slotIn - 1] = stack;
-        }
-    }*/
 
 }
