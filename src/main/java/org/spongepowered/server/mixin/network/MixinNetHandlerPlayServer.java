@@ -29,18 +29,31 @@ import static org.spongepowered.server.network.VanillaChannelRegistrar.INTERNAL_
 import static org.spongepowered.server.network.VanillaChannelRegistrar.REGISTER_CHANNEL;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.UNREGISTER_CHANNEL;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Splitter;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -49,8 +62,11 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.world.extent.Extent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -73,10 +89,17 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     @Shadow @Final private MinecraftServer serverController;
     @Shadow public EntityPlayerMP playerEntity;
 
+    @Shadow public abstract void sendPacket(final Packet<?> packetIn);
+
     private static final Splitter CHANNEL_SPLITTER = Splitter.on(CHANNEL_SEPARATOR);
 
     private final Set<String> registeredChannels = new HashSet<>();
     private boolean forceUpdateInventorySlot;
+
+    @Override
+    public void forceUpdateInventorySlot(boolean force) {
+        this.forceUpdateInventorySlot = force;
+    }
 
     @Override
     public boolean supportsChannel(String name) {
@@ -111,69 +134,27 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         // Do nothing
     }
 
-    // TODO 1.9 Update - HIGH PRIORITY - Interaction needs to be completely changed and re-written --Zidane
-//    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
-//            target = "Lnet/minecraft/server/management/ItemInWorldManager;tryUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
-//                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"))
-//    private boolean tryUseItem(PlayerInteractionManager itemInWorldManager, EntityPlayer player, World world, ItemStack stack) {
-//        BlockSnapshot block = ((Extent) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
-//
-//        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
-//                Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
-//        return !SpongeImpl.postEvent(event) && itemInWorldManager.func_187250_a(player, world, stack, EnumHand.MAIN_HAND) == EnumActionResult.SUCCESS;
-//    }
-//
-//    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
-//            target = "Lnet/minecraft/server/management/ItemInWorldManager;activateBlockOrUseItem(Lnet/minecraft/entity/player/EntityPlayer;"
-//                    + "Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;FFF)Z"))
-//    private boolean onActivateBlockOrUseItem(PlayerInteractionManager itemManager, EntityPlayer player, net.minecraft.world.World worldIn,
-//            @Nullable ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-//        BlockSnapshot currentSnapshot = ((Extent) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
-//        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
-//                Optional.of(new Vector3d(hitX, hitY, hitZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
-//        if (SpongeImpl.postEvent(event)) {
-//            final IBlockState state = worldIn.getBlockState(pos);
-//
-//            if (state.getBlock() == Blocks.command_block) {
-//                // CommandBlock GUI opens solely on the client, we need to force it close on cancellation
-//                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketCloseWindow(0));
-//
-//            } else if (state.getProperties().containsKey(BlockDoor.HALF)) {
-//                // Stopping a door from opening while interacting the top part will allow the door to open, we need to update the
-//                // client to resolve this
-//                if (state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
-//                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketBlockChange(worldIn, pos.up()));
-//                } else {
-//                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketBlockChange(worldIn, pos.down()));
-//                }
-//
-//            } else if (stack != null) {
-//                // Stopping the placement of a door or double plant causes artifacts (ghosts) on the top-side of the block. We need to remove it
-//                if (stack.getItem() instanceof ItemDoor || Item.getItemFromBlock(Blocks.double_plant).equals(stack.getItem())) {
-//                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new SPacketBlockChange(worldIn, pos.up(2)));
-//                }
-//            }
-//
-//            // Force update inventory slot (client assumes block placement doesn't fail)
-//            this.forceUpdateInventorySlot = true;
-//            return false;
-//        }
-//
-//        this.forceUpdateInventorySlot = false;
-//
-//        // Try placing the block or using the item on the block
-//        // If that is not successful, try to use the item without a block instead
-//        // This is necessary because we filter the second packet sent when interacting with a block
-//        return itemManager.func_187251_a(player, worldIn, stack, pos, side, hitX, hitY, hitZ)
-//                || (stack != null && itemManager.func_187250_a(player, worldIn, stack));
-//    }
-//
-//    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areItemStacksEqual"
-//            + "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
-//    private boolean onAreItemStacksEqual(ItemStack stackA, ItemStack stackB) {
-//        // Force client to update the itemstack if event was cancelled
-//        return !this.forceUpdateInventorySlot && ItemStack.areItemStacksEqual(stackA, stackB);
-//    }
+    // All of these MCP names are terrible - ignore them. This is actually for item usage
+    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/management/PlayerInteractionManager;processRightClick(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/EnumActionResult;"))
+    private EnumActionResult tryUseItem(PlayerInteractionManager playerInteractionManager, EntityPlayer player, World world, ItemStack stack, EnumHand hand) {
+        BlockSnapshot block = ((Extent) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
+
+        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
+                Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
+        if (!SpongeImpl.postEvent(event)) {
+            return playerInteractionManager.processRightClick(player, world, stack, EnumHand.MAIN_HAND);
+        }
+        return EnumActionResult.FAIL;
+    }
+
+    @Inject(method = "processRightClickBlock", at = @At("RETURN"))
+    public void onProcessRightClickBlock(CallbackInfo ci) {
+        if (this.forceUpdateInventorySlot) {
+            Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
+            this.sendPacket(new SPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
+        }
+    }
 
     @Inject(method = "processVanilla250Packet", at = @At("HEAD"), cancellable = true)
     private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {

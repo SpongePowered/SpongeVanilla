@@ -37,6 +37,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -192,13 +193,12 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     // Event injectors
 
-    @Inject(method = "interact", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getHeldItem"
-            + "(Lnet/minecraft/util/EnumHand;)Lnet/minecraft/item/ItemStack;"), cancellable = true)
-    private void onInteractWith(net.minecraft.entity.Entity entity, net.minecraft.item.ItemStack stack, EnumHand hand, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "interact", at = @At(value = "HEAD"), cancellable = true)
+    private void onInteractWith(net.minecraft.entity.Entity entity, net.minecraft.item.ItemStack stack, EnumHand hand, CallbackInfoReturnable<EnumActionResult> cir) {
         InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(Cause.of(NamedCause.source(this)),
                 Optional.empty(), (Entity) entity);
         if (SpongeImpl.postEvent(event)) {
-            cir.setReturnValue(false);
+            cir.setReturnValue(EnumActionResult.FAIL);
         }
     }
 
