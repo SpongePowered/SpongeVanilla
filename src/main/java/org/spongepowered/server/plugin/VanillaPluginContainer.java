@@ -24,38 +24,56 @@
  */
 package org.spongepowered.server.plugin;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.SpongePluginGuiceModule;
-import org.spongepowered.common.plugin.SpongePluginContainer;
+import org.spongepowered.common.plugin.AbstractPluginContainer;
+import org.spongepowered.common.plugin.PluginContainerExtension;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
-public class VanillaPluginContainer extends SpongePluginContainer {
+import javax.annotation.Nullable;
 
-    private final Object source;
+public final class VanillaPluginContainer extends AbstractPluginContainer implements PluginContainerExtension {
 
     private final String id;
-    private final String name;
-    private final String version;
-    private final Optional<Object> instance;
+    private final String unqualifiedId;
+
+    private final Optional<String> name;
+    private final Optional<String> version;
+    private final Optional<String> description;
+    private final Optional<String> url;
+    private final Optional<Path> assets;
+    private final ImmutableList<String> authors;
+
+    private final Optional<Path> source;
+
+    private final Optional<?> instance;
     private final Logger logger;
 
     private final Injector injector;
 
-    public VanillaPluginContainer(Object source, Class<?> pluginClass) {
-        this.source = checkNotNull(source, "source");
+    VanillaPluginContainer(String id, Class<?> pluginClass,
+            @Nullable String name, @Nullable String version, @Nullable String description, @Nullable String url, List<String> authors,
+            @Nullable String assets, Optional<Path> source) {
+        this.id = id;
+        this.unqualifiedId = getUnqualifiedId(id);
 
-        Plugin info = pluginClass.getAnnotation(Plugin.class);
-        this.id = info.id();
-        this.name = info.name();
-        this.version = info.version();
+        this.name = Optional.ofNullable(name);
+        this.version = Optional.ofNullable(version);
+        this.description = Optional.ofNullable(description);
+        this.url = Optional.ofNullable(url);
+        this.assets = assets != null ? Optional.of(Paths.get(assets)) : Optional.empty();
+        this.authors = ImmutableList.copyOf(authors);
+        this.source = source;
         this.logger = LoggerFactory.getLogger(this.id);
 
         this.injector = SpongeImpl.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass));
@@ -68,17 +86,54 @@ public class VanillaPluginContainer extends SpongePluginContainer {
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getUnqualifiedId() {
+        return this.unqualifiedId;
     }
 
     @Override
-    public String getVersion() {
+    public String getName() {
+        return this.name.orElse(this.unqualifiedId);
+    }
+
+    @Override
+    public Optional<String> getVersion() {
         return this.version;
     }
 
     @Override
-    public Optional<Object> getInstance() {
+    public Optional<String> getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public Optional<String> getUrl() {
+        return this.url;
+    }
+
+    @Override
+    public Optional<Path> getAssetDirectory() {
+        return this.assets;
+    }
+
+    @Override
+    public Optional<Asset> getAsset(String name) {
+        // TODO: Default method fails here likely because it is initialized
+        // before the Sponge class. Workarounds?
+        return Sponge.getAssetManager().getAsset(this, name);
+    }
+
+    @Override
+    public List<String> getAuthors() {
+        return this.authors;
+    }
+
+    @Override
+    public Optional<Path> getSource() {
+        return this.source;
+    }
+
+    @Override
+    public Optional<?> getInstance() {
         return this.instance;
     }
 
@@ -90,12 +145,6 @@ public class VanillaPluginContainer extends SpongePluginContainer {
     @Override
     public Injector getInjector() {
         return this.injector;
-    }
-
-    @Override
-    protected Objects.ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("source", this.source);
     }
 
 }

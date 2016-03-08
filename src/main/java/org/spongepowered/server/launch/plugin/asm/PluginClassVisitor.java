@@ -22,36 +22,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch.plugin;
+package org.spongepowered.server.launch.plugin.asm;
 
-import com.google.common.base.Splitter;
+import static org.objectweb.asm.Opcodes.ASM5;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.Manifest;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.spongepowered.plugin.meta.PluginMetadata;
 
-final class PluginAccessTransformers {
+import javax.annotation.Nullable;
 
-    private static final String KEY = "FMLAT";
-    private static final Splitter VALUE_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
-    private static final String LOCATION = "META-INF/";
+public final class PluginClassVisitor extends ClassVisitor {
 
-    private PluginAccessTransformers() {
+    private static final String PLUGIN_DESCRIPTOR = "Lorg/spongepowered/api/plugin/Plugin;";
+
+    private String className;
+    private PluginAnnotationVisitor annotationVisitor;
+
+    public PluginClassVisitor() {
+        super(ASM5);
     }
 
-    static Set<String> find(Manifest manifest) {
-        String ats = manifest.getMainAttributes().getValue(KEY);
-        if (ats == null) {
-            return Collections.emptySet();
+    public String getClassName() {
+        return this.className;
+    }
+
+    public PluginMetadata getMetadata() {
+        return this.annotationVisitor != null ? this.annotationVisitor.getMetadata() : null;
+    }
+
+    @Override
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        this.className = name;
+    }
+
+    @Override @Nullable
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        if (visible && desc.equals(PLUGIN_DESCRIPTOR)) {
+            return this.annotationVisitor = new PluginAnnotationVisitor(className);
         }
 
-        Set<String> result = new HashSet<>();
-        for (String at : VALUE_SPLITTER.split(ats)) {
-            result.add(LOCATION + at);
-        }
-
-        return result;
+        return null;
     }
 
 }

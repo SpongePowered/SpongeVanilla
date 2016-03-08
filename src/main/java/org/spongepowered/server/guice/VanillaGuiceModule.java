@@ -33,6 +33,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.MinecraftVersion;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -41,6 +42,7 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.asset.SpongeAssetManager;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
 import org.spongepowered.common.plugin.SpongeApiContainer;
@@ -71,15 +73,16 @@ public class VanillaGuiceModule extends AbstractModule {
         bind(SpongeVanilla.class).toInstance(this.instance);
         bind(Logger.class).toInstance(this.logger);
 
-        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.ECOSYSTEM_NAME)).toInstance(this.instance);
-        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.API_NAME)).to(SpongeApiContainer.class).in(Scopes.SINGLETON);
-        bind(PluginContainer.class).annotatedWith(named("Minecraft")).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
+        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.ECOSYSTEM_ID)).toInstance(this.instance);
+        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.API_ID)).to(SpongeApiContainer.class).in(Scopes.SINGLETON);
+        bind(PluginContainer.class).annotatedWith(named(SpongeImpl.GAME_ID)).to(MinecraftPluginContainer.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(VanillaGame.class).in(Scopes.SINGLETON);
         bind(MinecraftVersion.class).toInstance(SpongeImpl.MINECRAFT_VERSION);
         bind(Platform.class).to(VanillaPlatform.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(VanillaPluginManager.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(SpongeEventManager.class).in(Scopes.SINGLETON);
+        bind(AssetManager.class).to(SpongeAssetManager.class).in(Scopes.SINGLETON);
         bind(GameRegistry.class).to(SpongeGameRegistry.class).in(Scopes.SINGLETON);
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
         bind(TeleportHelper.class).to(SpongeTeleportHelper.class).in(Scopes.SINGLETON);

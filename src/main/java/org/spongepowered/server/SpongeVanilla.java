@@ -31,7 +31,6 @@ import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_DIR;
 import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_NAME;
 
 import com.google.inject.Guice;
-import com.google.inject.Injector;
 import joptsimple.OptionSet;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.server.MinecraftServer;
@@ -61,7 +60,7 @@ import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.network.message.SpongeMessageHandler;
-import org.spongepowered.common.plugin.SpongePluginContainer;
+import org.spongepowered.common.plugin.AbstractPluginContainer;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
@@ -76,7 +75,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-public final class SpongeVanilla extends SpongePluginContainer {
+public final class SpongeVanilla extends AbstractPluginContainer {
 
     public static final SpongeVanilla INSTANCE = new SpongeVanilla();
 
@@ -203,7 +202,7 @@ public final class SpongeVanilla extends SpongePluginContainer {
     }
 
     @Override
-    public String getVersion() {
+    public Optional<String> getVersion() {
         return SpongeImpl.IMPLEMENTATION_VERSION;
     }
 
@@ -215,11 +214,6 @@ public final class SpongeVanilla extends SpongePluginContainer {
     @Override
     public Optional<Object> getInstance() {
         return Optional.of(this);
-    }
-
-    @Override
-    public Injector getInjector() {
-        return SpongeImpl.getInjector();
     }
 
 }

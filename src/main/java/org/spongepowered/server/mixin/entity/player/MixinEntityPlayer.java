@@ -31,7 +31,6 @@ import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -63,6 +62,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
 import org.spongepowered.common.interfaces.entity.player.IMixinEntityPlayer;
+import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
 import org.spongepowered.common.util.VecHelper;
 
 import java.util.Optional;
@@ -70,7 +70,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayer.class)
-public abstract class MixinEntityPlayer extends EntityLivingBase implements IMixinEntityPlayer {
+public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements IMixinEntityPlayer {
 
     @Shadow public InventoryPlayer inventory;
     @Shadow protected boolean sleeping;
@@ -88,10 +88,6 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements IMix
 
     private TIntObjectMap<BlockPos> spawnChunkMap = new TIntObjectHashMap<>();
     private TIntSet spawnForcedSet = new TIntHashSet();
-
-    protected MixinEntityPlayer(World worldIn) {
-        super(worldIn);
-    }
 
     /**
      * @author Minecrell

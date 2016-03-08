@@ -36,6 +36,7 @@ import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.asm.mixin.Mixin;
@@ -67,7 +68,7 @@ public abstract class MixinEntityLivingBase extends Entity {
 
     protected void callDestructEntityEventDeath(DamageSource source, CallbackInfo ci) {
         MessageChannel originalChannel = this instanceof Player ? ((Player) this).getMessageChannel() : MessageChannel.TO_NONE;
-        Optional<Text> deathMessage = Optional.of(SpongeTexts.toText(getCombatTracker().getDeathMessage()));
+        Text deathMessage = SpongeTexts.toText(getCombatTracker().getDeathMessage());
 
         Optional<User> sourceCreator = Optional.empty();
 
@@ -84,10 +85,13 @@ public abstract class MixinEntityLivingBase extends Entity {
             cause = Cause.of(NamedCause.source(source), NamedCause.of("Victim", this));
         }
 
-        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(originalChannel),
-                deathMessage, deathMessage, (Living) this);
+        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(
+                cause, originalChannel, Optional.of(originalChannel), new MessageEvent.MessageFormatter(deathMessage), (Living) this, false
+        );
         if (!SpongeImpl.postEvent(event)) {
-            event.getMessage().ifPresent(text -> event.getChannel().ifPresent(channel -> channel.send(text)));
+            if (!event.isMessageCancelled()) {
+                event.getChannel().ifPresent(channel -> channel.send(this, event.getMessage()));
+            }
 
             // Store cause for drop event which is called after this event
             if (sourceCreator.isPresent()) {

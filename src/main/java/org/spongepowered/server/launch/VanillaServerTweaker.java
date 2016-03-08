@@ -77,6 +77,8 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("com.google.common.");
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
+        loader.addClassLoaderExclusion("org.spongepowered.plugin.");
+        loader.addClassLoaderExclusion("org.spongepowered.api.plugin.");
 
         // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
