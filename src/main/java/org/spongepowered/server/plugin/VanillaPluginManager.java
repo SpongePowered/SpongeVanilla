@@ -148,7 +148,7 @@ public class VanillaPluginManager implements PluginManager {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
             PluginContainer container = new VanillaPluginContainer(id, pluginClass,
                     metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getAuthors(),
-                    candidate.getSource());
+                    metadata.getAssetDirectory(), candidate.getSource());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());

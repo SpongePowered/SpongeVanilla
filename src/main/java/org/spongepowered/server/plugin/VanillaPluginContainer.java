@@ -28,12 +28,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.SpongePluginGuiceModule;
 import org.spongepowered.common.plugin.AbstractPluginContainer;
 import org.spongepowered.common.plugin.PluginContainerExtension;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +51,7 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
     private final Optional<String> version;
     private final Optional<String> description;
     private final Optional<String> url;
+    private final Optional<Path> assets;
     private final ImmutableList<String> authors;
 
     private final Optional<Path> source;
@@ -59,7 +63,7 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
 
     VanillaPluginContainer(String id, Class<?> pluginClass,
             @Nullable String name, @Nullable String version, @Nullable String description, @Nullable String url, List<String> authors,
-            Optional<Path> source) {
+            @Nullable String assets, Optional<Path> source) {
         this.id = id;
         this.unqualifiedId = getUnqualifiedId(id);
 
@@ -67,6 +71,7 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
         this.version = Optional.ofNullable(version);
         this.description = Optional.ofNullable(description);
         this.url = Optional.ofNullable(url);
+        this.assets = assets != null ? Optional.of(Paths.get(assets)) : Optional.empty();
         this.authors = ImmutableList.copyOf(authors);
         this.source = source;
         this.logger = LoggerFactory.getLogger(this.id);
@@ -103,6 +108,18 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
     @Override
     public Optional<String> getUrl() {
         return this.url;
+    }
+
+    @Override
+    public Optional<Path> getAssetDirectory() {
+        return this.assets;
+    }
+
+    @Override
+    public Optional<Asset> getAsset(String name) {
+        // TODO: Default method fails here likely because it is initialized
+        // before the Sponge class. Workarounds?
+        return Sponge.getAssetManager().getAsset(this, name);
     }
 
     @Override
