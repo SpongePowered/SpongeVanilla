@@ -28,8 +28,8 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.spongepowered.server.launch.VanillaLaunch;
 
 import javax.annotation.Nullable;
@@ -48,12 +48,12 @@ abstract class DeobfuscationTransformer extends Remapper implements IClassTransf
 
         ClassReader reader = new ClassReader(bytes);
         ClassWriter writer = new ClassWriter(reader, 0);
-        reader.accept(createRemappingClassAdapter(reader, writer), ClassReader.EXPAND_FRAMES);
+        reader.accept(createClassRemapper(reader, writer), 0);
         return writer.toByteArray();
     }
 
-    RemappingClassAdapter createRemappingClassAdapter(ClassReader reader, ClassVisitor cv) {
-        return new RemappingClassAdapter(cv, this);
+    ClassVisitor createClassRemapper(ClassReader reader, ClassVisitor cv) {
+        return new ClassRemapper(cv, this);
     }
 
 }

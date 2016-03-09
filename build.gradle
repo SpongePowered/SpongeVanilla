@@ -18,7 +18,7 @@ buildscript {
             exclude module: 'guava'
         }
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-        classpath 'org.spongepowered:spongegradle:0.3.1-SNAPSHOT'
+        classpath 'org.spongepowered:spongegradle:0.5.1'
         classpath 'org.spongepowered:mixingradle:0.3-SNAPSHOT'
     }
 }
@@ -42,12 +42,17 @@ configurations {
     shadow
 }
 
+configurations.compile {
+    exclude module: 'asm'
+    exclude module: 'asm-commons'
+}
+
 dependencies {
-    compile 'org.ow2.asm:asm-debug-all:5.0.4'
+    compile 'org.ow2.asm:asm-debug-all:5.1'
     compile 'net.sf.jopt-simple:jopt-simple:4.9'
     compile 'jline:jline:2.13'
 
-    shadow 'org.ow2.asm:asm-all:5.0.4'
+    shadow 'org.ow2.asm:asm-all:5.1'
 }
 
 // Set main class and classpath for Minecraft server and Launchwrapper
