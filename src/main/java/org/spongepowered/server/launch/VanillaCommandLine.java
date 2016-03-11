@@ -64,7 +64,8 @@ public final class VanillaCommandLine {
     public static final OptionSpec<String> ACCESS_TRANSFORMER = parser.acceptsAll(asList("access-transformer", "at"),
             "Additional access transformer files to apply").withRequiredArg();
 
-    public static final OptionSpec<Void> SCAN_CLASSPATH = parser.accepts("scan-classpath", "Scan classpath for plugins in production");
+    public static final OptionSpec<Void> SCAN_CLASSPATH = parser.accepts("scan-classpath", "Scan class directories in classpath for plugins");
+    public static final OptionSpec<Void> SCAN_FULL_CLASSPATH = parser.accepts("scan-full-classpath", "Scan full classpath for plugins");
 
     // Vanilla Minecraft Server options
     // Note: --singleplayer and --demo are unsupported on SpongeVanilla (and probably have no use on the dedicated server anyway)

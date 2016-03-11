@@ -28,6 +28,7 @@ import static com.google.common.io.Resources.getResource;
 import static org.spongepowered.asm.mixin.MixinEnvironment.Side.SERVER;
 import static org.spongepowered.server.launch.VanillaCommandLine.ACCESS_TRANSFORMER;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_CLASSPATH;
+import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_FULL_CLASSPATH;
 
 import com.google.common.base.Throwables;
 import joptsimple.OptionSet;
@@ -141,7 +142,7 @@ public final class VanillaServerTweaker implements ITweaker {
             }
 
             // Search for plugins (and apply access transformers if available)
-            VanillaLaunchPluginManager.findPlugins(scanClasspath);
+            VanillaLaunchPluginManager.findPlugins(scanClasspath, options.has(SCAN_FULL_CLASSPATH));
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
