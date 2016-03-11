@@ -90,7 +90,7 @@ final class PluginScanner {
         return this.plugins;
     }
 
-    void scanClassPath(URLClassLoader loader) {
+    void scanClassPath(URLClassLoader loader, boolean scanJars) {
         Set<URI> sources = new HashSet<>();
 
         for (URL url : loader.getURLs()) {
@@ -104,6 +104,11 @@ final class PluginScanner {
                 continue;
             }
 
+            if (!scanJars && url.getFile().endsWith(JAR_EXTENSION)) {
+                logger.trace("Skipping classpath JAR file: {}", url);
+                continue;
+            }
+
             URI source;
             try {
                 source = url.toURI();
@@ -114,12 +119,10 @@ final class PluginScanner {
 
             if (sources.add(source)) {
                 Path path = Paths.get(source);
-                if (Files.exists(path)) {
-                    if (Files.isDirectory(path)) {
-                        scanClasspathDirectory(path);
-                    } else if (JAR_FILE.matches(path)) {
-                        scanJar(path, true);
-                    }
+                if (Files.isDirectory(path)) {
+                    scanClasspathDirectory(path);
+                } else if (scanJars && JAR_FILE.matches(path) && Files.exists(path)) {
+                    scanJar(path, true);
                 }
             }
         }
