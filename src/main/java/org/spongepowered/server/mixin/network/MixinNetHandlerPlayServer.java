@@ -143,7 +143,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
                 Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
         if (!SpongeImpl.postEvent(event)) {
-            return playerInteractionManager.processRightClick(player, world, stack, EnumHand.MAIN_HAND);
+            return playerInteractionManager.processRightClick(player, world, stack, hand);
         }
         return EnumActionResult.FAIL;
     }
