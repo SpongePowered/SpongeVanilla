@@ -65,11 +65,6 @@ jar {
     }
 }
 
-ext.anonInnerClassSrg = file('anon_inner_classes.srg')
-configure([mixin, common.mixin]) {
-    extraSrgFile 'searge', anonInnerClassSrg
-}
-
 shadowJar {
     // Include production log4j2.xml
     exclude 'log4j2.xml'
@@ -89,17 +84,5 @@ shadowJar {
         include dependency('com.typesafe:config')
 
         include dependency('jline:jline')
-    }
-}
-
-task('genAnonInnerClassMappings', type: GenerateAnonInnerClassMappings) {
-    dependsOn 'setupDecompWorkspace'
-    outFile = anonInnerClassSrg
-}
-
-afterEvaluate {
-    genAnonInnerClassMappings {
-        deobfJar = decompileMc.inJar
-        recompJar = recompileMc.outJar
     }
 }
