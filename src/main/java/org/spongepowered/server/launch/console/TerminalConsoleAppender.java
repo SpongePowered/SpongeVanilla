@@ -122,6 +122,8 @@ public class TerminalConsoleAppender extends AbstractAppender {
     }
 
     public static void initialize() {
+        System.setProperty(ConsoleReader.JLINE_EXPAND_EVENTS, "false");
+
         // Initialize the reader if that hasn't happened yet
         if (!initialized) {
             initialized = true;
@@ -134,7 +136,6 @@ public class TerminalConsoleAppender extends AbstractAppender {
                     try {
                         AnsiConsole.systemInstall();
                         reader = new ConsoleReader();
-                        reader.setExpandEvents(false);
                     } catch (Exception e) {
                         LOGGER.warn("Failed to initialize terminal. Falling back to default.", e);
                     }
@@ -153,7 +154,6 @@ public class TerminalConsoleAppender extends AbstractAppender {
 
                         try {
                             reader = new ConsoleReader();
-                            reader.setExpandEvents(false);
                         } catch (Exception e) {
                             LOGGER.warn("Failed to initialize fallback terminal. Falling back to standard output console.", e);
                         }
