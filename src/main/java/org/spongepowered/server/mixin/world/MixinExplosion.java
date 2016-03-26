@@ -49,6 +49,7 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.server.interfaces.IMixinExplosion;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -97,7 +98,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
     @Redirect(method = "doExplosionA", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;"
             + "getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/AxisAlignedBB;)Ljava/util/List;"))
     private List<Entity> callWorldOnExplosionEvent(World world, Entity entity, AxisAlignedBB aabb) {
-        final List<Entity> affectedEntities = world.getEntitiesWithinAABBExcludingEntity(entity, aabb);
+        final List<Entity> affectedEntities = this.shouldDamageEntities() ? world.getEntitiesWithinAABBExcludingEntity(entity, aabb) : Collections.emptyList();
         final org.spongepowered.api.world.World spongeWorld = (org.spongepowered.api.world.World) this.worldObj;
 
         final ImmutableList.Builder<Transaction<BlockSnapshot>> blockTransactionBuilder = ImmutableList.builder();
