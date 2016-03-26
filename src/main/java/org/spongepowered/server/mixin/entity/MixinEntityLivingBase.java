@@ -137,7 +137,7 @@ public abstract class MixinEntityLivingBase extends Entity {
                         i |= 2;
                     }
 
-                    this.dataWatcher.set(EntityLivingBase.HAND_STATES, (byte) i);
+                    this.dataManager.set(EntityLivingBase.HAND_STATES, (byte) i);
                 }
             }
         }
@@ -236,7 +236,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Overwrite
     public void resetActiveHand() {
         if (!this.worldObj.isRemote) {
-            this.dataWatcher.set(EntityLivingBase.HAND_STATES, Byte.valueOf((byte)0));
+            this.dataManager.set(EntityLivingBase.HAND_STATES, Byte.valueOf((byte)0));
         }
 
         SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Cause.of(NamedCause.source(this)),

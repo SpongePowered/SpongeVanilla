@@ -42,6 +42,7 @@ import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Singleton
 public final class VanillaGame extends SpongeGame {
@@ -55,7 +56,7 @@ public final class VanillaGame extends SpongeGame {
 
     @Override
     public Path getSavesDirectory() {
-        return ((MinecraftServer) this.getServer()).anvilFile.toPath();
+        return Paths.get(((MinecraftServer) this.getServer()).getFolderName());
     }
 
     @Override
