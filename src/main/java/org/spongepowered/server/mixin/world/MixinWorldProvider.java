@@ -42,18 +42,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
 
     @Shadow protected World worldObj;
     @Shadow private WorldType terrainType;
-    @Shadow protected boolean hasNoSky;
-    int dimensionId;
-
-    @Override
-    public int getDimensionId() {
-        return dimensionId;
-    }
-
-    @Override
-    public void setDimensionId(int dim) {
-        this.dimensionId = dim;
-    }
+    @Shadow public abstract boolean getHasNoSky();
 
     @Override
     public BlockPos getRandomizedSpawnPoint() {
@@ -70,7 +59,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
         }
         int spawnFuzzHalf = spawnFuzz / 2;
 
-        if (!this.hasNoSky && !isAdventure) {
+        if (!this.getHasNoSky() && !isAdventure) {
             ret = this.worldObj.getTopSolidOrLiquidBlock(
                     ret.add(this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz, 0, this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz));
         }
@@ -85,7 +74,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
 
     @Override
     public int getHeight() {
-        return this.hasNoSky ? 128 : 256;
+        return this.getHasNoSky() ? 128 : 256;
     }
 
     @Override

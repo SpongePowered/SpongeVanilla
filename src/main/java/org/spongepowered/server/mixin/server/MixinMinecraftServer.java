@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.mixin.server;
 
+import gnu.trove.iterator.TIntObjectIterator;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.NetworkSystem;
 import net.minecraft.network.ServerStatusResponse;
@@ -52,8 +53,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
 import org.spongepowered.common.text.SpongeTexts;
+import org.spongepowered.common.world.DimensionManager;
 import org.spongepowered.server.SpongeVanilla;
-import org.spongepowered.server.world.VanillaDimensionManager;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -148,59 +149,57 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.theProfiler.endStartSection("levels");
 
         // Sponge start - Iterate over all our dimensions
-        Integer[] ids = VanillaDimensionManager.getIDs(this.tickCounter % 200 == 0);
-        for (int j = 0; j < ids.length; ++j) {
-            int id = ids[j];
+        for (final TIntObjectIterator<WorldServer> it = DimensionManager.worldsIterator(); it.hasNext();) {
+            it.advance();
+
+            final WorldServer worldServer = it.value();
             // Sponge end
             long i = System.nanoTime();
 
-            if (j == 0 || this.getAllowNether()) {
-                // Sponge start - Get world from our dimension manager
-                WorldServer worldserver = VanillaDimensionManager.getWorldFromDimId(id);
-                // Sponge end
-                this.theProfiler.startSection(worldserver.getWorldInfo().getWorldName());
+            if (it.key() == 0 || this.getAllowNether()) {
+                this.theProfiler.startSection(worldServer.getWorldInfo().getWorldName());
 
                 if (this.tickCounter % 20 == 0) {
                     this.theProfiler.startSection("timeSync");
                     this.playerList.sendPacketToAllPlayersInDimension (
-                            new SPacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(),
-                                    worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.getDimensionType().getId());
+                            new SPacketTimeUpdate(worldServer.getTotalWorldTime(), worldServer.getWorldTime(),
+                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), worldServer.provider.getDimensionType().getId());
                     this.theProfiler.endSection();
                 }
 
                 this.theProfiler.startSection("tick");
 
                 try {
-                    worldserver.tick();
+                    worldServer.tick();
                 } catch (Throwable throwable1) {
                     CrashReport crashreport = CrashReport.makeCrashReport(throwable1, "Exception ticking world");
-                    worldserver.addWorldInfoToCrashReport(crashreport);
+                    worldServer.addWorldInfoToCrashReport(crashreport);
                     throw new ReportedException(crashreport);
                 }
 
                 try {
-                    worldserver.updateEntities();
+                    worldServer.updateEntities();
                 } catch (Throwable throwable) {
                     CrashReport crashreport1 = CrashReport.makeCrashReport(throwable, "Exception ticking world entities");
-                    worldserver.addWorldInfoToCrashReport(crashreport1);
+                    worldServer.addWorldInfoToCrashReport(crashreport1);
                     throw new ReportedException(crashreport1);
                 }
 
                 this.theProfiler.endSection();
                 this.theProfiler.startSection("tracker");
-                worldserver.getEntityTracker().updateTrackedEntities();
+                worldServer.getEntityTracker().updateTrackedEntities();
                 this.theProfiler.endSection();
                 this.theProfiler.endSection();
             }
 
             // Sponge start - Write tick times to our custom map
-            this.worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
+            this.worldTickTimes.get(it.key())[this.tickCounter % 100] = System.nanoTime() - i;
             // Sponge end
         }
 
         // Sponge start - Unload requested worlds
         this.theProfiler.endStartSection("dim_unloading");
-        VanillaDimensionManager.unloadWorlds(this.worldTickTimes);
+        DimensionManager.unloadQueuedWorlds();
         // Sponge end
 
         this.theProfiler.endStartSection("connection");
