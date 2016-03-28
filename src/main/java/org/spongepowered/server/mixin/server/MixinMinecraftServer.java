@@ -38,10 +38,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -49,8 +45,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.DimensionManager;
@@ -70,7 +64,6 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow private PlayerList playerList;
     @Shadow private int tickCounter;
     @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
-    @Shadow public WorldServer[] worldServers;
 
     @Shadow public abstract boolean getAllowNether();
     @Shadow public abstract NetworkSystem getNetworkSystem();
@@ -124,12 +117,6 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         if (response.getFavicon() != null) {
             ci.cancel();
         }
-    }
-
-    @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void callWorldUnload(CallbackInfo ci, int i) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) this.worldServers[i]));
     }
 
     /**
@@ -214,5 +201,15 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
         this.theProfiler.endSection();
     }
+
+    /**
+     * @author Zidane - March 13th, 2016
+     * Vanilla simply returns worldServers[0]/[1]/[2] here. We change this to ask the {@link DimensionManager}.
+     */
+    @Overwrite
+    public WorldServer worldServerForDimension(int dim) {
+        return DimensionManager.getWorldByDimensionId(dim).orElse(null);
+    }
+
 
 }
