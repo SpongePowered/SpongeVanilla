@@ -26,11 +26,13 @@ package org.spongepowered.server;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import net.minecraft.server.MinecraftServer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.network.ChannelRegistrar;
@@ -54,8 +56,8 @@ public final class VanillaGame extends SpongeGame {
     }
 
     @Override
-    public Path getGameDirectory() {
-        return SpongeImpl.getGameDir();
+    public Path getSavesDirectory() {
+        return ((MinecraftServer) Sponge.getServer()).anvilFile.toPath();
     }
 
     @Override
