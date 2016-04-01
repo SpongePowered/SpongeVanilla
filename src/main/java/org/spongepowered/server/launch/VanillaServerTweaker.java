@@ -28,6 +28,7 @@ import static com.google.common.io.Resources.getResource;
 import static org.spongepowered.asm.mixin.MixinEnvironment.Side.SERVER;
 import static org.spongepowered.server.launch.VanillaCommandLine.ACCESS_TRANSFORMER;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_CLASSPATH;
+import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_FULL_CLASSPATH;
 
 import com.google.common.base.Throwables;
 import joptsimple.OptionSet;
@@ -78,7 +79,6 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.plugin.");
-        loader.addClassLoaderExclusion("org.spongepowered.api.plugin.");
 
         // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
@@ -141,7 +141,7 @@ public final class VanillaServerTweaker implements ITweaker {
             }
 
             // Search for plugins (and apply access transformers if available)
-            VanillaLaunchPluginManager.findPlugins(scanClasspath);
+            VanillaLaunchPluginManager.findPlugins(scanClasspath, options.has(SCAN_FULL_CLASSPATH));
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }

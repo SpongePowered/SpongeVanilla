@@ -34,6 +34,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.plugin.meta.PluginMetadata;
+import org.spongepowered.plugin.meta.SpongeExtension;
 import org.spongepowered.server.launch.plugin.PluginCandidate;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
@@ -146,9 +147,10 @@ public class VanillaPluginManager implements PluginManager {
 
         try {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
+            SpongeExtension ext = metadata.getExtension("sponge");
             PluginContainer container = new VanillaPluginContainer(id, pluginClass,
                     metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getAuthors(),
-                    metadata.getAssetDirectory(), candidate.getSource());
+                    ext != null ? ext.getAssetDirectory() : null, candidate.getSource());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());

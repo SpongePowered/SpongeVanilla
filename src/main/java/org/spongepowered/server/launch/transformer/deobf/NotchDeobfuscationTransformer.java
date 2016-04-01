@@ -35,7 +35,7 @@ import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.commons.RemappingClassAdapter;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.spongepowered.server.launch.transformer.deobf.reader.SrgReader;
@@ -244,15 +244,15 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
 
 
     @Override
-    RemappingClassAdapter createRemappingClassAdapter(ClassReader reader, ClassVisitor cv) {
-        return new NotchRemappingClassAdapter(reader, cv);
+    ClassVisitor createClassRemapper(ClassReader reader, ClassVisitor cv) {
+        return new NotchClassRemapper(reader, cv);
     }
 
-    private class NotchRemappingClassAdapter extends RemappingClassAdapter {
+    private class NotchClassRemapper extends ClassRemapper {
 
         private final ClassReader reader;
 
-        private NotchRemappingClassAdapter(ClassReader reader, ClassVisitor cv) {
+        private NotchClassRemapper(ClassReader reader, ClassVisitor cv) {
             super(ASM5, cv, NotchDeobfuscationTransformer.this);
             this.reader = reader;
         }

@@ -28,8 +28,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.asset.Asset;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.SpongePluginGuiceModule;
 import org.spongepowered.common.plugin.AbstractPluginContainer;
@@ -113,13 +111,6 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
     @Override
     public Optional<Path> getAssetDirectory() {
         return this.assets;
-    }
-
-    @Override
-    public Optional<Asset> getAsset(String name) {
-        // TODO: Default method fails here likely because it is initialized
-        // before the Sponge class. Workarounds?
-        return Sponge.getAssetManager().getAsset(this, name);
     }
 
     @Override

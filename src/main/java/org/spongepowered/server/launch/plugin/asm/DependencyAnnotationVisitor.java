@@ -68,7 +68,7 @@ final class DependencyAnnotationVisitor extends WarningAnnotationVisitor {
     @Override
     public void visitEnd() {
         // TODO: Load order
-        this.metadata.loadAfter(new PluginMetadata.Dependency(this.id, this.version), this.optional);
+        this.metadata.loadAfter(new PluginMetadata.Dependency(this.id, this.version), !this.optional);
     }
 
 }

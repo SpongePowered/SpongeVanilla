@@ -45,17 +45,17 @@ public final class VanillaLaunchPluginManager {
     @Nullable
     private static Map<String, PluginCandidate> plugins;
 
-    public static void findPlugins(boolean scanClasspath) throws IOException {
+    public static void findPlugins(boolean scanClasspath, boolean scanFullClasspath) throws IOException {
         VanillaLaunch.getLogger().info("Searching for plugins...");
 
         PluginScanner pluginScanner = new PluginScanner();
 
-        if (scanClasspath) {
+        if (scanClasspath || scanFullClasspath) {
             VanillaLaunch.getLogger().info("Scanning classpath for plugins...");
 
             ClassLoader loader = VanillaLaunch.class.getClassLoader();
             if (loader instanceof URLClassLoader) {
-                pluginScanner.scanClassPath((URLClassLoader) loader);
+                pluginScanner.scanClassPath((URLClassLoader) loader, scanFullClasspath);
             } else {
                 VanillaLaunch.getLogger().error("Cannot search for plugins on classpath: Unsupported class loader: {}", loader.getClass());
             }
