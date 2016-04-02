@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.data.util.NbtDataUtil;
 import org.spongepowered.common.entity.EntityDummy;
 import org.spongepowered.common.interfaces.entity.IMixinEntity;
 
@@ -64,8 +65,8 @@ public abstract class MixinEntity implements IMixinEntity {
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     private void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
-        if (tagCompound.hasKey("ForgeData")) {
-            this.customEntityData = tagCompound.getCompoundTag("ForgeData");
+        if (tagCompound.hasKey(NbtDataUtil.FORGE_DATA)) {
+            this.customEntityData = tagCompound.getCompoundTag(NbtDataUtil.FORGE_DATA);
         }
     }
 
@@ -73,7 +74,7 @@ public abstract class MixinEntity implements IMixinEntity {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     private void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (this.customEntityData != null) {
-            tagCompound.setTag("ForgeData", this.customEntityData);
+            tagCompound.setTag(NbtDataUtil.FORGE_DATA, this.customEntityData);
         }
     }
 
