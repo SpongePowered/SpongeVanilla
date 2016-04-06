@@ -29,31 +29,21 @@ import static org.spongepowered.server.network.VanillaChannelRegistrar.INTERNAL_
 import static org.spongepowered.server.network.VanillaChannelRegistrar.REGISTER_CHANNEL;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.UNREGISTER_CHANNEL;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Splitter;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -62,11 +52,8 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.chat.ChatTypes;
-import org.spongepowered.api.util.Direction;
-import org.spongepowered.api.world.extent.Extent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -132,20 +119,6 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             target = "Lnet/minecraft/server/management/PlayerList;sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
     private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
-    }
-
-    // All of these MCP names are terrible - ignore them. This is actually for item usage
-    @Redirect(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/PlayerInteractionManager;processRightClick(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/EnumHand;)Lnet/minecraft/util/EnumActionResult;"))
-    private EnumActionResult tryUseItem(PlayerInteractionManager playerInteractionManager, EntityPlayer player, World world, ItemStack stack, EnumHand hand) {
-        BlockSnapshot block = ((Extent) world).createSnapshot(0, 0, 0).withState(BlockTypes.AIR.getDefaultState());
-
-        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
-                Optional.<Vector3d>empty(), block, Direction.NONE); // TODO: Pass direction? (Forge doesn't)
-        if (!SpongeImpl.postEvent(event)) {
-            return playerInteractionManager.processRightClick(player, world, stack, hand);
-        }
-        return EnumActionResult.FAIL;
     }
 
     @Inject(method = "processRightClickBlock", at = @At("RETURN"))

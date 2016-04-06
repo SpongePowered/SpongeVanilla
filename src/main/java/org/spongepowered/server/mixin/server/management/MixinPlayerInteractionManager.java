@@ -30,14 +30,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraft.server.management.PlayerInteractionManager;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -47,48 +45,49 @@ import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.provider.DirectionFacingProvider;
-import org.spongepowered.common.util.VecHelper;
 import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
-
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 @Mixin(PlayerInteractionManager.class)
 public abstract class MixinPlayerInteractionManager {
 
-    @Shadow public net.minecraft.world.World theWorld;
-    @Shadow public EntityPlayerMP thisPlayerMP;
-
-    @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
-    private void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
-        Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector3i(pos));
-        InteractBlockEvent.Primary event = SpongeEventFactory.createInteractBlockEventPrimary(Cause.of(NamedCause.source(this.thisPlayerMP)),
-                Optional.<Vector3d>empty(), location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(side).get());
-        if (SpongeImpl.postEvent(event)) {
-            this.thisPlayerMP.playerNetServerHandler.sendPacket(new SPacketBlockChange(this.theWorld, pos));
-            ci.cancel();
-        }
-    }
+    // TODO 1.9 - Have Aaron re-write InteractBlockPrimary hook (needs to go into common)
+//    @Shadow public net.minecraft.world.World theWorld;
+//    @Shadow public EntityPlayerMP thisPlayerMP;
+//
+//    @Inject(method = "onBlockClicked", at = @At("HEAD"), cancellable = true)
+//    private void onOnBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
+//        final Location<World> location = new Location<>((World) this.theWorld, VecHelper.toVector3i(pos));
+//        final InteractBlockEvent.Primary event;
+//        if (= SpongeEventFactory.createInteractBlockEventPrimary(Cause.of(NamedCause.source(this.thisPlayerMP)),
+//                Vector3d.ZERO, location.createSnapshot(), DirectionFacingProvider.getInstance().getKey(side).get());
+//        if (SpongeImpl.postEvent(event)) {
+//            this.thisPlayerMP.playerNetServerHandler.sendPacket(new SPacketBlockChange(this.theWorld, pos));
+//            ci.cancel();
+//        }
+//    }
 
     @Inject(method = "processRightClickBlock", at = @At(value = "HEAD"), cancellable = true)
-        private void onProcessRightClickBlock(EntityPlayer player, net.minecraft.world.World worldIn,
-                @Nullable ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, CallbackInfoReturnable<EnumActionResult> cir) {
-        BlockSnapshot currentSnapshot = ((Extent) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
-        InteractBlockEvent.Secondary event = SpongeEventFactory.createInteractBlockEventSecondary(Cause.of(NamedCause.source(player)),
-                Optional.of(new Vector3d(hitX, hitY, hitZ)), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
+    private void onProcessRightClickBlock(EntityPlayer player, net.minecraft.world.World worldIn,
+            @Nullable ItemStack stack, EnumHand hand, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, CallbackInfoReturnable<EnumActionResult> cir) {
+        final BlockSnapshot currentSnapshot = ((Extent) worldIn).createSnapshot(pos.getX(), pos.getY(), pos.getZ());
+        final InteractBlockEvent.Secondary event;
+        if (hand == EnumHand.MAIN_HAND) {
+            event = SpongeEventFactory.createInteractBlockEventSecondaryMainHand(Cause.of(NamedCause.source(player)),
+                    new Vector3d(hitX, hitY, hitZ), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
+        } else {
+            event = SpongeEventFactory.createInteractBlockEventSecondaryOffHand(Cause.of(NamedCause.source(player)),
+                    new Vector3d(hitX, hitY, hitZ), currentSnapshot, DirectionFacingProvider.getInstance().getKey(side).get());
+        }
+
         if (SpongeImpl.postEvent(event)) {
             final IBlockState state = worldIn.getBlockState(pos);
 
