@@ -54,8 +54,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
 import org.spongepowered.common.interfaces.entity.IMixinEntity;
+import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 import org.spongepowered.common.text.SpongeTexts;
-import org.spongepowered.common.util.StaticMixinHelper;
 
 import java.util.Optional;
 
@@ -106,13 +106,6 @@ public abstract class MixinEntityLivingBase extends Entity {
         if (!SpongeImpl.postEvent(event)) {
             if (!event.isMessageCancelled()) {
                 event.getChannel().ifPresent(channel -> channel.send(this, event.getMessage()));
-            }
-
-            // Store cause for drop event which is called after this event
-            if (sourceCreator.isPresent()) {
-                StaticMixinHelper.dropCause = Cause.of(NamedCause.source(this), NamedCause.of("Attacker", source), NamedCause.owner(sourceCreator.get()));
-            } else {
-                StaticMixinHelper.dropCause = Cause.of(NamedCause.source(this), NamedCause.of("Attacker", source));
             }
         }
     }
@@ -224,7 +217,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Overwrite
     public void stopActiveHand() {
         UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, this.createSnapshot(this.activeItemStack));
+                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack));
 
         if (!SpongeImpl.postEvent(event) && this.activeItemStack != null) {
             this.activeItemStack.onPlayerStoppedUsing(this.worldObj, (EntityLivingBase) (Object) this, this.getItemInUseCount());
@@ -240,13 +233,10 @@ public abstract class MixinEntityLivingBase extends Entity {
         }
 
         SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Cause.of(NamedCause.source(this)),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, this.createSnapshot(this.activeItemStack)));
+                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.createSnapshot(this.activeItemStack)));
 
         this.activeItemStack = null;
         this.activeItemStackUseCount = 0;
     }
 
-    private ItemStackSnapshot createSnapshot(net.minecraft.item.ItemStack stack) {
-        return stack  == null ? ItemStackSnapshot.NONE : ((ItemStack) stack).createSnapshot();
-    }
 }
