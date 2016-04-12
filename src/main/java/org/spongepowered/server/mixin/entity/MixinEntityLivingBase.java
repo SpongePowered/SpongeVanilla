@@ -233,7 +233,7 @@ public abstract class MixinEntityLivingBase extends Entity {
         }
 
         SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Cause.of(NamedCause.source(this)),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.createSnapshot(this.activeItemStack)));
+                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack)));
 
         this.activeItemStack = null;
         this.activeItemStackUseCount = 0;
