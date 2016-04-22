@@ -192,16 +192,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     // Event injectors
 
-    @Inject(method = "interactWith", at = @At(value = "INVOKE", target = "net/minecraft/entity/player/EntityPlayer"
-            + ".getCurrentEquippedItem()Lnet/minecraft/item/ItemStack;"), cancellable = true)
-    private void onInteractWith(net.minecraft.entity.Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        InteractEntityEvent.Secondary event = SpongeEventFactory.createInteractEntityEventSecondary(Cause.of(NamedCause.source(this)),
-                Optional.empty(), (Entity) entity);
-        if (SpongeImpl.postEvent(event)) {
-            cir.setReturnValue(false);
-        }
-    }
-
     private Transaction<ItemStackSnapshot> createTransaction(net.minecraft.item.ItemStack stack) {
         ItemStackSnapshot itemSnapshot = ((ItemStack) stack).createSnapshot();
         return new Transaction<>(itemSnapshot, itemSnapshot.copy());

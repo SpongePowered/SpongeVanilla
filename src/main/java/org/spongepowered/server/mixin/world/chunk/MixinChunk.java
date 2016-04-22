@@ -25,6 +25,7 @@
 package org.spongepowered.server.mixin.world.chunk;
 
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
@@ -36,11 +37,26 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.world.DimensionManager;
 
 @Mixin(Chunk.class)
 public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
 
     @Shadow @Final private World worldObj;
+    @Shadow @Final public int xPosition;
+    @Shadow @Final public int zPosition;
+
+    @Override
+    public boolean unloadChunk() {
+        if (this.worldObj.provider.canRespawnHere()
+                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())
+                && this.worldObj.isSpawnChunk(this.xPosition, this.zPosition)) {
+            return false;
+        }
+
+        ((WorldServer) this.worldObj).theChunkProviderServer.dropChunk(this.xPosition, this.zPosition);
+        return true;
+    }
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
     private void postChunkLoad(CallbackInfo ci) {
