@@ -68,7 +68,7 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
         Object projectileSource = null;
         Object igniter = null;
         if (this.exploder == null) {
-            source = getWorld().getBlock(getOrigin().toInt());
+            source = getWorld().getBlock(getLocation().getPosition().toInt());
         } else {
             source = this.exploder;
             if (source instanceof Projectile) {

@@ -46,6 +46,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.world.IMixinWorld;
+import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.server.interfaces.IMixinExplosion;
 
 @Mixin(WorldServer.class)
@@ -57,7 +58,7 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void onConstruct(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn, CallbackInfo ci) {
-        ((IMixinWorld) (Object) this).setDimensionId(dimensionId);
+        ((IMixinWorldServer) (Object) this).setDimensionId(dimensionId);
     }
 
     @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"),
