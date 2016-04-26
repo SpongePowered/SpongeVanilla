@@ -33,6 +33,7 @@ import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_NAME;
 import com.google.inject.Guice;
 import joptsimple.OptionSet;
 import net.minecraft.init.Bootstrap;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.logging.log4j.LogManager;
@@ -82,6 +83,15 @@ public final class SpongeVanilla extends AbstractPluginContainer {
     private final SpongeGame game;
 
     private SpongeVanilla() {
+        // We force-load NetHandlerPlayServer here.
+        // Otherwise, VanillaChannelRegistrar causes it to be loaded from
+        // within the Guice injector (see VanillaGuiceModule), thus swallowing
+        // any Mixin exception that occurs.
+        //
+        // See https://github.com/SpongePowered/SpongeVanilla/issues/235 for a more
+        // in-depth explanation
+        NetHandlerPlayServer.class.getName();
+
         Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME))).getInstance(SpongeImpl.class);
 
         this.game = SpongeImpl.getGame();
