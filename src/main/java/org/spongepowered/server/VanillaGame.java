@@ -31,18 +31,19 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.Server;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.AssetManager;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Singleton
 public final class VanillaGame extends SpongeGame {
@@ -56,7 +57,7 @@ public final class VanillaGame extends SpongeGame {
 
     @Override
     public Path getSavesDirectory() {
-        return Paths.get(((MinecraftServer) this.getServer()).getFolderName());
+        return ((MinecraftServer) Sponge.getServer()).anvilFile.toPath();
     }
 
     @Override

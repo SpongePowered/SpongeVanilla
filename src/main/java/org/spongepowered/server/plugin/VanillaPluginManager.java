@@ -64,16 +64,12 @@ public class VanillaPluginManager implements PluginManager {
     }
 
     public void loadPlugins() throws IOException {
-        for (PluginContainer container : SpongeImpl.getInternalPlugins()) {
-            registerPlugin(container);
-        }
+        SpongeImpl.getInternalPlugins().forEach(this::registerPlugin);
 
         Map<String, PluginCandidate> candidateMap = VanillaLaunchPluginManager.getPlugins();
 
         try {
-            for (PluginCandidate candidate : PluginSorter.sort(checkRequirements(candidateMap))) {
-                loadPlugin(candidate);
-            }
+            PluginSorter.sort(checkRequirements(candidateMap)).forEach(this::loadPlugin);
         } catch (Throwable e) {
             throw PluginReporter.crash(e, candidateMap.values());
         }
