@@ -29,6 +29,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.CombatTracker;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.EnumHand;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -36,10 +38,15 @@ import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.message.MessageEvent;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -47,8 +54,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
 import org.spongepowered.common.interfaces.entity.IMixinEntity;
+import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 import org.spongepowered.common.text.SpongeTexts;
-import org.spongepowered.common.util.StaticMixinHelper;
 
 import java.util.Optional;
 
@@ -56,6 +63,14 @@ import java.util.Optional;
 public abstract class MixinEntityLivingBase extends Entity {
 
     @Shadow public abstract CombatTracker getCombatTracker();
+    @Shadow public abstract net.minecraft.item.ItemStack getHeldItem(EnumHand hand);
+    @Shadow public abstract EnumHand getActiveHand();
+    @Shadow public abstract boolean isHandActive();
+    @Shadow public abstract int getItemInUseCount();
+    @Shadow protected abstract void updateItemUse(net.minecraft.item.ItemStack p_184584_1_, int p_184584_2_);
+    @Shadow public abstract void setHeldItem(EnumHand hand, net.minecraft.item.ItemStack stack);
+    @Shadow protected net.minecraft.item.ItemStack activeItemStack;
+    @Shadow protected int activeItemStackUseCount;
 
     protected MixinEntityLivingBase() {
         super(null);
@@ -92,14 +107,136 @@ public abstract class MixinEntityLivingBase extends Entity {
             if (!event.isMessageCancelled()) {
                 event.getChannel().ifPresent(channel -> channel.send(this, event.getMessage()));
             }
+        }
+    }
 
-            // Store cause for drop event which is called after this event
-            if (sourceCreator.isPresent()) {
-                StaticMixinHelper.dropCause = Cause.of(NamedCause.source(this), NamedCause.of("Attacker", source), NamedCause.owner(sourceCreator.get()));
-            } else {
-                StaticMixinHelper.dropCause = Cause.of(NamedCause.source(this), NamedCause.of("Attacker", source));
+    @Overwrite
+    public void setActiveHand(EnumHand hand) {
+        net.minecraft.item.ItemStack itemstack = this.getHeldItem(hand);
+
+        if (itemstack != null && !this.isHandActive()) {
+
+            UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)), itemstack.getMaxItemUseDuration(), itemstack.getMaxItemUseDuration(),
+                    ((ItemStack) itemstack).createSnapshot());
+
+            if (!SpongeImpl.postEvent(event)) {
+                this.activeItemStack = itemstack;
+                this.activeItemStackUseCount = event.getRemainingDuration();
+
+                if (!this.worldObj.isRemote) {
+                    int i = 1;
+
+                    if (hand == EnumHand.OFF_HAND) {
+                        i |= 2;
+                    }
+
+                    this.dataManager.set(EntityLivingBase.HAND_STATES, (byte) i);
+                }
             }
         }
+    }
+
+
+    @Overwrite
+    private void updateActiveHand() {
+        if (this.isHandActive()) {
+            net.minecraft.item.ItemStack itemstack = this.getHeldItem(this.getActiveHand());
+
+            if (itemstack == this.activeItemStack) {
+                UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
+                        this.activeItemStackUseCount, this.activeItemStackUseCount, ((ItemStack) this.activeItemStack).createSnapshot());
+
+                SpongeImpl.postEvent(event);
+
+                this.activeItemStackUseCount = event.getRemainingDuration();
+
+                if (!event.isCancelled() && this.getItemInUseCount() <= 25 && this.getItemInUseCount() % 4 == 0) {
+                    this.updateItemUse(this.activeItemStack, 5);
+                }
+
+                if (--this.activeItemStackUseCount == 0 && !this.worldObj.isRemote) {
+                    this.onItemUseFinish();
+                }
+            } else {
+                this.resetActiveHand();
+            }
+        }
+    }
+
+    @Overwrite
+    public void onItemUseFinish() {
+        if (this.activeItemStack != null && this.isHandActive()) {
+
+            UseItemStackEvent.Tick tickEvent = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
+                    this.activeItemStackUseCount, this.activeItemStackUseCount, ((ItemStack) this.activeItemStack).createSnapshot());
+            SpongeImpl.postEvent(tickEvent);
+            if (tickEvent.getRemainingDuration() != 0) {
+                this.activeItemStackUseCount = tickEvent.getRemainingDuration();
+                return;
+            }
+
+            if (!tickEvent.isCancelled()) {
+                this.updateItemUse(this.activeItemStack, 16);
+            }
+
+            UseItemStackEvent.Finish finishEvent = SpongeEventFactory.createUseItemStackEventFinish(Cause.of(NamedCause.source(this)),
+                    this.activeItemStackUseCount, this.activeItemStackUseCount, ((ItemStack) this.activeItemStack).createSnapshot());
+
+            SpongeImpl.postEvent(finishEvent);
+
+            if (finishEvent.getRemainingDuration() != 0) {
+                this.activeItemStackUseCount = finishEvent.getRemainingDuration();
+                return;
+            }
+
+            if (!finishEvent.isCancelled()) {
+
+                net.minecraft.item.ItemStack itemstack = this.activeItemStack.onItemUseFinish(this.worldObj, (EntityLivingBase) (Object) this);
+
+                if (itemstack != null && itemstack.stackSize == 0) {
+                    itemstack = null;
+                }
+
+                ItemStackSnapshot currentSnapshot = ((ItemStack) this.activeItemStack).createSnapshot();
+                ItemStackSnapshot replacementSnapshot = itemstack == null ? ItemStackSnapshot.NONE : ((ItemStack) itemstack).createSnapshot();
+
+                UseItemStackEvent.Replace replaceEvent = SpongeEventFactory.createUseItemStackEventReplace(Cause.of(NamedCause.source(this)),
+                        this.activeItemStackUseCount, this.activeItemStackUseCount, ((ItemStack) this.activeItemStack).createSnapshot(),
+                        new Transaction<>(currentSnapshot, replacementSnapshot));
+
+                if (!SpongeImpl.postEvent(replaceEvent)) {
+                    ItemStack stack = replaceEvent.getItemStackResult().getFinal().createStack();
+
+                    this.setHeldItem(this.getActiveHand(), stack.getItem() == ItemTypes.NONE ? null : (net.minecraft.item.ItemStack) stack);
+                }
+            }
+            this.resetActiveHand();
+        }
+    }
+
+    @Overwrite
+    public void stopActiveHand() {
+        UseItemStackEvent.Stop event = SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
+                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack));
+
+        if (!SpongeImpl.postEvent(event) && this.activeItemStack != null) {
+            this.activeItemStack.onPlayerStoppedUsing(this.worldObj, (EntityLivingBase) (Object) this, this.getItemInUseCount());
+        }
+
+        this.resetActiveHand();
+    }
+
+    @Overwrite
+    public void resetActiveHand() {
+        if (!this.worldObj.isRemote) {
+            this.dataManager.set(EntityLivingBase.HAND_STATES, Byte.valueOf((byte)0));
+        }
+
+        SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Cause.of(NamedCause.source(this)),
+                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack)));
+
+        this.activeItemStack = null;
+        this.activeItemStackUseCount = 0;
     }
 
 }

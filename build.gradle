@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-20160116.192356-17'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath('nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0') {
             exclude module: 'guava'
         }
@@ -29,7 +29,7 @@ apply plugin: 'net.minecraftforge.gradle.tweaker-server'
 apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
-    version = '1.8.9'
+    version = '1.9'
     tweakClass = 'org.spongepowered.server.launch.VanillaServerTweaker'
 }
 ats += 'vanilla_at.cfg'
@@ -60,14 +60,9 @@ jar {
     manifest {
         attributes(
                 'Main-Class': 'org.spongepowered.server.launch.VersionCheckingMain',
-                'Class-Path': 'minecraft_server.1.8.9.jar libraries/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar'
+                'Class-Path': 'minecraft_server.1.9.jar libraries/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar'
         )
     }
-}
-
-ext.anonInnerClassSrg = file('anon_inner_classes.srg')
-configure([mixin, common.mixin]) {
-    extraSrgFile 'searge', anonInnerClassSrg
 }
 
 shadowJar {
@@ -89,17 +84,5 @@ shadowJar {
         include dependency('com.typesafe:config')
 
         include dependency('jline:jline')
-    }
-}
-
-task('genAnonInnerClassMappings', type: GenerateAnonInnerClassMappings) {
-    dependsOn 'setupDecompWorkspace'
-    outFile = anonInnerClassSrg
-}
-
-afterEvaluate {
-    genAnonInnerClassMappings {
-        deobfJar = decompileMc.inJar
-        recompJar = recompileMc.outJar
     }
 }

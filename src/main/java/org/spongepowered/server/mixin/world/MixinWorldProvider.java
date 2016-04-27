@@ -25,8 +25,8 @@
 package org.spongepowered.server.mixin.world;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldSettings;
@@ -42,7 +42,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
 
     @Shadow protected World worldObj;
     @Shadow private WorldType terrainType;
-    @Shadow protected boolean hasNoSky;
+    @Shadow public abstract boolean getHasNoSky();
 
     @Override
     public BlockPos getRandomizedSpawnPoint() {
@@ -59,7 +59,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
         }
         int spawnFuzzHalf = spawnFuzz / 2;
 
-        if (!this.hasNoSky && !isAdventure) {
+        if (!this.getHasNoSky() && !isAdventure) {
             ret = this.worldObj.getTopSolidOrLiquidBlock(
                     ret.add(this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz, 0, this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz));
         }
@@ -74,7 +74,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
 
     @Override
     public int getHeight() {
-        return this.hasNoSky ? 128 : 256;
+        return this.getHasNoSky() ? 128 : 256;
     }
 
     @Override

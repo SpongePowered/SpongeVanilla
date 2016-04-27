@@ -49,12 +49,12 @@ public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
     @Override
     public boolean unloadChunk() {
         if (this.worldObj.provider.canRespawnHere()
-                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionId())
+//                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())
                 && this.worldObj.isSpawnChunk(this.xPosition, this.zPosition)) {
             return false;
         }
 
-        ((WorldServer) this.worldObj).theChunkProviderServer.dropChunk(this.xPosition, this.zPosition);
+        ((WorldServer) this.worldObj).getChunkProvider().dropChunk(this.xPosition, this.zPosition);
         return true;
     }
 

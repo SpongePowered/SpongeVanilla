@@ -31,13 +31,16 @@ import static org.spongepowered.server.network.VanillaChannelRegistrar.UNREGISTE
 
 import com.google.common.base.Splitter;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Slot;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.client.C01PacketChatMessage;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.CPacketChatMessage;
+import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -73,10 +76,17 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     @Shadow @Final private MinecraftServer serverController;
     @Shadow public EntityPlayerMP playerEntity;
 
+    @Shadow public abstract void sendPacket(final Packet<?> packetIn);
+
     private static final Splitter CHANNEL_SPLITTER = Splitter.on(CHANNEL_SEPARATOR);
 
     private final Set<String> registeredChannels = new HashSet<>();
     private boolean forceUpdateInventorySlot;
+
+    @Override
+    public void forceUpdateInventorySlot(boolean force) {
+        this.forceUpdateInventorySlot = force;
+    }
 
     @Override
     public boolean supportsChannel(String name) {
@@ -89,10 +99,10 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     }
 
     @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"),
+            target = "Lnet/minecraft/server/management/PlayerList;sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onProcessChatMessage(C01PacketChatMessage packet, CallbackInfo ci, String s, IChatComponent component) {
-        final Text[] message = SpongeTexts.splitChatMessage((ChatComponentTranslation) component); // safe cast
+    private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
+        final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
                 Cause.of(NamedCause.source(this.playerEntity)), originalChannel, Optional.of(originalChannel),
@@ -106,13 +116,21 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     }
 
     @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendChatMsgImpl(Lnet/minecraft/util/IChatComponent;Z)V"))
-    private void cancelSendChatMsgImpl(ServerConfigurationManager manager, IChatComponent component, boolean chat) {
+            target = "Lnet/minecraft/server/management/PlayerList;sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
+    private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
     }
 
+    @Inject(method = "processRightClickBlock", at = @At("RETURN"))
+    public void onProcessRightClickBlock(CallbackInfo ci) {
+        if (this.forceUpdateInventorySlot) {
+            Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
+            this.sendPacket(new SPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
+        }
+    }
+
     @Inject(method = "processVanilla250Packet", at = @At("HEAD"), cancellable = true)
-    private void onProcessPluginMessage(C17PacketCustomPayload packet, CallbackInfo ci) {
+    private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {
             return;

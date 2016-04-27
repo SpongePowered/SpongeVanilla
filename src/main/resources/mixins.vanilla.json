@@ -14,7 +14,6 @@
         "entity.item.MixinEntityMinecart",
         "entity.player.MixinEntityPlayer",
         "entity.player.MixinEntityPlayerMP",
-        "item.MixinItemArmor",
         "network.MixinNetHandlerPlayServer",
         "server.MixinMinecraftServer",
         "server.dedicated.MixinConsoleHandler",
@@ -26,7 +25,6 @@
         "world.MixinWorldServer",
         "world.MixinWorldType",
         "world.chunk.MixinChunk",
-        "world.gen.MixinChunkProviderServer",
         "world.storage.MixinSaveHandler"
     ],
     "injectors": {

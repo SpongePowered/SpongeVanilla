@@ -28,7 +28,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
@@ -45,8 +45,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.interfaces.world.IMixinWorld;
+import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.server.interfaces.IMixinExplosion;
-import org.spongepowered.server.world.VanillaDimensionManager;
 
 @Mixin(WorldServer.class)
 public abstract class MixinWorldServer extends net.minecraft.world.World {
@@ -56,9 +57,8 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onConstructed(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
-            CallbackInfo ci) {
-        VanillaDimensionManager.setWorld(dimensionId, (WorldServer) (Object) this);
+    public void onConstruct(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn, CallbackInfo ci) {
+        ((IMixinWorldServer) (Object) this).setDimensionId(dimensionId);
     }
 
     @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"),
@@ -75,9 +75,9 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     // Prevent wrong weather changes getting sent to players in other (unaffected) dimensions
     // This causes "phantom rain" on the client, sunny and rainy weather at the same time
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/ServerConfigurationManager;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
-    private void onSendWeatherPacket(ServerConfigurationManager manager, Packet packet) {
-        manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionId());
+            target = "Lnet/minecraft/server/management/PlayerList;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
+    private void onSendWeatherPacket(PlayerList manager, Packet packet) {
+        manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionType().getId());
     }
 
 }

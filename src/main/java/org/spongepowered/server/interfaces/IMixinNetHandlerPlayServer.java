@@ -28,4 +28,6 @@ public interface IMixinNetHandlerPlayServer {
 
     boolean supportsChannel(String name);
 
+    void forceUpdateInventorySlot(boolean force);
+
 }

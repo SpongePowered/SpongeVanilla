@@ -24,32 +24,40 @@
  */
 package org.spongepowered.server.mixin.world.storage;
 
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.interfaces.IMixinSaveHandler;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
 
 @Mixin(SaveHandler.class)
 public abstract class MixinSaveHandler implements IMixinSaveHandler {
 
-    @Inject(method = "loadWorldInfo", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true, at = {
-            @At(value = "RETURN", ordinal = 0),
-            @At(value = "RETURN", ordinal = 1)
-    })
-    private void onLoadWorldInfoBeforeReturn(CallbackInfoReturnable<WorldInfo> cir, File file, NBTTagCompound root, NBTTagCompound data)
-            throws IOException {
-        final WorldInfo info = new WorldInfo(data);
-        this.loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
-        this.loadSpongeDatData(info);
-        cir.setReturnValue(info);
+    @Redirect(method = "loadWorldInfo", at = @At(value = "INVOKE", target= "Lnet/minecraft/world/storage/SaveFormatOld;func_186353_a(Ljava/io/File;Lnet/minecraft/util/datafix/DataFixer;)Lnet/minecraft/world/storage/WorldInfo;"),
+        require = 2)
+    public WorldInfo onGetOldWorldInfo(File file, DataFixer fixer) {
+        try {
+            NBTTagCompound root = CompressedStreamTools.readCompressed(new FileInputStream(file));
+            NBTTagCompound data = root.getCompoundTag("Data");
+            WorldInfo info = new WorldInfo(fixer.process(FixTypes.LEVEL, data));
+
+            this.loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
+            this.loadSpongeDatData(info);
+
+            return info;
+        } catch (Exception exception) {
+            LogManager.getLogger().error("Exception reading " + file, exception);
+            return null;
+        }
     }
 
 }
