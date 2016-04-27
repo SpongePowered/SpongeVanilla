@@ -11,6 +11,7 @@
         "enchantment.MixinEnchantment",
         "entity.MixinEntity",
         "entity.MixinEntityLivingBase",
+        "entity.item.MixinEntityItem",
         "entity.item.MixinEntityMinecart",
         "entity.player.MixinEntityPlayer",
         "entity.player.MixinEntityPlayerMP",
