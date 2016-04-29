@@ -37,7 +37,7 @@ public abstract class MixinBlock implements IMixinBlock {
 
     @Override
     public boolean isFlammable(IBlockAccess blockAccess, BlockPos pos, EnumFacing facing) {
-        return Blocks.fire.getFlammability((Block) (Object) this) > 0;
+        return Blocks.FIRE.getFlammability((Block) (Object) this) > 0;
     }
 
 }

@@ -217,7 +217,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
         IBlockState iblockstate = this.worldObj.getBlockState(this.playerLocation);
 
-        if (this.playerLocation != null && iblockstate.getBlock() == Blocks.bed) {
+        if (this.playerLocation != null && iblockstate.getBlock() == Blocks.BED) {
             // Sponge start (Change block state after event call)
             //this.worldObj.setBlockState(this.playerLocation, iblockstate.withProperty(BlockBed.OCCUPIED, Boolean.valueOf(false)), 4);
             // Sponge end

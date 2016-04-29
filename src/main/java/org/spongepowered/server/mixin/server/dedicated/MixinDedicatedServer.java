@@ -70,7 +70,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         SpongeVanilla.INSTANCE.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
         statusResponse.setServerDescription(new TextComponentString(getMOTD()));
-        statusResponse.setProtocolVersionInfo(
+        statusResponse.setVersion(
                 new ServerStatusResponse.Version(MINECRAFT_VERSION.getName(), MINECRAFT_VERSION.getProtocol()));
         this.applyServerIconToResponse(statusResponse);
     }

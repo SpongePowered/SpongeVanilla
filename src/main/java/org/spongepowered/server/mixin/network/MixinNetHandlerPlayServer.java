@@ -129,7 +129,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         }
     }
 
-    @Inject(method = "processVanilla250Packet", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "processCustomPayload", at = @At("HEAD"), cancellable = true)
     private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {

@@ -58,8 +58,8 @@ import java.util.concurrent.FutureTask;
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
-    @Shadow @Final private static Logger logger;
-    @Shadow @Final private List<ITickable> playersOnline;
+    @Shadow @Final private static Logger LOG;
+    @Shadow @Final private List<ITickable> tickables;
     @Shadow @Final public Profiler theProfiler;
     @Shadow private PlayerList playerList;
     @Shadow private int tickCounter;
@@ -87,7 +87,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
      */
     @Overwrite
     public void addChatMessage(ITextComponent component) {
-        logger.info(SpongeTexts.toLegacy(component));
+        LOG.info(SpongeTexts.toLegacy(component));
     }
 
     @Override
@@ -129,7 +129,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
         synchronized (this.futureTaskQueue) {
             while (!this.futureTaskQueue.isEmpty()) {
-                Util.runTask(this.futureTaskQueue.poll(), logger);
+                Util.runTask(this.futureTaskQueue.poll(), LOG);
             }
         }
 
@@ -195,8 +195,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.playerList.onTick();
         this.theProfiler.endStartSection("tickables");
 
-        for (int k = 0; k < this.playersOnline.size(); ++k) {
-            this.playersOnline.get(k).update();
+        for (int k = 0; k < this.tickables.size(); ++k) {
+            this.tickables.get(k).update();
         }
 
         this.theProfiler.endSection();
