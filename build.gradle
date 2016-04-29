@@ -49,7 +49,7 @@ configurations.compile {
 
 dependencies {
     compile 'org.ow2.asm:asm-debug-all:5.1'
-    compile 'net.sf.jopt-simple:jopt-simple:5.0'
+    compile 'net.sf.jopt-simple:jopt-simple:5.0.1'
     compile 'jline:jline:2.14.1'
 
     shadow 'org.ow2.asm:asm-all:5.1'
