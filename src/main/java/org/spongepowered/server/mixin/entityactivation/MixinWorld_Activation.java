@@ -39,7 +39,8 @@ import org.spongepowered.common.mixin.plugin.entityactivation.interfaces.IModDat
 @Mixin(net.minecraft.world.World.class)
 public abstract class MixinWorld_Activation implements IMixinWorld {
 
-    @Inject(method = "updateEntityWithOptionalForce", at = @At(value = "FIELD", target = "lastTickPosX:D", opcode = Opcodes.PUTFIELD, ordinal = 0),
+    @Inject(method = "updateEntityWithOptionalForce",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;lastTickPosX:D", opcode = Opcodes.PUTFIELD, ordinal = 0),
             cancellable = true)
     public void onUpdateEntityWithOptionalForce(net.minecraft.entity.Entity entity, boolean forceUpdate, CallbackInfo ci) {
         if (forceUpdate && !ActivationRange.checkIfActive(entity)) { // ignore if forced by forge event update or entity's chunk
