@@ -111,17 +111,11 @@ public abstract class MixinExplosion implements org.spongepowered.api.world.expl
         }
         final ImmutableList<Transaction<BlockSnapshot>> blockTransactions = blockTransactionBuilder.build();
 
-        final ImmutableList.Builder<EntitySnapshot> entitySnapshotBuilder = ImmutableList.builder();
-        for (Entity affectedEntity : affectedEntities) {
-            entitySnapshotBuilder.add(((org.spongepowered.api.entity.Entity) affectedEntity).createSnapshot());
-        }
-        final ImmutableList<EntitySnapshot> entitySnapshots = entitySnapshotBuilder.build();
-
         this.affectedBlockPositions.clear();
 
         @SuppressWarnings("unchecked")
         final ExplosionEvent.Detonate event = SpongeEventFactory.createExplosionEventDetonate(createCause(),
-                (List) affectedEntities, entitySnapshots, this, (org.spongepowered.api.world.World) worldObj,
+                (List) affectedEntities, this, (org.spongepowered.api.world.World) worldObj,
                 blockTransactions);
 
         // TODO Rolling back an explosion...this will be difficult
