@@ -30,6 +30,7 @@ apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
     version = '1.9'
+	mappings = 'snapshot_20160429'	
     tweakClass = 'org.spongepowered.server.launch.VanillaServerTweaker'
 }
 ats += 'vanilla_at.cfg'

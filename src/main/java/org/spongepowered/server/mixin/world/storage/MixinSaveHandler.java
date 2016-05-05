@@ -30,10 +30,10 @@ import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.IMixinSaveHandler;
 
 import java.io.File;
@@ -52,11 +52,16 @@ public abstract class MixinSaveHandler implements IMixinSaveHandler {
             WorldInfo info = new WorldInfo(fixer.process(FixTypes.LEVEL, data));
 
             this.loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
-            this.loadSpongeDatData(info);
+            try {
+                this.loadSpongeDatData(info);
+            } catch (Exception ex) {
+                SpongeImpl.getLogger().error("Exception reading Sponge level data", ex);
+                return null;
+            }
 
             return info;
         } catch (Exception exception) {
-            LogManager.getLogger().error("Exception reading " + file, exception);
+            SpongeImpl.getLogger().error("Exception reading " + file, exception);
             return null;
         }
     }
