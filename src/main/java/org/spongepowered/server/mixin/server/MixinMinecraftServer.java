@@ -47,7 +47,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
 import org.spongepowered.common.text.SpongeTexts;
-import org.spongepowered.common.world.DimensionManager;
+import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
 
 import java.util.Hashtable;
@@ -136,7 +136,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.theProfiler.endStartSection("levels");
 
         // Sponge start - Iterate over all our dimensions
-        for (final TIntObjectIterator<WorldServer> it = DimensionManager.worldsIterator(); it.hasNext();) {
+        for (final TIntObjectIterator<WorldServer> it = WorldManager.worldsIterator(); it.hasNext();) {
             it.advance();
 
             final WorldServer worldServer = it.value();
@@ -186,7 +186,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
         // Sponge start - Unload requested worlds
         this.theProfiler.endStartSection("dim_unloading");
-        DimensionManager.unloadQueuedWorlds();
+        WorldManager.unloadQueuedWorlds();
         // Sponge end
 
         this.theProfiler.endStartSection("connection");
@@ -204,12 +204,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     /**
      * @author Zidane - March 13th, 2016
-     * Vanilla simply returns worldServers[0]/[1]/[2] here. We change this to ask the {@link DimensionManager}.
+     * Vanilla simply returns worldServers[0]/[1]/[2] here. We change this to ask the {@link WorldManager}.
      */
     @Overwrite
     public WorldServer worldServerForDimension(int dim) {
-        return DimensionManager.getWorldByDimensionId(dim).orElse(null);
+        return WorldManager.getWorldByDimensionId(dim).orElse(null);
     }
-
 
 }

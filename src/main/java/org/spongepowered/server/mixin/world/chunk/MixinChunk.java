@@ -37,7 +37,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.world.DimensionManager;
 
 @Mixin(Chunk.class)
 public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
