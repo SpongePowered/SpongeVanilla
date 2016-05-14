@@ -45,7 +45,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.interfaces.world.IMixinWorld;
+import org.spongepowered.common.interfaces.world.IMixinWorldInfo;
 import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.server.interfaces.IMixinExplosion;
 
@@ -78,6 +78,14 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
             target = "Lnet/minecraft/server/management/PlayerList;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
     private void onSendWeatherPacket(PlayerList manager, Packet<?> packet) {
         manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionType().getId());
+    }
+
+    public Integer getDimensionId() {
+        return ((IMixinWorldInfo) worldInfo).getDimensionId();
+    }
+
+    public void setDimensionId(int dimensionId) {
+        ((IMixinWorldInfo) worldInfo).setDimensionId(dimensionId);
     }
 
 }
