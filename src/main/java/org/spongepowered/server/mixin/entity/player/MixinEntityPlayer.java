@@ -40,13 +40,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
-import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
@@ -62,7 +60,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
 import org.spongepowered.common.interfaces.entity.player.IMixinEntityPlayer;
-import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
+import org.spongepowered.common.mixin.core.entity.MixinEntity;
 import org.spongepowered.common.util.VecHelper;
 
 import java.util.Optional;
@@ -70,7 +68,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayer.class)
-public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements IMixinEntityPlayer {
+public abstract class MixinEntityPlayer extends MixinEntity implements IMixinEntityPlayer {
 
     @Shadow public InventoryPlayer inventory;
     @Shadow protected boolean sleeping;
@@ -333,7 +331,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
      * @author simon816
      * @reason Fix player's ArmorEquipable methods not setting the right slot
      */
-    @Override
+    @Overwrite
     public void setCurrentItemOrArmor(int slotIn, net.minecraft.item.ItemStack stack) {
         // Fix issue in player where it doesn't take into account selected item
         if (slotIn == 0) {
