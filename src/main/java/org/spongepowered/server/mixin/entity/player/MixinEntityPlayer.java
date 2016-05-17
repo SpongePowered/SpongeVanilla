@@ -196,11 +196,11 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     }
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
-    private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.EnumStatus> ci) {
+    private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
         SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Cause.of(NamedCause.source(this)),
                 ((org.spongepowered.api.world.World) this.worldObj).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);
         if (SpongeImpl.postEvent(event)) {
-            ci.setReturnValue(EntityPlayer.EnumStatus.OTHER_PROBLEM);
+            ci.setReturnValue(EntityPlayer.SleepResult.OTHER_PROBLEM);
         }
     }
 

@@ -53,7 +53,7 @@ public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
             return false;
         }
 
-        ((WorldServer) this.worldObj).getChunkProvider().dropChunk(this.xPosition, this.zPosition);
+        ((WorldServer) this.worldObj).getChunkProvider().func_189549_a((Chunk) (Object) this);
         return true;
     }
 

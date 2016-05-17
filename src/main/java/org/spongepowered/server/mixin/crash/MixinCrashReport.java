@@ -42,7 +42,7 @@ public abstract class MixinCrashReport {
 
     @Inject(method = "populateEnvironment", at = @At("RETURN"))
     private void onPopulateEnvironment(CallbackInfo ci) {
-        this.theReportCategory.addCrashSectionCallable("Plugins", () -> {
+        this.theReportCategory.func_189529_a("Plugins", () -> {
             StringBuilder result = new StringBuilder(64);
             for (PluginContainer container : Sponge.getPluginManager().getPlugins()) {
                 result.append("\n\t\t").append(container);
