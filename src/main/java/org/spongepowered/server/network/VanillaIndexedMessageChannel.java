@@ -149,8 +149,8 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
     public void sendTo(Player player, Message message) {
         validate();
         final EntityPlayerMP playerMP = (EntityPlayerMP) player;
-        if (((IMixinNetHandlerPlayServer) playerMP.playerNetServerHandler).supportsChannel(getName())) {
-            playerMP.playerNetServerHandler.sendPacket(createPacket(message));
+        if (((IMixinNetHandlerPlayServer) playerMP.connection).supportsChannel(getName())) {
+            playerMP.connection.sendPacket(createPacket(message));
         }
     }
 
@@ -166,12 +166,12 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
         final String name = getName();
         SPacketCustomPayload packet = null;
         for (EntityPlayerMP player : ((MinecraftServer) Sponge.getServer()).getPlayerList().getPlayerList()) {
-            if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
+            if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(message);
                 }
 
-                player.playerNetServerHandler.sendPacket(packet);
+                player.connection.sendPacket(packet);
             }
         }
     }

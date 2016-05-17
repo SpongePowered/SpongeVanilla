@@ -93,8 +93,8 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
     public void sendTo(Player player, Consumer<ChannelBuf> payload) {
         validate();
         final EntityPlayerMP playerMP = (EntityPlayerMP) player;
-        if (((IMixinNetHandlerPlayServer) playerMP.playerNetServerHandler).supportsChannel(getName())) {
-            playerMP.playerNetServerHandler.sendPacket(createPacket(payload));
+        if (((IMixinNetHandlerPlayServer) playerMP.connection).supportsChannel(getName())) {
+            playerMP.connection.sendPacket(createPacket(payload));
         }
     }
 
@@ -111,12 +111,12 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
         final String name = getName();
         SPacketCustomPayload packet = null;
         for (EntityPlayerMP player : ((MinecraftServer) Sponge.getServer()).getPlayerList().getPlayerList()) {
-            if (((IMixinNetHandlerPlayServer) player.playerNetServerHandler).supportsChannel(name)) {
+            if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);
                 }
 
-                player.playerNetServerHandler.sendPacket(packet);
+                player.connection.sendPacket(packet);
             }
         }
     }
