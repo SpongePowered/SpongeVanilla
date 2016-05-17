@@ -1,0 +1,37 @@
+// Gradle plugins
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+    }
+
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    }
+}
+
+version = rootProject.version
+
+apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+apply from: project(':SpongeCommon:SpongeAPI').file('gradle/sponge.gradle')
+
+dependencies {
+    compile rootProject
+}
+
+minecraft {
+    tweakClass = 'org.spongepowered.server.client.launch.DebugClientTweaker'
+
+    version = rootProject.minecraft.version
+    mappings = rootProject.minecraft.mappings
+    runDir = rootProject.minecraft.runDir
+
+    makeObfSourceJar = false
+}
+
+license {
+    ext.name = rootProject.name
+}

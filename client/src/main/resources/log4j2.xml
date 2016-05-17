@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Appenders>
+        <TerminalConsole name="Console">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger{1}]: %msg%n"/>
+        </TerminalConsole>
+        <TerminalConsole name="MinecraftConsole">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+        </TerminalConsole>
+
+        <!-- Keep a console appender open so log4j2 doesn't close our main out stream if we redirect System.out to the logger -->
+        <Console name="SysOut" target="SYSTEM_OUT"/>
+
+        <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger{1}]: %replace{%msg}{(?i)\u00A7[0-9A-FK-OR]}{}%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Log Minecraft messages without prefix -->
+        <Logger name="net.minecraft" level="all" additivity="false">
+            <filters>
+                <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </filters>
+            <AppenderRef ref="MinecraftConsole" level="debug"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+
+        <!-- Silence weird sound warnings... TODO: Fix this properly -->
+        <Logger name="net.minecraft.client.audio" level="info" additivity="false">
+            <AppenderRef ref="MinecraftConsole" />
+            <AppenderRef ref="File"/>
+        </Logger>
+
+        <!-- Realms is broken but nobody cares about it -->
+        <Logger name="net.minecraft.realms" level="off" additivity="false" />
+
+        <Logger name="com.mojang" level="all" additivity="false">
+            <AppenderRef ref="MinecraftConsole" level="debug"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+
+        <Logger name="mixin" level="all" additivity="false">
+            <AppenderRef ref="Console" level="info"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+
+        <!-- Hide HikariCP messages unless it's a real problem -->
+        <Logger name="com.zaxxer.hikari" level="all" additivity="false">
+            <AppenderRef ref="Console" level="info"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+
+        <!-- Log all other messages with prefix -->
+        <Root level="all">
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

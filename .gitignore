@@ -75,3 +75,5 @@ nb-configuration.xml
 *.iws
 /.apt_generated/
 *.launch
+
+/client.gradle
