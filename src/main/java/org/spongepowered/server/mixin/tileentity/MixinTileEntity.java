@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.interfaces.block.tile.IMixinTileEntity;
 
 import javax.annotation.Nullable;
@@ -54,8 +55,8 @@ public abstract class MixinTileEntity implements IMixinTileEntity {
         }
     }
 
-    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
-    private void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+    @Inject(method = "func_189515_b(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", at = @At("RETURN"))
+    private void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
         if (this.customTileData != null) {
             tagCompound.setTag("ForgeData", this.customTileData);
         }
