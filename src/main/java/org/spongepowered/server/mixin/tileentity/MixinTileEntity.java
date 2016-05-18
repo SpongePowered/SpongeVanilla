@@ -55,7 +55,7 @@ public abstract class MixinTileEntity implements IMixinTileEntity {
         }
     }
 
-    @Inject(method = "func_189515_b(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", at = @At("RETURN"))
+    @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", at = @At("RETURN"))
     private void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
         if (this.customTileData != null) {
             tagCompound.setTag("ForgeData", this.customTileData);
