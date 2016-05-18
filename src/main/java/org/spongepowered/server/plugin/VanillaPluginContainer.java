@@ -40,10 +40,9 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-public final class VanillaPluginContainer extends AbstractPluginContainer implements PluginContainerExtension {
+final class VanillaPluginContainer extends AbstractPluginContainer implements PluginContainerExtension {
 
     private final String id;
-    private final String unqualifiedId;
 
     private final Optional<String> name;
     private final Optional<String> version;
@@ -63,7 +62,6 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
             @Nullable String name, @Nullable String version, @Nullable String description, @Nullable String url, List<String> authors,
             @Nullable String assets, Optional<Path> source) {
         this.id = id;
-        this.unqualifiedId = getUnqualifiedId(id);
 
         this.name = Optional.ofNullable(name);
         this.version = Optional.ofNullable(version);
@@ -84,13 +82,8 @@ public final class VanillaPluginContainer extends AbstractPluginContainer implem
     }
 
     @Override
-    public String getUnqualifiedId() {
-        return this.unqualifiedId;
-    }
-
-    @Override
     public String getName() {
-        return this.name.orElse(this.unqualifiedId);
+        return this.name.orElse(this.id);
     }
 
     @Override

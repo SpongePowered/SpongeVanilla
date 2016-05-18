@@ -283,12 +283,9 @@ final class PluginScanner {
         final String id = candidate.getId();
 
         if (!ID_PATTERN.matcher(id).matches()) {
-            logger.error("Found plugin with invalid plugin ID '{}' from {}. Plugin IDs should be lowercase, and only contain characters from "
-                    + "a-z, dashes, underscores or dots.\n"
-                    + "The plugin will be still loaded currently, however this will be removed in SpongeAPI 5.0. "
-                    + "Please notify the author to update the plugin as soon as possible.",
-                    id, candidate.getDisplaySource());
-            // return; // TODO
+            logger.error("Skipping plugin with invalid plugin ID '{}' from {}. Plugin IDs should be lowercase, and only contain characters from "
+                    + "a-z, dashes, underscores or dots.", id, candidate.getDisplaySource());
+            return;
         }
 
         if (this.pluginClasses.add(pluginClass)) {
