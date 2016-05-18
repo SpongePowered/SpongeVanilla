@@ -25,10 +25,11 @@
 package org.spongepowered.server.mixin.core.entity.player;
 
 import com.flowpowered.math.vector.Vector3d;
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.hash.TIntHashSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,8 +82,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
-    private TIntObjectMap<BlockPos> spawnChunkMap = new TIntObjectHashMap<>();
-    private TIntSet spawnForcedSet = new TIntHashSet();
+    private Int2ObjectOpenHashMap<BlockPos> spawnChunkMap = new Int2ObjectOpenHashMap<>();
+    private IntSet spawnForcedSet = new IntOpenHashSet();
 
     /**
      * @author Minecrell
@@ -171,7 +172,13 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     @Inject(method = "writeEntityToNBT", at = @At("RETURN"))
     private void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
         final NBTTagList spawnList = new NBTTagList();
-        this.spawnChunkMap.forEachEntry((dim, spawn) -> {
+
+        ObjectIterator<Int2ObjectMap.Entry<BlockPos>> itr = this.spawnChunkMap.int2ObjectEntrySet().fastIterator();
+        while (itr.hasNext()) {
+            Int2ObjectMap.Entry<BlockPos> entry = itr.next();
+            int dim = entry.getIntKey();
+            BlockPos spawn = entry.getValue();
+
             NBTTagCompound spawnData = new NBTTagCompound();
             spawnData.setInteger("Dim", dim);
             spawnData.setInteger("SpawnX", spawn.getX());
@@ -179,8 +186,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
             spawnData.setInteger("SpawnZ", spawn.getZ());
             spawnData.setBoolean("SpawnForced", this.spawnForcedSet.contains(dim));
             spawnList.appendTag(spawnData);
-            return true;
-        });
+        }
+
         tagCompound.setTag("Spawns", spawnList);
     }
 

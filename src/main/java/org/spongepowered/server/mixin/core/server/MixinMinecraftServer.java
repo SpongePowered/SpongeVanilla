@@ -24,7 +24,8 @@
  */
 package org.spongepowered.server.mixin.core.server;
 
-import gnu.trove.iterator.TIntObjectIterator;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.NetworkSystem;
 import net.minecraft.network.ServerStatusResponse;
@@ -136,14 +137,13 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.theProfiler.endStartSection("levels");
 
         // Sponge start - Iterate over all our dimensions
-        for (final TIntObjectIterator<WorldServer> it = WorldManager.worldsIterator(); it.hasNext();) {
-            it.advance();
-
-            final WorldServer worldServer = it.value();
+        for (final ObjectIterator<Int2ObjectMap.Entry<WorldServer>> it = WorldManager.worldsIterator(); it.hasNext();) {
+            Int2ObjectMap.Entry<WorldServer> entry = it.next();
+            final WorldServer worldServer = entry.getValue();
             // Sponge end
             long i = System.nanoTime();
 
-            if (it.key() == 0 || this.getAllowNether()) {
+            if (entry.getIntKey() == 0 || this.getAllowNether()) {
                 this.theProfiler.startSection(worldServer.getWorldInfo().getWorldName());
 
                 if (this.tickCounter % 20 == 0) {
@@ -180,7 +180,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             }
 
             // Sponge start - Write tick times to our custom map
-            this.worldTickTimes.get(it.key())[this.tickCounter % 100] = System.nanoTime() - i;
+            this.worldTickTimes.get(entry.getIntKey())[this.tickCounter % 100] = System.nanoTime() - i;
             // Sponge end
         }
 
