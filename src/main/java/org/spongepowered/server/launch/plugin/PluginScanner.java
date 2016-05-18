@@ -246,8 +246,10 @@ final class PluginScanner {
         }
 
         if (!candidates.isEmpty()) {
+            boolean success = false;
+
             for (PluginCandidate candidate : candidates) {
-                addCandidate(candidate);
+                success |= addCandidate(candidate);
 
                 // Find matching plugin metadata
                 if (metadata != null) {
@@ -267,7 +269,7 @@ final class PluginScanner {
                 }
             }
 
-            if (metadata == null) {
+            if (success && metadata == null) {
                 logger.warn("{} is missing a valid " + METADATA_FILE + " file. This is not a problem when testing plugins, however it is recommended "
                         + "to include one in public plugins.\n"
                         + "Please see https://docs.spongepowered.org/master/en/plugin/plugin-meta.html for details.", path);
@@ -278,26 +280,29 @@ final class PluginScanner {
         }
     }
 
-    private void addCandidate(PluginCandidate candidate) {
+    private boolean addCandidate(PluginCandidate candidate) {
         final String pluginClass = candidate.getPluginClass();
         final String id = candidate.getId();
 
         if (!ID_PATTERN.matcher(id).matches()) {
             logger.error("Skipping plugin with invalid plugin ID '{}' from {}. Plugin IDs should be lowercase, and only contain characters from "
                     + "a-z, dashes, underscores or dots.", id, candidate.getDisplaySource());
-            return;
+            return false;
         }
 
         if (this.pluginClasses.add(pluginClass)) {
             if (this.plugins.containsKey(id)) {
                 logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getDisplaySource());
-                return;
+                return false;
             }
 
             this.plugins.put(id, candidate);
+            return true;
         } else {
             logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getDisplaySource());
         }
+
+        return false;
     }
 
     private PluginCandidate scanClassFile(InputStream in, @Nullable Path source) throws IOException {
