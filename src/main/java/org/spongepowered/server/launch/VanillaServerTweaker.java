@@ -151,7 +151,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
         VanillaLaunch.getLogger().debug("Initializing Mixin environment...");
         MixinEnvironment env = SpongeLaunch.setupMixinEnvironment()
-                .addConfiguration("mixins.vanilla.json")
+                .addConfiguration("mixins.vanilla.core.json")
                 .addConfiguration("mixins.vanilla.entityactivation.json")
                 .setSide(SERVER);
 

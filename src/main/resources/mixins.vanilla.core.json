@@ -1,0 +1,34 @@
+{
+    "required": true,
+    "minVersion": "0.5.1",
+    "package": "org.spongepowered.server.mixin.core",
+    "refmap": "mixins.vanilla.refmap.json",
+    "priority": 1111,
+    "server": [
+        "MixinBootstrap",
+        "block.MixinBlock",
+        "crash.MixinCrashReport",
+        "enchantment.MixinEnchantment",
+        "entity.MixinEntity",
+        "entity.MixinEntityLivingBase",
+        "entity.item.MixinEntityItem",
+        "entity.item.MixinEntityMinecart",
+        "entity.player.MixinEntityPlayer",
+        "entity.player.MixinEntityPlayerMP",
+        "network.MixinNetHandlerPlayServer",
+        "server.MixinMinecraftServer",
+        "server.dedicated.MixinConsoleHandler",
+        "server.dedicated.MixinDedicatedServer",
+        "tileentity.MixinTileEntity",
+        "world.MixinExplosion",
+        "world.MixinWorld",
+        "world.MixinWorldProvider",
+        "world.MixinWorldServer",
+        "world.MixinWorldType",
+        "world.chunk.MixinChunk",
+        "world.storage.MixinSaveHandler"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
