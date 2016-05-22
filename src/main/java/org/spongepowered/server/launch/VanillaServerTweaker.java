@@ -153,6 +153,7 @@ public final class VanillaServerTweaker implements ITweaker {
         MixinEnvironment env = SpongeLaunch.setupMixinEnvironment()
                 .addConfiguration("mixins.vanilla.core.json")
                 .addConfiguration("mixins.vanilla.entityactivation.json")
+                .addConfiguration("mixins.vanilla.chunkio.json")
                 .setSide(SERVER);
 
         // Add our remapper to Mixin's remapper chain

@@ -9,3 +9,9 @@ the MIT license. The license to redistribute them is not transitive, third-party
 license as classified by the OSI](http://opensource.org/licenses):
   - [Original license text](https://github.com/MinecraftForge/FML/blob/1112c455b9758c38eab385f48578bad17c0180f9/LICENSE-fml.txt#L24-L34)
   - [Original sources](https://github.com/MinecraftForge/FML/tree/1112c455b9758c38eab385f48578bad17c0180f9/src/main/java/cpw/mods/fml/common/asm/transformers)
+
+- The asynchronous chunk loading executor code in `net.minecraftforge.common.chunkio` is based on parts of
+[MinecraftForge](https://github.com/MinecraftForge/MinecraftForge) and licensed under the
+[GNU Lesser General Public License v2.1](http://www.gnu.org/licenses/lgpl-2.1.html):
+  - [Original license text](https://github.com/MinecraftForge/MinecraftForge/blob/279380b4f1aa02a4df5e2b323c11ca6ab1531431/LICENSE-new.txt)
+  - [Original sources](https://github.com/MinecraftForge/MinecraftForge/tree/279380b4f1aa02a4df5e2b323c11ca6ab1531431/src/main/java/net/minecraftforge/common/chunkio)

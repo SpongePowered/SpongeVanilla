@@ -1,4 +1,5 @@
 {
+    "required": true,
     "minVersion": "0.5.1",
     "package": "org.spongepowered.server.mixin.entityactivation",
     "plugin": "org.spongepowered.common.mixin.plugin.entityactivation.EntityActivationRangePlugin",

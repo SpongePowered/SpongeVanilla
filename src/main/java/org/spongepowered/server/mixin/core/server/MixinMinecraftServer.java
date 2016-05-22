@@ -135,6 +135,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         }
 
         this.theProfiler.endStartSection("levels");
+        tickChunkLoader(); // Sponge: Tick chunk loader
 
         // Sponge start - Iterate over all our dimensions
         for (final ObjectIterator<Int2ObjectMap.Entry<WorldServer>> it = WorldManager.worldsIterator(); it.hasNext();) {
@@ -200,6 +201,10 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         }
 
         this.theProfiler.endSection();
+    }
+
+    // This is used by asynchronous chunk loading to finish loading the chunks
+    private void tickChunkLoader() {
     }
 
     /**

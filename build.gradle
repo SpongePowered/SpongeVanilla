@@ -85,3 +85,7 @@ shadowJar {
         include dependency('jline:jline')
     }
 }
+
+license {
+    exclude 'net/minecraftforge/**'
+}
