@@ -133,13 +133,12 @@ public final class SpongeVanilla extends AbstractPluginContainer {
     public void preInitialize() throws Exception {
         SpongeImpl.getLogger().info("Loading Sponge...");
 
-        this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
-
         // Pre-initialize registry
         this.game.getRegistry().preRegistryInit();
+        SpongeImpl.getRegistry().preInit();
+        this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
         SpongeBootstrap.initializeServices();
         SpongeBootstrap.initializeCommands();
-        SpongeImpl.getRegistry().preInit();
 
         SpongeImpl.getLogger().info("Loading plugins...");
         ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
