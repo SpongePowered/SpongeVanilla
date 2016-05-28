@@ -30,10 +30,10 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
-import gnu.trove.map.TByteObjectMap;
-import gnu.trove.map.hash.TByteObjectHashMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
@@ -56,7 +56,7 @@ import java.util.Set;
 
 public final class VanillaIndexedMessageChannel extends VanillaChannelBinding implements ChannelBinding.IndexedMessageChannel {
 
-    private final TByteObjectMap<IndexedMessageType<?>> messageIds = new TByteObjectHashMap<>();
+    private final Byte2ObjectMap<IndexedMessageType<?>> messageIds = new Byte2ObjectOpenHashMap<>();
     private final Map<Class<? extends Message>, IndexedMessageType<?>> messageClasses = new HashMap<>();
 
     public VanillaIndexedMessageChannel(ChannelRegistrar registrar, String name, PluginContainer owner) {
