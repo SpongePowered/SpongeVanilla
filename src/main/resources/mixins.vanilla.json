@@ -16,6 +16,7 @@
         "item.MixinItemArmor",
         "network.MixinNetHandlerPlayServer",
         "server.MixinMinecraftServer",
+        "server.MixinServerConfigurationManager",
         "server.dedicated.MixinConsoleHandler",
         "server.dedicated.MixinDedicatedServer",
         "tileentity.MixinTileEntity",
