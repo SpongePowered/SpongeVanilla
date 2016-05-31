@@ -19,6 +19,7 @@
         "server.MixinMinecraftServer",
         "server.dedicated.MixinConsoleHandler",
         "server.dedicated.MixinDedicatedServer",
+        "server.management.MixinPlayerList",
         "tileentity.MixinTileEntity",
         "world.MixinExplosion",
         "world.MixinWorld",
