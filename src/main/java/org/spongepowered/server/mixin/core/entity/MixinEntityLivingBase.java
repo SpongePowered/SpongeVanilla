@@ -28,23 +28,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CombatTracker;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import org.spongepowered.api.data.Transaction;
-import org.spongepowered.api.entity.living.Living;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
-import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -53,12 +44,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.data.util.NbtDataUtil;
-import org.spongepowered.common.interfaces.entity.IMixinEntity;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
-import org.spongepowered.common.text.SpongeTexts;
-
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -75,40 +61,6 @@ public abstract class MixinEntityLivingBase extends Entity {
 
     protected MixinEntityLivingBase() {
         super(null);
-    }
-
-    @Inject(method = "onDeath", at = @At("HEAD"))
-    private void callDestructEntityLivingBase(DamageSource source, CallbackInfo ci) {
-        callDestructEntityEventDeath(source, ci);
-    }
-
-    protected void callDestructEntityEventDeath(DamageSource source, CallbackInfo ci) {
-        MessageChannel originalChannel = this instanceof Player ? ((Player) this).getMessageChannel() : MessageChannel.TO_NONE;
-        Text deathMessage = SpongeTexts.toText(getCombatTracker().getDeathMessage());
-
-        Optional<User> sourceCreator = Optional.empty();
-
-        Cause cause;
-        if (source instanceof EntityDamageSource) {
-            EntityDamageSource damageSource = (EntityDamageSource) source;
-            IMixinEntity spongeEntity = (IMixinEntity) damageSource.getSourceOfDamage();
-            sourceCreator = spongeEntity.getTrackedPlayer(NbtDataUtil.SPONGE_ENTITY_CREATOR);
-        }
-
-        if (sourceCreator.isPresent()) {
-            cause = Cause.of(NamedCause.source(source), NamedCause.of("Victim", this), NamedCause.owner(sourceCreator.get()));
-        } else {
-            cause = Cause.of(NamedCause.source(source), NamedCause.of("Victim", this));
-        }
-
-        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(
-                cause, originalChannel, Optional.of(originalChannel), new MessageEvent.MessageFormatter(deathMessage), (Living) this, false
-        );
-        if (!SpongeImpl.postEvent(event)) {
-            if (!event.isMessageCancelled()) {
-                event.getChannel().ifPresent(channel -> channel.send(this, event.getMessage()));
-            }
-        }
     }
 
     @Inject(method = "setActiveHand", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
