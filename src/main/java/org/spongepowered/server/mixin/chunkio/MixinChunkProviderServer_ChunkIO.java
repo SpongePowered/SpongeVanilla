@@ -24,6 +24,7 @@
  */
 package org.spongepowered.server.mixin.chunkio;
 
+import co.aikar.timings.Timing;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -35,6 +36,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.server.interfaces.world.chunkio.IMixinChunkProviderServer;
 
 import java.util.function.Consumer;
@@ -68,7 +70,10 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
                         callback);
                 return null;
             } else {
+                Timing timing = ((IMixinWorldServer) this.worldObj).getTimingsHandler().syncChunkLoadDataTimer;
+                timing.startTiming();
                 chunk = ChunkIOExecutor.syncChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
+                timing.stopTiming();
             }
         }
 
