@@ -41,14 +41,14 @@ public abstract class MixinPlayerList {
     @Shadow @Final MinecraftServer mcServer;
 
     @Overwrite
-    public void changePlayerDimension(EntityPlayerMP playerMP, int dimension) {
-        ((IMixinPlayerList) (Object) this).changePlayerDimension(playerMP, dimension, mcServer.worldServerForDimension(dimension)
+    public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
+        ((IMixinPlayerList) (Object) this).transferPlayerToDimension(player, dimensionIn, mcServer.worldServerForDimension(dimensionIn)
                 .getDefaultTeleporter());
     }
 
     @Overwrite
-    public void transferEntityToWorld(Entity entityIn, int fromDimensionId, WorldServer fromWorld, WorldServer toWorld) {
-        ((IMixinPlayerList) (Object) this).transferEntityToWorld(entityIn, fromDimensionId, fromWorld, toWorld, toWorld
+    public void transferEntityToWorld(Entity entityIn, int lastDimension, WorldServer oldWorldIn, WorldServer toWorldIn) {
+        ((IMixinPlayerList) (Object) this).transferEntityToWorld(entityIn, lastDimension, oldWorldIn, toWorldIn, toWorldIn
                 .getDefaultTeleporter());
     }
 }
