@@ -278,6 +278,7 @@ final class PluginScanner {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private boolean addCandidate(PluginCandidate candidate) {
         final String pluginClass = candidate.getPluginClass();
         final String id = candidate.getId();

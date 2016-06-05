@@ -209,7 +209,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     /**
      * @author Zidane - March 13th, 2016
-     * Vanilla simply returns worldServers[0]/[1]/[2] here. We change this to ask the {@link WorldManager}.
+     * @reason  Vanilla simply returns worldServers[0]/[1]/[2] here. We change this to ask the {@link WorldManager}.
      */
     @Overwrite
     public WorldServer worldServerForDimension(int dim) {

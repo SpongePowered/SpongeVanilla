@@ -40,12 +40,20 @@ public abstract class MixinPlayerList {
 
     @Shadow @Final private MinecraftServer mcServer;
 
+    /**
+     * @author Zidane - May 31th, 2016
+     * @reason Force Vanilla methods to call derivatives with Teleporter
+     */
     @Overwrite
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
         ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.mcServer.worldServerForDimension(dimensionIn)
                 .getDefaultTeleporter());
     }
 
+    /**
+     * @author Zidane - May 31th, 2016
+     * @reason Force Vanilla methods to call derivatives with Teleporter
+     */
     @Overwrite
     public void transferEntityToWorld(Entity entityIn, int lastDimension, WorldServer oldWorldIn, WorldServer toWorldIn) {
         ((IMixinPlayerList) this).transferEntityToWorld(entityIn, lastDimension, oldWorldIn, toWorldIn, toWorldIn.getDefaultTeleporter());

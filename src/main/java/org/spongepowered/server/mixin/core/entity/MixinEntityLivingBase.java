@@ -111,8 +111,8 @@ public abstract class MixinEntityLivingBase extends Entity {
         }
     }
 
-    @Inject(method = "setActiveHand", at = @At(value = "FIELD", target = "activeItemStack"), cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "setActiveHand", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
+            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;"))
     private void onSetActiveItemStack(EnumHand hand, CallbackInfo ci, ItemStack stack) {
         UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)),
                 stack.getMaxItemUseDuration(), stack.getMaxItemUseDuration(), ItemStackUtil.snapshotOf(stack));
