@@ -45,7 +45,7 @@ public abstract class MixinSaveHandler implements IMixinSaveHandler {
     @Redirect(method = "loadWorldInfo",
             at = @At(value = "INVOKE", target= "Lnet/minecraft/world/storage/SaveFormatOld;"
                     + "getWorldData(Ljava/io/File;Lnet/minecraft/util/datafix/DataFixer;)Lnet/minecraft/world/storage/WorldInfo;"), require = 2)
-    public WorldInfo onGetOldWorldInfo(File file, DataFixer fixer) {
+    private WorldInfo onGetOldWorldInfo(File file, DataFixer fixer) {
         try {
             NBTTagCompound root = CompressedStreamTools.readCompressed(new FileInputStream(file));
             NBTTagCompound data = root.getCompoundTag("Data");

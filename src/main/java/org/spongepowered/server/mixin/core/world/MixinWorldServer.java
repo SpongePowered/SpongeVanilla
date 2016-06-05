@@ -57,8 +57,9 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    public void onConstruct(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn, CallbackInfo ci) {
-        ((IMixinWorldServer) (Object) this).setDimensionId(dimensionId);
+    private void onConstruct(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn,
+            CallbackInfo ci) {
+        ((IMixinWorldServer) this).setDimensionId(dimensionId);
     }
 
     @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"),
@@ -81,11 +82,11 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     }
 
     public Integer getDimensionId() {
-        return ((IMixinWorldInfo) worldInfo).getDimensionId();
+        return ((IMixinWorldInfo) this.worldInfo).getDimensionId();
     }
 
     public void setDimensionId(int dimensionId) {
-        ((IMixinWorldInfo) worldInfo).setDimensionId(dimensionId);
+        ((IMixinWorldInfo) this.worldInfo).setDimensionId(dimensionId);
     }
 
 }

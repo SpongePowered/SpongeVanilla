@@ -38,17 +38,17 @@ import org.spongepowered.common.interfaces.IMixinPlayerList;
 @Mixin(value = PlayerList.class, priority = 1001)
 public abstract class MixinPlayerList {
 
-    @Shadow @Final MinecraftServer mcServer;
+    @Shadow @Final private MinecraftServer mcServer;
 
     @Overwrite
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
-        ((IMixinPlayerList) (Object) this).transferPlayerToDimension(player, dimensionIn, mcServer.worldServerForDimension(dimensionIn)
+        ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.mcServer.worldServerForDimension(dimensionIn)
                 .getDefaultTeleporter());
     }
 
     @Overwrite
     public void transferEntityToWorld(Entity entityIn, int lastDimension, WorldServer oldWorldIn, WorldServer toWorldIn) {
-        ((IMixinPlayerList) (Object) this).transferEntityToWorld(entityIn, lastDimension, oldWorldIn, toWorldIn, toWorldIn
-                .getDefaultTeleporter());
+        ((IMixinPlayerList) this).transferEntityToWorld(entityIn, lastDimension, oldWorldIn, toWorldIn, toWorldIn.getDefaultTeleporter());
     }
+
 }

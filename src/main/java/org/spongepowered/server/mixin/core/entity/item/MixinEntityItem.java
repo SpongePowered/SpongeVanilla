@@ -25,18 +25,17 @@
 package org.spongepowered.server.mixin.core.entity.item;
 
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EntityItem.class)
-public class MixinEntityItem {
+public abstract class MixinEntityItem {
 
-    @Redirect(method = "getEntityItem", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;)V", remap = false))
-    public void onError(Logger logger, String error) {
+    @Redirect(method = "getEntityItem",
+            at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;)V", remap = false))
+    private void onError(Logger logger, String error) {
         return; // Suppress this silly error
     }
 }

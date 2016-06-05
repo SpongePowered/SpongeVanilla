@@ -40,7 +40,6 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
-import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.nio.file.Path;

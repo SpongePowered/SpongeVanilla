@@ -73,11 +73,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     @Shadow private int sleepTimer;
     @Shadow @Nullable private BlockPos spawnChunk;
     @Shadow private boolean spawnForced;
-    // TODO - 1.9 interact refactor
-    /*@Shadow private net.minecraft.item.ItemStack itemInUse;
-    @Shadow private int itemInUseCount;
-
-    @Shadow protected abstract void onItemUseFinish();*/
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";

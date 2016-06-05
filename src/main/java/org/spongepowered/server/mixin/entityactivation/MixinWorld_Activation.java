@@ -24,25 +24,24 @@
  */
 package org.spongepowered.server.mixin.entityactivation;
 
-import org.spongepowered.api.util.annotation.NonnullByDefault;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.interfaces.world.IMixinWorld;
 import org.spongepowered.common.mixin.plugin.entityactivation.ActivationRange;
 import org.spongepowered.common.mixin.plugin.entityactivation.interfaces.IModData_Activation;
 
-@NonnullByDefault
-@Mixin(net.minecraft.world.World.class)
+@Mixin(World.class)
 public abstract class MixinWorld_Activation implements IMixinWorld {
 
     @Inject(method = "updateEntityWithOptionalForce",
             at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;lastTickPosX:D", opcode = Opcodes.PUTFIELD, ordinal = 0),
             cancellable = true)
-    public void onUpdateEntityWithOptionalForce(net.minecraft.entity.Entity entity, boolean forceUpdate, CallbackInfo ci) {
+    private void onUpdateEntityWithOptionalForce(Entity entity, boolean forceUpdate, CallbackInfo ci) {
         if (forceUpdate && !ActivationRange.checkIfActive(entity)) { // ignore if forced by forge event update or entity's chunk
             entity.ticksExisted++;
             ((IModData_Activation) entity).inactiveTick();

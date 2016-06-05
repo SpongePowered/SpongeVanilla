@@ -24,7 +24,6 @@
  */
 package org.spongepowered.server.launch.plugin;
 
-import static java.util.stream.Collectors.joining;
 import static org.spongepowered.api.plugin.Plugin.ID_PATTERN;
 
 import org.apache.logging.log4j.Logger;
@@ -56,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

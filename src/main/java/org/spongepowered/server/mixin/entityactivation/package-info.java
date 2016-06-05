@@ -22,23 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.item;
-
-import net.minecraft.item.ItemArmor;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-// TODO 1.9: Re-enable this if necessary (it shouldn't be)
-//@Mixin(ItemArmor.class)
-public abstract class MixinItemArmor {
-
-    /*@ModifyArg(method = "onItemRightClick",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer.setItemStackToSlot (Lnet/minecraft/inventory/EntityEquipmentSlot;Lnet/minecraft/item/ItemStack;)V"))
-    private int onSetCurrentItemOrArmor(int pos) {
-        // Increase armor position by one because our fix in MixinEntityPlayer.setCurrentItemOrArmor
-        // handles armor positions differently.
-        return pos + 1;
-    }*/
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.mixin.entityactivation;
