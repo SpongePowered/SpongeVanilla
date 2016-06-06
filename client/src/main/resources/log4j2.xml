@@ -31,10 +31,9 @@
         </Logger>
 
         <!-- Silence weird sound warnings... TODO: Fix this properly -->
-        <Logger name="net.minecraft.client.audio" level="info" additivity="false">
-            <AppenderRef ref="MinecraftConsole" />
-            <AppenderRef ref="File"/>
-        </Logger>
+        <Logger name="net.minecraft.client.audio" level="info" />
+        <!-- Prevent Client bootstrap from replacing System.out and System.err -->
+        <Logger name="net.minecraft.init.Bootstrap" level="info" />
 
         <!-- Realms is broken but nobody cares about it -->
         <Logger name="net.minecraft.realms" level="off" additivity="false" />
