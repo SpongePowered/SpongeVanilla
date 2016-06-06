@@ -49,6 +49,7 @@ public final class DebugClientTweaker implements ITweaker {
         this.args = args.toArray(new String[args.size()]);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
         List<String> tweakers = (List<String>) Launch.blackboard.get("TweakClasses");
@@ -62,7 +63,7 @@ public final class DebugClientTweaker implements ITweaker {
 
     @Override
     public String[] getLaunchArguments() {
-        return args;
+        return this.args;
     }
 
 }
