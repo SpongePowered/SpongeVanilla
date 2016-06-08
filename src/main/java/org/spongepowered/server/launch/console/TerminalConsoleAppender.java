@@ -27,8 +27,6 @@ package org.spongepowered.server.launch.console;
 import static jline.TerminalFactory.OFF;
 import static jline.console.ConsoleReader.RESET_LINE;
 import static org.apache.logging.log4j.core.helpers.Booleans.parseBoolean;
-import static org.fusesource.jansi.Ansi.Color.RED;
-import static org.fusesource.jansi.Ansi.Color.YELLOW;
 import static org.spongepowered.server.launch.VanillaCommandLine.FORCE_JLINE;
 import static org.spongepowered.server.launch.VanillaCommandLine.NO_JLINE;
 import static org.spongepowered.server.launch.VanillaCommandLine.NO_REDIRECT_STDOUT;
@@ -63,9 +61,9 @@ import javax.annotation.Nullable;
 @Plugin(name = "TerminalConsole", category = "Core", elementType = "appender", printObject = true)
 public class TerminalConsoleAppender extends AbstractAppender {
 
-    public static final String ANSI_RESET = Ansi.ansi().reset().toString();
-    private static final String ANSI_ERROR = Ansi.ansi().fg(RED).bold().toString();
-    private static final String ANSI_WARN = Ansi.ansi().fg(YELLOW).bold().toString();
+    public static final String ANSI_RESET = Ansi.ansi().fgDefault().reset().toString();
+    private static final String ANSI_ERROR = Ansi.ansi().fgRed().bold().toString();
+    private static final String ANSI_WARN = Ansi.ansi().fgYellow().bold().toString();
 
     private static final boolean ENABLE_JLINE = PropertiesUtil.getProperties().getBooleanProperty("jline.enable", true);
 
