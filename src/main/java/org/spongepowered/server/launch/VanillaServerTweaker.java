@@ -36,6 +36,7 @@ import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IRemapper;
 import org.spongepowered.common.launch.SpongeLaunch;
 import org.spongepowered.server.launch.console.TerminalConsoleAppender;
@@ -150,16 +151,18 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.registerTransformer("org.spongepowered.server.launch.transformer.at.AccessTransformer");
 
         VanillaLaunch.getLogger().debug("Initializing Mixin environment...");
-        MixinEnvironment env = SpongeLaunch.setupMixinEnvironment()
-                .addConfiguration("mixins.vanilla.core.json")
-                .addConfiguration("mixins.vanilla.entityactivation.json")
-                .addConfiguration("mixins.vanilla.chunkio.json")
-                .setSide(SERVER);
+        SpongeLaunch.setupMixinEnvironment();
+
+        Mixins.addConfiguration("mixins.vanilla.core.json");
+        Mixins.addConfiguration("mixins.vanilla.entityactivation.json");
+        Mixins.addConfiguration("mixins.vanilla.chunkio.json");
+
+        MixinEnvironment.getDefaultEnvironment().setSide(SERVER);
 
         // Add our remapper to Mixin's remapper chain
         IRemapper remapper = VanillaLaunch.getRemapper();
         if (remapper != null) {
-            env.getRemappers().add(remapper);
+            MixinEnvironment.getDefaultEnvironment().getRemappers().add(remapper);
         }
 
         // Superclass transformer

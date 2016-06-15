@@ -1,8 +1,10 @@
 {
     "required": true,
-    "minVersion": "0.5.1",
+    "minVersion": "0.5.7",
     "package": "org.spongepowered.server.mixin.core",
     "refmap": "mixins.vanilla.refmap.json",
+    "target": "@env(DEFAULT)",
+    "compatibilityLevel": "JAVA_8",
     "priority": 1111,
     "server": [
         "MixinBootstrap",
@@ -14,7 +16,6 @@
         "entity.item.MixinEntityItem",
         "entity.item.MixinEntityMinecart",
         "entity.player.MixinEntityPlayer",
-        "entity.player.MixinEntityPlayerMP",
         "item.MixinItem",
         "network.MixinNetHandlerPlayServer",
         "server.MixinMinecraftServer",
