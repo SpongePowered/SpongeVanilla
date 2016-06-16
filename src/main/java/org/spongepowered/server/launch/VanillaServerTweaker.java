@@ -30,7 +30,6 @@ import static org.spongepowered.server.launch.VanillaCommandLine.ACCESS_TRANSFOR
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_CLASSPATH;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_FULL_CLASSPATH;
 
-import com.google.common.base.Throwables;
 import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
@@ -124,13 +123,18 @@ public final class VanillaServerTweaker implements ITweaker {
             scanClasspath = true;
         }
 
+        VanillaLaunch.getLogger().debug("Loading access transformers...");
         try {
             // Apply our access transformers
             AccessTransformers.register(getResource("META-INF/common_at.cfg"));
             AccessTransformers.register(getResource("META-INF/vanilla_at.cfg"));
+        } catch (IOException e) {
+            throw new LaunchException("Failed to load SpongeCommon/SpongeVanilla access transformers", e);
+        }
 
-            // Apply access transformers from command line
-            for (String at : options.valuesOf(ACCESS_TRANSFORMER)) {
+        // Apply access transformers from command line
+        for (String at : options.valuesOf(ACCESS_TRANSFORMER)) {
+            try {
                 // First check if the AT exists as file
                 Path path = Paths.get(at);
                 if (Files.isReadable(path)) {
@@ -139,16 +143,10 @@ public final class VanillaServerTweaker implements ITweaker {
                     // Try as resource in classpath instead
                     AccessTransformers.register(getResource(at));
                 }
+            } catch (IOException e) {
+                VanillaLaunch.getLogger().error("Failed to load access transformer from {}", at, e);
             }
-
-            // Search for plugins (and apply access transformers if available)
-            VanillaLaunchPluginManager.findPlugins(scanClasspath, options.has(SCAN_FULL_CLASSPATH));
-        } catch (IOException e) {
-            throw Throwables.propagate(e);
         }
-
-        VanillaLaunch.getLogger().debug("Applying access transformer...");
-        loader.registerTransformer("org.spongepowered.server.launch.transformer.at.AccessTransformer");
 
         VanillaLaunch.getLogger().debug("Initializing Mixin environment...");
         SpongeLaunch.setupMixinEnvironment();
@@ -164,6 +162,18 @@ public final class VanillaServerTweaker implements ITweaker {
         if (remapper != null) {
             MixinEnvironment.getDefaultEnvironment().getRemappers().add(remapper);
         }
+
+        VanillaLaunch.getLogger().debug("Searching for plugins...");
+
+        try {
+            // Search for plugins (and apply access transformers if available)
+            VanillaLaunchPluginManager.findPlugins(scanClasspath, options.has(SCAN_FULL_CLASSPATH));
+        } catch (IOException e) {
+            throw new LaunchException("Failed to search for plugins", e);
+        }
+
+        // Register the access transformer (at this point new access transformers can be no longer registered)
+        loader.registerTransformer("org.spongepowered.server.launch.transformer.at.AccessTransformer");
 
         // Superclass transformer
         loader.registerTransformer(SpongeLaunch.SUPERCLASS_TRANSFORMER);

@@ -58,6 +58,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -143,7 +144,7 @@ final class PluginScanner {
     void visitClasspathFile(Path path) {
         if (CLASS_FILE.matches(path)) {
             try (InputStream in = Files.newInputStream(path)) {
-                PluginCandidate candidate = scanClassFile(in, null);
+                PluginCandidate candidate = scanClassFile(in, PluginSource.CLASSPATH);
                 if (candidate != null) {
                     addCandidate(candidate);
                 }
@@ -179,6 +180,10 @@ final class PluginScanner {
         Set<String> annotationProcessors = Collections.emptySet();
         List<PluginCandidate> candidates = new ArrayList<>();
         List<PluginMetadata> metadata = null;
+        Set<String> mixinConfigs = null;
+        Set<String> mixinTokenProviders = null;
+
+        PluginSource source = new PluginSource(path);
 
         // Open the zip file so we can scan it for plugins
         try (JarInputStream jar = new JarInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
@@ -197,9 +202,15 @@ final class PluginScanner {
             }
 
             if (manifest != null) {
-                annotationProcessors = PluginAccessTransformers.find(manifest);
+                Attributes attributes = manifest.getMainAttributes();
+
+                annotationProcessors = PluginAccessTransformers.find(attributes);
+                mixinConfigs = PluginTweakers.findMixinConfigs(path, attributes);
+                if (mixinConfigs != null) {
+                    mixinTokenProviders = PluginTweakers.findTokenProviders(attributes);
+                }
             } else if (!classpath) {
-                logger.warn("Missing JAR manifest in {}", path); // TODO
+                logger.warn("Missing JAR manifest in {}", path);
             }
 
             do {
@@ -228,7 +239,7 @@ final class PluginScanner {
                     continue;
                 }
 
-                PluginCandidate candidate = scanClassFile(jar, path);
+                PluginCandidate candidate = scanClassFile(jar, source);
                 if (candidate != null) {
                     candidates.add(candidate);
                 }
@@ -267,10 +278,32 @@ final class PluginScanner {
                 }
             }
 
-            if (success && metadata == null) {
-                logger.warn("{} is missing a valid " + METADATA_FILE + " file. This is not a problem when testing plugins, however it is recommended "
-                        + "to include one in public plugins.\n"
-                        + "Please see https://docs.spongepowered.org/master/en/plugin/plugin-meta.html for details.", path);
+            if (success) {
+                if (metadata == null) {
+                    logger.warn("{} is missing a valid " + METADATA_FILE + " file."
+                            + "This is not a problem when testing plugins, however it is recommended to include one in public plugins.\n"
+                            + "Please see https://docs.spongepowered.org/master/en/plugin/plugin-meta.html for details.", path);
+                }
+
+                if (mixinConfigs != null) {
+                    logger.warn("Plugin from {} uses Mixins to modify the Minecraft Server. If something breaks, remove it before reporting the "
+                            + "problem to Sponge!", source);
+
+                    // If the plugin wants to apply Mixins we need to add it to the classpath earlier
+                    source.addToClasspath();
+
+                    for (String config : mixinConfigs) {
+                        logger.debug("Registering Mixin config '{}' from {}", config, source);
+                        PluginTweakers.registerConfig(config);
+                    }
+
+                    if (mixinTokenProviders != null) {
+                        for (String provider : mixinTokenProviders) {
+                            logger.debug("Registering Mixin token provider '{}' from {}", provider, source);
+                            PluginTweakers.registerTokenProvider(provider);
+                        }
+                    }
+                }
             }
         } else if (!classpath) {
             logger.error("No valid plugins found in {}. Is the file actually a plugin JAR? Please keep in mind Forge mods can be only loaded on "
@@ -285,26 +318,26 @@ final class PluginScanner {
 
         if (!ID_PATTERN.matcher(id).matches()) {
             logger.error("Skipping plugin with invalid plugin ID '{}' from {}. Plugin IDs should be lowercase, and only contain characters from "
-                    + "a-z, dashes, underscores or dots.", id, candidate.getDisplaySource());
+                    + "a-z, dashes, underscores or dots.", id, candidate.getSource());
             return false;
         }
 
         if (this.pluginClasses.add(pluginClass)) {
             if (this.plugins.containsKey(id)) {
-                logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getDisplaySource());
+                logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getSource());
                 return false;
             }
 
             this.plugins.put(id, candidate);
             return true;
         } else {
-            logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getDisplaySource());
+            logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getSource());
         }
 
         return false;
     }
 
-    private PluginCandidate scanClassFile(InputStream in, @Nullable Path source) throws IOException {
+    private PluginCandidate scanClassFile(InputStream in, PluginSource source) throws IOException {
         ClassReader reader = new ClassReader(in);
         PluginClassVisitor visitor = new PluginClassVisitor();
 
