@@ -62,6 +62,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.text.SpongeTexts;
+import org.spongepowered.server.chat.ChatFormatter;
 import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
 import org.spongepowered.server.network.VanillaChannelRegistrar;
 
@@ -102,6 +103,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             target = "Lnet/minecraft/server/management/PlayerList;sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
+        ChatFormatter.formatChatComponent((TextComponentTranslation) component);
         final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
         final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
