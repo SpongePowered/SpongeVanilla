@@ -46,8 +46,9 @@ public final class ChatFormatter {
     private static final String PORT = "\\d{1,5}";
     private static final String PATH = ".*?";
 
-    private static final Pattern URL_PATTERN
-            = Pattern.compile("(?:" + SCHEME + ")?(?:" + IP_ADDRESS + '|' + DOMAIN + ")(?::" + PORT + ")?" + PATH + "(?=[!?,;:\"']?(?:[§\\s]|$))");
+    private static final Pattern URL_PATTERN = Pattern.compile(
+            "(?:" + SCHEME + ")?(?:" + IP_ADDRESS + '|' + DOMAIN + ")(?::" + PORT + ")?" + PATH + "(?=[!?,;:\"']?(?:[§\\s]|$))",
+            Pattern.CASE_INSENSITIVE);
 
     private ChatFormatter() {
     }
