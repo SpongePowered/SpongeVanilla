@@ -207,13 +207,4 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     private void tickChunkLoader() {
     }
 
-    /**
-     * @author Zidane - March 13th, 2016
-     * @reason  Vanilla simply returns worldServers[0]/[1]/[2] here. We change this to ask the {@link WorldManager}.
-     */
-    @Overwrite
-    public WorldServer worldServerForDimension(int dim) {
-        return WorldManager.getWorldByDimensionId(dim).orElse(null);
-    }
-
 }
