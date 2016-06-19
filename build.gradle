@@ -30,7 +30,7 @@ apply plugin: 'net.minecraftforge.gradle.tweaker-server'
 apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 
 minecraft {
-    version = '1.9.4'
+    version = '1.10'
     tweakClass = 'org.spongepowered.server.launch.VanillaServerTweaker'
 }
 ats += 'vanilla_at.cfg'
