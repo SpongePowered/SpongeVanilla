@@ -27,9 +27,9 @@ package org.spongepowered.server.mixin.core.world;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,7 +48,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
     public BlockPos getRandomizedSpawnPoint() {
         BlockPos ret = this.worldObj.getSpawnPoint();
 
-        boolean isAdventure = this.worldObj.getWorldInfo().getGameType() == WorldSettings.GameType.ADVENTURE;
+        boolean isAdventure = this.worldObj.getWorldInfo().getGameType() == GameType.ADVENTURE;
         int spawnFuzz = ((IMixinWorldType) this.terrainType).getSpawnFuzz();
         int border = MathHelper.floor_double(this.worldObj.getWorldBorder().getClosestDistance(ret.getX(), ret.getZ()));
         if (border < spawnFuzz) {
