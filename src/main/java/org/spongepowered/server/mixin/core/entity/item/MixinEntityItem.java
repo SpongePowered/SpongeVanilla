@@ -34,8 +34,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinEntityItem {
 
     @Redirect(method = "getEntityItem",
-            at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;)V", remap = false))
-    private void onError(Logger logger, String error) {
-        return; // Suppress this silly error
+            at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
+    private void onError(Logger logger, String message, Object[] args) {
+        // Suppress this silly error
     }
+
 }
