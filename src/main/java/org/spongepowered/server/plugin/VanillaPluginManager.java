@@ -28,7 +28,6 @@ import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.inject.Singleton;
-import net.minecraft.launchwrapper.Launch;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
@@ -39,7 +38,6 @@ import org.spongepowered.server.launch.plugin.PluginCandidate;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,10 +113,10 @@ public class VanillaPluginManager implements PluginManager {
 
         for (PluginCandidate failed : failedCandidates) {
             if (failed.isInvalid()) {
-                SpongeImpl.getLogger().error("Plugin '{}' from {} cannot be loaded because it is invalid", failed.getId(), failed.getDisplaySource());
+                SpongeImpl.getLogger().error("Plugin '{}' from {} cannot be loaded because it is invalid", failed.getId(), failed.getSource());
             } else {
                 SpongeImpl.getLogger().error("Cannot load plugin '{}' from {} because it is missing the required dependencies {}",
-                        failed.getId(), failed.getDisplaySource(), PluginReporter.formatRequirements(failed.getMissingRequirements()));
+                        failed.getId(), failed.getSource(), PluginReporter.formatRequirements(failed.getMissingRequirements()));
             }
         }
 
@@ -127,15 +125,7 @@ public class VanillaPluginManager implements PluginManager {
 
     private void loadPlugin(PluginCandidate candidate) {
         final String id = candidate.getId();
-
-        if (candidate.getSource().isPresent()) {
-            try {
-                // Add JAR to classpath
-                Launch.classLoader.addURL(candidate.getSource().get().toUri().toURL());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Failed to add plugin '" + id + "' from " + candidate.getDisplaySource() + " to classpath", e);
-            }
-        }
+        candidate.getSource().addToClasspath();
 
         final PluginMetadata metadata = candidate.getMetadata();
         final String name = firstNonNull(metadata.getName(), id);
@@ -146,14 +136,14 @@ public class VanillaPluginManager implements PluginManager {
             SpongeExtension ext = metadata.getExtension("sponge");
             PluginContainer container = new VanillaPluginContainer(id, pluginClass,
                     metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getAuthors(),
-                    ext != null ? ext.getAssetDirectory() : null, candidate.getSource());
+                    ext != null ? ext.getAssetDirectory() : null, candidate.getSource().getPath());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());
 
-            SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", name, version, candidate.getDisplaySource());
+            SpongeImpl.getLogger().info("Loaded plugin: {} {} (from {})", name, version, candidate.getSource());
         } catch (Throwable e) {
-            SpongeImpl.getLogger().error("Failed to load plugin: {} {} (from {})", name, version, candidate.getDisplaySource(), e);
+            SpongeImpl.getLogger().error("Failed to load plugin: {} {} (from {})", name, version, candidate.getSource(), e);
         }
     }
 

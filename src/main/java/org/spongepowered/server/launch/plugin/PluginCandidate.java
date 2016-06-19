@@ -35,12 +35,10 @@ import org.spongepowered.plugin.meta.version.InvalidVersionSpecificationExceptio
 import org.spongepowered.plugin.meta.version.VersionRange;
 import org.spongepowered.server.launch.VanillaLaunch;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -49,7 +47,7 @@ public final class PluginCandidate {
 
     private final String id;
     private final String pluginClass;
-    private final Optional<Path> source;
+    private final PluginSource source;
 
     private PluginMetadata metadata;
 
@@ -60,9 +58,9 @@ public final class PluginCandidate {
     @Nullable private Map<String, String> versions;
     @Nullable private Map<String, String> missingRequirements;
 
-    PluginCandidate(String pluginClass, @Nullable Path source, PluginMetadata metadata) {
+    PluginCandidate(String pluginClass, PluginSource source, PluginMetadata metadata) {
         this.pluginClass = checkNotNull(pluginClass, "pluginClass");
-        this.source = Optional.ofNullable(source);
+        this.source = checkNotNull(source, "source");
         this.metadata = checkNotNull(metadata, "metadata");
         this.id = metadata.getId();
     }
@@ -75,16 +73,8 @@ public final class PluginCandidate {
         return this.pluginClass;
     }
 
-    public Optional<Path> getSource() {
+    public PluginSource getSource() {
         return this.source;
-    }
-
-    public String getDisplaySource() {
-        if (this.source.isPresent()) {
-            return this.source.get().toString();
-        }
-
-        return "unknown";
     }
 
     public PluginMetadata getMetadata() {
@@ -165,7 +155,7 @@ public final class PluginCandidate {
             final String id = dependency.getId();
             if (this.id.equals(id)) {
                 VanillaLaunch.getLogger().warn("Plugin '{}' from {} requires itself to be loaded. "
-                        + "This is redundant and can be removed from the dependencies.", this.id, getDisplaySource());
+                        + "This is redundant and can be removed from the dependencies.", this.id, this.source);
                 continue;
             }
 
@@ -198,7 +188,7 @@ public final class PluginCandidate {
             //this.invalid = true;
             VanillaLaunch.getLogger().error("Invalid dependency with load order BEFORE on plugin '{}' from {}. "
                     + "This is currently not supported for Sponge plugins! Requested dependencies: {}",
-                    this.id, getDisplaySource(), this.metadata.getLoadBefore());
+                    this.id, this.source, this.metadata.getLoadBefore());
         }
 
         return isLoadable();
@@ -210,7 +200,7 @@ public final class PluginCandidate {
             final String id = dependency.getId();
             if (this.id.equals(id)) {
                 VanillaLaunch.getLogger().error("Plugin '{}' from {} cannot have a dependency on itself. This is redundant and should be "
-                        + "removed.", this.id, getDisplaySource());
+                        + "removed.", this.id, this.source);
                 this.invalid = true;
                 continue;
             }
@@ -278,7 +268,7 @@ public final class PluginCandidate {
                 }
             } catch (InvalidVersionSpecificationException e) {
                 VanillaLaunch.getLogger().error("Failed to parse version range {} for dependency {} of plugin {} from {}: {}",
-                        version, id, this.id, getDisplaySource(), e.getMessage());
+                        version, id, this.id, this.source, e.getMessage());
                 this.invalid = true;
             }
         }
@@ -311,7 +301,7 @@ public final class PluginCandidate {
                 .omitNullValues()
                 .add("id", this.id)
                 .add("class", this.pluginClass)
-                .add("source", this.source.orElse(null));
+                .add("source", this.source);
         if (this.invalid) {
             helper.addValue("INVALID");
         } else if (this.missingRequirements != null && !this.missingRequirements.isEmpty()) {
