@@ -22,36 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch.plugin;
+package org.spongepowered.server.launch;
 
-import com.google.common.base.Splitter;
+/**
+ * Thrown when a critical exception is encountered during the launch phase.
+ */
+public class LaunchException extends RuntimeException {
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.Attributes;
-
-final class PluginAccessTransformers {
-
-    private static final String KEY = "FMLAT";
-    private static final Splitter VALUE_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
-    private static final String LOCATION = "META-INF/";
-
-    private PluginAccessTransformers() {
+    public LaunchException() {
     }
 
-    static Set<String> find(Attributes attributes) {
-        String ats = attributes.getValue(KEY);
-        if (ats == null) {
-            return Collections.emptySet();
-        }
+    public LaunchException(String message) {
+        super(message);
+    }
 
-        Set<String> result = new HashSet<>();
-        for (String at : VALUE_SPLITTER.split(ats)) {
-            result.add(LOCATION + at);
-        }
+    public LaunchException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-        return result;
+    public LaunchException(Throwable cause) {
+        super(cause);
     }
 
 }
