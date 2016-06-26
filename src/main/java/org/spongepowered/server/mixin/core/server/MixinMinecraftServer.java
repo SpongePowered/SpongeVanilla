@@ -47,6 +47,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
+import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
@@ -151,7 +152,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                     this.theProfiler.startSection("timeSync");
                     this.playerList.sendPacketToAllPlayersInDimension (
                             new SPacketTimeUpdate(worldServer.getTotalWorldTime(), worldServer.getWorldTime(),
-                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), worldServer.provider.getDimensionType().getId());
+                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), ((IMixinWorldServer) worldServer).getDimensionId());
                     this.theProfiler.endSection();
                 }
 
