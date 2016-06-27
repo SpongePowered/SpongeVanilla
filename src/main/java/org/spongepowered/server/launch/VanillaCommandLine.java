@@ -59,7 +59,7 @@ public final class VanillaCommandLine {
     public static final OptionSpec<Void> NO_REDIRECT_STDOUT = parser.accepts("no-redirect-stdout", "Don't redirect standard output to the logger");
 
     // Launchwrapper
-    public static final OptionSpec<String> TWEAK_CLASS = parser.accepts("tweakClass", "Tweak class(es) to load").withRequiredArg();
+    public static final OptionSpec<String> TWEAK_CLASS = parser.accepts("tweakClass", "Tweak classes to load").withRequiredArg();
 
     public static final OptionSpec<String> ACCESS_TRANSFORMER = parser.acceptsAll(asList("access-transformer", "at"),
             "Additional access transformer files to apply").withRequiredArg();
@@ -80,6 +80,8 @@ public final class VanillaCommandLine {
     private static Optional<OptionSet> options = Optional.empty();
 
     static {
+        // Note: This is automatically parsed by Mixin but we add it to the command-line help
+        parser.accepts("mixin", "Additional Mixin configs to load").withRequiredArg();
         parser.allowsUnrecognizedOptions();
     }
 
