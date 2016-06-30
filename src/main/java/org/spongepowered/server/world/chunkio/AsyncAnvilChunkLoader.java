@@ -109,7 +109,7 @@ public final class AsyncAnvilChunkLoader {
         //if (nbttaglist2 != null) { // Sponge: Condition is always true
             for (int k1 = 0; k1 < nbttaglist2.tagCount(); ++k1) {
                 NBTTagCompound nbttagcompound2 = nbttaglist2.getCompoundTagAt(k1);
-                TileEntity tileentity = TileEntity.create(nbttagcompound2);
+                TileEntity tileentity = TileEntity.create(worldIn, nbttagcompound2);
 
                 if (tileentity != null) {
                     chunk.addTileEntity(tileentity);
@@ -120,7 +120,7 @@ public final class AsyncAnvilChunkLoader {
         if (compound.hasKey("TileTicks", 9)) {
             NBTTagList nbttaglist3 = compound.getTagList("TileTicks", 10);
 
-            // if (nbttaglist3 != null) { // Sponge: Condition is always true
+            //if (nbttaglist3 != null) {  // Sponge: Condition is always true
                 for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
                     NBTTagCompound nbttagcompound3 = nbttaglist3.getCompoundTagAt(l1);
                     Block block;
