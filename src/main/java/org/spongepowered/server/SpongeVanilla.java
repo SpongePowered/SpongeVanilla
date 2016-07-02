@@ -163,7 +163,6 @@ public final class SpongeVanilla extends AbstractPluginContainer {
 
         // Pre-initialize registry
         this.game.getRegistry().preRegistryInit();
-        SpongeImpl.getRegistry().preInit();
         this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
         SpongeBootstrap.initializeServices();
         SpongeBootstrap.initializeCommands();
@@ -173,6 +172,7 @@ public final class SpongeVanilla extends AbstractPluginContainer {
         SpongeImpl.postState(GameConstructionEvent.class, GameState.CONSTRUCTION);
         SpongeImpl.getLogger().info("Initializing plugins...");
         SpongeImpl.postState(GamePreInitializationEvent.class, GameState.PRE_INITIALIZATION);
+        this.game.getRegistry().preInit();
 
         checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
                 .equals(SpongeEntityAICommonSuperclass.class));
