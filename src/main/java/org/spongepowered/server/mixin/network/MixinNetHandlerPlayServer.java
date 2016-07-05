@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.mixin.network;
 
-import static org.spongepowered.server.network6.VanillaChannelRegistrar.CHANNEL_SEPARATOR;
+import static org.spongepowered.server.network.VanillaChannelRegistrar.CHANNEL_SEPARATOR;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.INTERNAL_PREFIX;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.REGISTER_CHANNEL;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.UNREGISTER_CHANNEL;
