@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.mixin.network;
 
-import static org.spongepowered.server.network.VanillaChannelRegistrar.CHANNEL_SEPARATOR;
+import static org.spongepowered.server.network6.VanillaChannelRegistrar.CHANNEL_SEPARATOR;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.INTERNAL_PREFIX;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.REGISTER_CHANNEL;
 import static org.spongepowered.server.network.VanillaChannelRegistrar.UNREGISTER_CHANNEL;
@@ -126,7 +126,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
             for (String channel : CHANNEL_SPLITTER.split(channels)) {
                 if (this.registeredChannels.add(channel)) {
-                    SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(cause, channel);
+                    SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(cause, channel));
                 }
             }
         } else if (name.equals(UNREGISTER_CHANNEL)) {
