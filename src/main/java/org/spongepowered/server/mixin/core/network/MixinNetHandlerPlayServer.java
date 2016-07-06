@@ -139,23 +139,32 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         }
 
         ci.cancel();
-        if (name.equals(REGISTER_CHANNEL)) {
-            final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
-            for (String channel : CHANNEL_SPLITTER.split(channels)) {
-                if (this.registeredChannels.add(channel)) {
-                    SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(Cause.of(NamedCause.source(this)), channel, Optional.of((Player) this.playerEntity)));
+        switch (name) {
+            case REGISTER_CHANNEL: {
+                final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
+                for (String channel : CHANNEL_SPLITTER.split(channels)) {
+                    if (this.registeredChannels.add(channel)) {
+                        SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(Cause.of(NamedCause.source(this.playerEntity),
+                                NamedCause.of("connection", this)), channel));
+                    }
                 }
+                break;
             }
-        } else if (name.equals(UNREGISTER_CHANNEL)) {
-            final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
-            for (String channel : CHANNEL_SPLITTER.split(channels)) {
-                if (this.registeredChannels.remove(channel)) {
-                    SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventUnregister(Cause.of(NamedCause.source(this)), channel, Optional.of((Player) this.playerEntity)));
+            case UNREGISTER_CHANNEL: {
+                final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
+                for (String channel : CHANNEL_SPLITTER.split(channels)) {
+                    if (this.registeredChannels.remove(channel)) {
+                        SpongeImpl
+                                .postEvent(SpongeEventFactory.createChannelRegistrationEventUnregister(Cause.of(NamedCause.source(this.playerEntity),
+                                        NamedCause.of("connection", this)), channel));
+                    }
                 }
+                break;
             }
-        } else {
-            // Custom channel
-            ((VanillaChannelRegistrar) Sponge.getChannelRegistrar()).post(this, packet);
+            default:
+                // Custom channel
+                ((VanillaChannelRegistrar) Sponge.getChannelRegistrar()).post(this, packet);
+                break;
         }
     }
 
