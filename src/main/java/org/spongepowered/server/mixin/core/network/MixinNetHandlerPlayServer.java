@@ -167,5 +167,4 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
                 break;
         }
     }
-
 }
