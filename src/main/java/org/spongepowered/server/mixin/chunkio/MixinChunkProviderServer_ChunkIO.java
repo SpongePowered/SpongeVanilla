@@ -75,6 +75,8 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
                 chunk = ChunkIOExecutor.syncChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
                 timing.stopTiming();
             }
+        } else if (callback != null) {
+            callback.accept(chunk);
         }
 
         return chunk;

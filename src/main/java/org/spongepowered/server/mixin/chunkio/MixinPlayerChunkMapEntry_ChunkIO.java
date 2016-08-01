@@ -37,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.interfaces.IMixinChunk;
 import org.spongepowered.server.interfaces.world.chunkio.IMixinChunkProviderServer;
 
 import java.util.function.Consumer;
@@ -61,19 +62,16 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
             return null;
         }
 
-        Chunk chunk = ((IMixinChunkProviderServer) provider).loadChunk(x, z, this);
-        if (chunk == null) {
-            this.loading = true;
-            return null;
-        } else {
-            return chunk;
-        }
+        this.loading = true;
+        return ((IMixinChunkProviderServer) provider).loadChunk(x, z, this);
     }
 
     @Override
     public void accept(Chunk chunk) {
         this.chunk = chunk;
         this.loading = false;
+
+        ((IMixinChunk) chunk).setScheduledForUnload(null);
     }
 
     @Nullable
