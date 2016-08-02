@@ -24,15 +24,18 @@
  */
 package org.spongepowered.server.mixin.core.common;
 
-import net.minecraft.launchwrapper.Launch;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.server.launch.VanillaServerTweaker;
 
-@Mixin(SpongeImplHooks.class)
-public class MixinSpongeImplHooks {
+@Mixin(value = SpongeImplHooks.class, remap = false)
+public abstract class MixinSpongeImplHooks {
 
+    /**
+     * @author Aaron1011
+     * @reason Return true when in deobfuscated environment
+     */
     @Overwrite
     public static boolean isDeobfuscatedEnvironment() {
         return VanillaServerTweaker.isDeobfuscated();
