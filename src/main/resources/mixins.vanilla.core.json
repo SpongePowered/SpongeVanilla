@@ -9,6 +9,7 @@
     "server": [
         "MixinBootstrap",
         "block.MixinBlock",
+        "common.MixinSpongeImplHooks",
         "crash.MixinCrashReport",
         "enchantment.MixinEnchantment",
         "entity.MixinEntity",

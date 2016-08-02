@@ -52,6 +52,7 @@ import java.util.List;
 public final class VanillaServerTweaker implements ITweaker {
 
     private static final String FORGE_GRADLE_CSV_DIR = "net.minecraftforge.gradle.GradleStart.csvDir";
+    private static boolean isDeobfuscated;
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
@@ -107,11 +108,13 @@ public final class VanillaServerTweaker implements ITweaker {
         // Check if we're running in de-obfuscated environment already
         VanillaLaunch.getLogger().debug("Applying runtime de-obfuscation...");
         if (isObfuscated()) {
+            isDeobfuscated = false;
             // Enable Notch->Searge deobfuscation
             VanillaLaunch.getLogger().info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
             Launch.blackboard.put("vanilla.srg_mappings", getResource("mappings.srg"));
             loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.NotchDeobfuscationTransformer");
         } else {
+            isDeobfuscated = true;
             // Enable Searge->MCP deobfuscation (if running in ForgeGradle)
             String mcpDir = System.getProperty(FORGE_GRADLE_CSV_DIR);
             if (mcpDir != null) {
@@ -180,6 +183,10 @@ public final class VanillaServerTweaker implements ITweaker {
         SpongeLaunch.setupSuperClassTransformer();
 
         VanillaLaunch.getLogger().info("Initialization finished. Starting Minecraft server...");
+    }
+
+    public static boolean isDeobfuscated() {
+        return isDeobfuscated;
     }
 
     private static boolean isObfuscated() {

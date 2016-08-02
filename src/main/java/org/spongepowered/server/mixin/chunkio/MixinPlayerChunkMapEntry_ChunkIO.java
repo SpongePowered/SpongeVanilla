@@ -71,7 +71,7 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
         this.chunk = chunk;
         this.loading = false;
 
-        ((IMixinChunk) chunk).setScheduledForUnload(null);
+        //((IMixinChunk) chunk).setScheduledForUnload(null);
     }
 
     @Nullable
