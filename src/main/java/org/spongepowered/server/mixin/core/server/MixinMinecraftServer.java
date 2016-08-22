@@ -212,8 +212,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Redirect(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"))
     private void onFlushWorld(WorldServer world) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) world));
         world.flush();
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) world));
     }
 
     // This is used by asynchronous chunk loading to finish loading the chunks
