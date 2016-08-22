@@ -254,6 +254,26 @@ final class PluginScanner {
             logger.warn("Found non-existent access transformers in plugin manifest of {}: {}", path, annotationProcessors);
         }
 
+        if (mixinConfigs != null) {
+            logger.warn("Plugin from {} uses Mixins to modify the Minecraft Server. If something breaks, remove it before reporting the "
+                    + "problem to Sponge!", source);
+
+            // If the plugin wants to apply Mixins we need to add it to the classpath earlier
+            source.addToClasspath();
+
+            for (String config : mixinConfigs) {
+                logger.debug("Registering Mixin config '{}' from {}", config, source);
+                PluginTweakers.registerConfig(config);
+            }
+
+            if (mixinTokenProviders != null) {
+                for (String provider : mixinTokenProviders) {
+                    logger.debug("Registering Mixin token provider '{}' from {}", provider, source);
+                    PluginTweakers.registerTokenProvider(provider);
+                }
+            }
+        }
+
         if (!candidates.isEmpty()) {
             boolean success = false;
 
@@ -284,28 +304,8 @@ final class PluginScanner {
                             + "This is not a problem when testing plugins, however it is recommended to include one in public plugins.\n"
                             + "Please see https://docs.spongepowered.org/master/en/plugin/plugin-meta.html for details.", path);
                 }
-
-                if (mixinConfigs != null) {
-                    logger.warn("Plugin from {} uses Mixins to modify the Minecraft Server. If something breaks, remove it before reporting the "
-                            + "problem to Sponge!", source);
-
-                    // If the plugin wants to apply Mixins we need to add it to the classpath earlier
-                    source.addToClasspath();
-
-                    for (String config : mixinConfigs) {
-                        logger.debug("Registering Mixin config '{}' from {}", config, source);
-                        PluginTweakers.registerConfig(config);
-                    }
-
-                    if (mixinTokenProviders != null) {
-                        for (String provider : mixinTokenProviders) {
-                            logger.debug("Registering Mixin token provider '{}' from {}", provider, source);
-                            PluginTweakers.registerTokenProvider(provider);
-                        }
-                    }
-                }
             }
-        } else if (!classpath) {
+        } else if (!classpath && mixinConfigs == null) {
             logger.error("No valid plugins found in {}. Is the file actually a plugin JAR? Please keep in mind Forge mods can be only loaded on "
                     + "SpongeForge servers, SpongeVanilla supports only Sponge plugins.", path);
         }
