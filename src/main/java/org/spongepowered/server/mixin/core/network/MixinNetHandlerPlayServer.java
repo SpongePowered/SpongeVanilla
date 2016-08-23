@@ -62,7 +62,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.text.SpongeTexts;
-import org.spongepowered.server.chat.ChatFormatter;
+import org.spongepowered.common.chat.ChatFormatter;
 import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
 import org.spongepowered.server.network.VanillaChannelRegistrar;
 
