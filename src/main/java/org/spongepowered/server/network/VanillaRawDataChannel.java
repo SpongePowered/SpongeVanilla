@@ -29,9 +29,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
-import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelBuf;
@@ -39,6 +37,7 @@ import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.network.RawDataListener;
 import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
 
 import java.util.Set;
@@ -110,7 +109,7 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
         validate();
         final String name = getName();
         SPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : ((MinecraftServer) Sponge.getServer()).getPlayerList().getPlayerList()) {
+        for (EntityPlayerMP player : SpongeImpl.getServer().getPlayerList().getPlayerList()) {
             if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);

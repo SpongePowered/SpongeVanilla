@@ -24,10 +24,9 @@
  */
 package org.spongepowered.server.mixin.core.world;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldType;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.world.IMixinWorldType;
 
 @Mixin(WorldType.class)
@@ -35,7 +34,7 @@ public abstract class MixinWorldType implements IMixinWorldType {
 
     @Override
     public int getSpawnFuzz() {
-        return Math.max(5, ((MinecraftServer) Sponge.getServer()).getSpawnProtectionSize() - 6);
+        return Math.max(5, SpongeImpl.getServer().getSpawnProtectionSize() - 6);
     }
 
 }

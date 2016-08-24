@@ -208,14 +208,14 @@ public final class SpongeVanilla extends AbstractPluginContainer {
     }
 
     public void onServerAboutToStart() {
-        ((IMixinServerCommandManager) ((MinecraftServer) Sponge.getServer()).getCommandManager()).registerEarlyCommands(this.game);
+        ((IMixinServerCommandManager) SpongeImpl.getServer().getCommandManager()).registerEarlyCommands(this.game);
         SpongeImpl.postState(GameAboutToStartServerEvent.class, GameState.SERVER_ABOUT_TO_START);
     }
 
     public void onServerStarting() {
         SpongeImpl.postState(GameStartingServerEvent.class, GameState.SERVER_STARTING);
         SpongeImpl.postState(GameStartedServerEvent.class, GameState.SERVER_STARTED);
-        ((IMixinServerCommandManager) ((MinecraftServer) Sponge.getServer()).getCommandManager()).registerLowPriorityCommands(this.game);
+        ((IMixinServerCommandManager) SpongeImpl.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
         SpongePlayerDataHandler.init();
     }
 

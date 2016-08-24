@@ -32,6 +32,7 @@ import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.plugin.AbstractPluginContainer;
 
 import java.util.Optional;
@@ -54,7 +55,7 @@ public final class MinecraftPluginContainer extends AbstractPluginContainer {
 
     @Override
     public Optional<String> getVersion() {
-        return Optional.of(((MinecraftServer) Sponge.getServer()).getMinecraftVersion());
+        return Optional.of(SpongeImpl.getServer().getMinecraftVersion());
     }
 
     @Override

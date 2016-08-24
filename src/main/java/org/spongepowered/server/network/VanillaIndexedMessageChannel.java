@@ -37,9 +37,7 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
-import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelRegistrar;
@@ -47,6 +45,7 @@ import org.spongepowered.api.network.Message;
 import org.spongepowered.api.network.MessageHandler;
 import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.network.SpongeNetworkManager;
 import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
 
@@ -165,7 +164,7 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
         validate();
         final String name = getName();
         SPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : ((MinecraftServer) Sponge.getServer()).getPlayerList().getPlayerList()) {
+        for (EntityPlayerMP player : SpongeImpl.getServer().getPlayerList().getPlayerList()) {
             if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(message);
