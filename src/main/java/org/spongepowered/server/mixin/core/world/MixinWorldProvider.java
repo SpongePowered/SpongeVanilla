@@ -25,47 +25,16 @@
 package org.spongepowered.server.mixin.core.world;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldType;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.common.interfaces.world.IMixinWorldProvider;
-import org.spongepowered.common.interfaces.world.IMixinWorldType;
 
 @Mixin(WorldProvider.class)
 public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvider {
 
-    @Shadow protected World worldObj;
-    @Shadow private WorldType terrainType;
     @Shadow public abstract boolean getHasNoSky();
-
-    @Override
-    public BlockPos getRandomizedSpawnPoint() {
-        BlockPos ret = this.worldObj.getSpawnPoint();
-
-        boolean isAdventure = this.worldObj.getWorldInfo().getGameType() == GameType.ADVENTURE;
-        int spawnFuzz = ((IMixinWorldType) this.terrainType).getSpawnFuzz();
-        int border = MathHelper.floor_double(this.worldObj.getWorldBorder().getClosestDistance(ret.getX(), ret.getZ()));
-        if (border < spawnFuzz) {
-            spawnFuzz = border;
-        }
-        if (spawnFuzz < 1) {
-            spawnFuzz = 1;
-        }
-        int spawnFuzzHalf = spawnFuzz / 2;
-
-        if (!this.getHasNoSky() && !isAdventure) {
-            ret = this.worldObj.getTopSolidOrLiquidBlock(
-                    ret.add(this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz, 0, this.worldObj.rand.nextInt(spawnFuzzHalf) - spawnFuzz));
-        }
-
-        return ret;
-    }
 
     @Override
     public int getRespawnDimension(EntityPlayerMP player) {
