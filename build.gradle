@@ -50,6 +50,10 @@ configurations.compile {
     exclude module: 'asm-commons'
 }
 
+configurations.forgeGradleMcDeps {
+    transitive = false
+}
+
 dependencies {
     compile 'org.ow2.asm:asm-debug-all:5.1'
     compile 'net.sf.jopt-simple:jopt-simple:5.0.2'
