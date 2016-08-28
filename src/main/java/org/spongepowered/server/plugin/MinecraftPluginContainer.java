@@ -59,6 +59,11 @@ public final class MinecraftPluginContainer extends AbstractPluginContainer {
     }
 
     @Override
+    public Optional<String> getMinecraftVersion() {
+        return getVersion();
+    }
+
+    @Override
     public Logger getLogger() {
         return LoggerFactory.getLogger(MinecraftServer.class);
     }

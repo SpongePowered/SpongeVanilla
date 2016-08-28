@@ -29,6 +29,8 @@ package org.spongepowered.server.launch;
  */
 public class LaunchException extends RuntimeException {
 
+    private static final long serialVersionUID = 7128575121261470015L;
+
     public LaunchException() {
     }
 

@@ -244,6 +244,11 @@ public final class SpongeVanilla extends AbstractPluginContainer {
     }
 
     @Override
+    public Optional<String> getMinecraftVersion() {
+        return Optional.of(SpongeImpl.MINECRAFT_VERSION.getName());
+    }
+
+    @Override
     public Logger getLogger() {
         return SpongeImpl.getSlf4jLogger();
     }

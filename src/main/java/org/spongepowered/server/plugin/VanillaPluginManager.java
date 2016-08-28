@@ -135,8 +135,9 @@ public class VanillaPluginManager implements PluginManager {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
             SpongeExtension ext = metadata.getExtension("sponge");
             PluginContainer container = new VanillaPluginContainer(id, pluginClass,
-                    metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getAuthors(),
-                    ext != null ? ext.getAssetDirectory() : null, candidate.getSource().getPath());
+                    metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getMinecraftVersion(),
+                    ext != null ? ext.getAssetDirectory() : null, metadata.getAuthors(),
+                    candidate.getSource().getPath());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());
