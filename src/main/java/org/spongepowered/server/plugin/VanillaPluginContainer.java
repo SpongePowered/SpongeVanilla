@@ -34,7 +34,6 @@ import org.spongepowered.common.plugin.AbstractPluginContainer;
 import org.spongepowered.common.plugin.PluginContainerExtension;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +48,6 @@ final class VanillaPluginContainer extends AbstractPluginContainer implements Pl
     private final Optional<String> description;
     private final Optional<String> url;
     private final Optional<String> minecraftVersion;
-    private final Optional<Path> assets;
     private final ImmutableList<String> authors;
 
     private final Optional<Path> source;
@@ -61,8 +59,7 @@ final class VanillaPluginContainer extends AbstractPluginContainer implements Pl
 
     VanillaPluginContainer(String id, Class<?> pluginClass,
             @Nullable String name, @Nullable String version, @Nullable String description, @Nullable String url, @Nullable String minecraftVersion,
-            @Nullable String assets, List<String> authors,
-            Optional<Path> source) {
+            List<String> authors, Optional<Path> source) {
         this.id = id;
 
         this.name = Optional.ofNullable(name);
@@ -70,7 +67,6 @@ final class VanillaPluginContainer extends AbstractPluginContainer implements Pl
         this.description = Optional.ofNullable(description);
         this.url = Optional.ofNullable(url);
         this.minecraftVersion = Optional.ofNullable(minecraftVersion);
-        this.assets = assets != null ? Optional.of(Paths.get(assets)) : Optional.empty();
         this.authors = ImmutableList.copyOf(authors);
         this.source = source;
         this.logger = LoggerFactory.getLogger(this.id);
@@ -107,11 +103,6 @@ final class VanillaPluginContainer extends AbstractPluginContainer implements Pl
     @Override
     public Optional<String> getMinecraftVersion() {
         return this.minecraftVersion;
-    }
-
-    @Override
-    public Optional<Path> getAssetDirectory() {
-        return this.assets;
     }
 
     @Override

@@ -33,7 +33,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.plugin.meta.PluginMetadata;
-import org.spongepowered.plugin.meta.SpongeExtension;
 import org.spongepowered.server.launch.plugin.PluginCandidate;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
@@ -133,11 +132,9 @@ public class VanillaPluginManager implements PluginManager {
 
         try {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
-            SpongeExtension ext = metadata.getExtension("sponge");
             PluginContainer container = new VanillaPluginContainer(id, pluginClass,
                     metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getMinecraftVersion(),
-                    ext != null ? ext.getAssetDirectory() : null, metadata.getAuthors(),
-                    candidate.getSource().getPath());
+                    metadata.getAuthors(), candidate.getSource().getPath());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());
