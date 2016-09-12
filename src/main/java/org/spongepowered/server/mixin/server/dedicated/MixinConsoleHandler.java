@@ -52,6 +52,16 @@ public abstract class MixinConsoleHandler {
         final ConsoleReader reader = TerminalConsoleAppender.getReader();
 
         if (reader != null) {
+
+            // Classload this class before it is ever used, as it would otherwise be delayed until ConsoleFormatter::format is actually called.
+            // This prevents https://github.com/SpongePowered/SpongeVanilla/issues/267 by ensuring that ConsoleFormatter can't be loaded in a dumb spot
+
+            try {
+                Class.forName("org.spongepowered.server.console.ConsoleFormatter");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
             TerminalConsoleAppender.setFormatter(ConsoleFormatter::format);
             reader.addCompleter(new ConsoleCommandCompleter(this.server));
 
