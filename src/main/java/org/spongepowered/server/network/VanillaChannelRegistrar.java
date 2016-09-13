@@ -46,6 +46,7 @@ import org.spongepowered.common.network.SpongeNetworkManager;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Singleton
@@ -104,6 +105,11 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
         VanillaRawDataChannel channel = new VanillaRawDataChannel(this, name, container);
         registerChannel(channel);
         return channel;
+    }
+
+    @Override
+    public Optional<ChannelBinding> getChannel(String channel) {
+        return Optional.ofNullable(this.channels.get(channel));
     }
 
     @Override
