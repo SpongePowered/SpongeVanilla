@@ -53,17 +53,6 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
-    @Inject(method = "newExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Explosion;doExplosionA()V"),
-            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void callWorldOnExplosionEvent(Entity entityIn, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking,
-            CallbackInfoReturnable<Explosion> cir, Explosion explosion) {
-        final ExplosionEvent.Pre event = SpongeEventFactory.createExplosionEventPre(((IMixinExplosion) explosion).createCause(),
-                (org.spongepowered.api.world.explosion.Explosion) explosion, (World) this);
-        if (SpongeImpl.postEvent(event)) {
-            cir.setReturnValue(explosion);
-        }
-    }
-
     // Prevent wrong weather changes getting sent to players in other (unaffected) dimensions
     // This causes "phantom rain" on the client, sunny and rainy weather at the same time
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
