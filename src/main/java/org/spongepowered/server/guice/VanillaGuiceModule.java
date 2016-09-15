@@ -45,7 +45,6 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.asset.SpongeAssetManager;
 import org.spongepowered.common.event.SpongeEventManager;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
-import org.spongepowered.common.plugin.SpongeApiContainer;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.world.SpongeTeleportHelper;
 import org.spongepowered.server.SpongeVanilla;
@@ -53,6 +52,7 @@ import org.spongepowered.server.VanillaGame;
 import org.spongepowered.server.VanillaPlatform;
 import org.spongepowered.server.network.VanillaChannelRegistrar;
 import org.spongepowered.server.plugin.MinecraftPluginContainer;
+import org.spongepowered.server.plugin.SpongeApiContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.File;
