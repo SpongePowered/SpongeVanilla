@@ -69,48 +69,28 @@ public final class VanillaServerTweaker implements ITweaker {
     public void injectIntoClassLoader(LaunchClassLoader loader) {
         VanillaLaunch.getLogger().info("Initializing Sponge...");
 
-        // We shouldn't load these through Launchwrapper as they use native dependencies
-        loader.addClassLoaderExclusion("io.netty.");
-        loader.addClassLoaderExclusion("jline.");
-        loader.addClassLoaderExclusion("org.fusesource.");
-
-        // Sponge Launch
-        loader.addClassLoaderExclusion("joptsimple.");
-        loader.addClassLoaderExclusion("com.google.common.");
-        loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
-        loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
-        loader.addClassLoaderExclusion("org.spongepowered.plugin.");
-        // TODO: Move code referencing PluginContainer out of launch package
-        loader.addClassLoaderExclusion("org.spongepowered.api.plugin.");
-
-        // The server GUI won't work if we don't exclude this: log4j2 wants to have this in the same classloader
-        loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
-
-        // Don't allow our libraries to be transformed
-        loader.addTransformerExclusion("com.google.");
-        loader.addTransformerExclusion("org.apache.");
-        loader.addTransformerExclusion("com.flowpowered.");
-        loader.addTransformerExclusion("org.slf4j.");
-        loader.addTransformerExclusion("it.unimi.dsi.fastutil.");
-        // Guice
-        loader.addTransformerExclusion("org.aopalliance.");
-        // Configurate
-        loader.addTransformerExclusion("ninja.leaping.configurate.");
-        loader.addTransformerExclusion("com.typesafe.config.");
-        loader.addTransformerExclusion("org.yaml.snakeyaml.");
-        // Database connectors
-        loader.addTransformerExclusion("com.zaxxer.hikari.");
-        loader.addTransformerExclusion("org.h2.");
-        loader.addTransformerExclusion("org.mariadb.");
-        loader.addTransformerExclusion("org.sqlite.");
-
+        // Command line options should be always parsed at this point
         OptionSet options = VanillaCommandLine.getOptions().get();
-        boolean scanClasspath = options.has(SCAN_CLASSPATH);
 
+        configureLaunchClassLoader(loader);
+
+        // Configure class transformers
+        configureDeobfuscation(loader);
+        registerAccessTransformers(options);
+        configureMixinEnvironment();
+
+        searchPlugins(options);
+
+        // Register remaining class transformers
+        registerTransformers(loader);
+
+        VanillaLaunch.getLogger().info("Initialization finished. Starting Minecraft server...");
+    }
+
+    private static void configureDeobfuscation(LaunchClassLoader loader) {
         // Check if we're running in de-obfuscated environment already
         VanillaLaunch.getLogger().debug("Applying runtime de-obfuscation...");
-        if (isObfuscated()) {
-            isDeobfuscated = false;
+        if (detectObfuscation()) {
             // Enable Notch->Searge deobfuscation
             VanillaLaunch.getLogger().info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
             Launch.blackboard.put("vanilla.srg_mappings", getResource("mappings.srg"));
@@ -123,18 +103,17 @@ public final class VanillaServerTweaker implements ITweaker {
                 Launch.blackboard.put("vanilla.mcp_mappings", Paths.get(mcpDir));
                 loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.SeargeDeobfuscationTransformer");
             }
-
-            // Enable plugin classpath scanning in deobfuscated environment
-            scanClasspath = true;
         }
+    }
 
-        VanillaLaunch.getLogger().debug("Loading access transformers...");
+    private static void registerAccessTransformers(OptionSet options) {
+        VanillaLaunch.getLogger().debug("Registering access transformers...");
         try {
             // Apply our access transformers
             AccessTransformers.register(getResource("META-INF/common_at.cfg"));
             AccessTransformers.register(getResource("META-INF/vanilla_at.cfg"));
         } catch (IOException e) {
-            throw new LaunchException("Failed to load SpongeCommon/SpongeVanilla access transformers", e);
+            throw new LaunchException("Failed to register SpongeCommon/SpongeVanilla access transformers", e);
         }
 
         // Apply access transformers from command line
@@ -152,7 +131,9 @@ public final class VanillaServerTweaker implements ITweaker {
                 VanillaLaunch.getLogger().error("Failed to load access transformer from {}", at, e);
             }
         }
+    }
 
+    private static void configureMixinEnvironment() {
         VanillaLaunch.getLogger().debug("Initializing Mixin environment...");
         SpongeLaunch.setupMixinEnvironment();
 
@@ -167,16 +148,20 @@ public final class VanillaServerTweaker implements ITweaker {
         if (remapper != null) {
             MixinEnvironment.getDefaultEnvironment().getRemappers().add(remapper);
         }
+    }
 
+    private static void searchPlugins(OptionSet options) {
         VanillaLaunch.getLogger().debug("Searching for plugins...");
 
         try {
             // Search for plugins (and apply access transformers if available)
-            VanillaLaunchPluginManager.findPlugins(scanClasspath, options.has(SCAN_FULL_CLASSPATH));
+            VanillaLaunchPluginManager.findPlugins(isDeobfuscated || options.has(SCAN_CLASSPATH), options.has(SCAN_FULL_CLASSPATH));
         } catch (IOException e) {
             throw new LaunchException("Failed to search for plugins", e);
         }
+    }
 
+    private static void registerTransformers(LaunchClassLoader loader) {
         // Register the access transformer (at this point new access transformers can be no longer registered)
         loader.registerTransformer("org.spongepowered.server.launch.transformer.at.AccessTransformer");
 
@@ -184,20 +169,6 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.registerTransformer(SpongeLaunch.SUPERCLASS_TRANSFORMER);
         SpongeLaunch.setupSuperClassTransformer();
 
-        VanillaLaunch.getLogger().info("Initialization finished. Starting Minecraft server...");
-    }
-
-    public static boolean isDeobfuscated() {
-        return isDeobfuscated;
-    }
-
-    private static boolean isObfuscated() {
-        try {
-            // If the dedicated server class exists in the de-obfuscated name, we're likely in dev env
-            return Launch.classLoader.getClassBytes("net.minecraft.server.dedicated.DedicatedServer") == null;
-        } catch (IOException ignored) {
-            return true;
-        }
     }
 
     @Override
@@ -208,6 +179,55 @@ public final class VanillaServerTweaker implements ITweaker {
     @Override
     public String[] getLaunchArguments() {
         return new String[0];
+    }
+
+    public static boolean isDeobfuscated() {
+        return isDeobfuscated;
+    }
+
+    private static boolean detectObfuscation() {
+        try {
+            // If the dedicated server class exists in the de-obfuscated name, we're likely in dev env
+            return Launch.classLoader.getClassBytes("net.minecraft.server.dedicated.DedicatedServer") == null;
+        } catch (IOException ignored) {
+            return true;
+        }
+    }
+
+    private static void configureLaunchClassLoader(LaunchClassLoader loader) {
+        // Logging
+        loader.addClassLoaderExclusion("org.slf4j.");
+        loader.addClassLoaderExclusion("jline.");
+        loader.addClassLoaderExclusion("org.fusesource.");
+        loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
+
+        // Sponge Launch
+        loader.addClassLoaderExclusion("joptsimple.");
+        loader.addClassLoaderExclusion("com.google.common.");
+        loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
+        loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
+        loader.addClassLoaderExclusion("org.spongepowered.plugin.");
+        // TODO: Move code referencing PluginContainer out of launch package
+        loader.addClassLoaderExclusion("org.spongepowered.api.plugin.");
+
+        // Don't allow transforming libraries
+        loader.addTransformerExclusion("com.google.");
+        loader.addTransformerExclusion("org.apache.");
+        loader.addTransformerExclusion("io.netty.");
+        loader.addTransformerExclusion("com.flowpowered.");
+        loader.addTransformerExclusion("it.unimi.dsi.fastutil.");
+        loader.addTransformerExclusion("com.github.benmanes.caffeine.");
+        // Guice
+        loader.addTransformerExclusion("org.aopalliance.");
+        // Configurate
+        loader.addTransformerExclusion("ninja.leaping.configurate.");
+        loader.addTransformerExclusion("com.typesafe.config.");
+        loader.addTransformerExclusion("org.yaml.snakeyaml.");
+        // Database connectors
+        loader.addTransformerExclusion("com.zaxxer.hikari.");
+        loader.addTransformerExclusion("org.h2.");
+        loader.addTransformerExclusion("org.mariadb.");
+        loader.addTransformerExclusion("org.sqlite.");
     }
 
 }
