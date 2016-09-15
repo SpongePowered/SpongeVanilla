@@ -91,7 +91,7 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addTransformerExclusion("org.apache.");
         loader.addTransformerExclusion("com.flowpowered.");
         loader.addTransformerExclusion("org.slf4j.");
-        loader.addTransformerExclusion("gnu.trove.");
+        loader.addTransformerExclusion("it.unimi.dsi.fastutil.");
         // Guice
         loader.addTransformerExclusion("org.aopalliance.");
         // Configurate
