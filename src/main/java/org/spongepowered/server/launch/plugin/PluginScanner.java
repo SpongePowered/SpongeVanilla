@@ -316,18 +316,12 @@ final class PluginScanner {
 
     private boolean addCandidate(PluginCandidate candidate) {
         final String pluginClass = candidate.getPluginClass();
-        String id = candidate.getId();
+        final String id = candidate.getId();
 
-        // @Temporary: After version 5.x this should be removed as all plugins should have updated their ids.
+        // TODO Temporary: After version 5.x this should be removed as all plugins should have updated their ids.
         if (id.contains(".")) {
-            String[] parts = id.split("\\.");
-            String fixedId = parts[parts.length - 1];
-            logger.warn("Detected plugin with invalid plugin ID '{}' from {}. Setting ID to {}. " + ID_WARNING, id, candidate.getSource(), fixedId);
-            id = fixedId;
-            candidate.setId(id);
-        }
-
-        if (!ID_PATTERN.matcher(id).matches()) {
+            logger.warn("Detected plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getSource());
+        } else if (!ID_PATTERN.matcher(id).matches()) {
             logger.error("Skipping plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getSource());
             return false;
         }
