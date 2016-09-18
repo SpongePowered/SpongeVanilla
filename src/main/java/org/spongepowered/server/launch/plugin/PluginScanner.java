@@ -68,6 +68,9 @@ import javax.annotation.Nullable;
 
 final class PluginScanner {
 
+    private static final String ID_WARNING = "Plugin IDs should be lowercase, and only contain characters from "
+            + "a-z, dashes or underscores, start with a lowercase letter, and not exceed 64 characters.";
+
     private static final String CLASS_EXTENSION = ".class";
     private static final String JAR_EXTENSION = ".jar";
 
@@ -311,30 +314,36 @@ final class PluginScanner {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private boolean addCandidate(PluginCandidate candidate) {
         final String pluginClass = candidate.getPluginClass();
-        final String id = candidate.getId();
+        String id = candidate.getId();
+
+        // @Temporary: After version 5.x this should be removed as all plugins should have updated their ids.
+        if (id.contains(".")) {
+            String[] parts = id.split("\\.");
+            String fixedId = parts[parts.length - 1];
+            logger.warn("Detected plugin with invalid plugin ID '{}' from {}. Setting ID to {}. " + ID_WARNING, id, candidate.getSource(), fixedId);
+            id = fixedId;
+            candidate.setId(id);
+        }
 
         if (!ID_PATTERN.matcher(id).matches()) {
-            logger.error("Skipping plugin with invalid plugin ID '{}' from {}. Plugin IDs should be lowercase, and only contain characters from "
-                    + "a-z, dashes, underscores or dots.", id, candidate.getSource());
+            logger.error("Skipping plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getSource());
             return false;
         }
 
-        if (this.pluginClasses.add(pluginClass)) {
-            if (this.plugins.containsKey(id)) {
-                logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getSource());
-                return false;
-            }
-
-            this.plugins.put(id, candidate);
-            return true;
-        } else {
-            logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getSource());
+        if (this.plugins.containsKey(id)) {
+            logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getSource());
+            return false;
         }
 
-        return false;
+        if (!this.pluginClasses.add(pluginClass)) {
+            logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getSource());
+            return false;
+        }
+
+        this.plugins.put(id, candidate);
+        return true;
     }
 
     private PluginCandidate scanClassFile(InputStream in, PluginSource source) throws IOException {

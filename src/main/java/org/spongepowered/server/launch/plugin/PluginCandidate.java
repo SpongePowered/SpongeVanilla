@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
 
 public final class PluginCandidate {
 
-    private final String id;
+    private String id;
     private final String pluginClass;
     private final PluginSource source;
 
@@ -67,6 +67,10 @@ public final class PluginCandidate {
 
     public String getId() {
         return this.id;
+    }
+
+    void setId(String id) {
+        this.id = id;
     }
 
     public String getPluginClass() {
