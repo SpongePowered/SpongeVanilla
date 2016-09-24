@@ -35,6 +35,7 @@ import org.spongepowered.plugin.meta.version.InvalidVersionSpecificationExceptio
 import org.spongepowered.plugin.meta.version.VersionRange;
 import org.spongepowered.server.launch.VanillaLaunch;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,6 +56,7 @@ public final class PluginCandidate {
 
     @Nullable private Set<PluginCandidate> dependencies;
     @Nullable private Set<PluginCandidate> requirements;
+    private final Set<String> dependenciesWithUnknownVersion = new HashSet<>();
     @Nullable private Map<String, String> versions;
     @Nullable private Map<String, String> missingRequirements;
 
@@ -242,16 +244,23 @@ public final class PluginCandidate {
             return true;
         }
 
+        // Don't check version again if it already failed
+        if (expectedRange.equals(this.missingRequirements.get(id))) {
+            return false;
+        }
+
+        // Don't check version again if it was already checked
+        if (expectedRange.equals(this.versions.get(id))) {
+            return true;
+        }
+
         if (version != null) {
             try {
                 VersionRange range = VersionRange.createFromVersionSpec(expectedRange);
-                if (range.containsVersion(new DefaultArtifactVersion(version))) {
+                DefaultArtifactVersion installedVersion = new DefaultArtifactVersion(version);
+                if (range.containsVersion(installedVersion)) {
                     String currentRange = this.versions.get(id);
                     if (currentRange != null) {
-                        if (currentRange.equals(expectedRange)) {
-                            return true;
-                        }
-
                         // This should almost never happen because it means the plugin is
                         // depending on two different versions of another plugin
 
@@ -268,6 +277,22 @@ public final class PluginCandidate {
 
                     this.versions.put(id, expectedRange);
 
+                    if (range.getRecommendedVersion() instanceof DefaultArtifactVersion) {
+                        BigInteger majorExpected = ((DefaultArtifactVersion) range.getRecommendedVersion()).getVersion().getFirstInteger();
+                        if (majorExpected != null) {
+                            BigInteger majorInstalled = installedVersion.getVersion().getFirstInteger();
+
+                            // Show a warning if the major version does not match,
+                            // or if the installed version is lower than the recommended version
+                            if (majorInstalled != null
+                                    && (!majorExpected.equals(majorInstalled) || installedVersion.compareTo(range.getRecommendedVersion()) < 0)) {
+                                VanillaLaunch.getLogger().warn("Plugin {} from {} was designed for {} {}. It may not work properly.",
+                                        this.id, this.source, id, range.getRecommendedVersion());
+                            }
+                        }
+
+                    }
+
                     return true;
                 }
             } catch (InvalidVersionSpecificationException e) {
@@ -275,6 +300,12 @@ public final class PluginCandidate {
                         version, id, this.id, this.source, e.getMessage());
                 this.invalid = true;
             }
+        } else {
+            if (this.dependenciesWithUnknownVersion.add(id)) {
+                VanillaLaunch.getLogger().warn("Cannot check version of dependency {} for plugin {} from {}: Version of dependency unknown",
+                        id, this.id, this.source);
+            }
+            return true;
         }
 
         return false;
