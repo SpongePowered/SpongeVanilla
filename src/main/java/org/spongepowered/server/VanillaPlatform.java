@@ -24,7 +24,6 @@
  */
 package org.spongepowered.server;
 
-import static org.spongepowered.common.SpongeImpl.API_ID;
 import static org.spongepowered.common.SpongeImpl.ECOSYSTEM_ID;
 
 import com.google.inject.Inject;
