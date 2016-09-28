@@ -24,33 +24,30 @@
  */
 package org.spongepowered.server.mixin.core.world;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.world.Explosion;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.world.ExplosionEvent;
-import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.world.IMixinWorldInfo;
-import org.spongepowered.server.interfaces.IMixinExplosion;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer extends net.minecraft.world.World {
+public abstract class MixinWorldServer extends World {
 
     private MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
+    }
+
+    @Redirect(method = "updateWeather", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/DimensionType;getId()I"))
+    private int onGetDimensionIdForWeather(DimensionType type) {
+        return getDimensionId();
     }
 
     // Prevent wrong weather changes getting sent to players in other (unaffected) dimensions
@@ -58,7 +55,7 @@ public abstract class MixinWorldServer extends net.minecraft.world.World {
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/PlayerList;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
     private void onSendWeatherPacket(PlayerList manager, Packet<?> packet) {
-        manager.sendPacketToAllPlayersInDimension(packet, this.provider.getDimensionType().getId());
+        manager.sendPacketToAllPlayersInDimension(packet, getDimensionId());
     }
 
     public Integer getDimensionId() {
