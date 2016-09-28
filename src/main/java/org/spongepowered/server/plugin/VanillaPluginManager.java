@@ -62,6 +62,7 @@ public class VanillaPluginManager implements PluginManager {
 
     public void loadPlugins() throws IOException {
         SpongeImpl.getInternalPlugins().forEach(this::registerPlugin);
+        registerPlugin(new McpPluginContainer());
 
         Map<String, PluginCandidate> candidateMap = VanillaLaunchPluginManager.getPlugins();
 
