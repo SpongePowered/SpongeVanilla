@@ -55,10 +55,12 @@ public abstract class MixinConsoleHandler {
             TerminalConsoleAppender.setFormatter(ConsoleFormatter::format);
             reader.addCompleter(new ConsoleCommandCompleter(this.server));
 
+            reader.setPrompt("> ");
+
             String line;
             while (!this.server.isServerStopped() && this.server.isServerRunning()) {
                 try {
-                    line = reader.readLine("> ");
+                    line = reader.readLine();
                     if (line == null) {
                         break;
                     }
