@@ -35,7 +35,7 @@ import org.spongepowered.common.interfaces.block.tile.IMixinTileEntity;
 
 import javax.annotation.Nullable;
 
-@Mixin(TileEntity.class)
+@Mixin(value = TileEntity.class, priority = 999)
 public abstract class MixinTileEntity implements IMixinTileEntity {
 
     @Nullable private NBTTagCompound customTileData;
