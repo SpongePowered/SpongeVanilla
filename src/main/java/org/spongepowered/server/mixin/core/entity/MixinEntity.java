@@ -37,7 +37,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
-import org.spongepowered.common.entity.EntityDummy;
 import org.spongepowered.common.interfaces.entity.IMixinEntity;
 
 import javax.annotation.Nullable;
@@ -49,10 +48,8 @@ public abstract class MixinEntity implements IMixinEntity {
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     private void onConstructed(World world, CallbackInfo ci) {
-        if (!((Object) this instanceof EntityDummy)) {
-            SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Cause.of(NamedCause.source(world)),
-                    this, this.getType(), this.getTransform()));
-        }
+        SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Cause.of(NamedCause.source(world)),
+                this, this.getType(), this.getTransform()));
     }
 
     @Override
