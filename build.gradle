@@ -42,11 +42,6 @@ configurations {
     shadow
 }
 
-configurations.compile {
-    exclude module: 'asm'
-    exclude module: 'asm-commons'
-}
-
 configurations.forgeGradleMcDeps {
     transitive = false
 }
