@@ -61,7 +61,7 @@ public final class VanillaCommandLine {
     // Launchwrapper
     public static final OptionSpec<String> TWEAK_CLASS = parser.accepts("tweakClass", "Tweak classes to load").withRequiredArg();
 
-    public static final OptionSpec<String> ACCESS_TRANSFORMER = parser.acceptsAll(asList("access-transformer", "at"),
+    public static final OptionSpec<String> ACCESS_TRANSFORMER = parser.accepts("at",
             "Additional access transformer files to apply").withRequiredArg();
 
     public static final OptionSpec<Void> SCAN_CLASSPATH = parser.accepts("scan-classpath", "Scan class directories in classpath for plugins");
@@ -71,7 +71,7 @@ public final class VanillaCommandLine {
     // Note: --singleplayer and --demo are unsupported on SpongeVanilla (and probably have no use on the dedicated server anyway)
     public static final OptionSpec<Integer> PORT = parser.acceptsAll(asList("port", "p"), "The port to launch the server on")
             .withRequiredArg().ofType(Integer.class);
-    public static final OptionSpec<File> WORLD_DIR = parser.acceptsAll(asList("world-dir", "universe"), "The directory to store the world(s) in")
+    public static final OptionSpec<File> WORLD_DIR = parser.accepts("universe", "The directory to store the world(s) in")
             .withRequiredArg().ofType(File.class);
     public static final OptionSpec<String> WORLD_NAME = parser.acceptsAll(asList("world", "w"), "The name of the main world for the server")
             .withRequiredArg();
