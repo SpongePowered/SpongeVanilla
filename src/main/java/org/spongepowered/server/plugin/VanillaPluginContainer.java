@@ -28,6 +28,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.SpongePluginGuiceModule;
 import org.spongepowered.common.plugin.AbstractPluginContainer;
@@ -128,6 +130,12 @@ final class VanillaPluginContainer extends AbstractPluginContainer implements Pl
     @Override
     public Injector getInjector() {
         return this.injector;
+    }
+
+    // TODO: Remove when classloader mess was cleaned up
+    @Override
+    public Optional<Asset> getAsset(String name) {
+        return Sponge.getAssetManager().getAsset(this, name);
     }
 
 }
