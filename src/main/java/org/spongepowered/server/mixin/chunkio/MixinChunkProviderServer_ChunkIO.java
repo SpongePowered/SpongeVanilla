@@ -43,7 +43,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-@Mixin(ChunkProviderServer.class)
+@Mixin(value = ChunkProviderServer.class, priority = 1112)
 public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider, IMixinChunkProviderServer {
 
     @Shadow @Final private IChunkLoader chunkLoader;
@@ -64,22 +64,31 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
     public Chunk loadChunk(int x, int z, @Nullable Consumer<Chunk> callback) {
         Chunk chunk = getLoadedChunk(x, z);
 
-        if (chunk == null) {
+        if (chunk != null) {
             if (callback != null) {
-                ChunkIOExecutor.queueChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z,
-                        callback);
-                return null;
-            } else {
-                Timing timing = ((IMixinWorldServer) this.worldObj).getTimingsHandler().syncChunkLoadDataTimer;
-                timing.startTiming();
-                chunk = ChunkIOExecutor.syncChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
-                timing.stopTiming();
+                callback.accept(chunk);
             }
-        } else if (callback != null) {
-            callback.accept(chunk);
-        }
 
-        return chunk;
+            return chunk;
+        } else if (callback != null) {
+            ChunkIOExecutor.queueChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z, callback);
+            return null;
+        } else {
+            return loadChunkForce(x, z); // Load chunk synchronously
+        }
+    }
+
+    /**
+     * @author Minecrell - October 25th, 2016
+     * @reason Overwrite method in SpongeCommon to load chunks using the chunk IO executor
+     */
+    private Chunk loadChunkForce(int x, int z) {
+        Timing timing = ((IMixinWorldServer) this.worldObj).getTimingsHandler().syncChunkLoadDataTimer;
+        try {
+            return ChunkIOExecutor.syncChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
+        } finally {
+            timing.stopTiming();
+        }
     }
 
 }
