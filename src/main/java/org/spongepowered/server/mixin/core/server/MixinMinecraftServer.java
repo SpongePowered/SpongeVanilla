@@ -63,7 +63,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.FutureTask;
 
-@Mixin(MinecraftServer.class)
+// SpongeCommon injects into updateTimeLightAndEntities, so we need to apply
+// our @Overwrite *before* SpongeCommon's mixin is applied, otherwise it will fail
+@Mixin(value = MinecraftServer.class, priority = 999)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Shadow @Final private static Logger LOG;
