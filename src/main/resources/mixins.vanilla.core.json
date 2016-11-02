@@ -24,7 +24,6 @@
         "server.dedicated.MixinDedicatedServer",
         "server.management.MixinPlayerList",
         "tileentity.MixinTileEntity",
-        "world.MixinWorld",
         "world.MixinWorldProvider",
         "world.MixinWorldServer",
         "world.MixinWorldType",
