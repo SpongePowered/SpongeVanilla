@@ -67,7 +67,7 @@ public abstract class MixinEntityLivingBase extends Entity {
             at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;"))
     private void onSetActiveItemStack(EnumHand hand, CallbackInfo ci, ItemStack stack) {
         UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)),
-                stack.getMaxItemUseDuration(), stack.getMaxItemUseDuration(), ItemStackUtil.snapshotOf(stack));
+                stack.mth_000511_m(), stack.mth_000511_m(), ItemStackUtil.snapshotOf(stack));
         if (SpongeImpl.postEvent(event)) {
             ci.cancel();
         } else {

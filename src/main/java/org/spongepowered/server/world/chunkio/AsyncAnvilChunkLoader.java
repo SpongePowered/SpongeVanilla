@@ -131,7 +131,7 @@ public final class AsyncAnvilChunkLoader {
                         block = Block.getBlockById(nbttagcompound3.getInteger("i"));
                     }
 
-                    worldIn.scheduleBlockUpdate(
+                    worldIn.mth_000649_b(
                             new BlockPos(nbttagcompound3.getInteger("x"), nbttagcompound3.getInteger("y"), nbttagcompound3.getInteger("z")), block,
                             nbttagcompound3.getInteger("t"), nbttagcompound3.getInteger("p"));
                 }
