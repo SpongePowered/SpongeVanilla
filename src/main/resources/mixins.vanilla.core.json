@@ -1,5 +1,5 @@
 {
-    "required": true,
+    "required": false,
     "minVersion": "0.5.7",
     "package": "org.spongepowered.server.mixin.core",
     "refmap": "mixins.vanilla.refmap.json",
@@ -14,7 +14,6 @@
         "enchantment.MixinEnchantment",
         "entity.MixinEntity",
         "entity.MixinEntityLivingBase",
-        "entity.item.MixinEntityItem",
         "entity.item.MixinEntityMinecart",
         "entity.player.MixinEntityPlayer",
         "item.MixinItem",
