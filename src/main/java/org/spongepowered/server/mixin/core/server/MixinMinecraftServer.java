@@ -154,6 +154,14 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             long i = System.nanoTime();
 
             if (entry.getIntKey() == 0 || this.getAllowNether()) {
+
+                // Sponge start - copy from SpongeCommon MixinMinecraftServer
+                IMixinWorldServer spongeWorld = (IMixinWorldServer) worldServer;
+                if (spongeWorld.getChunkGCTickInterval() > 0) {
+                    spongeWorld.doChunkGC();
+                }
+                // Sponge end
+
                 this.theProfiler.startSection(worldServer.getWorldInfo().getWorldName());
 
                 if (this.tickCounter % 20 == 0) {
@@ -184,6 +192,13 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
                 this.theProfiler.endSection();
                 this.theProfiler.startSection("tracker");
+
+                // Sponge start - copy from SpongeCommon MixinMinecraftServer
+                if (spongeWorld.getChunkGCTickInterval() > 0) {
+                    worldServer.getChunkProvider().unloadQueuedChunks();
+                }
+                // Sponge end
+
                 worldServer.getEntityTracker().updateTrackedEntities();
                 this.theProfiler.endSection();
                 this.theProfiler.endSection();

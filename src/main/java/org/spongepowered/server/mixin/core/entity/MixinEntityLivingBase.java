@@ -63,8 +63,8 @@ public abstract class MixinEntityLivingBase extends Entity {
         super(null);
     }
 
-    @Inject(method = "setActiveHand", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;"))
+    @Inject(method = "mth_001507_c", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
+            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;")) // setActiveHand
     private void onSetActiveItemStack(EnumHand hand, CallbackInfo ci, ItemStack stack) {
         UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)),
                 stack.mth_000511_m(), stack.mth_000511_m(), ItemStackUtil.snapshotOf(stack));
@@ -75,7 +75,7 @@ public abstract class MixinEntityLivingBase extends Entity {
         }
     }
 
-    @Redirect(method = "setActiveHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxItemUseDuration()I"))
+    @Redirect(method = "mth_001507_c", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;mth_000511_m()I")) // setActiveHand
     private int getItemDuration(ItemStack stack) {
         return this.activeItemStackUseCount; // We've already set the new duration
     }
@@ -136,8 +136,8 @@ public abstract class MixinEntityLivingBase extends Entity {
         setHeldItem(hand, ItemStackUtil.fromSnapshotToNative(event.getItemStackResult().getFinal()));
     }
 
-    @Redirect(method = "stopActiveHand",at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;"
-            + "onPlayerStoppedUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/EntityLivingBase;I)V"))
+    @Redirect(method = "mth_001510_cE", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;"
+            + "onPlayerStoppedUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/EntityLivingBase;I)V")) // stopActiveHand
     private void onStopPlayerUsing(ItemStack stack, World world, EntityLivingBase self, int duration) {
         if (!SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
                 duration, duration, ItemStackUtil.snapshotOf(stack)))) {
