@@ -1,5 +1,5 @@
 {
-    "required": false,
+    "required": true,
     "minVersion": "0.5.7",
     "package": "org.spongepowered.server.mixin.core",
     "refmap": "mixins.vanilla.refmap.json",
