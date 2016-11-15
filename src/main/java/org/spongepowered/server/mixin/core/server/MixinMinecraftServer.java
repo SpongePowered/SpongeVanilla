@@ -227,9 +227,9 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         this.theProfiler.endSection();
     }
 
-    @Redirect(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;mth_001145_s()V"))
+    @Redirect(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;mth_001146_s()V"))
     private void onFlushWorld(WorldServer world) {
-        world.mth_001145_s();
+        world.mth_001146_s();
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Cause.of(NamedCause.source(this)), (World) world));
     }
 
