@@ -63,11 +63,11 @@ public abstract class MixinEntityLivingBase extends Entity {
         super(null);
     }
 
-    @Inject(method = "mth_001508_c", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;")) // setActiveHand
+    @Inject(method = "setActiveHand", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
+            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;"))
     private void onSetActiveItemStack(EnumHand hand, CallbackInfo ci, ItemStack stack) {
         UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)),
-                stack.mth_000511_m(), stack.mth_000511_m(), ItemStackUtil.snapshotOf(stack));
+                stack.getMaxItemUseDuration(), stack.getMaxItemUseDuration(), ItemStackUtil.snapshotOf(stack));
         if (SpongeImpl.postEvent(event)) {
             ci.cancel();
         } else {
@@ -75,7 +75,7 @@ public abstract class MixinEntityLivingBase extends Entity {
         }
     }
 
-    @Redirect(method = "mth_001508_c", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;mth_000511_m()I")) // setActiveHand
+    @Redirect(method = "setActiveHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxItemUseDuration()I"))
     private int getItemDuration(ItemStack stack) {
         return this.activeItemStackUseCount; // We've already set the new duration
     }

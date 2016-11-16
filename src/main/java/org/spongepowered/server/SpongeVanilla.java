@@ -139,18 +139,18 @@ public final class SpongeVanilla extends AbstractPluginContainer {
                     authenticationService, sessionService, profileRepository, profileCache);
 
             if (options.has(WORLD_NAME)) {
-                server.mth_000170_j(options.valueOf(WORLD_NAME));
+                server.setFolderName(options.valueOf(WORLD_NAME));
             }
 
             if (options.has(PORT)) {
-                server.mth_000168_b(options.valueOf(PORT));
+                server.setServerPort(options.valueOf(PORT));
             }
 
             if (options.has(BONUS_CHEST)) {
-                server.mth_000173_c(true);
+                server.canCreateBonusChest(true);
             }
 
-            server.mth_000161_F();
+            server.startServerThread();
             Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer));
         } catch (Exception e) {
             SpongeImpl.getLogger().fatal("Failed to start the Minecraft server", e);

@@ -66,7 +66,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
     private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         if (this.getFolderName() == null) {
-            this.mth_000170_j(this.settings.getStringProperty("level-name", "world"));
+            this.setFolderName(this.settings.getStringProperty("level-name", "world"));
         }
 
         SpongeVanilla.INSTANCE.initialize();
