@@ -37,7 +37,7 @@ public abstract class MixinBootstrap {
      */
     // redirectOutputToLog
     @Overwrite
-    private static void mth_001124_d() {
+    private static void redirectOutputToLog() {
         // We do that on our own
     }
 

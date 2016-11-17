@@ -85,7 +85,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
      * @reason Return the appropriate bed location for the current dimension
      */
     @Overwrite @Nullable
-    public BlockPos mth_000437_cW() { // getBedLocation
+    public BlockPos getBedLocation() { // getBedLocation
         return getBedLocation(this.dimension);
     }
 
@@ -99,7 +99,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
      * @reason Return the appropriate spawn forced flag for the current dimension
      */
     @Overwrite
-    public boolean mth_000438_cX() { // isSpawnForced
+    public boolean isSpawnForced() { // isSpawnForced
         return isSpawnForced(this.dimension);
     }
 
