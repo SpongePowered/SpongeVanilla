@@ -24,53 +24,28 @@
  */
 package org.spongepowered.server.plugin;
 
-import static org.spongepowered.common.SpongeImpl.GAME_ID;
-import static org.spongepowered.common.SpongeImpl.GAME_NAME;
-
-import com.google.inject.Singleton;
 import net.minecraft.server.MinecraftServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spongepowered.api.Sponge;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.plugin.AbstractPluginContainer;
+import org.spongepowered.plugin.meta.PluginMetadata;
+import org.spongepowered.server.SpongeVanillaLauncher;
 
-import java.util.Optional;
+import java.net.URISyntaxException;
 
-@Singleton
-public final class MinecraftPluginContainer extends AbstractPluginContainer {
+public final class MinecraftPluginContainer {
 
-    MinecraftPluginContainer() {
+    private MinecraftPluginContainer() {
     }
 
-    @Override
-    public String getId() {
-        return GAME_ID;
+    public static void register() throws URISyntaxException {
+        SpongeImpl.setMinecraftPlugin(create());
     }
 
-    @Override
-    public String getName() {
-        return GAME_NAME;
-    }
-
-    @Override
-    public Optional<String> getVersion() {
-        return Optional.of(SpongeImpl.getServer().getMinecraftVersion());
-    }
-
-    @Override
-    public Optional<String> getMinecraftVersion() {
-        return getVersion();
-    }
-
-    @Override
-    public Logger getLogger() {
-        return LoggerFactory.getLogger(MinecraftServer.class);
-    }
-
-    @Override
-    public Optional<Object> getInstance() {
-        return Optional.of(Sponge.getServer());
+    private static PluginContainer create() throws URISyntaxException {
+        MetadataContainer metadata = MetadataContainer.load("/net/minecraft");
+        PluginMetadata meta = metadata.get(SpongeImpl.GAME_ID, SpongeImpl.GAME_NAME);
+        meta.setVersion(SpongeImpl.MINECRAFT_VERSION.getName());
+        return new MetaPluginContainer(meta, SpongeVanillaLauncher.findSource(MinecraftServer.class));
     }
 
 }

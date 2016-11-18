@@ -318,10 +318,7 @@ final class PluginScanner {
         final String pluginClass = candidate.getPluginClass();
         final String id = candidate.getId();
 
-        // TODO Temporary: After version 5.x this should be removed as all plugins should have updated their ids.
-        if (id.contains(".")) {
-            logger.warn("Detected plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getSource());
-        } else if (!ID_PATTERN.matcher(id).matches()) {
+        if (!ID_PATTERN.matcher(id).matches()) {
             logger.error("Skipping plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getSource());
             return false;
         }

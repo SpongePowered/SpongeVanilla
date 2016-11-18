@@ -28,16 +28,45 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
+import org.spongepowered.asm.mixin.extensibility.IRemapper;
 import org.spongepowered.server.launch.VanillaLaunch;
 
 import javax.annotation.Nullable;
 
-abstract class DeobfuscationTransformer extends Remapper implements IClassTransformer, SrgRemapper {
+abstract class DeobfuscationTransformer extends Remapper implements IClassTransformer, IRemapper, SrgRemapper {
 
     DeobfuscationTransformer() {
         VanillaLaunch.setRemapper(this);
+    }
+
+    @Override
+    public String unmap(String typeName) {
+        return typeName;
+    }
+
+    // Copied from Remapper#mapDesc with references to 'map' replaced with 'unmap'
+    @Override
+    public String unmapDesc(String desc) {
+        Type t = Type.getType(desc);
+        switch (t.getSort()) {
+            case Type.ARRAY:
+                String s = unmapDesc(t.getElementType().getDescriptor());
+                StringBuilder sb = new StringBuilder(s.length());
+                for (int i = 0; i < t.getDimensions(); ++i) {
+                    sb.append('[');
+                }
+                sb.append(s);
+                return sb.toString();
+            case Type.OBJECT:
+                String newType = unmap(t.getInternalName());
+                if (newType != null) {
+                    return 'L' + newType + ';';
+                }
+        }
+        return desc;
     }
 
     @Override @Nullable

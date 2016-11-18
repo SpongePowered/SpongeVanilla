@@ -24,37 +24,9 @@
  */
 package org.spongepowered.server.launch.transformer.deobf;
 
-import org.objectweb.asm.Type;
-import org.spongepowered.asm.mixin.extensibility.IRemapper;
+public interface SrgRemapper {
 
-public interface SrgRemapper extends IRemapper {
-
-    @Override
-    default String unmap(String typeName) {
-        return typeName;
-    }
-
-    // Copied from Remapper#mapDesc with references to 'map' replaced with 'unmap'
-    @Override
-    default String unmapDesc(String desc) {
-        Type t = Type.getType(desc);
-        switch (t.getSort()) {
-            case Type.ARRAY:
-                String s = unmapDesc(t.getElementType().getDescriptor());
-                StringBuilder sb = new StringBuilder(s.length());
-                for (int i = 0; i < t.getDimensions(); ++i) {
-                    sb.append('[');
-                }
-                sb.append(s);
-                return sb.toString();
-            case Type.OBJECT:
-                String newType = unmap(t.getInternalName());
-                if (newType != null) {
-                    return 'L' + newType + ';';
-                }
-        }
-        return desc;
-    }
+    SrgRemapper NONE = new SrgRemapper(){};
 
     default String mapSrgField(String name) {
         return name;
