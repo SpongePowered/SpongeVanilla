@@ -26,33 +26,51 @@ package org.spongepowered.server.launch;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.server.launch.transformer.deobf.SrgRemapper;
 
-import javax.annotation.Nullable;
+import java.io.IOException;
 
 public final class VanillaLaunch {
 
     private VanillaLaunch() {
     }
 
+    public enum Environment {
+        DEVELOPMENT,
+        PRODUCTION
+    }
+
+    public static final Environment ENVIRONMENT = detectEnvironment();
     private static final Logger logger = LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME);
-    @Nullable private static SrgRemapper remapper;
+    private static SrgRemapper remapper = SrgRemapper.NONE;
 
     public static Logger getLogger() {
         return logger;
     }
 
-    @Nullable
     public static SrgRemapper getRemapper() {
         return remapper;
     }
 
     public static void setRemapper(SrgRemapper newRemapper) {
-        checkState(remapper == null, "Remapper was already set");
+        checkState(remapper == SrgRemapper.NONE, "Remapper was already set");
         VanillaLaunch.remapper = newRemapper;
+    }
+
+    private static Environment detectEnvironment() {
+        try {
+            // If the dedicated server class exists in the de-obfuscated name, we're likely in dev env
+            if (Launch.classLoader.getClassBytes("net.minecraft.server.dedicated.DedicatedServer") != null) {
+                return Environment.DEVELOPMENT;
+            }
+        } catch (IOException ignored) {
+        }
+
+        return Environment.PRODUCTION;
     }
 
 }

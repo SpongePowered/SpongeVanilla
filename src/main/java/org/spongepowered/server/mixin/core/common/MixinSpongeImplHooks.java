@@ -24,10 +24,12 @@
  */
 package org.spongepowered.server.mixin.core.common;
 
+import static org.spongepowered.server.launch.VanillaLaunch.Environment.DEVELOPMENT;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.common.SpongeImplHooks;
-import org.spongepowered.server.launch.VanillaServerTweaker;
+import org.spongepowered.server.launch.VanillaLaunch;
 
 @Mixin(value = SpongeImplHooks.class, remap = false)
 public abstract class MixinSpongeImplHooks {
@@ -38,6 +40,7 @@ public abstract class MixinSpongeImplHooks {
      */
     @Overwrite
     public static boolean isDeobfuscatedEnvironment() {
-        return VanillaServerTweaker.isDeobfuscated();
+        return VanillaLaunch.ENVIRONMENT == DEVELOPMENT;
     }
+
 }

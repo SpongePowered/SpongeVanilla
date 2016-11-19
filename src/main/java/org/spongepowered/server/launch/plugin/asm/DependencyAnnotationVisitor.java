@@ -27,14 +27,17 @@ package org.spongepowered.server.launch.plugin.asm;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.objectweb.asm.Opcodes.ASM5;
 
+import org.spongepowered.plugin.meta.PluginDependency;
 import org.spongepowered.plugin.meta.PluginMetadata;
+
+import javax.annotation.Nullable;
 
 final class DependencyAnnotationVisitor extends WarningAnnotationVisitor {
 
     private final PluginMetadata metadata;
 
-    private String id;
-    private String version;
+    @Nullable private String id;
+    @Nullable private String version;
     private boolean optional;
 
     DependencyAnnotationVisitor(String className, PluginMetadata metadata) {
@@ -67,8 +70,11 @@ final class DependencyAnnotationVisitor extends WarningAnnotationVisitor {
 
     @Override
     public void visitEnd() {
-        // TODO: Load order
-        this.metadata.loadAfter(new PluginMetadata.Dependency(this.id, this.version), !this.optional);
+        if (this.id == null) {
+            throw new IllegalArgumentException("Dependency plugin ID is required");
+        }
+
+        this.metadata.addDependency(new PluginDependency(PluginDependency.LoadOrder.BEFORE, this.id, this.version, this.optional));
     }
 
 }

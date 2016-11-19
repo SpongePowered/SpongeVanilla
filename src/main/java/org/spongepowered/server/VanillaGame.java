@@ -60,12 +60,12 @@ public final class VanillaGame extends SpongeGame {
 
     @Override
     public boolean isServerAvailable() {
-        return SpongeVanilla.isServerAvailable();
+        return true;
     }
 
     @Override
     public Server getServer() {
-        return (Server) SpongeVanilla.getServer();
+        return (Server) SpongeVanilla.SERVER;
     }
 
     @Override

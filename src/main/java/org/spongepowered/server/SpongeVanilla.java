@@ -25,23 +25,10 @@
 package org.spongepowered.server;
 
 import static com.google.common.base.Preconditions.checkState;
-import static net.minecraft.server.MinecraftServer.USER_CACHE_FILE;
-import static org.spongepowered.server.launch.VanillaCommandLine.BONUS_CHEST;
-import static org.spongepowered.server.launch.VanillaCommandLine.PORT;
-import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_DIR;
-import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_NAME;
 
 import com.google.inject.Guice;
-import com.mojang.authlib.GameProfileRepository;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import joptsimple.OptionSet;
-import net.minecraft.init.Bootstrap;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.management.PlayerProfileCache;
-import net.minecraft.util.datafix.DataFixesManager;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.spongepowered.api.GameState;
@@ -67,7 +54,6 @@ import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.network.message.SpongeMessageHandler;
-import org.spongepowered.common.plugin.AbstractPluginContainer;
 import org.spongepowered.common.registry.RegistryHelper;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
@@ -75,25 +61,23 @@ import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.common.world.storage.SpongePlayerDataHandler;
 import org.spongepowered.server.guice.VanillaGuiceModule;
-import org.spongepowered.server.launch.VanillaCommandLine;
+import org.spongepowered.server.plugin.MetaPluginContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.Proxy;
 import java.util.Optional;
-import java.util.UUID;
 
-import javax.annotation.Nullable;
-
-public final class SpongeVanilla extends AbstractPluginContainer {
+public final class SpongeVanilla extends MetaPluginContainer {
 
     public static final SpongeVanilla INSTANCE = new SpongeVanilla();
-    @Nullable private static MinecraftServer server;
+    public static final MinecraftServer SERVER = SpongeVanillaLauncher.getServer();
 
     private final SpongeGame game;
 
     private SpongeVanilla() {
+        super(SpongeVanillaLauncher.getMetadata().get(SpongeImpl.ECOSYSTEM_ID, "SpongeVanilla"),
+                SpongeVanillaLauncher.findSource(SpongeVanilla.class));
+
         // We force-load NetHandlerPlayServer here.
         // Otherwise, VanillaChannelRegistrar causes it to be loaded from
         // within the Guice injector (see VanillaGuiceModule), thus swallowing
@@ -108,54 +92,6 @@ public final class SpongeVanilla extends AbstractPluginContainer {
         this.game = SpongeImpl.getGame();
 
         RegistryHelper.setFinalStatic(Sponge.class, "game", this.game);
-    }
-
-    public static boolean isServerAvailable() {
-        return server != null;
-    }
-
-    public static MinecraftServer getServer() {
-        checkState(server != null, "Attempting to get server while it is unavailable!");
-        return server;
-    }
-
-    public static void main(String[] args) {
-        checkState(server == null, "Server was already initialized");
-        OptionSet options = VanillaCommandLine.parse(args);
-
-        // Note: This launches the server instead of MinecraftServer.main
-        // Keep command line options up-to-date with Vanilla
-        try {
-            Bootstrap.register();
-
-            File worldDir = options.has(WORLD_DIR) ? options.valueOf(WORLD_DIR) : new File(".");
-
-            YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
-            MinecraftSessionService sessionService = authenticationService.createMinecraftSessionService();
-            GameProfileRepository profileRepository = authenticationService.createProfileRepository();
-            PlayerProfileCache profileCache = new PlayerProfileCache(profileRepository, new File(worldDir, USER_CACHE_FILE.getName()));
-
-            server = new DedicatedServer(worldDir, DataFixesManager.createFixer(),
-                    authenticationService, sessionService, profileRepository, profileCache);
-
-            if (options.has(WORLD_NAME)) {
-                server.setFolderName(options.valueOf(WORLD_NAME));
-            }
-
-            if (options.has(PORT)) {
-                server.setServerPort(options.valueOf(PORT));
-            }
-
-            if (options.has(BONUS_CHEST)) {
-                server.canCreateBonusChest(true);
-            }
-
-            server.startServerThread();
-            Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer));
-        } catch (Exception e) {
-            SpongeImpl.getLogger().fatal("Failed to start the Minecraft server", e);
-            System.exit(1);
-        }
     }
 
     public void preInitialize() throws Exception {
@@ -226,26 +162,6 @@ public final class SpongeVanilla extends AbstractPluginContainer {
     public void onServerStopped() throws IOException {
         SpongeImpl.postState(GameStoppedServerEvent.class, GameState.SERVER_STOPPED);
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
-    }
-
-    @Override
-    public String getId() {
-        return SpongeImpl.ECOSYSTEM_ID;
-    }
-
-    @Override
-    public String getName() {
-        return SpongeImpl.IMPLEMENTATION_NAME.orElse("SpongeVanilla");
-    }
-
-    @Override
-    public Optional<String> getVersion() {
-        return SpongeImpl.IMPLEMENTATION_VERSION;
-    }
-
-    @Override
-    public Optional<String> getMinecraftVersion() {
-        return Optional.of(SpongeImpl.MINECRAFT_VERSION.getName());
     }
 
     @Override

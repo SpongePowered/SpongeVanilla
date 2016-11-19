@@ -29,6 +29,8 @@ import static org.spongepowered.asm.mixin.MixinEnvironment.Side.SERVER;
 import static org.spongepowered.server.launch.VanillaCommandLine.ACCESS_TRANSFORMER;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_CLASSPATH;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_FULL_CLASSPATH;
+import static org.spongepowered.server.launch.VanillaLaunch.Environment.DEVELOPMENT;
+import static org.spongepowered.server.launch.VanillaLaunch.Environment.PRODUCTION;
 
 import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.ITweaker;
@@ -41,6 +43,7 @@ import org.spongepowered.common.launch.SpongeLaunch;
 import org.spongepowered.server.launch.console.TerminalConsoleAppender;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 import org.spongepowered.server.launch.transformer.at.AccessTransformers;
+import org.spongepowered.server.launch.transformer.deobf.SrgRemapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +55,6 @@ import java.util.List;
 public final class VanillaServerTweaker implements ITweaker {
 
     private static final String FORGE_GRADLE_CSV_DIR = "net.minecraftforge.gradle.GradleStart.csvDir";
-    private static boolean isDeobfuscated;
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
@@ -90,18 +92,19 @@ public final class VanillaServerTweaker implements ITweaker {
     private static void configureDeobfuscation(LaunchClassLoader loader) {
         // Check if we're running in de-obfuscated environment already
         VanillaLaunch.getLogger().debug("Applying runtime de-obfuscation...");
-        if (detectObfuscation()) {
+        if (VanillaLaunch.ENVIRONMENT == PRODUCTION) {
             // Enable Notch->Searge deobfuscation
             VanillaLaunch.getLogger().info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
             Launch.blackboard.put("vanilla.srg_mappings", getResource("mappings.srg"));
             loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.NotchDeobfuscationTransformer");
         } else {
-            isDeobfuscated = true;
             // Enable Searge->MCP deobfuscation (if running in ForgeGradle)
             String mcpDir = System.getProperty(FORGE_GRADLE_CSV_DIR);
             if (mcpDir != null) {
                 Launch.blackboard.put("vanilla.mcp_mappings", Paths.get(mcpDir));
                 loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.SeargeDeobfuscationTransformer");
+            } else {
+                VanillaLaunch.getLogger().warn("SRG -> MCP de-obfuscation is disabled because MCP mappings cannot be found");
             }
         }
     }
@@ -144,9 +147,9 @@ public final class VanillaServerTweaker implements ITweaker {
         MixinEnvironment.getDefaultEnvironment().setSide(SERVER);
 
         // Add our remapper to Mixin's remapper chain
-        IRemapper remapper = VanillaLaunch.getRemapper();
-        if (remapper != null) {
-            MixinEnvironment.getDefaultEnvironment().getRemappers().add(remapper);
+        SrgRemapper remapper = VanillaLaunch.getRemapper();
+        if (remapper instanceof IRemapper) {
+            MixinEnvironment.getDefaultEnvironment().getRemappers().add((IRemapper) remapper);
         }
     }
 
@@ -155,7 +158,8 @@ public final class VanillaServerTweaker implements ITweaker {
 
         try {
             // Search for plugins (and apply access transformers if available)
-            VanillaLaunchPluginManager.findPlugins(isDeobfuscated || options.has(SCAN_CLASSPATH), options.has(SCAN_FULL_CLASSPATH));
+            VanillaLaunchPluginManager.findPlugins(
+                    VanillaLaunch.ENVIRONMENT == DEVELOPMENT || options.has(SCAN_CLASSPATH), options.has(SCAN_FULL_CLASSPATH));
         } catch (IOException e) {
             throw new LaunchException("Failed to search for plugins", e);
         }
@@ -173,25 +177,12 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public String getLaunchTarget() {
-        return "org.spongepowered.server.SpongeVanilla";
+        return "org.spongepowered.server.SpongeVanillaLauncher";
     }
 
     @Override
     public String[] getLaunchArguments() {
         return new String[0];
-    }
-
-    public static boolean isDeobfuscated() {
-        return isDeobfuscated;
-    }
-
-    private static boolean detectObfuscation() {
-        try {
-            // If the dedicated server class exists in the de-obfuscated name, we're likely in dev env
-            return Launch.classLoader.getClassBytes("net.minecraft.server.dedicated.DedicatedServer") == null;
-        } catch (IOException ignored) {
-            return true;
-        }
     }
 
     private static void configureLaunchClassLoader(LaunchClassLoader loader) {

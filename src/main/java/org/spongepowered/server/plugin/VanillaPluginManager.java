@@ -27,16 +27,21 @@ package org.spongepowered.server.plugin;
 import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.plugin.meta.PluginMetadata;
+import org.spongepowered.server.SpongeVanilla;
+import org.spongepowered.server.SpongeVanillaLauncher;
 import org.spongepowered.server.launch.plugin.PluginCandidate;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,15 +60,24 @@ public class VanillaPluginManager implements PluginManager {
     private final Map<String, PluginContainer> plugins = new HashMap<>();
     private final Map<Object, PluginContainer> pluginInstances = new IdentityHashMap<>();
 
+    @Inject
+    public VanillaPluginManager(SpongeVanilla impl) {
+        registerPlugin(SpongeImpl.getMinecraftPlugin());
+        registerPlugin(createMetaContainer(Platform.API_ID, SpongeImpl.API_NAME, impl.getSource()));
+        registerPlugin(impl);
+        registerPlugin(createMetaContainer("mcp", "Mod Coder Pack", impl.getSource()));
+    }
+
+    private static PluginContainer createMetaContainer(String id, String name, Optional<Path> source) {
+        return new MetaPluginContainer(SpongeVanillaLauncher.getMetadata().get(id, name), source);
+    }
+
     private void registerPlugin(PluginContainer plugin) {
         this.plugins.put(plugin.getId(), plugin);
         plugin.getInstance().ifPresent(instance -> this.pluginInstances.put(instance, plugin));
     }
 
     public void loadPlugins() throws IOException {
-        SpongeImpl.getInternalPlugins().forEach(this::registerPlugin);
-        registerPlugin(new McpPluginContainer());
-
         Map<String, PluginCandidate> candidateMap = VanillaLaunchPluginManager.getPlugins();
 
         try {
@@ -133,9 +147,7 @@ public class VanillaPluginManager implements PluginManager {
 
         try {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
-            PluginContainer container = new VanillaPluginContainer(id, pluginClass,
-                    metadata.getName(), metadata.getVersion(), metadata.getDescription(), metadata.getUrl(), metadata.getMinecraftVersion(),
-                    metadata.getAuthors(), candidate.getSource().getPath());
+            PluginContainer container = new VanillaPluginContainer(pluginClass, metadata, candidate.getSource().getPath());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());
