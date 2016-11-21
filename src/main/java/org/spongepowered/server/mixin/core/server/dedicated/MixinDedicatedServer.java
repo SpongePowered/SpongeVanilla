@@ -57,13 +57,13 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Shadow private PropertyManager settings;
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
+    @Inject(method = "init()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
     private void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
         SpongeVanilla.INSTANCE.preInitialize();
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
+    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
     private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         if (this.getFolderName() == null) {
             this.setFolderName(this.settings.getStringProperty("level-name", "world"));
@@ -77,12 +77,12 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         this.applyServerIconToResponse(statusResponse);
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = SET_PROPERTY, ordinal = 2, shift = At.Shift.AFTER))
+    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = SET_PROPERTY, ordinal = 2, shift = At.Shift.AFTER))
     private void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerAboutToStart();
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
+    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
     private void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerStarting();
     }

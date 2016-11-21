@@ -94,7 +94,7 @@ class ChunkIOProvider implements Runnable
         // Sponge: Don't call Forge event
         //MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(this.chunk, this.nbt)); // Don't call ChunkDataEvent.Load async
 
-        this.chunk.setLastSaveTime(provider.worldObj.getTotalWorldTime());
+        this.chunk.setLastSaveTime(provider.world.getTotalWorldTime());
         this.provider.chunkGenerator.recreateStructures(this.chunk, this.chunkInfo.x, this.chunkInfo.z);
 
         provider.id2ChunkMap.put(ChunkPos.asLong(this.chunkInfo.x, this.chunkInfo.z), this.chunk);

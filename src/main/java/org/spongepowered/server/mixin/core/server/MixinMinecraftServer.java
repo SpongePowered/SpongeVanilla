@@ -96,7 +96,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
      *     messages in the console
      */
     @Overwrite
-    public void addChatMessage(ITextComponent component) {
+    public void sendMessage(ITextComponent component) {
         LOG.info(SpongeTexts.toLegacy(component));
     }
 
@@ -195,11 +195,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
                 // Sponge start - copy from SpongeCommon MixinMinecraftServer
                 if (spongeWorld.getChunkGCTickInterval() > 0) {
-                    worldServer.getChunkProvider().unloadQueuedChunks();
+                    worldServer.getChunkProvider().tick();
                 }
                 // Sponge end
 
-                worldServer.getEntityTracker().updateTrackedEntities();
+                worldServer.getEntityTracker().tick();
                 this.theProfiler.endSection();
                 this.theProfiler.endSection();
             }

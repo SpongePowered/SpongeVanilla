@@ -47,7 +47,7 @@ import javax.annotation.Nullable;
 public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider, IMixinChunkProviderServer {
 
     @Shadow @Final private IChunkLoader chunkLoader;
-    @Shadow @Final public WorldServer worldObj;
+    @Shadow @Final public WorldServer world;
 
     /**
      * @author Minecrell - May 28th, 2016
@@ -71,7 +71,7 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
 
             return chunk;
         } else if (callback != null) {
-            ChunkIOExecutor.queueChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z, callback);
+            ChunkIOExecutor.queueChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z, callback);
             return null;
         } else {
             return loadChunkForce(x, z); // Load chunk synchronously
@@ -83,9 +83,9 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
      * @reason Overwrite method in SpongeCommon to load chunks using the chunk IO executor
      */
     private Chunk loadChunkForce(int x, int z) {
-        Timing timing = ((IMixinWorldServer) this.worldObj).getTimingsHandler().syncChunkLoadDataTimer;
+        Timing timing = ((IMixinWorldServer) this.world).getTimingsHandler().syncChunkLoadDataTimer;
         try {
-            return ChunkIOExecutor.syncChunkLoad(this.worldObj, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
+            return ChunkIOExecutor.syncChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
         } finally {
             timing.stopTiming();
         }

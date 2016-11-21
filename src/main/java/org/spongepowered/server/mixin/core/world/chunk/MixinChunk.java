@@ -41,30 +41,30 @@ import org.spongepowered.common.SpongeImpl;
 @Mixin(Chunk.class)
 public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
 
-    @Shadow @Final private World worldObj;
+    @Shadow @Final private World world;
     @Shadow @Final public int xPosition;
     @Shadow @Final public int zPosition;
 
     @Override
     public boolean unloadChunk() {
-        if (this.worldObj.provider.canRespawnHere()
+        if (this.world.provider.canRespawnHere()
 //                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())
-                && this.worldObj.isSpawnChunk(this.xPosition, this.zPosition)) {
+                && this.world.isSpawnChunk(this.xPosition, this.zPosition)) {
             return false;
         }
 
-        ((WorldServer) this.worldObj).getChunkProvider().unload((Chunk) (Object) this);
+        ((WorldServer) this.world).getChunkProvider().unload((Chunk) (Object) this);
         return true;
     }
 
     @Inject(method = "onChunkLoad", at = @At("RETURN"))
     private void postChunkLoad(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.worldObj)), this));
+        SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.world)), this));
     }
 
     @Inject(method = "onChunkUnload", at = @At("RETURN"))
     private void postChunkUnload(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.worldObj)), this));
+        SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.world)), this));
     }
 
 }
