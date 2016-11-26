@@ -47,7 +47,10 @@ import org.spongepowered.server.plugin.MinecraftPluginContainer;
 
 import java.io.File;
 import java.net.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
@@ -132,7 +135,7 @@ public final class SpongeVanillaLauncher {
         }
     }
 
-    public static Optional<Path> findSource(Class<?> type){
+    public static Optional<Path> findSource(Class<?> type) {
         CodeSource source = type.getProtectionDomain().getCodeSource();
         if (source == null) {
             return Optional.empty();
@@ -144,12 +147,10 @@ public final class SpongeVanillaLauncher {
         if (location.getProtocol().equals("jar")) {
             // LaunchWrapper returns the exact URL to the class, not the path to the JAR
             if (path.startsWith("file:")) {
-                // Strip scheme and path in JAR
                 int pos = path.lastIndexOf('!');
                 if (pos >= 0) {
-                    path = path.substring(5, pos);
-                } else {
-                    path = path.substring(5);
+                    // Strip path in JAR
+                    path = path.substring(0, pos);
                 }
             }
         } else if (!location.getProtocol().equals("file")) {
@@ -157,7 +158,11 @@ public final class SpongeVanillaLauncher {
         }
 
         if (path.endsWith(JAR_EXTENSION)) {
-            return Optional.of(Paths.get(path));
+            try {
+                return Optional.of(Paths.get(new URI(path)));
+            } catch (URISyntaxException e) {
+                throw new InvalidPathException(path, "Not a valid URI");
+            }
         }
 
         return Optional.empty();
