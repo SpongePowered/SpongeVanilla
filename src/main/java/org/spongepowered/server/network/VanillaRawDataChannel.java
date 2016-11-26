@@ -109,7 +109,7 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
         validate();
         final String name = getName();
         SPacketCustomPayload packet = null;
-        for (EntityPlayerMP player : SpongeImpl.getServer().getPlayerList().getPlayerList()) {
+        for (EntityPlayerMP player : SpongeImpl.getServer().getPlayerList().getPlayers()) {
             if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);

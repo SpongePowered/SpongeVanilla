@@ -22,21 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.entity.item;
+package org.spongepowered.server.launch;
 
-import net.minecraft.entity.item.EntityItem;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import net.minecraft.launchwrapper.ITweaker;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
-@Mixin(EntityItem.class)
-public abstract class MixinEntityItem {
+import java.io.File;
+import java.util.List;
 
-    @Redirect(method = "getEntityItem",
-            at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false))
-    private void onError(Logger logger, String message, Object[] args) {
-        // Suppress this silly error
+public class PlainTweaker implements ITweaker {
+
+    @Override
+    public void acceptOptions(List<String> list, File file, File file1, String s) {
+
     }
 
+    @Override
+    public void injectIntoClassLoader(LaunchClassLoader launchClassLoader) {
+
+    }
+
+    @Override
+    public String getLaunchTarget() {
+        return "net.minecraft.server.MinecraftServer";
+    }
+
+    @Override
+    public String[] getLaunchArguments() {
+        return new String[0];
+    }
 }

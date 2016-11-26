@@ -123,7 +123,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         // Do nothing
     }
 
-    @Inject(method = "processRightClickBlock", at = @At("RETURN"))
+    @Inject(method = "processTryUseItemOnBlock", at = @At("RETURN"))
     private void onProcessRightClickBlock(CallbackInfo ci) {
         if (this.forceUpdateInventorySlot) {
             Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);

@@ -136,8 +136,8 @@ public abstract class MixinEntityLivingBase extends Entity {
         setHeldItem(hand, ItemStackUtil.fromSnapshotToNative(event.getItemStackResult().getFinal()));
     }
 
-    @Redirect(method = "stopActiveHand",at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;"
-            + "onPlayerStoppedUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/EntityLivingBase;I)V"))
+    @Redirect(method = "stopActiveHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;"
+            + "onPlayerStoppedUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/EntityLivingBase;I)V")) // stopActiveHand
     private void onStopPlayerUsing(ItemStack stack, World world, EntityLivingBase self, int duration) {
         if (!SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
                 duration, duration, ItemStackUtil.snapshotOf(stack)))) {

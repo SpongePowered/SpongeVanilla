@@ -43,6 +43,8 @@ import org.spongepowered.server.SpongeVanilla;
 @Mixin(DedicatedServer.class)
 public abstract class MixinDedicatedServer extends MinecraftServer {
 
+    @Shadow public abstract String getMotd();
+
     private static final String CONSTRUCT_CONFIG_MANAGER
             = "Lnet/minecraft/server/dedicated/DedicatedPlayerList;<init>(Lnet/minecraft/server/dedicated/DedicatedServer;)V";
     private static final String SET_PROPERTY = "Lnet/minecraft/server/dedicated/PropertyManager;setProperty(Ljava/lang/String;Ljava/lang/Object;)V";
@@ -55,13 +57,13 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Shadow private PropertyManager settings;
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
+    @Inject(method = "init()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
     private void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
         SpongeVanilla.INSTANCE.preInitialize();
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
+    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
     private void onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         if (this.getFolderName() == null) {
             this.setFolderName(this.settings.getStringProperty("level-name", "world"));
@@ -69,18 +71,18 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
         SpongeVanilla.INSTANCE.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
-        statusResponse.setServerDescription(new TextComponentString(getMOTD()));
+        statusResponse.setServerDescription(new TextComponentString(this.getMotd()));
         statusResponse.setVersion(
                 new ServerStatusResponse.Version(MINECRAFT_VERSION.getName(), MINECRAFT_VERSION.getProtocol()));
         this.applyServerIconToResponse(statusResponse);
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = SET_PROPERTY, ordinal = 2, shift = At.Shift.AFTER))
+    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = SET_PROPERTY, ordinal = 2, shift = At.Shift.AFTER))
     private void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerAboutToStart();
     }
 
-    @Inject(method = "startServer()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
+    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
     private void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
         SpongeVanilla.INSTANCE.onServerStarting();
     }

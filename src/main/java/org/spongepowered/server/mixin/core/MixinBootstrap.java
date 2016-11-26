@@ -35,6 +35,7 @@ public abstract class MixinBootstrap {
      * @author Minecrell
      * @reason Remove STDOUT to logger redirection, already handled by SpongeVanilla.
      */
+    // redirectOutputToLog
     @Overwrite
     private static void redirectOutputToLog() {
         // We do that on our own

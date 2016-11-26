@@ -96,46 +96,39 @@ public final class AsyncAnvilChunkLoader {
         // Copied from AnvilChunkLoader.readChunkFromNBT, keep this up-to-date!
         NBTTagList nbttaglist1 = compound.getTagList("Entities", 10);
 
-        //if (nbttaglist1 != null) { // Sponge: Condition is always true
-            for (int j1 = 0; j1 < nbttaglist1.tagCount(); ++j1) {
-                NBTTagCompound nbttagcompound1 = nbttaglist1.getCompoundTagAt(j1);
-                readChunkEntity(nbttagcompound1, worldIn, chunk);
-                chunk.setHasEntities(true);
-            }
-        //}
+        for (int j1 = 0; j1 < nbttaglist1.tagCount(); ++j1) {
+            NBTTagCompound nbttagcompound1 = nbttaglist1.getCompoundTagAt(j1);
+            readChunkEntity(nbttagcompound1, worldIn, chunk);
+            chunk.setHasEntities(true);
+        }
 
         NBTTagList nbttaglist2 = compound.getTagList("TileEntities", 10);
 
-        //if (nbttaglist2 != null) { // Sponge: Condition is always true
-            for (int k1 = 0; k1 < nbttaglist2.tagCount(); ++k1) {
-                NBTTagCompound nbttagcompound2 = nbttaglist2.getCompoundTagAt(k1);
-                TileEntity tileentity = TileEntity.create(worldIn, nbttagcompound2);
+        for (int k1 = 0; k1 < nbttaglist2.tagCount(); ++k1) {
+            NBTTagCompound nbttagcompound2 = nbttaglist2.getCompoundTagAt(k1);
+            TileEntity tileentity = TileEntity.create(worldIn, nbttagcompound2);
 
-                if (tileentity != null) {
-                    chunk.addTileEntity(tileentity);
-                }
+            if (tileentity != null) {
+                chunk.addTileEntity(tileentity);
             }
-        //}
+        }
 
         if (compound.hasKey("TileTicks", 9)) {
             NBTTagList nbttaglist3 = compound.getTagList("TileTicks", 10);
 
-            //if (nbttaglist3 != null) {  // Sponge: Condition is always true
-                for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
-                    NBTTagCompound nbttagcompound3 = nbttaglist3.getCompoundTagAt(l1);
-                    Block block;
+            for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
+                NBTTagCompound nbttagcompound3 = nbttaglist3.getCompoundTagAt(l1);
+                Block block;
 
-                    if (nbttagcompound3.hasKey("i", 8)) {
-                        block = Block.getBlockFromName(nbttagcompound3.getString("i"));
-                    } else {
-                        block = Block.getBlockById(nbttagcompound3.getInteger("i"));
-                    }
-
-                    worldIn.scheduleBlockUpdate(
-                            new BlockPos(nbttagcompound3.getInteger("x"), nbttagcompound3.getInteger("y"), nbttagcompound3.getInteger("z")), block,
-                            nbttagcompound3.getInteger("t"), nbttagcompound3.getInteger("p"));
+                if (nbttagcompound3.hasKey("i", 8)) {
+                    block = Block.getBlockFromName(nbttagcompound3.getString("i"));
+                } else {
+                    block = Block.getBlockById(nbttagcompound3.getInteger("i"));
                 }
-            //}
+
+                worldIn.scheduleBlockUpdate(new BlockPos(nbttagcompound3.getInteger("x"), nbttagcompound3.getInteger("y"), nbttagcompound3.getInteger("z")),
+                        block, nbttagcompound3.getInteger("t"), nbttagcompound3.getInteger("p"));
+            }
         }
     }
 

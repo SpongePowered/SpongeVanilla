@@ -34,7 +34,7 @@ import org.spongepowered.common.interfaces.world.IMixinWorldProvider;
 @Mixin(WorldProvider.class)
 public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvider {
 
-    @Shadow public abstract boolean getHasNoSky();
+    @Shadow public abstract boolean hasNoSky();
 
     @Override
     public int getRespawnDimension(EntityPlayerMP player) {
@@ -43,7 +43,7 @@ public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvid
 
     @Override
     public int getHeight() {
-        return this.getHasNoSky() ? 128 : 256;
+        return this.hasNoSky() ? 128 : 256;
     }
 
     @Override
