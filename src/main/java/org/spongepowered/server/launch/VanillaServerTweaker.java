@@ -58,6 +58,9 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
+        if (gameDir == null) {
+            gameDir = new File("");
+        }
         SpongeLaunch.initPaths(gameDir);
         VanillaCommandLine.parse(args);
         TerminalConsoleAppender.initialize();
