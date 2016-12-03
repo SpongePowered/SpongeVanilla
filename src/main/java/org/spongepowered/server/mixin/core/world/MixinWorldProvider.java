@@ -24,22 +24,15 @@
  */
 package org.spongepowered.server.mixin.core.world;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldProvider;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.interfaces.world.IMixinWorldProvider;
 
 @Mixin(WorldProvider.class)
-public abstract class MixinWorldProvider implements Dimension, IMixinWorldProvider {
+public abstract class MixinWorldProvider implements Dimension {
 
     @Shadow public abstract boolean hasNoSky();
-
-    @Override
-    public int getRespawnDimension(EntityPlayerMP player) {
-        return 0;
-    }
 
     @Override
     public int getHeight() {

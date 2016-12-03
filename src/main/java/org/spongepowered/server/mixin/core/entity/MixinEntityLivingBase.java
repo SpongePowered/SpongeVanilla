@@ -59,8 +59,8 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Shadow @Nullable protected ItemStack activeItemStack;
     @Shadow protected int activeItemStackUseCount;
 
-    protected MixinEntityLivingBase() {
-        super(null);
+    protected MixinEntityLivingBase(World world) {
+        super(world);
     }
 
     @Inject(method = "setActiveHand", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,

@@ -25,6 +25,7 @@
 package org.spongepowered.server.mixin.core.server;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.network.NetworkSystem;
@@ -58,7 +59,6 @@ import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.FutureTask;
@@ -79,7 +79,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow public abstract NetworkSystem getNetworkSystem();
 
     private boolean skipServerStop;
-    private final Hashtable<Integer, long[]> worldTickTimes = new Hashtable<>();
+    private final Int2ObjectMap<long[]> worldTickTimes = new Int2ObjectOpenHashMap<>(3);
 
     /**
      * @author Minecrell
@@ -100,10 +100,6 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         LOG.info(SpongeTexts.toLegacy(component));
     }
 
-    @Override
-    public Hashtable<Integer, long[]> getWorldTickTimes() {
-        return this.worldTickTimes;
-    }
 
     @Inject(method = "stopServer()V", at = @At("HEAD"), cancellable = true)
     private void preventDoubleStop(CallbackInfo ci) {
@@ -127,6 +123,21 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         if (response.getFavicon() != null) {
             ci.cancel();
         }
+    }
+
+    @Override
+    public long[] getWorldTickTimes(int dimensionId) {
+        return worldTickTimes.get(dimensionId);
+    }
+
+    @Override
+    public void putWorldTickTimes(int dimensionId, long[] tickTimes) {
+        worldTickTimes.put(dimensionId, tickTimes);
+    }
+
+    @Override
+    public void removeWorldTickTimes(int dimensionId) {
+        worldTickTimes.remove(dimensionId);
     }
 
     /**

@@ -31,12 +31,10 @@ import static org.spongepowered.server.network.VanillaChannelRegistrar.UNREGISTE
 
 import com.google.common.base.Splitter;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Slot;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.ITextComponent;
@@ -82,12 +80,6 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     private static final Splitter CHANNEL_SPLITTER = Splitter.on(CHANNEL_SEPARATOR);
 
     private final Set<String> registeredChannels = new HashSet<>();
-    private boolean forceUpdateInventorySlot;
-
-    @Override
-    public void forceUpdateInventorySlot(boolean force) {
-        this.forceUpdateInventorySlot = force;
-    }
 
     @Override
     public boolean supportsChannel(String name) {
@@ -121,14 +113,6 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V"))
     private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
-    }
-
-    @Inject(method = "processTryUseItemOnBlock", at = @At("RETURN"))
-    private void onProcessRightClickBlock(CallbackInfo ci) {
-        if (this.forceUpdateInventorySlot) {
-            Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
-            this.sendPacket(new SPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
-        }
     }
 
     @Inject(method = "processCustomPayload", at = @At("HEAD"), cancellable = true)

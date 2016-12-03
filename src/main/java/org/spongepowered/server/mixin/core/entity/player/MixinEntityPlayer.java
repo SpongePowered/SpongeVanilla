@@ -39,14 +39,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.block.BlockSnapshot;
-import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -56,6 +53,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
+import org.spongepowered.common.interfaces.entity.IMixinEntity;
 import org.spongepowered.common.interfaces.entity.player.IMixinEntityPlayer;
 import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
 import org.spongepowered.common.util.VecHelper;
@@ -139,12 +137,11 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     }
 
     @Inject(method = "clonePlayer", at = @At("RETURN"))
-    private void onClonePlayerReturn(EntityPlayer oldPlayerMc, boolean respawnFromEnd, CallbackInfo ci) {
-        MixinEntityPlayer oldPlayer = (MixinEntityPlayer) (Object) oldPlayerMc;
-        this.spawnChunkMap = oldPlayer.spawnChunkMap;
-        this.spawnForcedSet = oldPlayer.spawnForcedSet;
+    private void onClonePlayerReturn(EntityPlayer oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
+        this.spawnChunkMap = ((MixinEntityPlayer) (Object) oldPlayer).spawnChunkMap;
+        this.spawnForcedSet = ((MixinEntityPlayer) (Object) oldPlayer).spawnForcedSet;
 
-        final NBTTagCompound old = oldPlayer.getEntityData();
+        final NBTTagCompound old = ((MixinEntityPlayer) (Object) oldPlayer).getEntityData();
         if (old.hasKey(PERSISTED_NBT_TAG)) {
             this.getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
         }
@@ -188,11 +185,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
 
     // Event injectors
-
-    private Transaction<ItemStackSnapshot> createTransaction(net.minecraft.item.ItemStack stack) {
-        ItemStackSnapshot itemSnapshot = ((ItemStack) stack).createSnapshot();
-        return new Transaction<>(itemSnapshot, itemSnapshot.copy());
-    }
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {

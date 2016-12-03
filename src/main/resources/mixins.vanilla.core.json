@@ -8,7 +8,6 @@
     "priority": 1111,
     "server": [
         "MixinBootstrap",
-        "block.MixinBlock",
         "common.MixinSpongeImplHooks",
         "crash.MixinCrashReport",
         "enchantment.MixinEnchantment",
@@ -25,7 +24,6 @@
         "tileentity.MixinTileEntity",
         "world.MixinWorldProvider",
         "world.MixinWorldServer",
-        "world.MixinWorldType",
         "world.chunk.MixinChunk",
         "world.storage.MixinSaveHandler"
     ],
