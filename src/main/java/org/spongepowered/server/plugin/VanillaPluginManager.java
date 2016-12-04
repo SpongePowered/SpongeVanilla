@@ -79,6 +79,9 @@ public class VanillaPluginManager implements PluginManager {
 
     public void loadPlugins() throws IOException {
         Map<String, PluginCandidate> candidateMap = VanillaLaunchPluginManager.getPlugins();
+        if (candidateMap.isEmpty()) {
+            return; // Nothing to do
+        }
 
         try {
             PluginSorter.sort(checkRequirements(candidateMap)).forEach(this::loadPlugin);
@@ -88,11 +91,18 @@ public class VanillaPluginManager implements PluginManager {
     }
 
     private Set<PluginCandidate> checkRequirements(Map<String, PluginCandidate> candidates) {
+        // Collect all versions of already loaded plugins
+        Map<String, String> loadedPlugins = new HashMap<>();
+        for (PluginContainer container : this.plugins.values()) {
+            loadedPlugins.put(container.getId(), container.getVersion().orElse(null));
+        }
+
+
         Set<PluginCandidate> successfulCandidates = new HashSet<>(candidates.size());
         List<PluginCandidate> failedCandidates = new ArrayList<>();
 
         for (PluginCandidate candidate : candidates.values()) {
-            if (candidate.collectDependencies(this.plugins, candidates)) {
+            if (candidate.collectDependencies(loadedPlugins, candidates)) {
                 successfulCandidates.add(candidate);
             } else {
                 failedCandidates.add(candidate);

@@ -202,8 +202,6 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.plugin.");
-        // TODO: Move code referencing PluginContainer out of launch package
-        loader.addClassLoaderExclusion("org.spongepowered.api.plugin.");
 
         // Don't allow transforming libraries
         loader.addTransformerExclusion("com.google.");

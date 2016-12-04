@@ -25,8 +25,6 @@
 package org.spongepowered.server.plugin;
 
 import com.google.inject.Injector;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.asset.Asset;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.SpongePluginGuiceModule;
 import org.spongepowered.common.plugin.PluginContainerExtension;
@@ -55,12 +53,6 @@ final class VanillaPluginContainer extends MetaPluginContainer implements Plugin
     @Override
     public Injector getInjector() {
         return this.injector;
-    }
-
-    // TODO: Remove when classloader mess was cleaned up
-    @Override
-    public Optional<Asset> getAsset(String name) {
-        return Sponge.getAssetManager().getAsset(this, name);
     }
 
 }

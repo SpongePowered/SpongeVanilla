@@ -28,7 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Objects;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.plugin.meta.PluginDependency;
 import org.spongepowered.plugin.meta.PluginMetadata;
 import org.spongepowered.plugin.meta.version.DefaultArtifactVersion;
@@ -146,7 +145,7 @@ public final class PluginCandidate {
         return this.invalid || !this.missingRequirements.isEmpty();
     }
 
-    public boolean collectDependencies(Map<String, PluginContainer> loadedPlugins, Map<String, PluginCandidate> candidates) {
+    public boolean collectDependencies(Map<String, String> loadedPlugins, Map<String, PluginCandidate> candidates) {
         checkState(this.dependencies == null, "Dependencies already collected");
 
         if (loadedPlugins.containsKey(this.id)) {
@@ -168,9 +167,8 @@ public final class PluginCandidate {
 
             final String version = dependency.getVersion();
 
-            PluginContainer loaded = loadedPlugins.get(id);
-            if (loaded != null) {
-                if (!verifyVersionRange(id, version, loaded.getVersion().orElse(null))) {
+            if (loadedPlugins.containsKey(id)) {
+                if (!verifyVersionRange(id, version, loadedPlugins.get(id))) {
                     this.missingRequirements.put(id, version);
                 }
 
@@ -205,7 +203,7 @@ public final class PluginCandidate {
     }
 
     private void collectOptionalDependencies(@Nullable Iterable<PluginDependency> dependencies,
-            Map<String, PluginContainer> loadedPlugins, Map<String, PluginCandidate> candidates) {
+            Map<String, String> loadedPlugins, Map<String, PluginCandidate> candidates) {
         if (dependencies == null) {
             return;
         }
@@ -221,9 +219,8 @@ public final class PluginCandidate {
 
             final String version = dependency.getVersion();
 
-            PluginContainer loaded = loadedPlugins.get(id);
-            if (loaded != null) {
-                if (!verifyVersionRange(id, version, loaded.getVersion().orElse(null))) {
+            if (loadedPlugins.containsKey(id)) {
+                if (!verifyVersionRange(id, version, loadedPlugins.get(id))) {
                     this.missingRequirements.put(id, version);
                 }
 
