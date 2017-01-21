@@ -47,11 +47,11 @@ configurations.forgeGradleMcDeps {
 }
 
 dependencies {
-    compile 'org.ow2.asm:asm-debug-all:5.1'
+    compile 'org.ow2.asm:asm-debug-all:5.2'
     compile 'net.sf.jopt-simple:jopt-simple:5.0.3'
-    compile 'jline:jline:2.14.2'
+    compile 'jline:jline:2.14.3'
 
-    shadow 'org.ow2.asm:asm-all:5.1'
+    shadow 'org.ow2.asm:asm-all:5.2'
 }
 
 // Set main class and classpath for Minecraft server and Launchwrapper
