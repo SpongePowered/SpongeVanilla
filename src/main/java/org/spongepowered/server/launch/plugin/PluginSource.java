@@ -24,10 +24,18 @@
  */
 package org.spongepowered.server.launch.plugin;
 
+import static org.spongepowered.server.launch.plugin.PluginScanner.JAR_EXTENSION;
+
 import net.minecraft.launchwrapper.Launch;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -92,6 +100,39 @@ public final class PluginSource {
         }
 
         return "unknown";
+    }
+
+    public static Optional<Path> find(Class<?> type) {
+        CodeSource source = type.getProtectionDomain().getCodeSource();
+        if (source == null) {
+            return Optional.empty();
+        }
+
+        URL location = source.getLocation();
+        String path = location.getPath();
+
+        if (location.getProtocol().equals("jar")) {
+            // LaunchWrapper returns the exact URL to the class, not the path to the JAR
+            if (path.startsWith("file:")) {
+                int pos = path.lastIndexOf('!');
+                if (pos >= 0) {
+                    // Strip path in JAR
+                    path = path.substring(0, pos);
+                }
+            }
+        } else if (!location.getProtocol().equals("file")) {
+            return Optional.empty();
+        }
+
+        if (path.endsWith(JAR_EXTENSION)) {
+            try {
+                return Optional.of(Paths.get(new URI(path)));
+            } catch (URISyntaxException e) {
+                throw new InvalidPathException(path, "Not a valid URI");
+            }
+        }
+
+        return Optional.empty();
     }
 
 }

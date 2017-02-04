@@ -68,6 +68,7 @@ import java.util.concurrent.FutureTask;
 @Mixin(value = MinecraftServer.class, priority = 999)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
+    @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
     @Shadow @Final private static Logger LOG;
     @Shadow @Final private List<ITickable> tickables;
     @Shadow @Final public Profiler profiler;
@@ -87,7 +88,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
      */
     @Overwrite
     public String getServerModName() {
-        return SpongeVanilla.INSTANCE.getId();
+        return spongeVanilla.getName();
     }
 
     /**
@@ -114,7 +115,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", ordinal = 0,
             shift = At.Shift.AFTER, remap = false))
     private void callServerStopping(CallbackInfo ci) {
-        SpongeVanilla.INSTANCE.onServerStopping();
+        spongeVanilla.onServerStopping();
     }
 
     @Inject(method = "applyServerIconToResponse", at = @At("HEAD"), cancellable = true)

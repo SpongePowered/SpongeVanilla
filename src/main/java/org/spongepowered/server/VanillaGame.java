@@ -27,14 +27,15 @@ package org.spongepowered.server;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.asset.AssetManager;
+import org.spongepowered.api.command.CommandManager;
 import org.spongepowered.api.event.EventManager;
 import org.spongepowered.api.network.ChannelRegistrar;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
@@ -46,11 +47,14 @@ import java.nio.file.Path;
 @Singleton
 public final class VanillaGame extends SpongeGame {
 
+    private final Server server;
+
     @Inject
     public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager,
             AssetManager assetManager, ServiceManager serviceManager, TeleportHelper teleportHelper, ChannelRegistrar channelRegistrar,
-            Logger logger, SpongeGameRegistry gameRegistry) {
-        super(platform, pluginManager, eventManager, assetManager, serviceManager, teleportHelper, channelRegistrar, logger, gameRegistry);
+            SpongeGameRegistry gameRegistry, Scheduler scheduler, CommandManager commandManager, Server server) {
+        super(platform, pluginManager, eventManager, assetManager, serviceManager, teleportHelper, channelRegistrar, gameRegistry, scheduler, commandManager);
+        this.server = server;
     }
 
     @Override
@@ -65,7 +69,7 @@ public final class VanillaGame extends SpongeGame {
 
     @Override
     public Server getServer() {
-        return (Server) SpongeVanilla.SERVER;
+        return this.server;
     }
 
     @Override

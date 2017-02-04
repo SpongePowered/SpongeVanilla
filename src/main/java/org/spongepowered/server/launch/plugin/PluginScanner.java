@@ -72,7 +72,7 @@ final class PluginScanner {
             + "a-z, dashes or underscores, start with a lowercase letter, and not exceed 64 characters.";
 
     private static final String CLASS_EXTENSION = ".class";
-    private static final String JAR_EXTENSION = ".jar";
+    static final String JAR_EXTENSION = ".jar";
 
     private static final PathMatcher CLASS_FILE = path -> path.toString().endsWith(CLASS_EXTENSION);
     private static final PathMatcher JAR_FILE = path -> path.toString().endsWith(JAR_EXTENSION);

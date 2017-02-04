@@ -28,24 +28,22 @@ import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.plugin.meta.PluginMetadata;
-import org.spongepowered.server.SpongeVanillaLauncher;
-
-import java.net.URISyntaxException;
+import org.spongepowered.server.launch.plugin.PluginSource;
 
 public final class MinecraftPluginContainer {
 
     private MinecraftPluginContainer() {
     }
 
-    public static void register() throws URISyntaxException {
+    public static void register() {
         SpongeImpl.setMinecraftPlugin(create());
     }
 
-    private static PluginContainer create() throws URISyntaxException {
+    private static PluginContainer create() {
         MetadataContainer metadata = MetadataContainer.load("/net/minecraft");
         PluginMetadata meta = metadata.get(SpongeImpl.GAME_ID, SpongeImpl.GAME_NAME);
         meta.setVersion(SpongeImpl.MINECRAFT_VERSION.getName());
-        return new MetaPluginContainer(meta, SpongeVanillaLauncher.findSource(MinecraftServer.class));
+        return new MetaPluginContainer(meta, PluginSource.find(MinecraftServer.class));
     }
 
 }

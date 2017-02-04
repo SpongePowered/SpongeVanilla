@@ -25,95 +25,103 @@
 package org.spongepowered.server;
 
 import static com.google.common.base.Preconditions.checkState;
+import static net.minecraft.server.MinecraftServer.USER_CACHE_FILE;
+import static org.spongepowered.server.launch.VanillaCommandLine.BONUS_CHEST;
+import static org.spongepowered.server.launch.VanillaCommandLine.PORT;
+import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_DIR;
+import static org.spongepowered.server.launch.VanillaCommandLine.WORLD_NAME;
+import static org.spongepowered.server.launch.VanillaLaunch.Environment.DEVELOPMENT;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.Stage;
+import com.mojang.authlib.GameProfileRepository;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import joptsimple.OptionSet;
+import net.minecraft.init.Bootstrap;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.server.MinecraftServer;
-import org.apache.logging.log4j.LogManager;
-import org.slf4j.Logger;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.management.PlayerProfileCache;
+import net.minecraft.util.datafix.DataFixesManager;
+import org.apache.logging.log4j.Logger;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.GameState;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent;
-import org.spongepowered.api.event.game.state.GameConstructionEvent;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
-import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.SpongeBootstrap;
-import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
+import org.spongepowered.common.inject.SpongeGuice;
+import org.spongepowered.common.inject.SpongeModule;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.network.message.SpongeMessageHandler;
-import org.spongepowered.common.registry.RegistryHelper;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
 import org.spongepowered.common.util.SpongeHooks;
 import org.spongepowered.common.world.storage.SpongePlayerDataHandler;
-import org.spongepowered.server.guice.VanillaGuiceModule;
+import org.spongepowered.server.inject.SpongeVanillaModule;
+import org.spongepowered.server.launch.VanillaCommandLine;
+import org.spongepowered.server.launch.VanillaLaunch;
+import org.spongepowered.server.launch.plugin.PluginSource;
 import org.spongepowered.server.plugin.MetaPluginContainer;
+import org.spongepowered.server.plugin.MetadataContainer;
+import org.spongepowered.server.plugin.MinecraftPluginContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.Optional;
+import java.util.UUID;
 
+@Singleton
 public final class SpongeVanilla extends MetaPluginContainer {
 
-    public static final SpongeVanilla INSTANCE = new SpongeVanilla();
-    public static final MinecraftServer SERVER = SpongeVanillaLauncher.getServer();
+    private final Logger logger;
 
-    private final SpongeGame game;
+    private Game game;
     private Cause gameCause;
+    private SpongeGameRegistry registry;
 
-    private SpongeVanilla() {
-        super(SpongeVanillaLauncher.getMetadata().get(SpongeImpl.ECOSYSTEM_ID, "SpongeVanilla"),
-                SpongeVanillaLauncher.findSource(SpongeVanilla.class));
+    @Inject
+    public SpongeVanilla(MetadataContainer metadata, Logger logger) {
+        super(metadata.get(SpongeImpl.ECOSYSTEM_ID, "SpongeVanilla"), PluginSource.find(SpongeVanilla.class));
+        this.logger = logger;
+        this.logger.info("This server is running {} version {}", getName(), getVersion().orElse("unknown"));
+    }
 
-        // We force-load NetHandlerPlayServer here.
-        // Otherwise, VanillaChannelRegistrar causes it to be loaded from
-        // within the Guice injector (see VanillaGuiceModule), thus swallowing
-        // any Mixin exception that occurs.
-        //
-        // See https://github.com/SpongePowered/SpongeVanilla/issues/235 for a more
-        // in-depth explanation
-        NetHandlerPlayServer.class.getName();
-
-        Guice.createInjector(new VanillaGuiceModule(this, LogManager.getLogger(SpongeImpl.ECOSYSTEM_NAME))).getInstance(SpongeImpl.class);
-
-        this.game = SpongeImpl.getGame();
-
-        RegistryHelper.setFinalStatic(Sponge.class, "game", this.game);
-
-        this.gameCause = Cause.source(this.game).build();
+    @Inject
+    public void initializeGame(Game game, SpongeGameRegistry registry) {
+        this.game = game;
+        this.gameCause = Cause.of(NamedCause.source(game));
+        this.registry = registry;
     }
 
     public void preInitialize() throws Exception {
-        SpongeImpl.getLogger().info("Loading Sponge...");
+        this.logger.info("Loading Sponge...");
 
         // Pre-initialize registry
-        this.game.getRegistry().preRegistryInit();
+        this.registry.preRegistryInit();
         this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
         SpongeBootstrap.initializeServices();
         SpongeBootstrap.initializeCommands();
 
-        SpongeImpl.getLogger().info("Loading plugins...");
+        this.logger.info("Loading plugins...");
         ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
         SpongeImpl.postState(GameState.CONSTRUCTION, SpongeEventFactory.createGameConstructionEvent(this.gameCause));
-        SpongeImpl.getLogger().info("Initializing plugins...");
+        this.logger.info("Initializing plugins...");
         SpongeImpl.postState(GameState.PRE_INITIALIZATION, SpongeEventFactory.createGamePreInitializationEvent(this.gameCause));
-        this.game.getRegistry().preInit();
+        this.registry.preInit();
 
         checkState(Class.forName("org.spongepowered.api.entity.ai.task.AbstractAITask").getSuperclass()
                 .equals(SpongeEntityAICommonSuperclass.class));
@@ -127,7 +135,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
     }
 
     public void initialize() {
-        SpongeImpl.getRegistry().init();
+        this.registry.init();
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             SpongePermissionService service = new SpongePermissionService(this.game);
@@ -139,11 +147,11 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
         SpongeImpl.postState(GameState.INITIALIZATION, SpongeEventFactory.createGameInitializationEvent(this.gameCause));
 
-        SpongeImpl.getRegistry().postInit();
+        this.registry.postInit();
 
         SpongeImpl.postState(GameState.POST_INITIALIZATION, SpongeEventFactory.createGamePostInitializationEvent(this.gameCause));
 
-        SpongeImpl.getLogger().info("Successfully loaded and initialized plugins.");
+        this.logger.info("Successfully loaded and initialized plugins.");
 
         SpongeImpl.postState(GameState.LOAD_COMPLETE, SpongeEventFactory.createGameLoadCompleteEvent(this.gameCause));
     }
@@ -170,13 +178,70 @@ public final class SpongeVanilla extends MetaPluginContainer {
     }
 
     @Override
-    public Logger getLogger() {
-        return SpongeImpl.getSlf4jLogger();
+    public Optional<?> getInstance() {
+        return Optional.of(this);
     }
 
-    @Override
-    public Optional<Object> getInstance() {
-        return Optional.of(this);
+    private static void start(String[] args) {
+        // Attempt to load metadata
+        MetadataContainer metadata = MetadataContainer.load();
+
+        // Register Minecraft plugin container
+        MinecraftPluginContainer.register();
+
+        OptionSet options = VanillaCommandLine.parse(args);
+
+        // Note: This launches the server instead of MinecraftServer.main
+        // Keep command line options up-to-date with Vanilla
+
+        Bootstrap.register();
+
+        File worldDir = options.has(WORLD_DIR) ? options.valueOf(WORLD_DIR) : new File(".");
+
+        YggdrasilAuthenticationService authenticationService = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
+        MinecraftSessionService sessionService = authenticationService.createMinecraftSessionService();
+        GameProfileRepository profileRepository = authenticationService.createProfileRepository();
+        PlayerProfileCache profileCache = new PlayerProfileCache(profileRepository, new File(worldDir, USER_CACHE_FILE.getName()));
+
+        DedicatedServer server = new DedicatedServer(worldDir, DataFixesManager.createFixer(),
+                authenticationService, sessionService, profileRepository, profileCache);
+
+        // We force-load NetHandlerPlayServer here.
+        // Otherwise, VanillaChannelRegistrar causes it to be loaded from
+        // within the Guice injector (see SpongeVanillaModule), thus swallowing
+        // any Mixin exception that occurs.
+        //
+        // See https://github.com/SpongePowered/SpongeVanilla/issues/235 for a more
+        // in-depth explanation
+        NetHandlerPlayServer.class.getName();
+
+        final Stage stage = SpongeGuice.getInjectorStage(VanillaLaunch.ENVIRONMENT == DEVELOPMENT ? Stage.DEVELOPMENT : Stage.PRODUCTION);
+        SpongeImpl.getLogger().debug("Creating injector in stage '{}'", stage);
+        Guice.createInjector(stage, new SpongeModule(), new SpongeVanillaModule(server, metadata));
+
+        if (options.has(WORLD_NAME)) {
+            server.setFolderName(options.valueOf(WORLD_NAME));
+        }
+
+        if (options.has(PORT)) {
+            server.setServerPort(options.valueOf(PORT));
+        }
+
+        if (options.has(BONUS_CHEST)) {
+            server.canCreateBonusChest(true);
+        }
+
+        server.startServerThread();
+        Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer));
+    }
+
+    public static void main(String[] args) {
+        try {
+            start(args);
+        } catch (Exception e) {
+            SpongeImpl.getLogger().fatal("Failed to start the Minecraft server", e);
+            System.exit(1);
+        }
     }
 
 }

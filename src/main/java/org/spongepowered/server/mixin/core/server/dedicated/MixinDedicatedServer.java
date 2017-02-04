@@ -43,6 +43,8 @@ import org.spongepowered.server.SpongeVanilla;
 @Mixin(DedicatedServer.class)
 public abstract class MixinDedicatedServer extends MinecraftServer {
 
+    @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
+    @com.google.inject.Inject private static SpongeScheduler scheduler;
     @Shadow public abstract String getMotd();
 
     private static final String CONSTRUCT_CONFIG_MANAGER
@@ -60,7 +62,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
     @Inject(method = "init()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
             args = "ldc=Loading properties", remap = false))
     private void onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
-        SpongeVanilla.INSTANCE.preInitialize();
+        spongeVanilla.preInitialize();
     }
 
     @Inject(method = "init()Z", at = @At(value = "INVOKE", target = CONSTRUCT_CONFIG_MANAGER, shift = At.Shift.BEFORE))
@@ -69,7 +71,7 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
             this.setFolderName(this.settings.getStringProperty("level-name", "world"));
         }
 
-        SpongeVanilla.INSTANCE.initialize();
+        spongeVanilla.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
         statusResponse.setServerDescription(new TextComponentString(this.getMotd()));
         statusResponse.setVersion(
@@ -79,22 +81,22 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
 
     @Inject(method = "init()Z", at = @At(value = "INVOKE", target = SET_PROPERTY, ordinal = 2, shift = At.Shift.AFTER))
     private void callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.INSTANCE.onServerAboutToStart();
+        spongeVanilla.onServerAboutToStart();
     }
 
     @Inject(method = "init()Z", at = @At(value = "INVOKE", target = LOAD_ALL_WORLDS, shift = At.Shift.AFTER))
     private void callServerStarting(CallbackInfoReturnable<Boolean> ci) {
-        SpongeVanilla.INSTANCE.onServerStarting();
+        spongeVanilla.onServerStarting();
     }
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
     private void onTick(CallbackInfo ci) {
-        SpongeScheduler.getInstance().tickSyncScheduler();
+        scheduler.tickSyncScheduler();
     }
 
     @Inject(method = "systemExitNow", at = @At(value = "HEAD"))
     private void callServerStopped(CallbackInfo ci) throws Exception {
-        SpongeVanilla.INSTANCE.onServerStopped();
+        spongeVanilla.onServerStopped();
     }
 
 }

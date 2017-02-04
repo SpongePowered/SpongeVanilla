@@ -28,6 +28,7 @@ import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
@@ -36,12 +37,10 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.plugin.meta.PluginMetadata;
 import org.spongepowered.server.SpongeVanilla;
-import org.spongepowered.server.SpongeVanillaLauncher;
 import org.spongepowered.server.launch.plugin.PluginCandidate;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,19 +56,19 @@ import java.util.Set;
 @Singleton
 public class VanillaPluginManager implements PluginManager {
 
+    private final Injector rootInjector;
+
     private final Map<String, PluginContainer> plugins = new HashMap<>();
     private final Map<Object, PluginContainer> pluginInstances = new IdentityHashMap<>();
 
     @Inject
-    public VanillaPluginManager(SpongeVanilla impl) {
-        registerPlugin(SpongeImpl.getMinecraftPlugin());
-        registerPlugin(createMetaContainer(Platform.API_ID, SpongeImpl.API_NAME, impl.getSource()));
-        registerPlugin(impl);
-        registerPlugin(createMetaContainer("mcp", "Mod Coder Pack", impl.getSource()));
-    }
+    public VanillaPluginManager(Injector injector, SpongeVanilla impl, MetadataContainer metadata) {
+        this.rootInjector = injector.getParent();
 
-    private static PluginContainer createMetaContainer(String id, String name, Optional<Path> source) {
-        return new MetaPluginContainer(SpongeVanillaLauncher.getMetadata().get(id, name), source);
+        this.registerPlugin(SpongeImpl.getMinecraftPlugin());
+        this.registerPlugin(metadata.createContainer(Platform.API_ID, SpongeImpl.API_NAME, impl.getSource()));
+        this.registerPlugin(impl);
+        this.registerPlugin(metadata.createContainer("mcp", "Mod Coder Pack", impl.getSource()));
     }
 
     private void registerPlugin(PluginContainer plugin) {
@@ -157,7 +156,7 @@ public class VanillaPluginManager implements PluginManager {
 
         try {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
-            PluginContainer container = new VanillaPluginContainer(pluginClass, metadata, candidate.getSource().getPath());
+            PluginContainer container = new VanillaPluginContainer(this.rootInjector, pluginClass, metadata, candidate.getSource().getPath());
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());

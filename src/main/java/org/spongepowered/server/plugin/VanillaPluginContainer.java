@@ -25,8 +25,7 @@
 package org.spongepowered.server.plugin;
 
 import com.google.inject.Injector;
-import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.guice.SpongePluginGuiceModule;
+import org.spongepowered.common.inject.plugin.PluginModule;
 import org.spongepowered.common.plugin.PluginContainerExtension;
 import org.spongepowered.plugin.meta.PluginMetadata;
 
@@ -38,10 +37,10 @@ final class VanillaPluginContainer extends MetaPluginContainer implements Plugin
     private final Optional<?> instance;
     private final Injector injector;
 
-    VanillaPluginContainer(Class<?> pluginClass, PluginMetadata metadata, Optional<Path> source) {
+    VanillaPluginContainer(Injector injector, Class<?> pluginClass, PluginMetadata metadata, Optional<Path> source) {
         super(metadata, source);
 
-        this.injector = SpongeImpl.getInjector().createChildInjector(new SpongePluginGuiceModule(this, pluginClass));
+        this.injector = injector.createChildInjector(new PluginModule(this, pluginClass));
         this.instance = Optional.of(this.injector.getInstance(pluginClass));
     }
 

@@ -27,15 +27,17 @@ package org.spongepowered.server.plugin;
 import static org.spongepowered.server.launch.VanillaLaunch.Environment.DEVELOPMENT;
 
 import com.google.common.collect.ImmutableMap;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.plugin.meta.McModInfo;
 import org.spongepowered.plugin.meta.PluginMetadata;
-import org.spongepowered.server.SpongeVanillaLauncher;
 import org.spongepowered.server.launch.LaunchException;
 import org.spongepowered.server.launch.VanillaLaunch;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public final class MetadataContainer {
 
@@ -63,6 +65,10 @@ public final class MetadataContainer {
         return meta;
     }
 
+    PluginContainer createContainer(String id, String name, Optional<Path> source) {
+        return new MetaPluginContainer(get(id, name), source);
+    }
+
     public static MetadataContainer load() {
         return load("");
     }
@@ -71,7 +77,7 @@ public final class MetadataContainer {
         List<PluginMetadata> meta;
 
         path = path + '/' + McModInfo.STANDARD_FILENAME;
-        try (InputStream in = SpongeVanillaLauncher.class.getResourceAsStream(path)) {
+        try (InputStream in = MetadataContainer.class.getResourceAsStream(path)) {
             if (in == null) {
                 if (VanillaLaunch.ENVIRONMENT != DEVELOPMENT) {
                     throw new LaunchException("Unable to find metadata file at " + path);

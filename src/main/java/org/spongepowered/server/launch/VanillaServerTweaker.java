@@ -181,7 +181,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public String getLaunchTarget() {
-        return "org.spongepowered.server.SpongeVanillaLauncher";
+        return "org.spongepowered.server.SpongeVanilla";
     }
 
     @Override
