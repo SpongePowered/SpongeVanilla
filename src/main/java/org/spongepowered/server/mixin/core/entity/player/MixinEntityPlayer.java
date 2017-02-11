@@ -38,12 +38,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -53,6 +52,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
+import org.spongepowered.common.event.SpongeCauseStackManager.CauseStackFrame;
 import org.spongepowered.common.interfaces.entity.player.IMixinEntityPlayer;
 import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
 import org.spongepowered.common.util.VecHelper;
@@ -79,7 +79,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
      * @author Minecrell
      * @reason Return the appropriate bed location for the current dimension
      */
-    @Overwrite @Nullable
+    @Overwrite
+    @Nullable
     public BlockPos getBedLocation() { // getBedLocation
         return getBedLocation(this.dimension);
     }
@@ -169,16 +170,17 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         tagCompound.setTag("Spawns", spawnList);
     }
 
-
     // Event injectors
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
-        SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Sponge.getCauseStackManager().getCurrentCause(),
                 ((org.spongepowered.api.world.World) this.world).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);
         if (SpongeImpl.postEvent(event)) {
             ci.setReturnValue(EntityPlayer.SleepResult.OTHER_PROBLEM);
         }
+        Sponge.getCauseStackManager().popCause();
     }
 
     /**
@@ -213,38 +215,41 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
         // Sponge start
         BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector3i(this.bedLocation));
-        SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Cause.of(NamedCause.source(this)), bed,
-                Optional.ofNullable(newLocation), this, setSpawn);
-        if (SpongeImpl.postEvent(event)) {
-            return;
+        try (CauseStackFrame frame = (CauseStackFrame) Sponge.getCauseStackManager().createCauseFrame()) {
+            Sponge.getCauseStackManager().pushCause(this);
+            SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Sponge.getCauseStackManager().getCurrentCause(), bed,
+                    Optional.ofNullable(newLocation), this, setSpawn);
+
+            if (SpongeImpl.postEvent(event)) {
+                return;
+            }
+
+            //  Moved from above
+            this.setSize(0.6F, 1.8F);
+            if (newLocation != null) {
+                // Set property only if bed still existsthis.world.setBlockState(this.bedLocation, iblockstate.withProperty(BlockBed.OCCUPIED, false), 4);}
+
+                // Teleport player
+                event.getSpawnTransform().ifPresent(this::setLocationAndAngles);
+                // Sponge end
+
+                this.sleeping = false;
+
+                if (!this.world.isRemote && updateWorldFlag) {
+                    this.world.updateAllPlayersSleepingFlag();
+                }
+
+                this.sleepTimer = immediately ? 0 : 100;
+
+                if (setSpawn) {
+                    this.setSpawnPoint(this.bedLocation, false);
+                }
+
+                // Sponge start
+                SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Sponge.getCauseStackManager().getCurrentCause(), bed, this));
+            }
+            // Sponge end
         }
 
-        // Moved from above
-        this.setSize(0.6F, 1.8F);
-        if (newLocation != null) {
-            // Set property only if bed still exists
-            this.world.setBlockState(this.bedLocation, iblockstate.withProperty(BlockBed.OCCUPIED, false), 4);
-        }
-
-        // Teleport player
-        event.getSpawnTransform().ifPresent(this::setLocationAndAngles);
-        // Sponge end
-
-        this.sleeping = false;
-
-        if (!this.world.isRemote && updateWorldFlag) {
-            this.world.updateAllPlayersSleepingFlag();
-        }
-
-        this.sleepTimer = immediately ? 0 : 100;
-
-        if (setSpawn) {
-            this.setSpawnPoint(this.bedLocation, false);
-        }
-
-        // Sponge start
-        SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(event.getCause(), bed, this));
-        // Sponge end
     }
-
 }

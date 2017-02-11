@@ -42,8 +42,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.network.RemoteConnection;
@@ -75,7 +73,8 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     @Shadow @Final private MinecraftServer serverController;
     @Shadow public EntityPlayerMP player;
 
-    @Shadow public abstract void sendPacket(final Packet<?> packetIn);
+    @Shadow
+    public abstract void sendPacket(final Packet<?> packetIn);
 
     private static final Splitter CHANNEL_SPLITTER = Splitter.on(CHANNEL_SEPARATOR);
 
@@ -86,36 +85,34 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         return this.registeredChannels.contains(name);
     }
 
-    @Inject(method = "<init>*", at = @At("RETURN"))
+    @Inject(method = "<init>*", at = @At("RETURN") )
     private void registerChannels(CallbackInfo ci) {
         ((VanillaChannelRegistrar) Sponge.getChannelRegistrar()).registerChannels((NetHandlerPlayServer) (Object) this);
     }
 
-    @Inject(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V"),
-            cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "processChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V") , cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
         ChatFormatter.formatChatComponent((TextComponentTranslation) component);
         final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
         final MessageChannel originalChannel = ((Player) this.player).getMessageChannel();
+        Sponge.getCauseStackManager().pushCause(this.player);
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
-                Cause.of(NamedCause.source(this.player)), originalChannel, Optional.of(originalChannel),
-                new MessageEvent.MessageFormatter(message[0], message[1]), Text.of(s), false
-        );
+                Sponge.getCauseStackManager().getCurrentCause(), originalChannel, Optional.of(originalChannel),
+                new MessageEvent.MessageFormatter(message[0], message[1]), Text.of(s), false);
         if (!SpongeImpl.postEvent(event) && !event.isMessageCancelled()) {
             event.getChannel().ifPresent(channel -> channel.send(this.player, event.getMessage(), ChatTypes.CHAT));
         } else {
             ci.cancel();
         }
+        Sponge.getCauseStackManager().popCause();
     }
 
-    @Redirect(method = "processChatMessage", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V"))
+    @Redirect(method = "processChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V") )
     private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
     }
 
-    @Inject(method = "processCustomPayload", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "processCustomPayload", at = @At("HEAD") , cancellable = true)
     private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {
@@ -128,8 +125,11 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
                 final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
                 for (String channel : CHANNEL_SPLITTER.split(channels)) {
                     if (this.registeredChannels.add(channel)) {
-                        SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(Cause.of(NamedCause.source(this.player),
-                                NamedCause.of("connection", this)), channel));
+                        Sponge.getCauseStackManager().pushCause(this);
+                        Sponge.getCauseStackManager().pushCause(this.player);
+                        SpongeImpl.postEvent(
+                                SpongeEventFactory.createChannelRegistrationEventRegister(Sponge.getCauseStackManager().getCurrentCause(), channel));
+                        Sponge.getCauseStackManager().popCauses(2);
                     }
                 }
                 break;
@@ -138,9 +138,11 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
                 final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
                 for (String channel : CHANNEL_SPLITTER.split(channels)) {
                     if (this.registeredChannels.remove(channel)) {
-                        SpongeImpl
-                                .postEvent(SpongeEventFactory.createChannelRegistrationEventUnregister(Cause.of(NamedCause.source(this.player),
-                                        NamedCause.of("connection", this)), channel));
+                        Sponge.getCauseStackManager().pushCause(this);
+                        Sponge.getCauseStackManager().pushCause(this.player);
+                        SpongeImpl.postEvent(SpongeEventFactory
+                                .createChannelRegistrationEventUnregister(Sponge.getCauseStackManager().getCurrentCause(), channel));
+                        Sponge.getCauseStackManager().popCauses(2);
                     }
                 }
                 break;
