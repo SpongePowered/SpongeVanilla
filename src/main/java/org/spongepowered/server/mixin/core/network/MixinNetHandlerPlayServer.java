@@ -73,7 +73,7 @@ import java.util.Set;
 public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMixinNetHandlerPlayServer {
 
     @Shadow @Final private MinecraftServer serverController;
-    @Shadow public EntityPlayerMP playerEntity;
+    @Shadow public EntityPlayerMP player;
 
     @Shadow public abstract void sendPacket(final Packet<?> packetIn);
 
@@ -97,13 +97,13 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
         ChatFormatter.formatChatComponent((TextComponentTranslation) component);
         final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
-        final MessageChannel originalChannel = ((Player) this.playerEntity).getMessageChannel();
+        final MessageChannel originalChannel = ((Player) this.player).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
-                Cause.of(NamedCause.source(this.playerEntity)), originalChannel, Optional.of(originalChannel),
+                Cause.of(NamedCause.source(this.player)), originalChannel, Optional.of(originalChannel),
                 new MessageEvent.MessageFormatter(message[0], message[1]), Text.of(s), false
         );
         if (!SpongeImpl.postEvent(event) && !event.isMessageCancelled()) {
-            event.getChannel().ifPresent(channel -> channel.send(this.playerEntity, event.getMessage(), ChatTypes.CHAT));
+            event.getChannel().ifPresent(channel -> channel.send(this.player, event.getMessage(), ChatTypes.CHAT));
         } else {
             ci.cancel();
         }
@@ -128,7 +128,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
                 final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
                 for (String channel : CHANNEL_SPLITTER.split(channels)) {
                     if (this.registeredChannels.add(channel)) {
-                        SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(Cause.of(NamedCause.source(this.playerEntity),
+                        SpongeImpl.postEvent(SpongeEventFactory.createChannelRegistrationEventRegister(Cause.of(NamedCause.source(this.player),
                                 NamedCause.of("connection", this)), channel));
                     }
                 }
@@ -139,7 +139,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
                 for (String channel : CHANNEL_SPLITTER.split(channels)) {
                     if (this.registeredChannels.remove(channel)) {
                         SpongeImpl
-                                .postEvent(SpongeEventFactory.createChannelRegistrationEventUnregister(Cause.of(NamedCause.source(this.playerEntity),
+                                .postEvent(SpongeEventFactory.createChannelRegistrationEventUnregister(Cause.of(NamedCause.source(this.player),
                                         NamedCause.of("connection", this)), channel));
                     }
                 }

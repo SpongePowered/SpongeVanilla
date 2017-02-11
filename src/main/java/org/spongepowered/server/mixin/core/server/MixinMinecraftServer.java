@@ -70,7 +70,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Shadow @Final private static Logger LOG;
     @Shadow @Final private List<ITickable> tickables;
-    @Shadow @Final public Profiler theProfiler;
+    @Shadow @Final public Profiler profiler;
     @Shadow private PlayerList playerList;
     @Shadow private int tickCounter;
     @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
@@ -146,7 +146,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
      */
     @Overwrite
     public void updateTimeLightAndEntities() {
-        this.theProfiler.startSection("jobs");
+        this.profiler.startSection("jobs");
 
         synchronized (this.futureTaskQueue) {
             while (!this.futureTaskQueue.isEmpty()) {
@@ -154,7 +154,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             }
         }
 
-        this.theProfiler.endStartSection("levels");
+        this.profiler.endStartSection("levels");
         tickChunkLoader(); // Sponge: Tick chunk loader
 
         // Sponge start - Iterate over all our dimensions
@@ -173,17 +173,17 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 }
                 // Sponge end
 
-                this.theProfiler.startSection(worldServer.getWorldInfo().getWorldName());
+                this.profiler.startSection(worldServer.getWorldInfo().getWorldName());
 
                 if (this.tickCounter % 20 == 0) {
-                    this.theProfiler.startSection("timeSync");
+                    this.profiler.startSection("timeSync");
                     this.playerList.sendPacketToAllPlayersInDimension (
                             new SPacketTimeUpdate(worldServer.getTotalWorldTime(), worldServer.getWorldTime(),
                                     worldServer.getGameRules().getBoolean("doDaylightCycle")), ((IMixinWorldServer) worldServer).getDimensionId());
-                    this.theProfiler.endSection();
+                    this.profiler.endSection();
                 }
 
-                this.theProfiler.startSection("tick");
+                this.profiler.startSection("tick");
 
                 try {
                     worldServer.tick();
@@ -201,8 +201,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                     throw new ReportedException(crashreport1);
                 }
 
-                this.theProfiler.endSection();
-                this.theProfiler.startSection("tracker");
+                this.profiler.endSection();
+                this.profiler.startSection("tracker");
 
                 // Sponge start - copy from SpongeCommon MixinMinecraftServer
                 if (spongeWorld.getChunkGCTickInterval() > 0) {
@@ -211,8 +211,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 // Sponge end
 
                 worldServer.getEntityTracker().tick();
-                this.theProfiler.endSection();
-                this.theProfiler.endSection();
+                this.profiler.endSection();
+                this.profiler.endSection();
             }
 
             // Sponge start - Write tick times to our custom map
@@ -221,21 +221,21 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         }
 
         // Sponge start - Unload requested worlds
-        this.theProfiler.endStartSection("dim_unloading");
+        this.profiler.endStartSection("dim_unloading");
         WorldManager.unloadQueuedWorlds();
         // Sponge end
 
-        this.theProfiler.endStartSection("connection");
+        this.profiler.endStartSection("connection");
         this.getNetworkSystem().networkTick();
-        this.theProfiler.endStartSection("players");
+        this.profiler.endStartSection("players");
         this.playerList.onTick();
-        this.theProfiler.endStartSection("tickables");
+        this.profiler.endStartSection("tickables");
 
         for (int k = 0; k < this.tickables.size(); ++k) {
             this.tickables.get(k).update();
         }
 
-        this.theProfiler.endSection();
+        this.profiler.endSection();
     }
 
     @Redirect(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"))
