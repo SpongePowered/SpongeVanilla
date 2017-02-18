@@ -62,11 +62,17 @@ public final class VanillaLaunchPluginManager {
         }
 
         Path pluginsDir = SpongeLaunch.getPluginsDir();
-        if (Files.exists(pluginsDir)) {
+        if (Files.isDirectory(pluginsDir)) {
             pluginScanner.scanDirectory(pluginsDir);
         } else {
             // Create plugin folder
             Files.createDirectories(pluginsDir);
+        }
+
+        // Scan additional plugin directory
+        pluginsDir = SpongeLaunch.getAdditionalPluginsDir();
+        if (Files.isDirectory(pluginsDir)) {
+            pluginScanner.scanDirectory(pluginsDir);
         }
 
         plugins = pluginScanner.getPlugins();
