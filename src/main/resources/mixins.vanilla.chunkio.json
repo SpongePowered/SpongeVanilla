@@ -9,7 +9,8 @@
         "MixinChunkProviderServer_ChunkIO",
         "MixinMinecraftServer_ChunkIO",
         "MixinPlayerChunkMapEntry_ChunkIO",
-        "MixinPlayerList_ChunkIO"
+        "MixinPlayerList_ChunkIO",
+        "MixinWorld_ChunkIO"
     ],
     "injectors": {
         "defaultRequire": 1
