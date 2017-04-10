@@ -56,6 +56,7 @@ public abstract class MixinConsoleHandler {
             TerminalConsoleAppender.setFormatter(ConsoleFormatter.INSTANCE);
 
             LineReader reader = LineReaderBuilder.builder()
+                    .appName("SpongeVanilla")
                     .terminal(terminal)
                     .completer(new ConsoleCommandCompleter(this.server))
                     .build();
