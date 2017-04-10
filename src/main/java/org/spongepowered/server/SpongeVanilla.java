@@ -232,7 +232,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
         }
 
         server.startServerThread();
-        Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer));
+        Runtime.getRuntime().addShutdownHook(new Thread(server::stopServer, "Server Shutdown Thread"));
     }
 
     public static void main(String[] args) {

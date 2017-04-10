@@ -26,11 +26,13 @@ package org.spongepowered.server.console;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import jline.console.completer.Completer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.ParsedLine;
 import org.spongepowered.common.SpongeImpl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -44,9 +46,8 @@ public final class ConsoleCommandCompleter implements Completer {
     }
 
     @Override
-    public int complete(String buffer, int cursor, List<CharSequence> candidates) {
-        int len = buffer.length();
-
+    public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
+        String buffer = line.line();
         boolean prefix;
         if (buffer.isEmpty() || buffer.charAt(0) != '/') {
             buffer = '/' + buffer;
@@ -56,36 +57,22 @@ public final class ConsoleCommandCompleter implements Completer {
         }
 
         final String input = buffer;
-        @SuppressWarnings("unchecked")
         Future<List<String>> tabComplete =
                 this.server.callFromMainThread(() -> this.server.getTabCompletions(this.server, input, this.server.getPosition(), false));
 
         try {
-            List<String> completions = tabComplete.get();
-            Collections.sort(completions);
-            if (prefix) {
-                candidates.addAll(completions);
-            } else {
-                for (String completion : completions) {
-                    candidates.add(completion.charAt(0) == '/' ? completion.substring(1) : completion);
+            for (String completion : tabComplete.get()) {
+                if (completion.isEmpty()) {
+                    continue;
                 }
-            }
 
-            int pos = buffer.lastIndexOf(' ');
-            if (pos == -1) {
-                return cursor - len;
-            } else if (prefix) {
-                return cursor - len + pos + 1;
-            } else {
-                return cursor - len + pos;
+                candidates.add(new Candidate(prefix || completion.charAt(0) != '/' ? completion : completion.substring(1)));
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             SpongeImpl.getLogger().error("Failed to tab complete", e);
         }
-
-        return cursor;
     }
 
 }

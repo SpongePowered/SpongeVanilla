@@ -28,40 +28,40 @@ import static org.spongepowered.common.text.SpongeTexts.COLOR_CHAR;
 import static org.spongepowered.server.launch.console.TerminalConsoleAppender.ANSI_RESET;
 
 import net.minecraft.util.text.TextFormatting;
-import org.fusesource.jansi.Ansi;
 import org.spongepowered.common.text.serializer.LegacyTexts;
 
-public final class ConsoleFormatter {
+import java.util.function.Function;
 
-    private ConsoleFormatter() {
-    }
+public final class ConsoleFormatter implements Function<String, String> {
+
+    public static final ConsoleFormatter INSTANCE = new ConsoleFormatter();
 
     private static final String RESET = ANSI_RESET;
 
     private static final String[] ansi = new String[LegacyTexts.getFormattingCount()];
 
     static {
-        map(TextFormatting.BLACK, Ansi.ansi().reset().fg(Ansi.Color.BLACK).boldOff().toString());
-        map(TextFormatting.DARK_BLUE, Ansi.ansi().reset().fg(Ansi.Color.BLUE).boldOff().toString());
-        map(TextFormatting.DARK_GREEN, Ansi.ansi().reset().fg(Ansi.Color.GREEN).boldOff().toString());
-        map(TextFormatting.DARK_AQUA, Ansi.ansi().reset().fg(Ansi.Color.CYAN).boldOff().toString());
-        map(TextFormatting.DARK_RED, Ansi.ansi().reset().fg(Ansi.Color.RED).boldOff().toString());
-        map(TextFormatting.DARK_PURPLE, Ansi.ansi().reset().fg(Ansi.Color.MAGENTA).boldOff().toString());
-        map(TextFormatting.GOLD, Ansi.ansi().reset().fg(Ansi.Color.YELLOW).boldOff().toString());
-        map(TextFormatting.GRAY, Ansi.ansi().reset().fg(Ansi.Color.WHITE).boldOff().toString());
-        map(TextFormatting.DARK_GRAY, Ansi.ansi().reset().fg(Ansi.Color.BLACK).bold().toString());
-        map(TextFormatting.BLUE, Ansi.ansi().reset().fg(Ansi.Color.BLUE).bold().toString());
-        map(TextFormatting.GREEN, Ansi.ansi().reset().fg(Ansi.Color.GREEN).bold().toString());
-        map(TextFormatting.AQUA, Ansi.ansi().reset().fg(Ansi.Color.CYAN).bold().toString());
-        map(TextFormatting.RED, Ansi.ansi().reset().fg(Ansi.Color.RED).bold().toString());
-        map(TextFormatting.LIGHT_PURPLE, Ansi.ansi().reset().fg(Ansi.Color.MAGENTA).bold().toString());
-        map(TextFormatting.YELLOW, Ansi.ansi().reset().fg(Ansi.Color.YELLOW).bold().toString());
-        map(TextFormatting.WHITE, Ansi.ansi().reset().fg(Ansi.Color.WHITE).bold().toString());
-        map(TextFormatting.OBFUSCATED, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString());
-        map(TextFormatting.BOLD, Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE).toString());
-        map(TextFormatting.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString());
-        map(TextFormatting.UNDERLINE, Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString());
-        map(TextFormatting.ITALIC, Ansi.ansi().a(Ansi.Attribute.ITALIC).toString());
+        map(TextFormatting.BLACK, "\u001B[0;30;22m");
+        map(TextFormatting.DARK_BLUE, "\u001B[0;34;22m");
+        map(TextFormatting.DARK_GREEN, "\u001B[0;32;22m");
+        map(TextFormatting.DARK_AQUA, "\u001B[0;36;22m");
+        map(TextFormatting.DARK_RED, "\u001B[0;31;22m");
+        map(TextFormatting.DARK_PURPLE, "\u001B[0;35;22m");
+        map(TextFormatting.GOLD, "\u001B[0;33;22m");
+        map(TextFormatting.GRAY, "\u001B[0;37;22m");
+        map(TextFormatting.DARK_GRAY, "\u001B[0;30;1m");
+        map(TextFormatting.BLUE, "\u001B[0;34;1m");
+        map(TextFormatting.GREEN, "\u001B[0;32;1m");
+        map(TextFormatting.AQUA, "\u001B[0;36;1m");
+        map(TextFormatting.RED, "\u001B[0;31;1m");
+        map(TextFormatting.LIGHT_PURPLE, "\u001B[0;35;1m");
+        map(TextFormatting.YELLOW, "\u001B[0;33;1m");
+        map(TextFormatting.WHITE, "\u001B[0;37;1m");
+        map(TextFormatting.OBFUSCATED, "\u001B[5m");
+        map(TextFormatting.BOLD, "\u001B[21m");
+        map(TextFormatting.STRIKETHROUGH, "\u001B[9m");
+        map(TextFormatting.UNDERLINE, "\u001B[4m");
+        map(TextFormatting.ITALIC, "\u001B[3m");
         map(TextFormatting.RESET, RESET);
     }
 
@@ -69,7 +69,11 @@ public final class ConsoleFormatter {
         ansi[formatting.ordinal()] = ansiMapping;
     }
 
-    public static String format(String text) {
+    private ConsoleFormatter() {
+    }
+
+    @Override
+    public String apply(String text) {
         int next = text.indexOf(COLOR_CHAR);
         int last = text.length() - 1;
         if (next == -1 || next == last) {

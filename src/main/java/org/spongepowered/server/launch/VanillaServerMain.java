@@ -26,16 +26,15 @@ package org.spongepowered.server.launch;
 
 import static org.spongepowered.server.launch.VanillaCommandLine.HELP;
 import static org.spongepowered.server.launch.VanillaCommandLine.NO_DOWNLOAD;
-import static org.spongepowered.server.launch.VanillaCommandLine.NO_JLINE;
 import static org.spongepowered.server.launch.VanillaCommandLine.NO_VERIFY_CLASSPATH;
 import static org.spongepowered.server.launch.VanillaCommandLine.TWEAK_CLASS;
 import static org.spongepowered.server.launch.VanillaCommandLine.VERSION;
 
-import jline.Terminal;
-import jline.TerminalFactory;
 import joptsimple.BuiltinHelpFormatter;
 import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.Launch;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 import java.net.URL;
@@ -72,12 +71,12 @@ public final class VanillaServerMain {
     public static void main(String[] args) throws Exception {
         OptionSet options = VanillaCommandLine.parse(args);
         if (options.has(HELP)) {
-            if (options.has(NO_JLINE) || System.console() == null) {
+            if (System.console() == null) {
                 // We have no supported terminal, print help with default terminal width
                 VanillaCommandLine.printHelp(System.err);
             } else {
                 // Terminal is (very likely) supported, use the terminal width provided by jline
-                Terminal terminal = TerminalFactory.get();
+                Terminal terminal = TerminalBuilder.builder().dumb(true).build();
                 VanillaCommandLine.printHelp(new BuiltinHelpFormatter(terminal.getWidth(), 3), System.err);
             }
             return;

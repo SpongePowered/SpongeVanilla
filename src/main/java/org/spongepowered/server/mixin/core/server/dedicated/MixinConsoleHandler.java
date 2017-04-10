@@ -24,22 +24,22 @@
  */
 package org.spongepowered.server.mixin.core.server.dedicated;
 
-import jline.console.ConsoleReader;
 import net.minecraft.server.dedicated.DedicatedServer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
+import org.jline.terminal.Terminal;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.text.serializer.LegacyTexts;
 import org.spongepowered.server.console.ConsoleCommandCompleter;
 import org.spongepowered.server.console.ConsoleFormatter;
 import org.spongepowered.server.launch.console.TerminalConsoleAppender;
-
-import java.io.IOException;
 
 @Mixin(targets = "net/minecraft/server/dedicated/DedicatedServer$2")
 public abstract class MixinConsoleHandler {
@@ -49,18 +49,24 @@ public abstract class MixinConsoleHandler {
 
     @Inject(method = "run", at = @At("HEAD"), cancellable = true, remap = false)
     private void onRun(CallbackInfo ci) {
-        final ConsoleReader reader = TerminalConsoleAppender.getReader();
+        final Terminal terminal = TerminalConsoleAppender.getTerminal();
 
-        if (reader != null) {
-            TerminalConsoleAppender.setFormatter(ConsoleFormatter::format);
-            reader.addCompleter(new ConsoleCommandCompleter(this.server));
+        if (terminal != null) {
+            // Set our console color formatter
+            TerminalConsoleAppender.setFormatter(ConsoleFormatter.INSTANCE);
 
-            reader.setPrompt("> ");
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .completer(new ConsoleCommandCompleter(this.server))
+                    .build();
+            reader.unsetOpt(LineReader.Option.INSERT_TAB);
 
-            String line;
-            while (!this.server.isServerStopped() && this.server.isServerRunning()) {
-                try {
-                    line = reader.readLine();
+            TerminalConsoleAppender.setReader(reader);
+
+            try {
+                String line;
+                while (!this.server.isServerStopped() && this.server.isServerRunning()) {
+                    line = reader.readLine("> ");
                     if (line == null) {
                         break;
                     }
@@ -69,9 +75,10 @@ public abstract class MixinConsoleHandler {
                     if (!line.isEmpty()) {
                         this.server.addPendingCommand(line, this.server);
                     }
-                } catch (IOException e) {
-                    SpongeImpl.getLogger().error("Exception handling console input", e);
                 }
+            } catch (UserInterruptException e) {
+                TerminalConsoleAppender.setReader(null);
+                this.server.initiateShutdown();
             }
 
             ci.cancel();

@@ -27,6 +27,7 @@ package org.spongepowered.server.launch;
 import static com.google.common.io.Resources.getResource;
 import static org.spongepowered.asm.mixin.MixinEnvironment.Side.SERVER;
 import static org.spongepowered.server.launch.VanillaCommandLine.ACCESS_TRANSFORMER;
+import static org.spongepowered.server.launch.VanillaCommandLine.NO_REDIRECT_STDOUT;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_CLASSPATH;
 import static org.spongepowered.server.launch.VanillaCommandLine.SCAN_FULL_CLASSPATH;
 import static org.spongepowered.server.launch.VanillaLaunch.Environment.DEVELOPMENT;
@@ -36,11 +37,13 @@ import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IRemapper;
 import org.spongepowered.common.launch.SpongeLaunch;
-import org.spongepowered.server.launch.console.TerminalConsoleAppender;
+import org.spongepowered.server.launch.console.LoggingPrintStream;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 import org.spongepowered.server.launch.transformer.at.AccessTransformers;
 import org.spongepowered.server.launch.transformer.deobf.SrgRemapper;
@@ -62,8 +65,12 @@ public final class VanillaServerTweaker implements ITweaker {
             gameDir = new File("");
         }
         SpongeLaunch.initPaths(gameDir);
-        VanillaCommandLine.parse(args);
-        TerminalConsoleAppender.initialize();
+        OptionSet options = VanillaCommandLine.parse(args);
+
+        if (!options.has(NO_REDIRECT_STDOUT)) {
+            System.setOut(new LoggingPrintStream(System.out, LogManager.getLogger("STDOUT"), Level.INFO));
+            System.setErr(new LoggingPrintStream(System.err, LogManager.getLogger("STDERR"), Level.ERROR));
+        }
 
         List<String> unrecognizedOptions = VanillaCommandLine.getUnrecognizedOptions();
         if (!unrecognizedOptions.isEmpty()) {
@@ -192,8 +199,8 @@ public final class VanillaServerTweaker implements ITweaker {
     private static void configureLaunchClassLoader(LaunchClassLoader loader) {
         // Logging
         loader.addClassLoaderExclusion("org.slf4j.");
-        loader.addClassLoaderExclusion("jline.");
-        loader.addClassLoaderExclusion("org.fusesource.");
+        loader.addClassLoaderExclusion("org.jline.");
+        loader.addClassLoaderExclusion("com.sun.");
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");
 
         // Sponge Launch
