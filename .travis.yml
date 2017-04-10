@@ -10,7 +10,6 @@ git:
   submodules: false
 before_install: scripts/travis-initialize-submodules
 
-env: GRADLE_OPTS="-Xms1g -Xmx3g"
 install: ./gradlew setupDecompWorkspace
 script: ./gradlew build
 
