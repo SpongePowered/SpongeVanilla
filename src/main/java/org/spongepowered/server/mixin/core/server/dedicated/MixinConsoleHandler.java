@@ -78,8 +78,9 @@ public abstract class MixinConsoleHandler {
                     }
                 }
             } catch (UserInterruptException e) {
-                TerminalConsoleAppender.setReader(null);
                 this.server.initiateShutdown();
+            } finally {
+                TerminalConsoleAppender.setReader(null);
             }
 
             ci.cancel();
