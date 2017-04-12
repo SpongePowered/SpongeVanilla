@@ -26,7 +26,7 @@ package org.spongepowered.server.plugin;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import org.spongepowered.common.plugin.AbstractPluginContainer;
@@ -57,7 +57,7 @@ public class MetaPluginContainer extends AbstractPluginContainer {
 
         this.id = metadata.getId();
 
-        this.name = Objects.firstNonNull(metadata.getName(), this.id);
+        this.name = MoreObjects.firstNonNull(metadata.getName(), this.id);
         this.version = Optional.ofNullable(metadata.getVersion());
         this.description = Optional.ofNullable(metadata.getDescription());
         this.url = Optional.ofNullable(metadata.getUrl());

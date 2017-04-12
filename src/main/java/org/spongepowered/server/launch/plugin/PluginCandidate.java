@@ -27,7 +27,7 @@ package org.spongepowered.server.launch.plugin;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import org.spongepowered.plugin.meta.PluginDependency;
 import org.spongepowered.plugin.meta.PluginMetadata;
 import org.spongepowered.plugin.meta.version.DefaultArtifactVersion;
@@ -331,7 +331,7 @@ public final class PluginCandidate {
 
     @Override
     public String toString() {
-        Objects.ToStringHelper helper = Objects.toStringHelper(this)
+        MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this)
                 .omitNullValues()
                 .add("id", this.id)
                 .add("class", this.pluginClass)
