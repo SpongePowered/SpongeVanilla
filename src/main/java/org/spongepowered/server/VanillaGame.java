@@ -28,19 +28,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameDictionary;
-import org.spongepowered.api.Platform;
 import org.spongepowered.api.Server;
-import org.spongepowered.api.asset.AssetManager;
-import org.spongepowered.api.command.CommandManager;
-import org.spongepowered.api.event.EventManager;
-import org.spongepowered.api.network.ChannelRegistrar;
-import org.spongepowered.api.plugin.PluginManager;
-import org.spongepowered.api.scheduler.Scheduler;
-import org.spongepowered.api.service.ServiceManager;
-import org.spongepowered.api.world.TeleportHelper;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.registry.SpongeGameRegistry;
 
 import java.nio.file.Path;
 
@@ -50,10 +40,7 @@ public final class VanillaGame extends SpongeGame {
     private final Server server;
 
     @Inject
-    public VanillaGame(Platform platform, PluginManager pluginManager, EventManager eventManager,
-            AssetManager assetManager, ServiceManager serviceManager, TeleportHelper teleportHelper, ChannelRegistrar channelRegistrar,
-            SpongeGameRegistry gameRegistry, Scheduler scheduler, CommandManager commandManager, Server server) {
-        super(platform, pluginManager, eventManager, assetManager, serviceManager, teleportHelper, channelRegistrar, gameRegistry, scheduler, commandManager);
+    public VanillaGame(Server server) {
         this.server = server;
     }
 

@@ -88,23 +88,20 @@ import java.util.UUID;
 public final class SpongeVanilla extends MetaPluginContainer {
 
     private final Logger logger;
-
-    private Game game;
-    private Cause gameCause;
-    private SpongeGameRegistry registry;
+    private final Game game;
+    private final Cause gameCause;
+    private final SpongeGameRegistry registry;
 
     @Inject
-    public SpongeVanilla(MetadataContainer metadata, Logger logger) {
+    public SpongeVanilla(MetadataContainer metadata, Logger logger, Game game, SpongeGameRegistry registry) {
         super(metadata.get(SpongeImpl.ECOSYSTEM_ID, "SpongeVanilla"), PluginSource.find(SpongeVanilla.class));
-        this.logger = logger;
-        this.logger.info("This server is running {} version {}", getName(), getVersion().orElse("unknown"));
-    }
 
-    @Inject
-    public void initializeGame(Game game, SpongeGameRegistry registry) {
+        this.logger = logger;
         this.game = game;
         this.gameCause = Cause.of(NamedCause.source(game));
         this.registry = registry;
+
+        this.logger.info("This server is running {} version {}", getName(), getVersion().orElse("unknown"));
     }
 
     public void preInitialize() throws Exception {
