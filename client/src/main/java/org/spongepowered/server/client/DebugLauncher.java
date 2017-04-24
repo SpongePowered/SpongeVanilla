@@ -26,7 +26,7 @@ package org.spongepowered.server.client;
 
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import net.minecraft.launchwrapper.Launch;
-import org.spongepowered.server.SpongeVanillaLauncher;
+import org.spongepowered.server.SpongeVanilla;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -43,7 +43,7 @@ public final class DebugLauncher {
         DebugClient.disableReadTimeoutHandler(ReadTimeoutHandler.class);
 
         // Start server
-        SpongeVanillaLauncher.main(new String[0]);
+        SpongeVanilla.main(new String[0]);
 
         // Start client in separate class loader so the classes don't conflict
         List<URL> urls = new ArrayList<>(Arrays.asList(Launch.classLoader.getURLs()));
