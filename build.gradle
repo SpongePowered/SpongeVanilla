@@ -46,12 +46,19 @@ configurations.forgeGradleMcDeps {
     transitive = false
 }
 
+repositories {
+    maven {
+        name = 'sonatype-oss-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
 dependencies {
     compile 'org.ow2.asm:asm-debug-all:5.2'
     compile 'net.sf.jopt-simple:jopt-simple:5.0.3'
 
-    compile 'org.jline:jline-reader:3.2.0'
-    compile 'org.jline:jline-terminal-jna:3.2.0'
+    compile 'org.jline:jline-reader:3.3.0-SNAPSHOT'
+    compile 'org.jline:jline-terminal-jna:3.3.0-SNAPSHOT'
     compile 'net.java.dev.jna:jna:4.4.0'
 
     shadow 'org.ow2.asm:asm-all:5.2'
