@@ -50,6 +50,7 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.chat.ChatTypes;
+import org.spongepowered.api.text.conversation.Conversant;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -100,8 +101,8 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         final MessageChannel originalChannel = ((Player) this.player).getMessageChannel();
         final MessageChannelEvent.Chat event = SpongeEventFactory.createMessageChannelEventChat(
                 Cause.of(NamedCause.source(this.player)), originalChannel, Optional.of(originalChannel),
-                new MessageEvent.MessageFormatter(message[0], message[1]), Text.of(s), false
-        );
+                new MessageEvent.MessageFormatter(message[0], message[1]), Text.of(s),
+                Sponge.getConversationManager().process((Conversant) this.player, s));
         if (!SpongeImpl.postEvent(event) && !event.isMessageCancelled()) {
             event.getChannel().ifPresent(channel -> channel.send(this.player, event.getMessage(), ChatTypes.CHAT));
         } else {
