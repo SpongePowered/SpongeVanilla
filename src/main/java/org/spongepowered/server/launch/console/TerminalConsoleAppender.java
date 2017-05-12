@@ -86,7 +86,7 @@ public final class TerminalConsoleAppender extends AbstractAppender {
 
     private TerminalConsoleAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
-        initialize();
+        doInitialize();
     }
 
     @PluginFactory
@@ -101,14 +101,14 @@ public final class TerminalConsoleAppender extends AbstractAppender {
             return null;
         }
         if (layout == null) {
-            layout = PatternLayout.createLayout(null, null, null, null, null);
+            layout = PatternLayout.createLayout(null, null, null, null, null, true, false, null, null);
         }
 
         boolean ignoreExceptions = parseBoolean(ignore, true);
         return new TerminalConsoleAppender(name, filter, layout, ignoreExceptions);
     }
 
-    private static void initialize() {
+    private static void doInitialize() {
         // Initialize the reader if that hasn't happened yet
         if (!initialized) {
             initialized = true;

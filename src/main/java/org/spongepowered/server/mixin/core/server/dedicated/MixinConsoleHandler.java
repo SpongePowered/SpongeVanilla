@@ -66,7 +66,7 @@ public abstract class MixinConsoleHandler {
 
             try {
                 String line;
-                while (!this.server.isServerStopped() && this.server.isServerRunning()) {
+                while (!this.server.mth_0365_al() && this.server.isServerRunning()) { // @1.12-pre2 isServerStopped
                     line = reader.readLine("> ");
                     if (line == null) {
                         break;
