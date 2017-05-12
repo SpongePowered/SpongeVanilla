@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.launch.console;
 
-import static org.apache.logging.log4j.core.helpers.Booleans.parseBoolean;
+import static org.apache.logging.log4j.core.util.Booleans.parseBoolean;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
