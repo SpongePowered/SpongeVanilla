@@ -74,10 +74,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     @Shadow private boolean spawnForced;
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
-    private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
-
-    private Int2ObjectOpenHashMap<BlockPos> spawnChunkMap = new Int2ObjectOpenHashMap<>();
-    private IntSet spawnForcedSet = new IntOpenHashSet();
+    protected Int2ObjectOpenHashMap<BlockPos> spawnChunkMap = new Int2ObjectOpenHashMap<>();
+    protected IntSet spawnForcedSet = new IntOpenHashSet();
 
     /**
      * @author Minecrell
@@ -134,17 +132,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         } else {
             this.spawnChunkMap.remove(dimension);
             this.spawnForcedSet.remove(dimension);
-        }
-    }
-
-    @Inject(method = "clonePlayer", at = @At("RETURN"))
-    private void onClonePlayerReturn(EntityPlayer oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
-        this.spawnChunkMap = ((MixinEntityPlayer) (Object) oldPlayer).spawnChunkMap;
-        this.spawnForcedSet = ((MixinEntityPlayer) (Object) oldPlayer).spawnForcedSet;
-
-        final NBTTagCompound old = ((MixinEntityPlayer) (Object) oldPlayer).getEntityData();
-        if (old.hasKey(PERSISTED_NBT_TAG)) {
-            this.getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
         }
     }
 
