@@ -38,12 +38,11 @@ import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.io.IoBuilder;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IRemapper;
 import org.spongepowered.common.launch.SpongeLaunch;
-import org.spongepowered.server.launch.console.LoggingPrintStream;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 import org.spongepowered.server.launch.transformer.at.AccessTransformers;
 import org.spongepowered.server.launch.transformer.deobf.SrgRemapper;
@@ -68,8 +67,8 @@ public final class VanillaServerTweaker implements ITweaker {
         OptionSet options = VanillaCommandLine.parse(args);
 
         if (!options.has(NO_REDIRECT_STDOUT)) {
-            System.setOut(new LoggingPrintStream(System.out, LogManager.getLogger("STDOUT"), Level.INFO));
-            System.setErr(new LoggingPrintStream(System.err, LogManager.getLogger("STDERR"), Level.ERROR));
+            System.setOut(IoBuilder.forLogger("STDOUT").setLevel(Level.INFO).buildPrintStream());
+            System.setErr(IoBuilder.forLogger("STDERR").setLevel(Level.ERROR).buildPrintStream());
         }
 
         List<String> unrecognizedOptions = VanillaCommandLine.getUnrecognizedOptions();
@@ -199,6 +198,7 @@ public final class VanillaServerTweaker implements ITweaker {
     private static void configureLaunchClassLoader(LaunchClassLoader loader) {
         // Logging
         loader.addClassLoaderExclusion("org.slf4j.");
+        loader.addClassLoaderExclusion("net.minecrell.terminalconsole.");
         loader.addClassLoaderExclusion("org.jline.");
         loader.addClassLoaderExclusion("com.sun.");
         loader.addClassLoaderExclusion("com.mojang.util.QueueLogAppender");

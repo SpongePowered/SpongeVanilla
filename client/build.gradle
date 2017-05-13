@@ -18,6 +18,13 @@ version = rootProject.version
 apply plugin: 'net.minecraftforge.gradle.tweaker-client'
 apply from: project(':SpongeCommon:SpongeAPI').file('gradle/sponge.gradle')
 
+repositories {
+    maven {
+        name = 'sonatype-oss-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
 dependencies {
     compile rootProject
 }
