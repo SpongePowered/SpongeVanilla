@@ -22,11 +22,13 @@ buildscript {
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
         classpath 'gradle.plugin.org.spongepowered:spongegradle:0.8.1'
         classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+        classpath 'de.sebastianboegl.gradle.plugins:shadow-log4j-transformer:1.0.1'
     }
 }
 
 // Apply shared implementation Gradle config
 apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
+apply plugin: 'de.sebastianboegl.shadow.transformer.log4j'
 
 version = "$minecraft.version-$apiSuffix-$buildNumber"
 
@@ -41,6 +43,7 @@ configurations {
     // While we could set this to 'runtime', Eclipse doesn't support runtime dependencies
     // properly so this was always going before 'compile' in Eclipse
     shadow
+    log4j
 }
 
 configurations.forgeGradleMcDeps {
@@ -66,6 +69,10 @@ dependencies {
     compile 'net.java.dev.jna:jna:4.4.0'
 
     shadow 'org.ow2.asm:asm-all:5.2'
+
+    log4j('org.apache.logging.log4j:log4j-core:2.8.1') {
+        transitive = false
+    }
 }
 
 // Set main class and classpath for Minecraft server and Launchwrapper
@@ -90,6 +97,10 @@ shadowJar {
 
     from plugins[forgeGradlePlugin].delayedFile(net.minecraftforge.gradle.common.Constants.MCP_DATA_SRG)
     rename 'joined.srg', 'mappings.srg'
+
+    from({zipTree(project.configurations.log4j.resolve().first())}) {
+        include 'META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat'
+    }
 
     dependencies {
         include dependency('net.sf.jopt-simple:jopt-simple')
