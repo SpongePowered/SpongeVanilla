@@ -22,8 +22,9 @@ The following steps will ensure your project is cloned properly.
 2. `cd SpongeVanilla`
 3. `cp scripts/pre-commit .git/hooks`
 
-**Note**: If accidentally omit `--recursive` option when cloning, you may delete
-repository and try again, or you may execute following to fix the situation:
+**Note**: If you accidentally omit `--recursive` option when cloning, you may
+delete the repository and try again, or you may execute the following to fix the
+situation:
 
 	git submodule update --init --recursive
 
