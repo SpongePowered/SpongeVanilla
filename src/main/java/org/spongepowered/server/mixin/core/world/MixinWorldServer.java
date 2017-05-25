@@ -37,12 +37,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.interfaces.world.IMixinWorldInfo;
+import org.spongepowered.common.world.WorldManager;
 
 @Mixin(WorldServer.class)
 public abstract class MixinWorldServer extends World {
 
     private MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
+    }
+
+    @Redirect(method = "<init>", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/DimensionType;getById(I)Lnet/minecraft/world/DimensionType;"))
+    private static DimensionType getDimensionType(int dimensionId) {
+        return WorldManager.getDimensionType(dimensionId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid dimension id: " + dimensionId));
     }
 
     @Redirect(method = "updateWeather", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/DimensionType;getId()I"))
