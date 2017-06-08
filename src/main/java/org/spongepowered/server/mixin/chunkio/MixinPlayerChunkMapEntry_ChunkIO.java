@@ -87,7 +87,7 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
     private void onRemoveEntry(CallbackInfo ci) {
         if (this.loading) {
             // Don't load the chunk if we haven't loaded it yet
-            ChunkIOExecutor.dropQueuedChunkLoad(this.playerChunkMap.getWorldServer(), this.pos.chunkXPos, this.pos.chunkZPos, this);
+            ChunkIOExecutor.dropQueuedChunkLoad(this.playerChunkMap.getWorldServer(), this.pos.x, this.pos.z, this);
         }
     }
 

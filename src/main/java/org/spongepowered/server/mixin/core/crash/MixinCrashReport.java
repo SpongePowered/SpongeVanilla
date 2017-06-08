@@ -38,11 +38,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(CrashReport.class)
 public abstract class MixinCrashReport {
 
-    @Shadow @Final private CrashReportCategory theReportCategory;
+    @Shadow @Final private CrashReportCategory systemDetailsCategory;
 
     @Inject(method = "populateEnvironment", at = @At("RETURN"))
     private void onPopulateEnvironment(CallbackInfo ci) {
-        this.theReportCategory.setDetail("Plugins", () -> {
+        this.systemDetailsCategory.addDetail("Plugins", () -> {
             StringBuilder result = new StringBuilder(64);
             for (PluginContainer container : Sponge.getPluginManager().getPlugins()) {
                 result.append("\n\t\t").append(container);
