@@ -42,14 +42,14 @@ import org.spongepowered.common.SpongeImpl;
 public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
 
     @Shadow @Final private World world;
-    @Shadow @Final public int xPosition;
-    @Shadow @Final public int zPosition;
+    @Shadow @Final public int x;
+    @Shadow @Final public int z;
 
     @Override
     public boolean unloadChunk() {
         if (this.world.provider.canRespawnHere()
 //                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())
-                && this.world.isSpawnChunk(this.xPosition, this.zPosition)) {
+                && this.world.isSpawnChunk(this.x, this.z)) {
             return false;
         }
 

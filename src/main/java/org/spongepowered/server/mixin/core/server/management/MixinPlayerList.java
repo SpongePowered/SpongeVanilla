@@ -46,7 +46,7 @@ public abstract class MixinPlayerList {
      */
     @Overwrite
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
-        ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.mcServer.worldServerForDimension(dimensionIn)
+        ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.mcServer.getWorld(dimensionIn)
                 .getDefaultTeleporter());
     }
 
