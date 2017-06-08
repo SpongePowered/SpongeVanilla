@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.client;
 
-import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import net.minecraft.client.main.Main;
 
 public final class DebugClientLauncher {
@@ -33,7 +33,7 @@ public final class DebugClientLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        DebugClient.disableReadTimeoutHandler(ReadTimeoutHandler.class);
+        DebugClient.disableReadTimeoutHandler(IdleStateHandler.class);
         Main.main(args);
     }
 
