@@ -1,7 +1,6 @@
 // Gradle plugins
 buildscript {
     repositories {
-        mavenLocal()
         maven {
             name = 'gradle-plugins'
             url = 'https://plugins.gradle.org/m2'
@@ -17,7 +16,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'gradle.plugin.net.minecrell:licenser:0.3'
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
         classpath 'gradle.plugin.org.spongepowered:spongegradle:0.8.1'
@@ -80,7 +79,7 @@ jar {
     manifest {
         attributes(
                 'Main-Class': 'org.spongepowered.server.launch.VersionCheckingMain',
-                'Class-Path': 'minecraft_server.1.12-pre2.jar libraries/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar'
+                'Class-Path': 'minecraft_server.1.12.jar libraries/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar'
         )
     }
 }
