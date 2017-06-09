@@ -57,13 +57,13 @@ public abstract class MixinChunk implements org.spongepowered.api.world.Chunk {
         return true;
     }
 
-    @Inject(method = "onChunkLoad", at = @At("RETURN"))
-    private void postChunkLoad(CallbackInfo ci) {
+    @Inject(method = "onLoad", at = @At("RETURN"))
+    private void postLoad(CallbackInfo ci) {
         SpongeImpl.postEvent(SpongeEventFactory.createLoadChunkEvent(Cause.of(NamedCause.source(this.world)), this));
     }
 
-    @Inject(method = "onChunkUnload", at = @At("RETURN"))
-    private void postChunkUnload(CallbackInfo ci) {
+    @Inject(method = "onUnload", at = @At("RETURN"))
+    private void postUnload(CallbackInfo ci) {
         SpongeImpl.postEvent(SpongeEventFactory.createUnloadChunkEvent(Cause.of(NamedCause.source(this.world)), this));
     }
 

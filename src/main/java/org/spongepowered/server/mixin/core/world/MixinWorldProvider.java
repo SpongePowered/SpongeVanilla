@@ -32,11 +32,11 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(WorldProvider.class)
 public abstract class MixinWorldProvider implements Dimension {
 
-    @Shadow public abstract boolean hasNoSky();
+    @Shadow public abstract boolean isNether();
 
     @Override
     public int getHeight() {
-        return this.hasNoSky() ? 128 : 256;
+        return this.isNether() ? 128 : 256;
     }
 
     @Override
