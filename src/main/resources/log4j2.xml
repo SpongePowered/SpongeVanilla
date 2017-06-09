@@ -2,10 +2,10 @@
 <Configuration status="warn">
     <Appenders>
         <TerminalConsole name="Console">
-            <PatternLayout pattern="%highlightError{[%d{HH:mm:ss}] [%t/%level] [%logger{1}]: %minecraftFormatting{%msg}}%n"/>
+            <PatternLayout pattern="%highlightError{[%d{HH:mm:ss}] [%t/%level] [%logger{1}]: %minecraftFormatting{%msg}%n%xEx}"/>
         </TerminalConsole>
         <TerminalConsole name="MinecraftConsole">
-            <PatternLayout pattern="%highlightError{[%d{HH:mm:ss}] [%t/%level]: %minecraftFormatting{%msg}}%n"/>
+            <PatternLayout pattern="%highlightError{[%d{HH:mm:ss}] [%t/%level]: %minecraftFormatting{%msg}%n%xEx}"/>
         </TerminalConsole>
 
         <!-- Keep a console appender open so log4j2 doesn't close our main out stream if we redirect System.out to the logger -->

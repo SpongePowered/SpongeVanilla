@@ -64,7 +64,7 @@ dependencies {
 
     // Terminal console
     compile 'net.minecrell:terminalconsoleappender:1.0.0-SNAPSHOT'
-    compile 'org.jline:jline-terminal-jna:3.3.0'
+    compile 'org.jline:jline-terminal-jna:3.3.1'
     compile 'net.java.dev.jna:jna:4.4.0'
 
     shadow 'org.ow2.asm:asm-all:5.2'
