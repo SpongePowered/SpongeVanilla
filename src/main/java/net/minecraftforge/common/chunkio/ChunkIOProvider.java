@@ -98,8 +98,8 @@ class ChunkIOProvider implements Runnable
         this.provider.chunkGenerator.recreateStructures(this.chunk, this.chunkInfo.x, this.chunkInfo.z);
 
         provider.id2ChunkMap.put(ChunkPos.asLong(this.chunkInfo.x, this.chunkInfo.z), this.chunk);
-        this.chunk.onChunkLoad();
-        this.chunk.populateChunk(provider, provider.chunkGenerator);
+        this.chunk.onLoad();
+        this.chunk.populate(provider, provider.chunkGenerator);
 
         this.runCallbacks();
     }
