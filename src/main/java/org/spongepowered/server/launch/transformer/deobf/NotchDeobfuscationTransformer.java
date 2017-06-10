@@ -26,7 +26,6 @@ package org.spongepowered.server.launch.transformer.deobf;
 
 import static org.objectweb.asm.Opcodes.ASM5;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -184,7 +183,7 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
         try {
             bytes = Launch.classLoader.getClassBytes(name);
         } catch (IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
 
         if (bytes != null) {

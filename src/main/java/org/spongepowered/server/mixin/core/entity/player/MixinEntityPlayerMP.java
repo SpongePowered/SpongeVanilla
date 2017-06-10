@@ -22,4 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.launch.console;
+package org.spongepowered.server.mixin.core.entity.player;
+
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(EntityPlayerMP.class)
+public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
+
+    private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+
+    @Inject(method = "func_193104_a", at = @At("RETURN"))
+    private void onClonePlayerReturn(EntityPlayerMP oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
+        this.spawnChunkMap = ((MixinEntityPlayer) (Object) oldPlayer).spawnChunkMap;
+        this.spawnForcedSet = ((MixinEntityPlayer) (Object) oldPlayer).spawnForcedSet;
+
+        final NBTTagCompound old = ((MixinEntityPlayer) (Object) oldPlayer).getEntityData();
+        if (old.hasKey(PERSISTED_NBT_TAG)) {
+            this.getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
+        }
+    }
+
+}

@@ -39,6 +39,7 @@ import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 @Mixin(AnvilChunkLoader.class)
@@ -49,6 +50,7 @@ public abstract class MixinAnvilChunkLoader_ChunkIO {
      * @reason Replaced to throw an exception because everything should go
      *     through the async chunk loader
      */
+    @Nullable
     @Overwrite
     @Final
     public Chunk loadChunk(World worldIn, int x, int z) throws IOException {

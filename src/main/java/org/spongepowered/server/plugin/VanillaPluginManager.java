@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.plugin;
 
-import static com.google.common.base.Objects.firstNonNull;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.inject.Inject;

@@ -24,7 +24,7 @@
  */
 package org.spongepowered.server.client;
 
-import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import net.minecraft.launchwrapper.Launch;
 import org.spongepowered.server.SpongeVanilla;
 
@@ -40,7 +40,7 @@ public final class DebugLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        DebugClient.disableReadTimeoutHandler(ReadTimeoutHandler.class);
+        DebugClient.disableReadTimeoutHandler(IdleStateHandler.class);
 
         // Start server
         SpongeVanilla.main(new String[0]);

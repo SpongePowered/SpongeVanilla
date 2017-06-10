@@ -1,6 +1,6 @@
 package net.minecraftforge.common.chunkio;
 
-import com.google.common.base.Objects; // Sponge
+import com.google.common.base.MoreObjects; // Sponge
 import net.minecraft.world.World;
 
 class QueuedChunk {
@@ -49,7 +49,7 @@ class QueuedChunk {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .addValue(this.world)
                 .add("x", this.x)
                 .add("z", this.z)

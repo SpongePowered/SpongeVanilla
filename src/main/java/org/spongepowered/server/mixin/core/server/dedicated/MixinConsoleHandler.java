@@ -25,6 +25,7 @@
 package org.spongepowered.server.mixin.core.server.dedicated;
 
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecrell.terminalconsole.TerminalConsoleAppender;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -35,11 +36,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.text.SpongeTexts;
-import org.spongepowered.common.text.serializer.LegacyTexts;
 import org.spongepowered.server.console.ConsoleCommandCompleter;
-import org.spongepowered.server.console.ConsoleFormatter;
-import org.spongepowered.server.launch.console.TerminalConsoleAppender;
 
 @Mixin(targets = "net/minecraft/server/dedicated/DedicatedServer$2")
 public abstract class MixinConsoleHandler {
@@ -52,9 +49,6 @@ public abstract class MixinConsoleHandler {
         final Terminal terminal = TerminalConsoleAppender.getTerminal();
 
         if (terminal != null) {
-            // Set our console color formatter
-            TerminalConsoleAppender.setFormatter(ConsoleFormatter.INSTANCE);
-
             LineReader reader = LineReaderBuilder.builder()
                     .appName("SpongeVanilla")
                     .terminal(terminal)
@@ -84,10 +78,6 @@ public abstract class MixinConsoleHandler {
             }
 
             ci.cancel();
-        } else {
-            // TODO: TextSerializers are initialized too late, fix this properly
-            // TerminalConsoleAppender.setFormatter(TextSerializers.LEGACY_FORMATTING_CODE::stripCodes);
-            TerminalConsoleAppender.setFormatter(s -> LegacyTexts.strip(s, SpongeTexts.COLOR_CHAR));
         }
     }
 
