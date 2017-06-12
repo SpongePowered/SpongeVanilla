@@ -26,8 +26,6 @@ package org.spongepowered.server;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.lang3.NotImplementedException;
-import org.spongepowered.api.GameDictionary;
 import org.spongepowered.api.Server;
 import org.spongepowered.common.SpongeGame;
 import org.spongepowered.common.SpongeImpl;
@@ -57,11 +55,6 @@ public final class VanillaGame extends SpongeGame {
     @Override
     public Server getServer() {
         return this.server;
-    }
-
-    @Override
-    public GameDictionary getGameDictionary() {
-        throw new NotImplementedException("TODO");
     }
 
 }
