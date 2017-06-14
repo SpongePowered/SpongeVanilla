@@ -26,6 +26,7 @@ package org.spongepowered.server.mixin.core.server.dedicated;
 
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecrell.terminalconsole.TerminalConsoleAppender;
+import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -61,7 +62,13 @@ public abstract class MixinConsoleHandler {
             try {
                 String line;
                 while (!this.server.isServerStopped() && this.server.isServerRunning()) {
-                    line = reader.readLine("> ");
+                    try {
+                        line = reader.readLine("> ");
+                    } catch (EndOfFileException e) {
+                        // Continue reading after EOT
+                        continue;
+                    }
+
                     if (line == null) {
                         break;
                     }
