@@ -53,8 +53,8 @@ final class ClassAccessModifiers {
 
     @Nullable
     AccessModifier getField(String name) {
-        AccessModifier modifier = fields.get(name);
-        return modifier != null ? modifier : fieldModifier;
+        AccessModifier modifier = this.fields.get(name);
+        return modifier != null ? modifier : this.fieldModifier;
     }
 
     @Nullable
@@ -64,8 +64,8 @@ final class ClassAccessModifiers {
 
     @Nullable
     AccessModifier getMethod(String identifier) {
-        AccessModifier modifier = methods.get(identifier);
-        return modifier != null ? modifier : methodModifier;
+        AccessModifier modifier = this.methods.get(identifier);
+        return modifier != null ? modifier : this.methodModifier;
     }
 
     static final class Builder {
@@ -89,11 +89,11 @@ final class ClassAccessModifiers {
         }
 
         void applyToField(String name, AccessModifier modifier) {
-            fields.put(name, modifier.merge(fields.get(name)));
+            this.fields.put(name, modifier.merge(this.fields.get(name)));
         }
 
         void applyToMethod(String identifier, AccessModifier modifier) {
-            methods.put(identifier, modifier.merge(methods.get(identifier)));
+            this.methods.put(identifier, modifier.merge(this.methods.get(identifier)));
         }
 
         private static ImmutableMap<String, AccessModifier> build(Map<String, AccessModifier> map, @Nullable AccessModifier base,

@@ -77,8 +77,8 @@ public final class AccessTransformer implements IClassTransformer {
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
             this.name = name;
 
-            if (modifiers.modifier != null) {
-                access = modifiers.modifier.apply(access);
+            if (this.modifiers.modifier != null) {
+                access = this.modifiers.modifier.apply(access);
             }
 
             super.visit(version, access, name, signature, superName, interfaces);
@@ -86,7 +86,7 @@ public final class AccessTransformer implements IClassTransformer {
 
         @Override
         public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-            AccessModifier modifier = modifiers.getField(name);
+            AccessModifier modifier = this.modifiers.getField(name);
             if (modifier != null) {
                 access = modifier.apply(access);
             }
@@ -96,7 +96,7 @@ public final class AccessTransformer implements IClassTransformer {
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-            AccessModifier modifier = modifiers.getMethod(name, desc);
+            AccessModifier modifier = this.modifiers.getMethod(name, desc);
             if (modifier != null) {
                 access = modifier.apply(access);
             }

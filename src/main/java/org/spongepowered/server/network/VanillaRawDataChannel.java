@@ -104,7 +104,6 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void sendToAll(Consumer<ChannelBuf> payload) {
         validate();
         final String name = getName();

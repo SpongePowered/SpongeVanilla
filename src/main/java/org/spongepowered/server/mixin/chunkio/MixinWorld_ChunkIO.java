@@ -24,7 +24,6 @@
  */
 package org.spongepowered.server.mixin.chunkio;
 
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.IChunkProvider;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.World;

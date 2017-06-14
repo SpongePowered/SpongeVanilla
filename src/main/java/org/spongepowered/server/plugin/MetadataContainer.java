@@ -52,7 +52,7 @@ public final class MetadataContainer {
     }
 
     public PluginMetadata get(String id, String name) {
-        PluginMetadata meta = metadata.get(id);
+        PluginMetadata meta = this.metadata.get(id);
         if (meta == null) {
             if (VanillaLaunch.ENVIRONMENT != DEVELOPMENT) {
                 throw new RuntimeException("Unable to find metadata for " + id);

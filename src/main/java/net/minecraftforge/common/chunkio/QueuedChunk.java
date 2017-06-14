@@ -16,14 +16,14 @@ class QueuedChunk {
 
     @Override
     public int hashCode() {
-        return (x * 31 + z * 29) ^ world.hashCode();
+        return (this.x * 31 + this.z * 29) ^ this.world.hashCode();
     }
 
     @Override
     public boolean equals(Object object) {
         if (object instanceof QueuedChunk) {
             QueuedChunk other = (QueuedChunk) object;
-            return x == other.x && z == other.z && world == other.world;
+            return this.x == other.x && this.z == other.z && this.world == other.world;
         }
 
         return false;

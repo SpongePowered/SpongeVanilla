@@ -59,7 +59,7 @@ public final class PluginClassVisitor extends ClassVisitor {
     @Override @Nullable
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         if (visible && desc.equals(PLUGIN_DESCRIPTOR)) {
-            return this.annotationVisitor = new PluginAnnotationVisitor(className);
+            return this.annotationVisitor = new PluginAnnotationVisitor(this.className);
         }
 
         return null;

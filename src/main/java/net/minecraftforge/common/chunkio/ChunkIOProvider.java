@@ -80,7 +80,7 @@ class ChunkIOProvider implements Runnable
     // sync stuff
     public void syncCallback()
     {
-        if (chunk == null)
+        if (this.chunk == null)
         {
             this.runCallbacks();
             return;
@@ -94,12 +94,12 @@ class ChunkIOProvider implements Runnable
         // Sponge: Don't call Forge event
         //MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(this.chunk, this.nbt)); // Don't call ChunkDataEvent.Load async
 
-        this.chunk.setLastSaveTime(provider.world.getTotalWorldTime());
+        this.chunk.setLastSaveTime(this.provider.world.getTotalWorldTime());
         this.provider.chunkGenerator.recreateStructures(this.chunk, this.chunkInfo.x, this.chunkInfo.z);
 
-        provider.id2ChunkMap.put(ChunkPos.asLong(this.chunkInfo.x, this.chunkInfo.z), this.chunk);
+        this.provider.id2ChunkMap.put(ChunkPos.asLong(this.chunkInfo.x, this.chunkInfo.z), this.chunk);
         this.chunk.onLoad();
-        this.chunk.populate(provider, provider.chunkGenerator);
+        this.chunk.populate(this.provider, this.provider.chunkGenerator);
 
         this.runCallbacks();
     }

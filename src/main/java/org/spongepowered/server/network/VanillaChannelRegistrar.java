@@ -130,9 +130,8 @@ public class VanillaChannelRegistrar extends SpongeNetworkManager {
     public Set<String> getRegisteredChannels(Platform.Type side) {
         if (side == Platform.Type.SERVER) {
             return ImmutableSet.copyOf(this.channels.keySet());
-        } else {
-            return ImmutableSet.of();
         }
+        return ImmutableSet.of();
     }
 
     @Override

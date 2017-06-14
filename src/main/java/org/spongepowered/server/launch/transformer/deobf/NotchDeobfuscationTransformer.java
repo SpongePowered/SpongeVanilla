@@ -173,11 +173,11 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
 
 
     private void loadSuperMaps(String name) {
-        if (loadedClasses.contains(name)) {
+        if (this.loadedClasses.contains(name)) {
             return;
         }
 
-        loadedClasses.add(name);
+        this.loadedClasses.add(name);
 
         byte[] bytes;
         try {
@@ -206,7 +206,7 @@ public final class NotchDeobfuscationTransformer extends DeobfuscationTransforme
     }
 
     private void createSuperMaps(ClassReader reader, String name, @Nullable String superName, @Nullable String[] interfaces) {
-        loadedClasses.add(name);
+        this.loadedClasses.add(name);
 
         Map<String, String> fields = new HashMap<>();
         Map<String, String> methods = new HashMap<>();
