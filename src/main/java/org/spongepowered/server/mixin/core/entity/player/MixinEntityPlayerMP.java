@@ -36,7 +36,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
 
     private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
-    @Inject(method = "func_193104_a", at = @At("RETURN"))
+    @Inject(method = "copyFrom", at = @At("RETURN"))
     private void onClonePlayerReturn(EntityPlayerMP oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
         this.spawnChunkMap = ((MixinEntityPlayer) (Object) oldPlayer).spawnChunkMap;
         this.spawnForcedSet = ((MixinEntityPlayer) (Object) oldPlayer).spawnForcedSet;
