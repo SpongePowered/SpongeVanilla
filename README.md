@@ -22,6 +22,12 @@ The following steps will ensure your project is cloned properly.
 2. `cd SpongeVanilla`
 3. `cp scripts/pre-commit .git/hooks`
 
+**Note**: If you accidentally omit `--recursive` option when cloning, you may
+delete the repository and try again, or you may execute the following to fix the
+situation:
+
+	git submodule update --init --recursive
+
 ## Setup
 **Note**: SpongeVanilla uses [Gradle] as its build system. The repo includes the Gradle wrapper that will automatically download the correct Gradle 
 version. Local installations of Gradle may work but are untested. To execute the Gradle wrapper, run the `./gradlew` script on Unix systems or only
@@ -39,7 +45,7 @@ __For [Eclipse]__
   4. Check SpongeVanilla when it finishes building and click **Finish**
 
 __For [IntelliJ]__
-  1. Make sure you have the Gradle plugin enabled (File > Settings > Plugins).  
+  1. Make sure you have the Gradle plugin enabled (File > Settings > Plugins. For **macOS** users: IntelliJ IDEA > Preferences > Plugins).  
   2. Click File > New > Project from Existing Sources > Gradle and select the root folder for SpongeVanilla.
   3. Make sure _Use default gradle wrapper_ is selected. Older/newer Gradle versions may work but we only test using the wrapper.
 
