@@ -40,6 +40,7 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import joptsimple.OptionSet;
+import net.minecraft.entity.EntityList;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -64,6 +65,7 @@ import org.spongepowered.common.inject.SpongeModule;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
 import org.spongepowered.common.network.message.SpongeMessageHandler;
 import org.spongepowered.common.registry.SpongeGameRegistry;
+import org.spongepowered.common.registry.type.entity.EntityTypeRegistryModule;
 import org.spongepowered.common.service.permission.SpongeContextCalculator;
 import org.spongepowered.common.service.permission.SpongePermissionService;
 import org.spongepowered.common.service.sql.SqlServiceImpl;
@@ -112,6 +114,9 @@ public final class SpongeVanilla extends MetaPluginContainer {
         this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
         SpongeBootstrap.initializeServices();
         SpongeBootstrap.initializeCommands();
+        for (EntityTypeRegistryModule.FutureRegistration registration : EntityTypeRegistryModule.getInstance().getCustomEntities()) {
+            EntityList.register(registration.id, registration.name.toString(), registration.type, registration.oldName);
+        }
 
         this.logger.info("Loading plugins...");
         ((VanillaPluginManager) this.game.getPluginManager()).loadPlugins();
