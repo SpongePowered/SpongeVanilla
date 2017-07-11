@@ -72,7 +72,7 @@ public final class AsyncAnvilChunkLoader {
                 return null;
             }
 
-            nbttagcompound = loader.field_193416_e.process(FixTypes.CHUNK, CompressedStreamTools.read(datainputstream));
+            nbttagcompound = loader.fixer.process(FixTypes.CHUNK, CompressedStreamTools.read(datainputstream));
         }
 
         // Sponge: Return NBT data and load chunk later
