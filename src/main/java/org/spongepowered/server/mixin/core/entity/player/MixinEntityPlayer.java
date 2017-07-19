@@ -41,6 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.event.CauseStackManager.CauseStackFrame;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -52,7 +53,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.data.util.NbtDataUtil;
-import org.spongepowered.common.event.SpongeCauseStackManager.CauseStackFrame;
 import org.spongepowered.common.interfaces.entity.player.IMixinEntityPlayer;
 import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
 import org.spongepowered.common.util.VecHelper;
@@ -215,7 +215,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
         // Sponge start
         BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector3i(this.bedLocation));
-        try (CauseStackFrame frame = (CauseStackFrame) Sponge.getCauseStackManager().createCauseFrame()) {
+        try (CauseStackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             Sponge.getCauseStackManager().pushCause(this);
             SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Sponge.getCauseStackManager().getCurrentCause(), bed,
                     Optional.ofNullable(newLocation), this, setSpawn);
