@@ -1,5 +1,5 @@
 {
-    "minVersion": "0.5.7",
+    "minVersion": "0.7",
     "package": "org.spongepowered.server.mixin.entityactivation",
     "plugin": "org.spongepowered.common.mixin.plugin.entityactivation.EntityActivationRangePlugin",
     "refmap": "mixins.vanilla.refmap.json",
