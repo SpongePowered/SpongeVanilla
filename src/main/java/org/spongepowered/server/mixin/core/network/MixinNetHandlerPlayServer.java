@@ -33,6 +33,7 @@ import com.google.common.base.Splitter;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
@@ -42,6 +43,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.network.RemoteConnection;
@@ -70,6 +73,9 @@ import java.util.Set;
 @Mixin(NetHandlerPlayServer.class)
 public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMixinNetHandlerPlayServer {
 
+    private static final String
+        CHECK_THREAD_AND_ENQUEUE =
+        "Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V";
     @Shadow @Final private MinecraftServer serverController;
     @Shadow public EntityPlayerMP player;
 
@@ -112,7 +118,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         // Do nothing
     }
 
-    @Inject(method = "processCustomPayload", at = @At("HEAD") , cancellable = true)
+    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = CHECK_THREAD_AND_ENQUEUE, shift = At.Shift.AFTER) , cancellable = true)
     private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {

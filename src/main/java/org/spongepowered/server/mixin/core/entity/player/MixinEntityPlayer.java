@@ -41,7 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.event.CauseStackManager.CauseStackFrame;
+import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -215,7 +215,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
         // Sponge start
         BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector3i(this.bedLocation));
-        try (CauseStackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             Sponge.getCauseStackManager().pushCause(this);
             SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Sponge.getCauseStackManager().getCurrentCause(), bed,
                     Optional.ofNullable(newLocation), this, setSpawn);
