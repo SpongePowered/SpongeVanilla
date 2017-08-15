@@ -196,6 +196,8 @@ public final class VanillaServerTweaker implements ITweaker {
     }
 
     private static void configureLaunchClassLoader(LaunchClassLoader loader) {
+        SpongeLaunch.addJreExtensionsToClassPath();
+
         // Logging
         loader.addClassLoaderExclusion("org.slf4j.");
         loader.addClassLoaderExclusion("net.minecrell.terminalconsole.");
