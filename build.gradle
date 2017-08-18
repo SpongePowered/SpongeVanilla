@@ -19,7 +19,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'gradle.plugin.net.minecrell:licenser:0.3'
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-        classpath 'gradle.plugin.org.spongepowered:spongegradle:0.8.1'
+        classpath 'org.spongepowered:spongegradle:0.8.2-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
         classpath 'de.sebastianboegl.gradle.plugins:shadow-log4j-transformer:1.0.1'
     }
@@ -87,6 +87,12 @@ jar {
 // Reobfuscate to SRG mappings
 reobf.jar.mappingType = 'SEARGE'
 
+task('buildCompactMappings', type: org.spongepowered.gradle.cmap.BuildCompactMappingsTask, dependsOn: ['extractMcpMappings', 'splitServerJar']) {
+    minecraftJar = plugins[forgeGradlePlugin].delayedFile(net.minecraftforge.gradle.common.Constants.JAR_SERVER_PURE)
+    srg = plugins[forgeGradlePlugin].delayedFile(net.minecraftforge.gradle.common.Constants.MCP_DATA_SRG)
+    output = new File(temporaryDir, "mappings.cmap")
+}
+
 shadowJar {
     // Include production log4j2.xml
     exclude 'log4j2.xml'
@@ -94,9 +100,7 @@ shadowJar {
 
     configurations += [project.configurations.shadow]
 
-    from plugins[forgeGradlePlugin].delayedFile(net.minecraftforge.gradle.common.Constants.MCP_DATA_SRG)
-    rename 'joined.srg', 'mappings.srg'
-
+    from tasks.buildCompactMappings
     from({zipTree(project.configurations.log4j.resolve().first())}) {
         include 'META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat'
     }

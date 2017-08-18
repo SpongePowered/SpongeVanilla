@@ -26,7 +26,6 @@ package org.spongepowered.server.launch.transformer.deobf;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.ClassRemapper;
@@ -69,20 +68,24 @@ abstract class DeobfuscationTransformer extends Remapper implements IClassTransf
         return desc;
     }
 
+    protected boolean shouldTransformClass(String transformedName) {
+        return true;
+    }
+
     @Override @Nullable
     public final byte[] transform(String name, String transformedName, @Nullable byte[] bytes) {
         if (bytes == null) {
             return null;
         }
 
+        if (!shouldTransformClass(transformedName)) {
+            return bytes;
+        }
+
         ClassReader reader = new ClassReader(bytes);
         ClassWriter writer = new ClassWriter(reader, 0);
-        reader.accept(createClassRemapper(reader, writer), 0);
+        reader.accept(new ClassRemapper(writer, this), 0);
         return writer.toByteArray();
-    }
-
-    ClassVisitor createClassRemapper(ClassReader reader, ClassVisitor cv) {
-        return new ClassRemapper(cv, this);
     }
 
 }

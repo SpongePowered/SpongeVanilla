@@ -105,7 +105,7 @@ public final class VanillaServerTweaker implements ITweaker {
         if (VanillaLaunch.ENVIRONMENT == PRODUCTION) {
             // Enable Notch->Searge deobfuscation
             VanillaLaunch.getLogger().info("De-obfuscation mappings are provided by MCP (http://www.modcoderpack.com)");
-            Launch.blackboard.put("vanilla.srg_mappings", getResource("mappings.srg"));
+            Launch.blackboard.put("vanilla.cmap", getResource("mappings.cmap"));
             loader.registerTransformer("org.spongepowered.server.launch.transformer.deobf.NotchDeobfuscationTransformer");
         } else {
             // Enable Searge->MCP deobfuscation (if running in ForgeGradle)

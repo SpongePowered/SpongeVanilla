@@ -26,7 +26,7 @@ package org.spongepowered.server.launch.transformer.deobf;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.launchwrapper.Launch;
-import org.spongepowered.server.launch.transformer.deobf.reader.McpCsvReader;
+import org.spongepowered.server.launch.transformer.deobf.mappings.McpCsvReader;
 
 import java.io.IOException;
 import java.nio.file.Path;

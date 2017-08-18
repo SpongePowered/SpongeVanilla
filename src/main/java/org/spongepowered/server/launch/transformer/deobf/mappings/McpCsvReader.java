@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch.transformer.deobf.reader;
+package org.spongepowered.server.launch.transformer.deobf.mappings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
