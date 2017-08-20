@@ -32,7 +32,7 @@
         </Logger>
 
         <!-- Hide LaunchWrapper messages unless it's a real problem -->
-        <Logger name="LaunchWrapper" level="all" additivity="false">
+        <Logger name="LaunchWrapper" level="debug" additivity="false">
             <AppenderRef ref="Console" level="warn"/>
             <AppenderRef ref="File"/>
         </Logger>
@@ -43,7 +43,7 @@
         </Logger>
 
         <!-- Log all other messages with prefix -->
-        <Root level="all">
+        <Root level="debug">
             <AppenderRef ref="Console" level="info"/>
             <AppenderRef ref="File"/>
         </Root>
