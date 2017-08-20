@@ -8,9 +8,6 @@
             <PatternLayout pattern="%highlightError{[%d{HH:mm:ss} %level]: %minecraftFormatting{%msg}%n%xEx}"/>
         </TerminalConsole>
 
-        <!-- Keep a console appender open so log4j2 doesn't close our main out stream if we redirect System.out to the logger -->
-        <Console name="SysOut" target="SYSTEM_OUT"/>
-
         <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger{1}]: %minecraftFormatting{%msg}{strip}%n"/>
             <Policies>
