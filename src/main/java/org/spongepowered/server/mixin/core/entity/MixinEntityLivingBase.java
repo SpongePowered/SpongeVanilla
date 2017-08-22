@@ -46,6 +46,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
+import java.util.Optional;
+
 import javax.annotation.Nullable;
 
 @Mixin(EntityLivingBase.class)
@@ -55,6 +57,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Shadow public abstract void setHeldItem(EnumHand hand, @Nullable ItemStack stack);
     @Shadow public abstract int getItemInUseCount();
     @Shadow public abstract void resetActiveHand();
+    @Shadow public abstract EnumHand getActiveHand();
 
     @Shadow @Nullable protected ItemStack activeItemStack;
     @Shadow protected int activeItemStackUseCount;
@@ -68,7 +71,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     private void onSetActiveItemStack(EnumHand hand, CallbackInfo ci, ItemStack stack) {
         Sponge.getCauseStackManager().pushCause(this);
         UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Sponge.getCauseStackManager().getCurrentCause(),
-                stack.getMaxItemUseDuration(), stack.getMaxItemUseDuration(), ItemStackUtil.snapshotOf(stack));
+                stack.getMaxItemUseDuration(), stack.getMaxItemUseDuration(), Optional.of(hand), ItemStackUtil.snapshotOf(stack));
         if (SpongeImpl.postEvent(event)) {
             ci.cancel();
         } else {
@@ -87,7 +90,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     private int onGetRemainingItemDuration(EntityLivingBase self) {
         Sponge.getCauseStackManager().pushCause(this);
         UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Sponge.getCauseStackManager().getCurrentCause(),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack));
+                this.activeItemStackUseCount, this.activeItemStackUseCount, Optional.of(self.getActiveHand()), ItemStackUtil.snapshotOf(this.activeItemStack));
         SpongeImpl.postEvent(event);
         Sponge.getCauseStackManager().popCause();
         // Because the item usage will only finish if activeItemStackUseCount == 0 and decrements it first, it should be >= 1
@@ -108,7 +111,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     private void onUpdateItemUse(CallbackInfo ci) {
         Sponge.getCauseStackManager().pushCause(this);
         UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(Sponge.getCauseStackManager().getCurrentCause(),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack));
+                this.activeItemStackUseCount, this.activeItemStackUseCount, Optional.of(self.getActiveHand()), ItemStackUtil.snapshotOf(this.activeItemStack));
         SpongeImpl.postEvent(event);
         Sponge.getCauseStackManager().popCause();
         if (event.getRemainingDuration() > 0) {
@@ -126,7 +129,7 @@ public abstract class MixinEntityLivingBase extends Entity {
         ItemStackSnapshot activeItemStackSnapshot = ItemStackUtil.snapshotOf(this.activeItemStack);
         Sponge.getCauseStackManager().pushCause(this);
         UseItemStackEvent.Replace event = SpongeEventFactory.createUseItemStackEventReplace(Sponge.getCauseStackManager().getCurrentCause(),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, activeItemStackSnapshot,
+                this.activeItemStackUseCount, this.activeItemStackUseCount, Optional.of(hand), activeItemStackSnapshot,
                 new Transaction<>(activeItemStackSnapshot, ItemStackUtil.snapshotOf(stack)));
 
         if (SpongeImpl.postEvent(event)) {
@@ -147,7 +150,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     private void onStopPlayerUsing(ItemStack stack, World world, EntityLivingBase self, int duration) {
         Sponge.getCauseStackManager().pushCause(this);
         if (!SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventStop(Sponge.getCauseStackManager().getCurrentCause(),
-                duration, duration, ItemStackUtil.snapshotOf(stack)))) {
+                duration, duration, Optional.of(self.getActiveHand()), ItemStackUtil.snapshotOf(stack)))) {
             stack.onPlayerStoppedUsing(world, self, duration);
         }
         Sponge.getCauseStackManager().popCause();
@@ -157,7 +160,7 @@ public abstract class MixinEntityLivingBase extends Entity {
     private void onResetActiveHand(CallbackInfo ci) {
         Sponge.getCauseStackManager().pushCause(this);
         SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Sponge.getCauseStackManager().getCurrentCause(),
-                this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack)));
+                this.activeItemStackUseCount, this.activeItemStackUseCount, Optional.of(self.getActiveHand()), ItemStackUtil.snapshotOf(this.activeItemStack)));
         Sponge.getCauseStackManager().popCause();
     }
 
