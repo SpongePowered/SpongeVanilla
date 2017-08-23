@@ -27,6 +27,7 @@ repositories {
 
 dependencies {
     compile rootProject
+    compile project.files(rootProject.configurations.forgeGradleMc.collect())
 }
 
 minecraft {
