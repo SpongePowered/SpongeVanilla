@@ -30,10 +30,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.CombatTracker;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,13 +66,15 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Inject(method = "setActiveHand", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;activeItemStack:Lnet/minecraft/item/ItemStack;"))
     private void onSetActiveItemStack(EnumHand hand, CallbackInfo ci, ItemStack stack) {
-        UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        UseItemStackEvent.Start event = SpongeEventFactory.createUseItemStackEventStart(Sponge.getCauseStackManager().getCurrentCause(),
                 stack.getMaxItemUseDuration(), stack.getMaxItemUseDuration(), ItemStackUtil.snapshotOf(stack));
         if (SpongeImpl.postEvent(event)) {
             ci.cancel();
         } else {
             this.activeItemStackUseCount = event.getRemainingDuration();
         }
+        Sponge.getCauseStackManager().popCause();
     }
 
     @Redirect(method = "setActiveHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxItemUseDuration()I"))
@@ -83,10 +85,11 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Redirect(method = "updateActiveHand",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getItemInUseCount()I", ordinal = 0))
     private int onGetRemainingItemDuration(EntityLivingBase self) {
-        UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        UseItemStackEvent.Tick event = SpongeEventFactory.createUseItemStackEventTick(Sponge.getCauseStackManager().getCurrentCause(),
                 this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack));
         SpongeImpl.postEvent(event);
-
+        Sponge.getCauseStackManager().popCause();
         // Because the item usage will only finish if activeItemStackUseCount == 0 and decrements it first, it should be >= 1
         this.activeItemStackUseCount = Math.max(event.getRemainingDuration(), 1);
 
@@ -103,10 +106,11 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Inject(method = "onItemUseFinish", cancellable = true,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;updateItemUse(Lnet/minecraft/item/ItemStack;I)V"))
     private void onUpdateItemUse(CallbackInfo ci) {
-        UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        UseItemStackEvent.Finish event = SpongeEventFactory.createUseItemStackEventFinish(Sponge.getCauseStackManager().getCurrentCause(),
                 this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack));
         SpongeImpl.postEvent(event);
-
+        Sponge.getCauseStackManager().popCause();
         if (event.getRemainingDuration() > 0) {
             this.activeItemStackUseCount = event.getRemainingDuration();
             ci.cancel();
@@ -120,14 +124,16 @@ public abstract class MixinEntityLivingBase extends Entity {
             + "setHeldItem(Lnet/minecraft/util/EnumHand;Lnet/minecraft/item/ItemStack;)V"))
     private void onSetHeldItem(EntityLivingBase self, EnumHand hand, @Nullable ItemStack stack) {
         ItemStackSnapshot activeItemStackSnapshot = ItemStackUtil.snapshotOf(this.activeItemStack);
-
-        UseItemStackEvent.Replace event = SpongeEventFactory.createUseItemStackEventReplace(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        UseItemStackEvent.Replace event = SpongeEventFactory.createUseItemStackEventReplace(Sponge.getCauseStackManager().getCurrentCause(),
                 this.activeItemStackUseCount, this.activeItemStackUseCount, activeItemStackSnapshot,
                 new Transaction<>(activeItemStackSnapshot, ItemStackUtil.snapshotOf(stack)));
 
         if (SpongeImpl.postEvent(event)) {
+            Sponge.getCauseStackManager().popCause();
             return; // Don't touch the held item if event is cancelled
         }
+        Sponge.getCauseStackManager().popCause();
 
         if (!event.getItemStackResult().isValid()) {
             return;
@@ -139,16 +145,20 @@ public abstract class MixinEntityLivingBase extends Entity {
     @Redirect(method = "stopActiveHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;"
             + "onPlayerStoppedUsing(Lnet/minecraft/world/World;Lnet/minecraft/entity/EntityLivingBase;I)V")) // stopActiveHand
     private void onStopPlayerUsing(ItemStack stack, World world, EntityLivingBase self, int duration) {
-        if (!SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventStop(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        if (!SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventStop(Sponge.getCauseStackManager().getCurrentCause(),
                 duration, duration, ItemStackUtil.snapshotOf(stack)))) {
             stack.onPlayerStoppedUsing(world, self, duration);
         }
+        Sponge.getCauseStackManager().popCause();
     }
 
     @Inject(method = "resetActiveHand", at = @At("HEAD"))
     private void onResetActiveHand(CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Cause.of(NamedCause.source(this)),
+        Sponge.getCauseStackManager().pushCause(this);
+        SpongeImpl.postEvent(SpongeEventFactory.createUseItemStackEventReset(Sponge.getCauseStackManager().getCurrentCause(),
                 this.activeItemStackUseCount, this.activeItemStackUseCount, ItemStackUtil.snapshotOf(this.activeItemStack)));
+        Sponge.getCauseStackManager().popCause();
     }
 
 }

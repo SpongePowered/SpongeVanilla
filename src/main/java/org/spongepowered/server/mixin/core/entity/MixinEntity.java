@@ -27,9 +27,8 @@ package org.spongepowered.server.mixin.core.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -48,8 +47,10 @@ public abstract class MixinEntity implements IMixinEntity {
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     private void onConstructed(World world, CallbackInfo ci) {
-        SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Cause.of(NamedCause.source(world)),
+        Sponge.getCauseStackManager().pushCause(world);
+        SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Sponge.getCauseStackManager().getCurrentCause(),
                 this, this.getType(), this.getTransform()));
+        Sponge.getCauseStackManager().popCause();
     }
 
     @Override
