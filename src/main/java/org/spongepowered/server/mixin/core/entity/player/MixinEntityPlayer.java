@@ -216,8 +216,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         // Sponge start
         BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector3i(this.bedLocation));
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            Sponge.getCauseStackManager().pushCause(this);
-            SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(Sponge.getCauseStackManager().getCurrentCause(), bed,
+            frame.pushCause(this);
+            SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(frame.getCurrentCause(), bed,
                     Optional.ofNullable(newLocation), this, setSpawn);
 
             if (SpongeImpl.postEvent(event)) {
@@ -246,7 +246,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
                 }
 
                 // Sponge start
-                SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(Sponge.getCauseStackManager().getCurrentCause(), bed, this));
+                SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(frame.getCurrentCause(), bed, this));
             }
             // Sponge end
         }
