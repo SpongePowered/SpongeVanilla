@@ -63,7 +63,7 @@ public final class AsyncAnvilChunkLoader {
         // Copied from AnvilChunkLoader.loadChunk, keep this up-to-date!
 
         ChunkPos chunkpos = new ChunkPos(x, z);
-        NBTTagCompound nbttagcompound = loader.chunksToRemove.get(chunkpos);
+        NBTTagCompound nbttagcompound = loader.chunksToSave.get(chunkpos);
 
         if (nbttagcompound == null) {
             DataInputStream datainputstream = RegionFileCache.getChunkInputStream(loader.chunkSaveLocation, x, z);

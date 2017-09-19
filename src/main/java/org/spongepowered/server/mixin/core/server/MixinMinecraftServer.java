@@ -68,7 +68,7 @@ import java.util.concurrent.FutureTask;
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
-    @Shadow @Final private static Logger LOG;
+    @Shadow @Final private static Logger LOGGER;
     @Shadow @Final private List<ITickable> tickables;
     @Shadow @Final public Profiler profiler;
     @Shadow private PlayerList playerList;
@@ -97,7 +97,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
      */
     @Overwrite
     public void sendMessage(ITextComponent component) {
-        LOG.info(SpongeTexts.toLegacy(component));
+        LOGGER.info(SpongeTexts.toLegacy(component));
     }
 
 
@@ -150,7 +150,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
         synchronized (this.futureTaskQueue) {
             while (!this.futureTaskQueue.isEmpty()) {
-                Util.runTask(this.futureTaskQueue.poll(), LOG);
+                Util.runTask(this.futureTaskQueue.poll(), LOGGER);
             }
         }
 
