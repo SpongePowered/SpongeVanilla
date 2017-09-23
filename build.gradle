@@ -49,13 +49,6 @@ configurations.forgeGradleMcDeps {
     transitive = false
 }
 
-repositories {
-    maven {
-        name = 'sonatype-oss-snapshots'
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
-}
-
 dependencies {
     compile 'org.ow2.asm:asm-debug-all:5.2'
     compile 'net.sf.jopt-simple:jopt-simple:5.0.4'
