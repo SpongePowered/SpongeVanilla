@@ -29,28 +29,28 @@
 
     <Loggers>
         <!-- Log Minecraft/Mojang with INFO level and skip network packet logging -->
-        <Logger name="net.minecraft" level="all">
+        <Logger name="net.minecraft" level="info">
             <filters>
                 <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL"/>
             </filters>
         </Logger>
 
-        <Logger name="com.mojang" level="all"/>
+        <Logger name="com.mojang" level="info"/>
 
-        <!-- Hide Mixin debug messages in console -->
-        <Logger name="mixin" level="all" additivity="false">
-            <AppenderRef ref="Console" level="info"/>
+        <!-- Hide LaunchWrapper INFO messages in the console -->
+        <Logger name="LaunchWrapper" level="debug" additivity="false">
+            <AppenderRef ref="Console" level="warn"/>
             <AppenderRef ref="File"/>
         </Logger>
 
         <!-- Make HikariCP less verbose -->
-        <Logger name="com.zaxxer.hikari" level="all" additivity="false">
-            <AppenderRef ref="Console" level="info"/>
+        <Logger name="com.zaxxer.hikari" level="info" additivity="false">
+            <AppenderRef ref="Console" level="warn"/>
             <AppenderRef ref="File"/>
         </Logger>
 
-        <Root level="all">
-            <AppenderRef ref="Console" level="debug"/>
+        <Root level="debug">
+            <AppenderRef ref="Console" level="info"/>
             <AppenderRef ref="File"/>
         </Root>
     </Loggers>

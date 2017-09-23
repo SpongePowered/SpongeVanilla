@@ -86,9 +86,8 @@ task('buildCompactMappings', type: org.spongepowered.gradle.cmap.BuildCompactMap
 }
 
 shadowJar {
-    // Include production log4j2.xml
-    exclude 'log4j2.xml'
-    rename 'log4j2_prod.xml', 'log4j2.xml'
+    // Exclude development Log4j configuration
+    exclude 'log4j2-test.xml'
 
     configurations += [project.configurations.shadow]
 
