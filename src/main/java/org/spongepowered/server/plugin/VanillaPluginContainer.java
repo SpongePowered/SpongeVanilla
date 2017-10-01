@@ -25,6 +25,8 @@
 package org.spongepowered.server.plugin;
 
 import com.google.inject.Injector;
+import org.spongepowered.common.inject.SpongeGuice;
+import org.spongepowered.common.inject.plugin.ModularPluginModule;
 import org.spongepowered.common.inject.plugin.PluginModule;
 import org.spongepowered.common.plugin.PluginContainerExtension;
 import org.spongepowered.plugin.meta.PluginMetadata;
@@ -40,8 +42,17 @@ final class VanillaPluginContainer extends MetaPluginContainer implements Plugin
     VanillaPluginContainer(Injector injector, Class<?> pluginClass, PluginMetadata metadata, Optional<Path> source) {
         super(metadata, source);
 
-        this.injector = injector.createChildInjector(new PluginModule(this, pluginClass));
-        this.instance = Optional.of(this.injector.getInstance(pluginClass));
+        if (SpongeGuice.isModular(pluginClass)) {
+            try {
+                this.instance = Optional.of(pluginClass.newInstance());
+            } catch (final IllegalAccessException | InstantiationException e) {
+                throw new IllegalStateException("Could not construct instance of plugin '" + pluginClass + "'.");
+            }
+            this.injector = injector.createChildInjector(new ModularPluginModule(this, this.instance));
+        } else {
+            this.injector = injector.createChildInjector(new PluginModule(this, pluginClass));
+            this.instance = Optional.of(this.injector.getInstance(pluginClass));
+        }
     }
 
     @Override
