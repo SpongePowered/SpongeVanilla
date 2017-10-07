@@ -68,7 +68,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     @Shadow protected boolean sleeping;
     @Shadow @Nullable public BlockPos bedLocation;
     @Shadow private int sleepTimer;
-    @Shadow @Nullable private BlockPos spawnChunk;
+    @Shadow @Nullable private BlockPos spawnPos;
     @Shadow private boolean spawnForced;
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
@@ -87,7 +87,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     @Override
     public BlockPos getBedLocation(int dimension) {
-        return dimension == 0 ? this.spawnChunk : this.spawnChunkMap.get(dimension);
+        return dimension == 0 ? this.spawnPos : this.spawnChunkMap.get(dimension);
     }
 
     /**
@@ -115,10 +115,10 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     public void setSpawnChunk(@Nullable BlockPos pos, boolean forced, int dimension) {
         if (dimension == 0) {
             if (pos != null) {
-                this.spawnChunk = pos;
+                this.spawnPos = pos;
                 this.spawnForced = forced;
             } else {
-                this.spawnChunk = null;
+                this.spawnPos = null;
                 this.spawnForced = false;
             }
         } else if (pos != null) {
