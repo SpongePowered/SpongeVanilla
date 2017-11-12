@@ -24,13 +24,13 @@
  */
 package org.spongepowered.server.mixin.core.enchantment;
 
-import org.spongepowered.api.item.Enchantment;
+import org.spongepowered.api.item.EnchantmentType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(net.minecraft.enchantment.Enchantment.class)
-public abstract class MixinEnchantment implements Enchantment {
+public abstract class MixinEnchantment implements EnchantmentType {
 
     @Shadow public abstract boolean canApply(net.minecraft.item.ItemStack stack);
 
