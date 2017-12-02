@@ -52,9 +52,7 @@ import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.service.permission.PermissionService;
-import org.spongepowered.api.service.permission.SubjectData;
 import org.spongepowered.api.service.sql.SqlService;
-import org.spongepowered.api.util.Tristate;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeInternalListeners;
@@ -139,9 +137,6 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
         if (!this.game.getServiceManager().provide(PermissionService.class).isPresent()) {
             SpongePermissionService service = new SpongePermissionService(this.game);
-            // Setup default permissions
-            service.getGroupForOpLevel(1).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.selector", Tristate.TRUE);
-            service.getGroupForOpLevel(2).getSubjectData().setPermission(SubjectData.GLOBAL_CONTEXT, "minecraft.commandblock", Tristate.TRUE);
             this.game.getServiceManager().setProvider(this, PermissionService.class, service);
         }
 
