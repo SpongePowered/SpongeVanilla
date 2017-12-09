@@ -64,7 +64,7 @@ Thumbs.db
 .settings
 .checkstyle
 .factorypath
-run
+!/run/.gitkeep
 eclipse
 nbproject
 atlassian-ide-plugin.xml
