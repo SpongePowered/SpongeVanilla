@@ -114,11 +114,11 @@ public final class CompactMappingsReader {
     }
 
     public ImmutableMap<String, ClassMappings> getMappings() {
-        return mappings.build();
+        return this.mappings.build();
     }
 
     public ImmutableMap<String, String> getReverseClasses() {
-        return reverseClasses.build();
+        return this.reverseClasses.build();
     }
 
 }
