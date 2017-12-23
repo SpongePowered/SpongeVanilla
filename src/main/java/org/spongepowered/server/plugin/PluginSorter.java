@@ -24,8 +24,11 @@
  */
 package org.spongepowered.server.plugin;
 
+import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.util.graph.CyclicGraphException;
 import org.spongepowered.common.util.graph.DirectedGraph;
 import org.spongepowered.common.util.graph.TopologicalOrder;
+import org.spongepowered.common.util.graph.DirectedGraph.DataNode;
 import org.spongepowered.server.launch.plugin.PluginCandidate;
 
 import java.util.List;
@@ -45,7 +48,22 @@ final class PluginSorter {
             }
         }
 
-        return TopologicalOrder.createOrderedLoad(graph);
+        try {
+            return TopologicalOrder.createOrderedLoad(graph);
+        } catch (CyclicGraphException e) {
+            StringBuilder msg = new StringBuilder();
+            msg.append("Plugin dependencies are cyclical!\n");
+            msg.append("Dependency loops are:\n");
+            for (DataNode<?>[] cycle : e.getCycles()) {
+                msg.append("[");
+                for (DataNode<?> node : cycle) {
+                    msg.append(node.getData().toString()).append(" ");
+                }
+                msg.append("]\n");
+            }
+            SpongeImpl.getLogger().fatal(msg.toString());
+            throw new RuntimeException("Plugin dependencies error.");
+        }
     }
 
 }
