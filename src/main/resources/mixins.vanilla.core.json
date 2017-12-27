@@ -8,6 +8,7 @@
     "priority": 1111,
     "server": [
         "MixinBootstrap",
+        "advancement.MixinAdvancementManager",
         "command.MixinEntitySelector",
         "common.MixinSpongeImplHooks",
         "crash.MixinCrashReport",

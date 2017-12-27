@@ -24,8 +24,6 @@
  */
 package org.spongepowered.server.launch.plugin;
 
-import static org.spongepowered.server.launch.plugin.PluginScanner.JAR_EXTENSION;
-
 import net.minecraft.launchwrapper.Launch;
 
 import java.net.MalformedURLException;
@@ -120,19 +118,21 @@ public final class PluginSource {
                     path = path.substring(0, pos);
                 }
             }
-        } else if (!location.getProtocol().equals("file")) {
+        } else if (location.getProtocol().equals("file")) {
+            final String classPath = type.getName().replace('.', '/') + ".class";
+            final int pos = path.lastIndexOf(classPath);
+            if (pos != -1) {
+                path = path.substring(0, pos);
+            }
+            path = "file:" + path;
+        } else {
             return Optional.empty();
         }
 
-        if (path.endsWith(JAR_EXTENSION)) {
-            try {
-                return Optional.of(Paths.get(new URI(path)));
-            } catch (URISyntaxException e) {
-                throw new InvalidPathException(path, "Not a valid URI");
-            }
+        try {
+            return Optional.of(Paths.get(new URI(path)));
+        } catch (URISyntaxException e) {
+            throw new InvalidPathException(path, "Not a valid URI");
         }
-
-        return Optional.empty();
     }
-
 }
