@@ -38,9 +38,11 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.plugin.meta.PluginMetadata;
 import org.spongepowered.server.SpongeVanilla;
 import org.spongepowered.server.launch.plugin.PluginCandidate;
+import org.spongepowered.server.launch.plugin.PluginSource;
 import org.spongepowered.server.launch.plugin.VanillaLaunchPluginManager;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -156,7 +158,11 @@ public class VanillaPluginManager implements PluginManager {
 
         try {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
-            PluginContainer container = new VanillaPluginContainer(this.rootInjector, pluginClass, metadata, candidate.getSource().getPath());
+            Optional<Path> source = candidate.getSource().getPath();
+            if (!source.isPresent()) {
+                source = PluginSource.find(pluginClass);
+            }
+            PluginContainer container = new VanillaPluginContainer(this.rootInjector, pluginClass, metadata, source);
 
             registerPlugin(container);
             Sponge.getEventManager().registerListeners(container, container.getInstance().get());
