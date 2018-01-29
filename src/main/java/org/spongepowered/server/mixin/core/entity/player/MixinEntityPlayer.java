@@ -104,6 +104,11 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         return dimension == 0 ? this.spawnForced : this.spawnForcedSet.contains(dimension);
     }
 
+    @Override
+    public void setOverworldSpawnPoint(@Nullable BlockPos pos) {
+        this.spawnPos = pos;
+    }
+
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
     private void onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
         if (this.dimension != 0) {
