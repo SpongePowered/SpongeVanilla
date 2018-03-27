@@ -32,6 +32,7 @@ import net.minecraft.network.NetworkSystem;
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.network.play.server.SPacketTimeUpdate;
 import net.minecraft.profiler.Profiler;
+import net.minecraft.profiler.Snooper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ITickable;
@@ -61,6 +62,7 @@ import org.spongepowered.server.SpongeVanilla;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 // SpongeCommon injects into updateTimeLightAndEntities, so we need to apply
 // our @Overwrite *before* SpongeCommon's mixin is applied, otherwise it will fail
@@ -69,6 +71,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
     @Shadow @Final private static Logger LOGGER;
+    @Shadow @Final private Snooper usageSnooper;
+
     @Shadow @Final private List<ITickable> tickables;
     @Shadow @Final public Profiler profiler;
     @Shadow private PlayerList playerList;
@@ -78,7 +82,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow public abstract boolean getAllowNether();
     @Shadow public abstract NetworkSystem getNetworkSystem();
 
-    private boolean skipServerStop;
+    private boolean skipServerStop = false;
+
     private final Int2ObjectMap<long[]> worldTickTimes = new Int2ObjectOpenHashMap<>(3);
 
     /**
@@ -100,28 +105,80 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         LOGGER.info(SpongeTexts.toLegacy(component));
     }
 
-
-    @Inject(method = "stopServer()V", at = @At("HEAD"), cancellable = true)
-    private void preventDoubleStop(CallbackInfo ci) {
-        if (this.skipServerStop) {
-            ci.cancel();
-        } else {
-            // Prevent the server from stopping twice
-            this.skipServerStop = true;
-        }
-    }
-
-    @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", ordinal = 0,
-            shift = At.Shift.AFTER, remap = false))
-    private void callServerStopping(CallbackInfo ci) {
-        spongeVanilla.onServerStopping();
-    }
-
     @Inject(method = "applyServerIconToResponse", at = @At("HEAD"), cancellable = true)
     private void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
         // Don't load favicon twice
         if (response.getFavicon() != null) {
             ci.cancel();
+        }
+    }
+
+    /**
+     * @author Zidane - Chris Sanders
+     */
+    @Overwrite
+    public void stopServer() {
+
+        // stopServer is called from both the shutdown hook AND the finally statement in the main game loop, no reason to do this twice..
+        if (skipServerStop) {
+            return;
+        }
+
+        skipServerStop = true;
+
+        LOGGER.info("Stopping server");
+
+        spongeVanilla.onServerStopping();
+
+        final MinecraftServer server = (MinecraftServer) (Object) this;
+
+        // Sponge Start - Force player profile cache save
+        server.getPlayerProfileCache().save();
+
+        if (this.getNetworkSystem() != null) {
+            this.getNetworkSystem().terminateEndpoints();
+        }
+
+        if (this.playerList != null) {
+            LOGGER.info("Saving players");
+            this.playerList.saveAllPlayerData();
+            this.playerList.removeAllPlayers();
+        }
+
+        if (server.worlds != null) {
+            LOGGER.info("Saving worlds");
+
+            for (WorldServer worldserver : server.worlds) {
+                if (worldserver != null) {
+                    worldserver.disableLevelSaving = false;
+                }
+            }
+
+            server.saveAllWorlds(false);
+
+            for (WorldServer worldserver1 : server.worlds) {
+                if (worldserver1 != null) {
+                    // Turn off Async Lighting
+                    if (SpongeImpl.getGlobalConfig().getConfig().getModules().useOptimizations() &&
+                        SpongeImpl.getGlobalConfig().getConfig().getOptimizations().useAsyncLighting()) {
+                        ((IMixinWorldServer) worldserver1).getLightingExecutor().shutdown();
+
+                        try {
+                            ((IMixinWorldServer) worldserver1).getLightingExecutor().awaitTermination(1, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            ((IMixinWorldServer) worldserver1).getLightingExecutor().shutdownNow();
+                        }
+                    }
+
+                    WorldManager.unloadWorld(worldserver1, false);
+                }
+            }
+
+            if (this.usageSnooper.isSnooperRunning()) {
+                this.usageSnooper.stopSnooper();
+            }
         }
     }
 
@@ -236,14 +293,6 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         }
 
         this.profiler.endSection();
-    }
-
-    @Redirect(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldServer;flush()V"))
-    private void onFlushWorld(WorldServer world) {
-        world.flush();
-        Sponge.getCauseStackManager().pushCause(this);
-        SpongeImpl.postEvent(SpongeEventFactory.createUnloadWorldEvent(Sponge.getCauseStackManager().getCurrentCause(), (World) world));
-        Sponge.getCauseStackManager().popCause();
     }
 
     // This is used by asynchronous chunk loading to finish loading the chunks
