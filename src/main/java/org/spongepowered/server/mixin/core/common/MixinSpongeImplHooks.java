@@ -26,10 +26,18 @@ package org.spongepowered.server.mixin.core.common;
 
 import static org.spongepowered.server.launch.VanillaLaunch.Environment.DEVELOPMENT;
 
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.server.launch.VanillaLaunch;
+import org.spongepowered.server.launch.plugin.PluginSource;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
 
 @Mixin(value = SpongeImplHooks.class, remap = false)
 public abstract class MixinSpongeImplHooks {
@@ -41,6 +49,36 @@ public abstract class MixinSpongeImplHooks {
     @Overwrite
     public static boolean isDeobfuscatedEnvironment() {
         return VanillaLaunch.ENVIRONMENT == DEVELOPMENT;
+    }
+
+    /**
+     * @author Minecrell
+     * @reason Return correct mod ID for plugins
+     */
+    @Overwrite
+    public static String getModIdFromClass(Class<?> clazz) {
+        final String className = clazz.getName();
+        if (className.startsWith("net.minecraft.")) {
+            return "minecraft";
+        }
+        if (className.startsWith("org.spongepowered.")) {
+            return "sponge";
+        }
+
+        // Lookup source location of the class and try to match it to a plugin
+        return PluginSource.find(clazz).map(classSource -> {
+            for (PluginContainer plugin : Sponge.getPluginManager().getPlugins()) {
+                Optional<Path> pluginSource = plugin.getSource();
+                try {
+                    if (pluginSource.isPresent() && Files.isSameFile(classSource, pluginSource.get())) {
+                        return plugin.getId();
+                    }
+                } catch (IOException ignored) {
+                }
+            }
+
+            return null;
+        }).orElse("unknown");
     }
 
 }
