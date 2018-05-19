@@ -145,6 +145,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
         SpongeImpl.postState(GameState.INITIALIZATION, SpongeEventFactory.createGameInitializationEvent(Sponge.getCauseStackManager().getCurrentCause()));
 
         this.registry.postInit();
+        SpongeImpl.getConfigSaveManager().flush();
 
         SpongeImpl.postState(GameState.POST_INITIALIZATION, SpongeEventFactory.createGamePostInitializationEvent(Sponge.getCauseStackManager().getCurrentCause()));
 
@@ -160,6 +161,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
     public void onServerStarting() {
         SpongeImpl.postState(GameState.SERVER_STARTING, SpongeEventFactory.createGameStartingServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
+        SpongeImpl.getConfigSaveManager().flush();
         SpongeImpl.postState(GameState.SERVER_STARTED, SpongeEventFactory.createGameStartedServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
         ((IMixinServerCommandManager) SpongeImpl.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
         SpongePlayerDataHandler.init();
@@ -172,6 +174,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
     public void onServerStopped() throws IOException {
         SpongeImpl.postState(GameState.SERVER_STOPPED, SpongeEventFactory.createGameStoppedServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
         ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
+        SpongeImpl.getConfigSaveManager().flush();
     }
 
     @Override
