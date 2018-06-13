@@ -115,6 +115,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     /**
      * @author Zidane - Chris Sanders
+     * @reason need to save player stuff for sponge
      */
     @Overwrite
     public void stopServer() {
