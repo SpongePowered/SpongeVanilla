@@ -55,6 +55,7 @@ public abstract class MixinConsoleHandler {
                     .terminal(terminal)
                     .completer(new ConsoleCommandCompleter(this.server))
                     .build();
+            reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
             reader.unsetOpt(LineReader.Option.INSERT_TAB);
 
             TerminalConsoleAppender.setReader(reader);
