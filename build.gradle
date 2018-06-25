@@ -114,6 +114,10 @@ shadowJar {
     }
 }
 
+test {
+    systemProperty 'lwts.tweaker', 'org.spongepowered.server.launch.TestTweaker'
+}
+
 license {
     exclude 'net/minecraftforge/**'
 }

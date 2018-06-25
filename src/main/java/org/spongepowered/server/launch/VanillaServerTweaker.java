@@ -146,7 +146,7 @@ public final class VanillaServerTweaker implements ITweaker {
         }
     }
 
-    private static void configureMixinEnvironment() {
+    static void configureMixinEnvironment() {
         VanillaLaunch.getLogger().debug("Initializing Mixin environment...");
         SpongeLaunch.setupMixinEnvironment();
 
@@ -195,7 +195,7 @@ public final class VanillaServerTweaker implements ITweaker {
         return new String[0];
     }
 
-    private static void configureLaunchClassLoader(LaunchClassLoader loader) {
+    static void configureLaunchClassLoader(LaunchClassLoader loader) {
         SpongeLaunch.addJreExtensionsToClassPath();
 
         // Logging
