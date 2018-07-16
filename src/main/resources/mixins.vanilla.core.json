@@ -22,6 +22,7 @@
         "server.MixinMinecraftServer",
         "server.dedicated.MixinConsoleHandler",
         "server.dedicated.MixinDedicatedServer",
+        "server.management.MixinPlayerInteractionManager",
         "server.management.MixinPlayerList",
         "tileentity.MixinTileEntity",
         "world.MixinWorldProvider",
