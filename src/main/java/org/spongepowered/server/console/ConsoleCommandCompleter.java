@@ -37,11 +37,11 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public final class ConsoleCommandCompleter implements Completer {
+final class ConsoleCommandCompleter implements Completer {
 
     private final DedicatedServer server;
 
-    public ConsoleCommandCompleter(DedicatedServer server) {
+    ConsoleCommandCompleter(DedicatedServer server) {
         this.server = checkNotNull(server, "server");
     }
 

@@ -56,8 +56,8 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-iostreams:2.8.1'
 
     // Terminal console
-    compile 'net.minecrell:terminalconsoleappender:1.0.0'
-    runtime 'net.java.dev.jna:jna:4.4.0'
+    compile 'net.minecrell:terminalconsoleappender:1.1.0'
+    runtime 'net.java.dev.jna:jna:4.5.2'
 
     shadow 'org.ow2.asm:asm-all:5.2'
 
