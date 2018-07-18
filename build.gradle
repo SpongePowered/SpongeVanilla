@@ -54,6 +54,7 @@ dependencies {
     compile 'net.sf.jopt-simple:jopt-simple:5.0.4'
 
     compile 'org.apache.logging.log4j:log4j-iostreams:2.8.1'
+    runtime 'com.lmax:disruptor:3.4.2' // Async Logging
 
     // Terminal console
     compile 'net.minecrell:terminalconsoleappender:1.1.0'
@@ -103,6 +104,7 @@ shadowJar {
         include dependency('com.typesafe:config')
 
         include dependency('org.apache.logging.log4j:log4j-iostreams')
+        include dependency('com.lmax:disruptor')
 
         include dependency('net.minecrell:terminalconsoleappender')
         include dependency('org.jline:jline-terminal')
