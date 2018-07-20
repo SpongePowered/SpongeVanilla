@@ -24,12 +24,19 @@
  */
 package org.spongepowered.server.mixin.core.entity.player;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.entity.EntityUtil;
+import org.spongepowered.common.interfaces.world.IMixinITeleporter;
+
+import javax.annotation.Nullable;
 
 @Mixin(EntityPlayerMP.class)
 public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
@@ -45,6 +52,23 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
         if (old.hasKey(PERSISTED_NBT_TAG)) {
             this.getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
         }
+    }
+
+    /**
+     * @author gabizou - April 7th, 2018
+     * @author JBYoshi - July 19, 2018 - Copy to SpongeVanilla
+     * @reason reroute teleportation logic to common
+     */
+    @Overwrite(remap = false)
+    @Nullable
+    public Entity changeDimension(int toDimensionId) {
+        if (!this.world.isRemote && !this.isDead) {
+            // Sponge Start - Handle teleportation solely in TrackingUtil where everything can be debugged.
+            return EntityUtil.teleportPlayerToDimension((EntityPlayerMP) (Object) this, toDimensionId,
+                    (IMixinITeleporter) SpongeImpl.getServer().getWorld(toDimensionId).getDefaultTeleporter());
+            // Sponge End
+        }
+        return null;
     }
 
 }
