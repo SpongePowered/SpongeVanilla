@@ -59,7 +59,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
      * @author JBYoshi - July 19, 2018 - Copy to SpongeVanilla
      * @reason reroute teleportation logic to common
      */
-    @Overwrite(remap = false)
+    @Overwrite
     @Nullable
     public Entity changeDimension(int toDimensionId) {
         if (!this.world.isRemote && !this.isDead) {
