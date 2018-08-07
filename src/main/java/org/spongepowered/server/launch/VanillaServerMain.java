@@ -30,6 +30,9 @@ import static org.spongepowered.server.launch.VanillaCommandLine.NO_VERIFY_CLASS
 import static org.spongepowered.server.launch.VanillaCommandLine.TWEAK_CLASS;
 import static org.spongepowered.server.launch.VanillaCommandLine.VERSION;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import joptsimple.BuiltinHelpFormatter;
 import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.Launch;
@@ -37,11 +40,13 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -55,8 +60,9 @@ public final class VanillaServerMain {
 
     private static final String LIBRARIES_DIR = "libraries";
 
-    private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.12.2.jar";
-    private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.12.2/minecraft_server.1.12.2.jar";
+    private static final String MINECRAFT_SERVER_VERSION = "1.12.2";
+    private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server." + MINECRAFT_SERVER_VERSION + ".jar";
+    private static final String MINECRAFT_MANIFEST_REMOTE = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
     private static final String LAUNCHWRAPPER_PATH = "/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
     private static final String LAUNCHWRAPPER_LOCAL = LIBRARIES_DIR + LAUNCHWRAPPER_PATH;
@@ -96,7 +102,7 @@ public final class VanillaServerMain {
                 // Download dependencies
                 if (!downloadMinecraft(base, !options.has(NO_DOWNLOAD))) {
                     System.err.println("Failed to load all required dependencies. Please download them manually:");
-                    System.err.println("Download " + MINECRAFT_SERVER_REMOTE + " and copy it to "
+                    System.err.println("Download " + MINECRAFT_SERVER_LOCAL + " and copy it to "
                             + base.resolve(MINECRAFT_SERVER_LOCAL).toAbsolutePath());
                     System.err.println("Download " + LAUNCHWRAPPER_REMOTE + " and copy it to "
                             + base.resolve(LAUNCHWRAPPER_LOCAL).toAbsolutePath());
@@ -138,8 +144,42 @@ public final class VanillaServerMain {
     private static boolean downloadMinecraft(Path base, boolean autoDownload) throws IOException, NoSuchAlgorithmException {
         // Make sure the Minecraft server is available, or download it otherwise
         Path path = base.resolve(MINECRAFT_SERVER_LOCAL);
-        if (Files.notExists(path) && (!autoDownload || !downloadVerified(MINECRAFT_SERVER_REMOTE, path))) {
-            return false;
+        if (Files.notExists(path)) {
+            if (!autoDownload) {
+                return false;
+            }
+
+            System.out.println("Downloading the versions manifest...");
+
+            // Download the file with all of the Minecraft versions information
+            JsonObject versions = downloadJsonVerified(MINECRAFT_MANIFEST_REMOTE);
+
+            String versionManifestRemote = null;
+
+            // Find the current version manifest URL
+            for (JsonElement versionInfo : versions.getAsJsonArray("versions")) {
+                JsonObject obj = versionInfo.getAsJsonObject();
+
+                String versionId = obj.get("id").getAsString();
+                if (versionId.equals(MINECRAFT_SERVER_VERSION)) {
+                    versionManifestRemote = obj.get("url").getAsString();
+                    break;
+                }
+            }
+
+            if (versionManifestRemote == null) {
+                throw new RuntimeException("Could not find " + MINECRAFT_SERVER_VERSION + "'s manifest URL");
+            }
+
+            // Find the server URL
+            JsonObject versionManifest = downloadJsonVerified(versionManifestRemote);
+            String serverRemote = versionManifest.get("downloads").getAsJsonObject()
+                    .get("server").getAsJsonObject()
+                    .get("url").getAsString();
+
+            if (!downloadVerified(serverRemote, path)) {
+                return false;
+            }
         }
 
         // Make sure Launchwrapper is available, or download it otherwise
@@ -147,6 +187,26 @@ public final class VanillaServerMain {
         return Files.exists(path) || (autoDownload && downloadVerified(LAUNCHWRAPPER_REMOTE, path));
     }
 
+    private static JsonObject downloadJsonVerified(String remote) throws IOException, NoSuchAlgorithmException {
+        URLConnection con = new URL(remote).openConnection();
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        JsonObject json;
+
+        try (DigestInputStream source = new DigestInputStream(con.getInputStream(), md5)) {
+            json = new JsonParser().parse(new InputStreamReader(source, StandardCharsets.UTF_8))
+                    .getAsJsonObject();
+        }
+
+        String expected = getETag(con);
+        if (!expected.isEmpty()) {
+            String hash = toHexString(md5.digest());
+            if (!hash.equals(expected)) {
+                throw new IOException("Checksum verification failed: Expected " + expected + ", got " + hash);
+            }
+        }
+
+        return json;
+    }
 
     private static boolean downloadVerified(String remote, Path path) throws IOException, NoSuchAlgorithmException {
         Files.createDirectories(path.getParent());
