@@ -56,6 +56,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public final class VanillaServerMain {
 
@@ -68,6 +69,7 @@ public final class VanillaServerMain {
     private static final String LAUNCHWRAPPER_PATH = "/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
     private static final String LAUNCHWRAPPER_LOCAL = LIBRARIES_DIR + LAUNCHWRAPPER_PATH;
     private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net" + LAUNCHWRAPPER_PATH;
+    private static final String LAUNCHWRAPPER_SHA1 = "111e7bea9c968cdb3d06ef4632bf7ff0824d0f36";
 
     private static final String TWEAK_ARGUMENT = "--tweakClass";
     private static final String TWEAKER = "org.spongepowered.server.launch.VanillaServerTweaker";
@@ -169,7 +171,7 @@ public final class VanillaServerMain {
             }
 
             if (versionManifestRemote == null) {
-                throw new RuntimeException("Could not find " + MINECRAFT_SERVER_VERSION + "'s manifest URL");
+                throw new NoSuchElementException("Could not find " + MINECRAFT_SERVER_VERSION + "'s manifest URL");
             }
 
             JsonValue versionManifest = downloadJson(versionManifestRemote);
@@ -192,21 +194,19 @@ public final class VanillaServerMain {
             }
 
             // Make sure Launchwrapper is available, or download it otherwise
-            download(LAUNCHWRAPPER_REMOTE, path);
+            downloadAndVerify(LAUNCHWRAPPER_REMOTE, path, LAUNCHWRAPPER_SHA1);
         }
 
         return true;
     }
 
     private static JsonValue downloadJson(String remote) throws IOException {
-        URLConnection con = new URL(remote).openConnection();
-        JsonValue json;
+        URL url = new URL(remote);
 
-        try (BufferedInputStream source = new BufferedInputStream(con.getInputStream())) {
-            json = Json.parse(new InputStreamReader(source, StandardCharsets.UTF_8));
+        try (BufferedInputStream source = new BufferedInputStream(url.openStream());
+             InputStreamReader reader = new InputStreamReader(source, StandardCharsets.UTF_8)) {
+            return Json.parse(reader);
         }
-
-        return json;
     }
 
     /**
@@ -214,10 +214,11 @@ public final class VanillaServerMain {
      *
      * @param remote The file URL
      * @param path The local path
-     * @param sha1 The SHA-1 expected digest
+     * @param expected The SHA-1 expected digest
      * @throws IOException If there is a problem while downloading the file
+     * @throws NoSuchAlgorithmException Never because the JVM is required to support SHA-1
      */
-    private static void downloadAndVerify(String remote, Path path, String sha1) throws IOException {
+    private static void downloadAndVerify(String remote, Path path, String expected) throws IOException, NoSuchAlgorithmException {
         Files.createDirectories(path.getParent());
 
         String name = path.getFileName().toString();
@@ -226,50 +227,24 @@ public final class VanillaServerMain {
         System.out.println("Downloading " + name + "... This can take a while.");
         System.out.println(url);
 
-        URLConnection con = url.openConnection();
-        BufferedInputStream stream = new BufferedInputStream(con.getInputStream());
-        MessageDigest digest;
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 
-        try {
-            digest = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            // This cannot happen because JVM is required to support SHA-1
-            throw new RuntimeException(e);
-        }
-
-        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(stream, digest));
-             FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
-            out.transferFrom(source, 0, Long.MAX_VALUE);
-        }
-
-        String fileDigest = toHexString(digest.digest());
-        if (sha1.equals(fileDigest)) {
-            System.out.println("Successfully downloaded " + name + " and verified checksum!");
-        } else {
-            Files.delete(path);
-            throw new IOException("Checksum verification failed: Expected " + sha1 +
-                    ", got " + fileDigest);
-        }
-    }
-
-    private static void download(String remote, Path path) throws IOException {
-        Files.createDirectories(path.getParent());
-
-        String name = path.getFileName().toString();
-        URL url = new URL(remote);
-
-        System.out.println("Downloading " + name + "... This can take a while.");
-        System.out.println(url);
-
-        URLConnection con = url.openConnection();
-        BufferedInputStream stream = new BufferedInputStream(con.getInputStream());
-
-        try (ReadableByteChannel in = Channels.newChannel(stream);
+        // Pipe the download stream into the file and compute the SHA-1
+        try (DigestInputStream stream = new DigestInputStream(new BufferedInputStream(url.openStream()), sha1);
+             ReadableByteChannel in = Channels.newChannel(stream);
              FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             out.transferFrom(in, 0, Long.MAX_VALUE);
         }
 
-        System.out.println("Successfully downloaded " + name + "!");
+        String fileSha1 = toHexString(sha1.digest());
+
+        if (expected.equals(fileSha1)) {
+            System.out.println("Successfully downloaded " + name + " and verified checksum!");
+        } else {
+            Files.delete(path);
+            throw new IOException("Checksum verification failed: Expected " + expected +
+                    ", got " + fileSha1);
+        }
     }
 
     // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
