@@ -30,15 +30,16 @@ import static org.spongepowered.server.launch.VanillaCommandLine.NO_VERIFY_CLASS
 import static org.spongepowered.server.launch.VanillaCommandLine.TWEAK_CLASS;
 import static org.spongepowered.server.launch.VanillaCommandLine.VERSION;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import joptsimple.BuiltinHelpFormatter;
 import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.Launch;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -152,17 +153,17 @@ public final class VanillaServerMain {
             System.out.println("Downloading the versions manifest...");
 
             // Download the file with all of the Minecraft versions information
-            JsonObject versions = downloadJsonVerified(MINECRAFT_MANIFEST_REMOTE);
+            JsonValue versions = downloadJsonAndVerifyETag(MINECRAFT_MANIFEST_REMOTE);
 
             String versionManifestRemote = null;
 
             // Find the current version manifest URL
-            for (JsonElement versionInfo : versions.getAsJsonArray("versions")) {
-                JsonObject obj = versionInfo.getAsJsonObject();
+            for (JsonValue versionInfo : versions.asObject().get("versions").asArray()) {
+                JsonObject obj = versionInfo.asObject();
 
-                String versionId = obj.get("id").getAsString();
+                String versionId = obj.get("id").asString();
                 if (versionId.equals(MINECRAFT_SERVER_VERSION)) {
-                    versionManifestRemote = obj.get("url").getAsString();
+                    versionManifestRemote = obj.get("url").asString();
                     break;
                 }
             }
@@ -171,44 +172,63 @@ public final class VanillaServerMain {
                 throw new RuntimeException("Could not find " + MINECRAFT_SERVER_VERSION + "'s manifest URL");
             }
 
-            // Find the server URL
-            JsonObject versionManifest = downloadJsonVerified(versionManifestRemote);
-            String serverRemote = versionManifest.get("downloads").getAsJsonObject()
-                    .get("server").getAsJsonObject()
-                    .get("url").getAsString();
+            JsonValue versionManifest = downloadJsonAndVerifyETag(versionManifestRemote);
+            JsonObject serverObj = versionManifest.asObject()
+                    .get("downloads").asObject()
+                    .get("server").asObject();
 
-            if (!downloadVerified(serverRemote, path)) {
-                return false;
-            }
+            // Find the server URL and SHA-1 digest
+            String serverRemote = serverObj.get("url").asString();
+            String sha1 = serverObj.get("sha1").asString();
+
+            downloadAndVerify(serverRemote, path, sha1, "SHA-1");
         }
 
-        // Make sure Launchwrapper is available, or download it otherwise
         path = base.resolve(LAUNCHWRAPPER_LOCAL);
-        return Files.exists(path) || (autoDownload && downloadVerified(LAUNCHWRAPPER_REMOTE, path));
+
+        if (!Files.exists(path)) {
+            if (!autoDownload) {
+                return false;
+            }
+
+            // Make sure Launchwrapper is available, or download it otherwise
+            downloadAndVerify(LAUNCHWRAPPER_REMOTE, path, null, "MD5");
+        }
+
+        return true;
     }
 
-    private static JsonObject downloadJsonVerified(String remote) throws IOException, NoSuchAlgorithmException {
+    private static JsonValue downloadJsonAndVerifyETag(String remote) throws IOException, NoSuchAlgorithmException {
         URLConnection con = new URL(remote).openConnection();
         MessageDigest md5 = MessageDigest.getInstance("MD5");
-        JsonObject json;
+        JsonValue json;
 
         try (DigestInputStream source = new DigestInputStream(con.getInputStream(), md5)) {
-            json = new JsonParser().parse(new InputStreamReader(source, StandardCharsets.UTF_8))
-                    .getAsJsonObject();
+            json = Json.parse(new InputStreamReader(source, StandardCharsets.UTF_8));
         }
 
         String expected = getETag(con);
-        if (!expected.isEmpty()) {
-            String hash = toHexString(md5.digest());
-            if (!hash.equals(expected)) {
-                throw new IOException("Checksum verification failed: Expected " + expected + ", got " + hash);
-            }
+        String fileDigestHex = toHexString(md5.digest());
+        if (!expected.isEmpty() && !fileDigestHex.equals(expected)) {
+            throw new IOException("Checksum verification failed: Expected " + expected + ", got " + fileDigestHex);
         }
 
         return json;
     }
 
-    private static boolean downloadVerified(String remote, Path path) throws IOException, NoSuchAlgorithmException {
+    /**
+     * Downloads a file and throws an IOException if the ETag does not
+     * correspond to the file MD5 digest.
+     *
+     * @param remote The file URL
+     * @param path The local path
+     * @param expected The correct digest or null to get it from the HTTP ETag header
+     * @param digestType The digest type
+     * @throws IOException If there is a problem while downloading the file
+     * @throws NoSuchAlgorithmException If the digest type is invalid
+     */
+    private static void downloadAndVerify(String remote, Path path, @Nullable String expected, String digestType)
+            throws IOException, NoSuchAlgorithmException {
         Files.createDirectories(path.getParent());
 
         String name = path.getFileName().toString();
@@ -217,25 +237,27 @@ public final class VanillaServerMain {
         System.out.println("Downloading " + name + "... This can take a while.");
         System.out.println(url);
         URLConnection con = url.openConnection();
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
 
-        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(con.getInputStream(), md5));
+        MessageDigest digest = MessageDigest.getInstance(digestType);
+
+        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(con.getInputStream(), digest));
              FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             out.transferFrom(source, 0, Long.MAX_VALUE);
         }
 
-        String expected = getETag(con);
-        if (!expected.isEmpty()) {
-            String hash = toHexString(md5.digest());
-            if (hash.equals(expected)) {
-                System.out.println("Successfully downloaded " + name + " and verified checksum!");
-            } else {
-                Files.delete(path);
-                throw new IOException("Checksum verification failed: Expected " + expected + ", got " + hash);
-            }
+        if (expected == null) {
+            // Get the digest from the ETag header
+            expected = getETag(con);
         }
 
-        return true;
+        String fileDigestHex = toHexString(digest.digest());
+        if (expected.isEmpty() || expected.equals(fileDigestHex)) {
+            System.out.println("Successfully downloaded " + name + " and verified checksum!");
+        } else {
+            Files.delete(path);
+            throw new IOException("Checksum verification failed: Expected " + expected +
+                    ", got " + fileDigestHex);
+        }
     }
 
     private static String getETag(URLConnection con) {
@@ -254,7 +276,7 @@ public final class VanillaServerMain {
     // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
-    public static String toHexString(byte[] bytes) {
+    private static String toHexString(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
