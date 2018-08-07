@@ -203,8 +203,7 @@ public final class VanillaServerMain {
     private static JsonValue downloadJson(String remote) throws IOException {
         URL url = new URL(remote);
 
-        try (BufferedInputStream source = new BufferedInputStream(url.openStream());
-             InputStreamReader reader = new InputStreamReader(source, StandardCharsets.UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
             return Json.parse(reader);
         }
     }
@@ -230,7 +229,7 @@ public final class VanillaServerMain {
         MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 
         // Pipe the download stream into the file and compute the SHA-1
-        try (DigestInputStream stream = new DigestInputStream(new BufferedInputStream(url.openStream()), sha1);
+        try (DigestInputStream stream = new DigestInputStream(url.openStream(), sha1);
              ReadableByteChannel in = Channels.newChannel(stream);
              FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             out.transferFrom(in, 0, Long.MAX_VALUE);
