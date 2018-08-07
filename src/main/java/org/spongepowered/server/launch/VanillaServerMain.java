@@ -30,18 +30,24 @@ import static org.spongepowered.server.launch.VanillaCommandLine.NO_VERIFY_CLASS
 import static org.spongepowered.server.launch.VanillaCommandLine.TWEAK_CLASS;
 import static org.spongepowered.server.launch.VanillaCommandLine.VERSION;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import joptsimple.BuiltinHelpFormatter;
 import joptsimple.OptionSet;
 import net.minecraft.launchwrapper.Launch;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,17 +56,20 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public final class VanillaServerMain {
 
     private static final String LIBRARIES_DIR = "libraries";
 
-    private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server.1.12.2.jar";
-    private static final String MINECRAFT_SERVER_REMOTE = "https://s3.amazonaws.com/Minecraft.Download/versions/1.12.2/minecraft_server.1.12.2.jar";
+    private static final String MINECRAFT_SERVER_VERSION = "1.12.2";
+    private static final String MINECRAFT_SERVER_LOCAL = "minecraft_server." + MINECRAFT_SERVER_VERSION + ".jar";
+    private static final String MINECRAFT_MANIFEST_REMOTE = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
     private static final String LAUNCHWRAPPER_PATH = "/net/minecraft/launchwrapper/1.12/launchwrapper-1.12.jar";
     private static final String LAUNCHWRAPPER_LOCAL = LIBRARIES_DIR + LAUNCHWRAPPER_PATH;
     private static final String LAUNCHWRAPPER_REMOTE = "https://libraries.minecraft.net" + LAUNCHWRAPPER_PATH;
+    private static final String LAUNCHWRAPPER_SHA1 = "111e7bea9c968cdb3d06ef4632bf7ff0824d0f36";
 
     private static final String TWEAK_ARGUMENT = "--tweakClass";
     private static final String TWEAKER = "org.spongepowered.server.launch.VanillaServerTweaker";
@@ -96,7 +105,7 @@ public final class VanillaServerMain {
                 // Download dependencies
                 if (!downloadMinecraft(base, !options.has(NO_DOWNLOAD))) {
                     System.err.println("Failed to load all required dependencies. Please download them manually:");
-                    System.err.println("Download " + MINECRAFT_SERVER_REMOTE + " and copy it to "
+                    System.err.println("Download the Minecraft server version " + MINECRAFT_SERVER_VERSION + " and copy it to "
                             + base.resolve(MINECRAFT_SERVER_LOCAL).toAbsolutePath());
                     System.err.println("Download " + LAUNCHWRAPPER_REMOTE + " and copy it to "
                             + base.resolve(LAUNCHWRAPPER_LOCAL).toAbsolutePath());
@@ -138,17 +147,77 @@ public final class VanillaServerMain {
     private static boolean downloadMinecraft(Path base, boolean autoDownload) throws IOException, NoSuchAlgorithmException {
         // Make sure the Minecraft server is available, or download it otherwise
         Path path = base.resolve(MINECRAFT_SERVER_LOCAL);
-        if (Files.notExists(path) && (!autoDownload || !downloadVerified(MINECRAFT_SERVER_REMOTE, path))) {
-            return false;
+        if (Files.notExists(path)) {
+            if (!autoDownload) {
+                return false;
+            }
+
+            System.out.println("Downloading the versions manifest...");
+
+            // Download the file with all of the Minecraft versions information
+            JsonValue versions = downloadJson(MINECRAFT_MANIFEST_REMOTE);
+
+            String versionManifestRemote = null;
+
+            // Find the current version manifest URL
+            for (JsonValue versionInfo : versions.asObject().get("versions").asArray()) {
+                JsonObject obj = versionInfo.asObject();
+
+                String versionId = obj.get("id").asString();
+                if (versionId.equals(MINECRAFT_SERVER_VERSION)) {
+                    versionManifestRemote = obj.get("url").asString();
+                    break;
+                }
+            }
+
+            if (versionManifestRemote == null) {
+                throw new NoSuchElementException("Could not find " + MINECRAFT_SERVER_VERSION + "'s manifest URL");
+            }
+
+            JsonValue versionManifest = downloadJson(versionManifestRemote);
+            JsonObject serverObj = versionManifest.asObject()
+                    .get("downloads").asObject()
+                    .get("server").asObject();
+
+            // Find the server URL and SHA-1 digest
+            String serverRemote = serverObj.get("url").asString();
+            String sha1 = serverObj.get("sha1").asString();
+
+            downloadAndVerify(serverRemote, path, sha1);
         }
 
-        // Make sure Launchwrapper is available, or download it otherwise
         path = base.resolve(LAUNCHWRAPPER_LOCAL);
-        return Files.exists(path) || (autoDownload && downloadVerified(LAUNCHWRAPPER_REMOTE, path));
+
+        if (!Files.exists(path)) {
+            if (!autoDownload) {
+                return false;
+            }
+
+            // Make sure Launchwrapper is available, or download it otherwise
+            downloadAndVerify(LAUNCHWRAPPER_REMOTE, path, LAUNCHWRAPPER_SHA1);
+        }
+
+        return true;
     }
 
+    private static JsonValue downloadJson(String remote) throws IOException {
+        URL url = new URL(remote);
 
-    private static boolean downloadVerified(String remote, Path path) throws IOException, NoSuchAlgorithmException {
+        try (InputStreamReader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
+            return Json.parse(reader);
+        }
+    }
+
+    /**
+     * Downloads a file and verify its digest.
+     *
+     * @param remote The file URL
+     * @param path The local path
+     * @param expected The SHA-1 expected digest
+     * @throws IOException If there is a problem while downloading the file
+     * @throws NoSuchAlgorithmException Never because the JVM is required to support SHA-1
+     */
+    private static void downloadAndVerify(String remote, Path path, String expected) throws IOException, NoSuchAlgorithmException {
         Files.createDirectories(path.getParent());
 
         String name = path.getFileName().toString();
@@ -156,45 +225,31 @@ public final class VanillaServerMain {
 
         System.out.println("Downloading " + name + "... This can take a while.");
         System.out.println(url);
-        URLConnection con = url.openConnection();
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
 
-        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(con.getInputStream(), md5));
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+
+        // Pipe the download stream into the file and compute the SHA-1
+        try (DigestInputStream stream = new DigestInputStream(url.openStream(), sha1);
+             ReadableByteChannel in = Channels.newChannel(stream);
              FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
-            out.transferFrom(source, 0, Long.MAX_VALUE);
+            out.transferFrom(in, 0, Long.MAX_VALUE);
         }
 
-        String expected = getETag(con);
-        if (!expected.isEmpty()) {
-            String hash = toHexString(md5.digest());
-            if (hash.equals(expected)) {
-                System.out.println("Successfully downloaded " + name + " and verified checksum!");
-            } else {
-                Files.delete(path);
-                throw new IOException("Checksum verification failed: Expected " + expected + ", got " + hash);
-            }
+        String fileSha1 = toHexString(sha1.digest());
+
+        if (expected.equals(fileSha1)) {
+            System.out.println("Successfully downloaded " + name + " and verified checksum!");
+        } else {
+            Files.delete(path);
+            throw new IOException("Checksum verification failed: Expected " + expected +
+                    ", got " + fileSha1);
         }
-
-        return true;
-    }
-
-    private static String getETag(URLConnection con) {
-        String hash = con.getHeaderField("ETag");
-        if (hash == null || hash.isEmpty()) {
-            return "";
-        }
-
-        if (hash.startsWith("\"") && hash.endsWith("\"")) {
-            hash = hash.substring(1, hash.length() - 1);
-        }
-
-        return hash;
     }
 
     // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
     private static final char[] hexArray = "0123456789abcdef".toCharArray();
 
-    public static String toHexString(byte[] bytes) {
+    private static String toHexString(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;

@@ -56,6 +56,8 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-iostreams:2.8.1'
     runtime 'com.lmax:disruptor:3.4.2' // Async Logging
 
+    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+
     // Terminal console
     compile 'net.minecrell:terminalconsoleappender:1.1.1'
     runtime 'net.java.dev.jna:jna:4.5.2'
@@ -111,6 +113,8 @@ shadowJar {
         include dependency('org.jline:jline-terminal-jna')
         include dependency('org.jline:jline-reader')
         include dependency('net.java.dev.jna:jna')
+
+        include dependency('com.eclipsesource.minimal-json:minimal-json')
     }
 }
 
