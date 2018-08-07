@@ -102,7 +102,7 @@ public final class VanillaServerMain {
                 // Download dependencies
                 if (!downloadMinecraft(base, !options.has(NO_DOWNLOAD))) {
                     System.err.println("Failed to load all required dependencies. Please download them manually:");
-                    System.err.println("Download " + MINECRAFT_SERVER_LOCAL + " and copy it to "
+                    System.err.println("Download the Minecraft server version " + MINECRAFT_SERVER_VERSION + " and copy it to "
                             + base.resolve(MINECRAFT_SERVER_LOCAL).toAbsolutePath());
                     System.err.println("Download " + LAUNCHWRAPPER_REMOTE + " and copy it to "
                             + base.resolve(LAUNCHWRAPPER_LOCAL).toAbsolutePath());
