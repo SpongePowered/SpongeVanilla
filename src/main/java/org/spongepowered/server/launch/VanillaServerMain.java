@@ -39,7 +39,7 @@ import net.minecraft.launchwrapper.Launch;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
-import javax.annotation.Nullable;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -153,7 +153,7 @@ public final class VanillaServerMain {
             System.out.println("Downloading the versions manifest...");
 
             // Download the file with all of the Minecraft versions information
-            JsonValue versions = downloadJsonAndVerifyETag(MINECRAFT_MANIFEST_REMOTE);
+            JsonValue versions = downloadJson(MINECRAFT_MANIFEST_REMOTE);
 
             String versionManifestRemote = null;
 
@@ -172,7 +172,7 @@ public final class VanillaServerMain {
                 throw new RuntimeException("Could not find " + MINECRAFT_SERVER_VERSION + "'s manifest URL");
             }
 
-            JsonValue versionManifest = downloadJsonAndVerifyETag(versionManifestRemote);
+            JsonValue versionManifest = downloadJson(versionManifestRemote);
             JsonObject serverObj = versionManifest.asObject()
                     .get("downloads").asObject()
                     .get("server").asObject();
@@ -181,7 +181,7 @@ public final class VanillaServerMain {
             String serverRemote = serverObj.get("url").asString();
             String sha1 = serverObj.get("sha1").asString();
 
-            downloadAndVerify(serverRemote, path, sha1, "SHA-1");
+            downloadAndVerify(serverRemote, path, sha1);
         }
 
         path = base.resolve(LAUNCHWRAPPER_LOCAL);
@@ -192,43 +192,32 @@ public final class VanillaServerMain {
             }
 
             // Make sure Launchwrapper is available, or download it otherwise
-            downloadAndVerify(LAUNCHWRAPPER_REMOTE, path, null, "MD5");
+            download(LAUNCHWRAPPER_REMOTE, path);
         }
 
         return true;
     }
 
-    private static JsonValue downloadJsonAndVerifyETag(String remote) throws IOException, NoSuchAlgorithmException {
+    private static JsonValue downloadJson(String remote) throws IOException {
         URLConnection con = new URL(remote).openConnection();
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
         JsonValue json;
 
-        try (DigestInputStream source = new DigestInputStream(con.getInputStream(), md5)) {
+        try (BufferedInputStream source = new BufferedInputStream(con.getInputStream())) {
             json = Json.parse(new InputStreamReader(source, StandardCharsets.UTF_8));
-        }
-
-        String expected = getETag(con);
-        String fileDigestHex = toHexString(md5.digest());
-        if (!expected.isEmpty() && !fileDigestHex.equals(expected)) {
-            throw new IOException("Checksum verification failed: Expected " + expected + ", got " + fileDigestHex);
         }
 
         return json;
     }
 
     /**
-     * Downloads a file and throws an IOException if the ETag does not
-     * correspond to the file MD5 digest.
+     * Downloads a file and verify its digest.
      *
      * @param remote The file URL
      * @param path The local path
-     * @param expected The correct digest or null to get it from the HTTP ETag header
-     * @param digestType The digest type
+     * @param sha1 The SHA-1 expected digest
      * @throws IOException If there is a problem while downloading the file
-     * @throws NoSuchAlgorithmException If the digest type is invalid
      */
-    private static void downloadAndVerify(String remote, Path path, @Nullable String expected, String digestType)
-            throws IOException, NoSuchAlgorithmException {
+    private static void downloadAndVerify(String remote, Path path, String sha1) throws IOException {
         Files.createDirectories(path.getParent());
 
         String name = path.getFileName().toString();
@@ -236,41 +225,51 @@ public final class VanillaServerMain {
 
         System.out.println("Downloading " + name + "... This can take a while.");
         System.out.println(url);
+
         URLConnection con = url.openConnection();
+        BufferedInputStream stream = new BufferedInputStream(con.getInputStream());
+        MessageDigest digest;
 
-        MessageDigest digest = MessageDigest.getInstance(digestType);
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            // This cannot happen because JVM is required to support SHA-1
+            throw new RuntimeException(e);
+        }
 
-        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(con.getInputStream(), digest));
+        try (ReadableByteChannel source = Channels.newChannel(new DigestInputStream(stream, digest));
              FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             out.transferFrom(source, 0, Long.MAX_VALUE);
         }
 
-        if (expected == null) {
-            // Get the digest from the ETag header
-            expected = getETag(con);
-        }
-
-        String fileDigestHex = toHexString(digest.digest());
-        if (expected.isEmpty() || expected.equals(fileDigestHex)) {
+        String fileDigest = toHexString(digest.digest());
+        if (sha1.equals(fileDigest)) {
             System.out.println("Successfully downloaded " + name + " and verified checksum!");
         } else {
             Files.delete(path);
-            throw new IOException("Checksum verification failed: Expected " + expected +
-                    ", got " + fileDigestHex);
+            throw new IOException("Checksum verification failed: Expected " + sha1 +
+                    ", got " + fileDigest);
         }
     }
 
-    private static String getETag(URLConnection con) {
-        String hash = con.getHeaderField("ETag");
-        if (hash == null || hash.isEmpty()) {
-            return "";
+    private static void download(String remote, Path path) throws IOException {
+        Files.createDirectories(path.getParent());
+
+        String name = path.getFileName().toString();
+        URL url = new URL(remote);
+
+        System.out.println("Downloading " + name + "... This can take a while.");
+        System.out.println(url);
+
+        URLConnection con = url.openConnection();
+        BufferedInputStream stream = new BufferedInputStream(con.getInputStream());
+
+        try (ReadableByteChannel in = Channels.newChannel(stream);
+             FileChannel out = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
+            out.transferFrom(in, 0, Long.MAX_VALUE);
         }
 
-        if (hash.startsWith("\"") && hash.endsWith("\"")) {
-            hash = hash.substring(1, hash.length() - 1);
-        }
-
-        return hash;
+        System.out.println("Successfully downloaded " + name + "!");
     }
 
     // From http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
