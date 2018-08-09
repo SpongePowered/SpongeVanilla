@@ -73,7 +73,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
     private static final String
         CHECK_THREAD_AND_ENQUEUE =
         "Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V";
-    @Shadow @Final private MinecraftServer serverController;
+    @Shadow @Final private MinecraftServer server;
     @Shadow public EntityPlayerMP player;
 
     @Shadow

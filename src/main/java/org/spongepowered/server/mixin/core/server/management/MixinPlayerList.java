@@ -38,7 +38,7 @@ import org.spongepowered.common.interfaces.IMixinPlayerList;
 @Mixin(value = PlayerList.class, priority = 1001)
 public abstract class MixinPlayerList {
 
-    @Shadow @Final private MinecraftServer mcServer;
+    @Shadow @Final private MinecraftServer server;
 
     /**
      * @author Zidane - May 31th, 2016
@@ -46,7 +46,7 @@ public abstract class MixinPlayerList {
      */
     @Overwrite
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
-        ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.mcServer.getWorld(dimensionIn)
+        ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.server.getWorld(dimensionIn)
                 .getDefaultTeleporter());
     }
 
