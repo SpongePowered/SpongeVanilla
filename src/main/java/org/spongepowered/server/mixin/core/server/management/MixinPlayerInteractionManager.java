@@ -30,6 +30,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -52,8 +53,9 @@ public abstract class MixinPlayerInteractionManager {
     public void onBlockClicked(BlockPos pos, EnumFacing side, CallbackInfo ci) {
         final BlockSnapshot blockSnapshot = new Location<>((World) this.player.world, VecHelper.toVector3d(pos)).createSnapshot();
         final RayTraceResult result = SpongeImplHooks.rayTraceEyes(this.player, SpongeImplHooks.getBlockReachDistance(this.player));
+        final Vec3d hitVec = result == null ? null : result.hitVec;
 
-        if (SpongeCommonEventFactory.callInteractBlockEventPrimary(this.player, blockSnapshot, EnumHand.MAIN_HAND, side, VecHelper.toVector3d(result.hitVec)).isCancelled()) {
+        if (SpongeCommonEventFactory.callInteractBlockEventPrimary(this.player, blockSnapshot, EnumHand.MAIN_HAND, side, VecHelper.toVector3d(hitVec)).isCancelled()) {
             ((IMixinEntityPlayerMP) this.player).sendBlockChange(pos, this.player.world.getBlockState(pos));
             // Copied from Forge PlayerInteractionManager
             player.world.notifyBlockUpdate(pos, player.world.getBlockState(pos), player.world.getBlockState(pos), 3);
