@@ -145,6 +145,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
         SpongeImpl.postState(GameState.INITIALIZATION, SpongeEventFactory.createGameInitializationEvent(Sponge.getCauseStackManager().getCurrentCause()));
 
         this.registry.postInit();
+        SpongeHooks.populatePluginsInStatsConfig();
         SpongeImpl.getConfigSaveManager().flush();
 
         SpongeImpl.postState(GameState.POST_INITIALIZATION, SpongeEventFactory.createGamePostInitializationEvent(Sponge.getCauseStackManager().getCurrentCause()));
