@@ -80,10 +80,9 @@ public abstract class MixinPlayerInteractionManager {
         if (!player.world.isRemote) {
             SpongeCommonEventFactory.lastSecondaryPacketTick = SpongeImpl.getServer().getTickCounter();
             final long packetDiff = System.currentTimeMillis() - SpongeCommonEventFactory.lastTryBlockPacketTimeStamp;
-            // If the time between packets is small enough, use the last result.
+            // If the time between packets is small enough, ignore event.
             if (packetDiff < 100) {
-                // Avoid firing a second event
-                cir.setReturnValue(EnumActionResult.PASS);
+                // Note: We do not cancel here as we still want to process right-click
                 return;
             }
         }
