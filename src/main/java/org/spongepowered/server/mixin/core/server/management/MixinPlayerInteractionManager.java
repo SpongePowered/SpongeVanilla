@@ -24,7 +24,9 @@
  */
 package org.spongepowered.server.mixin.core.server.management;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.EnumFacing;
@@ -33,6 +35,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -59,10 +63,35 @@ public abstract class MixinPlayerInteractionManager {
         final Vector3d vec = result == null ? null : VecHelper.toVector3d(result.hitVec);
         final ItemStack stack = this.player.getHeldItemMainhand();
 
-        if (SpongeCommonEventFactory.callInteractItemEventPrimary(this.player, stack, EnumHand.MAIN_HAND, vec, blockSnapshot).isCancelled() ||
-                SpongeCommonEventFactory.callInteractBlockEventPrimary(this.player, blockSnapshot, EnumHand.MAIN_HAND, side, vec).isCancelled()) {
-            ((IMixinEntityPlayerMP) this.player).sendBlockChange(pos, this.player.world.getBlockState(pos));
-            this.player.world.notifyBlockUpdate(pos, player.world.getBlockState(pos), player.world.getBlockState(pos), 3);
+        boolean isCancelled;
+
+        final InteractItemEvent.Primary itemEvent =
+            SpongeCommonEventFactory.callInteractItemEventPrimary(this.player, stack, EnumHand.MAIN_HAND, vec, blockSnapshot);
+
+        isCancelled = itemEvent.isCancelled();
+
+        SpongeCommonEventFactory.interactBlockLeftClickEventCancelled = isCancelled;
+
+        if (!isCancelled) {
+            final InteractBlockEvent.Primary blockEvent =
+                SpongeCommonEventFactory.callInteractBlockEventPrimary(this.player, blockSnapshot, EnumHand.MAIN_HAND, side, vec);
+
+            isCancelled = blockEvent.isCancelled();
+            SpongeCommonEventFactory.interactBlockLeftClickEventCancelled = isCancelled;
+        }
+
+        if (isCancelled) {
+            final IBlockState state = this.player.world.getBlockState(pos);
+            ((IMixinEntityPlayerMP) this.player).sendBlockChange(pos, state);
+            this.player.world.notifyBlockUpdate(pos, player.world.getBlockState(pos), state, 3);
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "blockRemoving", at = @At("HEAD"), cancellable = true)
+    public void onBlockRemoving(final BlockPos pos, final CallbackInfo ci) {
+        if (SpongeCommonEventFactory.interactBlockLeftClickEventCancelled) {
+            SpongeCommonEventFactory.interactBlockLeftClickEventCancelled = false;
             ci.cancel();
         }
     }
