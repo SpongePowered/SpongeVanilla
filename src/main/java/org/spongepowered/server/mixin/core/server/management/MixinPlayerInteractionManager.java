@@ -26,7 +26,6 @@ package org.spongepowered.server.mixin.core.server.management;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.EnumFacing;
@@ -84,14 +83,6 @@ public abstract class MixinPlayerInteractionManager {
             final IBlockState state = this.player.world.getBlockState(pos);
             ((IMixinEntityPlayerMP) this.player).sendBlockChange(pos, state);
             this.player.world.notifyBlockUpdate(pos, player.world.getBlockState(pos), state, 3);
-            ci.cancel();
-        }
-    }
-
-    @Inject(method = "blockRemoving", at = @At("HEAD"), cancellable = true)
-    public void onBlockRemoving(final BlockPos pos, final CallbackInfo ci) {
-        if (SpongeCommonEventFactory.interactBlockLeftClickEventCancelled) {
-            SpongeCommonEventFactory.interactBlockLeftClickEventCancelled = false;
             ci.cancel();
         }
     }
