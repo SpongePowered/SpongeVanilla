@@ -55,6 +55,7 @@ import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.inject.SpongeGuice;
@@ -76,6 +77,7 @@ import org.spongepowered.server.launch.plugin.PluginSource;
 import org.spongepowered.server.plugin.MetaPluginContainer;
 import org.spongepowered.server.plugin.MetadataContainer;
 import org.spongepowered.server.plugin.MinecraftPluginContainer;
+import org.spongepowered.server.plugin.SpongeCommonContainer;
 import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.File;
@@ -93,7 +95,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
     @Inject
     public SpongeVanilla(MetadataContainer metadata, Logger logger, Game game, SpongeGameRegistry registry) {
-        super(metadata.get(SpongeImpl.ECOSYSTEM_ID, "SpongeVanilla"), PluginSource.find(SpongeVanilla.class));
+        super(metadata.get(SpongeImplHooks.getImplementationId(), "SpongeVanilla"), PluginSource.find(SpongeVanilla.class));
 
         this.logger = logger;
         this.game = game;
@@ -189,6 +191,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
         // Register Minecraft plugin container
         MinecraftPluginContainer.register();
+        SpongeCommonContainer.register();
 
         OptionSet options = VanillaCommandLine.parse(args);
 
