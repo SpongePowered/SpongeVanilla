@@ -68,6 +68,7 @@ public class VanillaPluginManager implements PluginManager {
         this.rootInjector = injector.getParent();
 
         this.registerPlugin(SpongeImpl.getMinecraftPlugin());
+        this.registerPlugin(SpongeImpl.getSpongePlugin());
         this.registerPlugin(metadata.createContainer(Platform.API_ID, SpongeImpl.API_NAME, impl.getSource()));
         this.registerPlugin(impl);
         this.registerPlugin(metadata.createContainer("mcp", "Mod Coder Pack", impl.getSource()));

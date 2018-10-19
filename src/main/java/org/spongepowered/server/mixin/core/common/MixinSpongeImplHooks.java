@@ -81,4 +81,17 @@ public abstract class MixinSpongeImplHooks {
         }).orElse("unknown");
     }
 
+    /**
+     * @author gabizou - October 9th, 2018
+     * @reason Since the common implementation does not know
+     * what type of ecosystem this is, we have to overwrite it
+     * to return the correct ecosystem id, while sponge common
+     * keeps "sponge".
+     * @return This implementation's ecosystem id.
+     */
+    @Overwrite
+    public static String getImplementationId() {
+        return "spongevanilla";
+    }
+
 }
