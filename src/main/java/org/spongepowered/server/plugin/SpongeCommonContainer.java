@@ -32,12 +32,11 @@ import org.spongepowered.server.launch.plugin.PluginSource;
 public class SpongeCommonContainer {
 
 
-    public static void register() {
-        SpongeImpl.setSpongePlugin(create());
+    public static void register(MetadataContainer metadata) {
+        SpongeImpl.setSpongePlugin(create(metadata));
     }
 
-    private static PluginContainer create() {
-        MetadataContainer metadata = MetadataContainer.load("");
+    private static PluginContainer create(MetadataContainer metadata) {
         PluginMetadata meta = metadata.get(SpongeImpl.ECOSYSTEM_ID, SpongeImpl.ECOSYSTEM_NAME);
         return new MetaPluginContainer(meta, PluginSource.find(SpongeImpl.class));
     }

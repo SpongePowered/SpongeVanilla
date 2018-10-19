@@ -191,7 +191,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
         // Register Minecraft plugin container
         MinecraftPluginContainer.register();
-        SpongeCommonContainer.register();
+        SpongeCommonContainer.register(metadata);
 
         OptionSet options = VanillaCommandLine.parse(args);
 

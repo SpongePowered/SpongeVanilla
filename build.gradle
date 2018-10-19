@@ -31,7 +31,6 @@ apply from: project(':SpongeCommon').file('gradle/implementation.gradle')
 apply plugin: 'de.sebastianboegl.shadow.transformer.log4j'
 
 version = "$minecraft.version-$implementationVersion"
-System.err.println(version)
 
 minecraft {
     tweakClass = 'org.spongepowered.server.launch.VanillaServerTweaker'
