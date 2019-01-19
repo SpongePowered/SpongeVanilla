@@ -4,13 +4,13 @@
 - Java version: 
 - Operating System:
 
-<!-- Please include ALL mods/plugins you had installed when your issue happened, you can get a list of 
-        your mods and plugins by running "/sponge plugins" and/or "/sponge mods" -->
-- Plugins/Mods:
+<!-- Please include ALL plugins you had installed when your issue happened, you can get a list of 
+        your plugin by running "/sponge plugins" -->
+- Plugins:
 
 <!-- Please include as much information as possible. For the description, assume we have no idea how 
-        mods work, be as detailed as possible and include a step by step reproduction. It is recommended 
-        you try to reproduce the issue you are having yourself with as few mods as possible. -->
+        your setup works, be as detailed as possible and include a step by step reproduction. It is recommended 
+        you try to reproduce the issue you are having yourself with as few plugins as possible. -->
 **Issue Description**
 
 
