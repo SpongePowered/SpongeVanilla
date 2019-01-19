@@ -1,4 +1,4 @@
-SpongeVanilla [![Build Status](https://travis-ci.org/SpongePowered/SpongeVanilla.svg?branch=master)](https://travis-ci.org/SpongePowered/SpongeVanilla)
+SpongeVanilla [![Build Status](https://travis-ci.org/SpongePowered/SpongeVanilla.svg?branch=stable-7)](https://travis-ci.org/SpongePowered/SpongeVanilla)
 =============
 
 **Currently not stable and under heavy development!**
@@ -9,8 +9,10 @@ SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.
 * [Source]
 * [Issues]
 * [Documentation]
-* [Community Chat]: #sponge on irc.esper.net
-* [Development Chat]: #spongedev on irc.esper.net
+* [Community Discord]
+* [Community IRC]: [#sponge on irc.esper.net]
+* [Development IRC]: [#spongedev on irc.esper.net]
+* [Preparing for Development]
 
 ## Prerequisites
 * [Java] 8
@@ -62,7 +64,7 @@ __For [IntelliJ]__
   3. When launching the server for the first time, it will shutdown by itself. You will need to modify eula.txt to set eula=true (this means you agree to the Mojang EULA, if you do not wish to do this then you cannot run the server).
 
 ## Building
-__Note:__ You must [Setup the environment](#setup) before you can build SpongeVanilla.
+__Note:__ You must [setup the environment](#setup) before you can build SpongeVanilla.
 
 In order to build SpongeVanilla you simply need to run the `gradlew` command. On Windows systems you should run `gradlew` instead of `./gradlew` to
 invoke the Gradle wrapper. You can find the compiled JAR files in `./build/libs`. You can find the compiled JAR files in `./build/libs` but in most cases
@@ -81,21 +83,30 @@ __A dependency was added, but my IDE is missing it! How do I add it?__
 
 ## Contributing
 Are you a talented programmer looking to contribute some code? We'd love the help!
-* Open a pull request with your changes, following our [guidelines](CONTRIBUTING.md).
+* Open a pull request with your changes, following our [guidelines](.github/CONTRIBUTING.md).
 * Please follow the above guidelines for your pull request(s) to be accepted.
 
 __Help! Things are not working!__
 >Some issues can be resolved by deleting the '.gradle' folder in your user directory and running through the setup steps again, or even running `gradle cleanCache` and running through the setup again. Otherwise if you are having trouble with something that the README does not cover, feel free to join our IRC channel and ask for assistance.
 
-[Eclipse]: https://eclipse.org/
-[Gradle]: https://gradle.org/
+[Eclipse]: https://www.eclipse.org/
+[SpongeAPI]: https://github.com/SpongePowered/SpongeAPI
+[Vanilla]: https://github.com/SpongePowered/SpongeVanilla
+[Forge]: https://github.com/SpongePowered/SpongeForge
+[Gradle]: https://www.gradle.org/
 [Homepage]: https://spongepowered.org/
-[IntelliJ]: http://www.jetbrains.com/idea/
+[IntelliJ]: https://www.jetbrains.com/idea/
 [Issues]: https://github.com/SpongePowered/SpongeVanilla/issues
 [Documentation]: https://docs.spongepowered.org/
-[Java]: http://java.oracle.com/
+[Java]: https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 [Source]: https://github.com/SpongePowered/SpongeVanilla/
-[MIT License]: http://www.tldrlegal.com/license/mit-license
-[Community Chat]: https://webchat.esper.net/?channels=sponge
+[MIT License]: https://www.tldrlegal.com/license/mit-license
+[Community Discord]: https://discord.gg/sponge
+[Community IRC]: https://kiwiirc.com/client/irc.esper.net:+6697/?nick=sponge|?#sponge
+[Development IRC]: https://kiwiirc.com/client/irc.esper.net:+6697/?nick=sponge|?#spongedev
+[Preparing for Development]: https://docs.spongepowered.org/en/preparing/
+[#sponge on irc.esper.net]: irc://irc.esper.net/#sponge
 [Development Chat]: https://webchat.esper.net/?channels=spongedev
-[Jenkins]: https://jenkins-ci.org/
+[#spongedev on irc.esper.net]: irc://irc.esper.net/#spongedev
+[Preparing for Development]: https://docs.spongepowered.org/en/preparing/
+[stable-7]: https://github.com/SpongePowered/SpongeVanilla/tree/stable-7
