@@ -24,10 +24,8 @@
  */
 package org.spongepowered.server.launch.plugin.asm;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static org.objectweb.asm.Opcodes.ASM5;
 
-import com.google.common.base.Preconditions;
 import org.objectweb.asm.AnnotationVisitor;
 import org.spongepowered.plugin.meta.PluginMetadata;
 import org.spongepowered.server.launch.plugin.InvalidPluginException;
@@ -57,34 +55,54 @@ final class PluginAnnotationVisitor extends WarningAnnotationVisitor {
         return "@Plugin";
     }
 
-    private void checkState(State state) {
-        Preconditions.checkState(this.state == state, "Expected state %s, but is %s", state, this.state);
-    }
-
     @Override
     public void visit(String name, Object value) {
         if (this.state == State.AUTHORS) {
+            if (!(value instanceof String)) {
+                throw new InvalidPluginException("Plugin annotation has invalid element 'author'");
+            }
             this.metadata.addAuthor((String) value);
             return;
         }
 
-        checkState(State.DEFAULT);
-        checkNotNull(name, "name");
+        if (name == null) {
+            throw new InvalidPluginException("Plugin annotation has null element");
+        }
+
+        if (this.state == State.DEPENDENCIES) {
+            throw new InvalidPluginException("Plugin annotation has invalid element 'dependencies'");
+        }
+
         switch (name) {
             case "id":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'id'");
+                }
                 this.hasId = true;
                 this.metadata.setId((String) value);
                 return;
             case "name":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'name'");
+                }
                 this.metadata.setName((String) value);
                 return;
             case "version":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'version'");
+                }
                 this.metadata.setVersion((String) value);
                 return;
             case "description":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'description'");
+                }
                 this.metadata.setDescription((String) value);
                 return;
             case "url":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'url'");
+                }
                 this.metadata.setUrl((String) value);
                 return;
             default:
@@ -102,7 +120,9 @@ final class PluginAnnotationVisitor extends WarningAnnotationVisitor {
 
     @Override
     public AnnotationVisitor visitArray(String name) {
-        checkNotNull(name, "name");
+        if (name == null) {
+            throw new InvalidPluginException("Plugin annotation has null element");
+        }
         switch (name) {
             case "authors":
                 this.state = State.AUTHORS;

@@ -29,6 +29,7 @@ import static org.objectweb.asm.Opcodes.ASM5;
 
 import org.spongepowered.plugin.meta.PluginDependency;
 import org.spongepowered.plugin.meta.PluginMetadata;
+import org.spongepowered.server.launch.plugin.InvalidPluginException;
 
 import javax.annotation.Nullable;
 
@@ -55,12 +56,21 @@ final class DependencyAnnotationVisitor extends WarningAnnotationVisitor {
         checkNotNull(name, "name");
         switch (name) {
             case "id":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'id'");
+                }
                 this.id = (String) value;
                 return;
             case "version":
+                if (!(value instanceof String)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'version'");
+                }
                 this.version = (String) value;
                 return;
             case "optional":
+                if (!(value instanceof Boolean)) {
+                    throw new InvalidPluginException("Plugin annotation has invalid element 'optional'");
+                }
                 this.optional = (boolean) value;
                 return;
             default:
