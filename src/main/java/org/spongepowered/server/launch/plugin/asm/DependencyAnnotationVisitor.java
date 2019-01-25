@@ -57,19 +57,19 @@ final class DependencyAnnotationVisitor extends WarningAnnotationVisitor {
         switch (name) {
             case "id":
                 if (!(value instanceof String)) {
-                    throw new InvalidPluginException("Plugin annotation has invalid element 'id'");
+                    throw new InvalidPluginException("Dependency annotation has invalid element 'id'");
                 }
                 this.id = (String) value;
                 return;
             case "version":
                 if (!(value instanceof String)) {
-                    throw new InvalidPluginException("Plugin annotation has invalid element 'version'");
+                    throw new InvalidPluginException("Dependency annotation has invalid element 'version'");
                 }
                 this.version = (String) value;
                 return;
             case "optional":
                 if (!(value instanceof Boolean)) {
-                    throw new InvalidPluginException("Plugin annotation has invalid element 'optional'");
+                    throw new InvalidPluginException("Dependency annotation has invalid element 'optional'");
                 }
                 this.optional = (boolean) value;
                 return;
