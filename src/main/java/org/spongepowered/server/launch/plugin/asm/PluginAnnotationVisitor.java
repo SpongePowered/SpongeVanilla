@@ -66,7 +66,7 @@ final class PluginAnnotationVisitor extends WarningAnnotationVisitor {
         }
 
         if (name == null) {
-            throw new InvalidPluginException("Plugin annotation has null element");
+            throw new InvalidPluginException("Plugin annotation attribute name is null");
         }
 
         if (this.state == State.DEPENDENCIES) {
