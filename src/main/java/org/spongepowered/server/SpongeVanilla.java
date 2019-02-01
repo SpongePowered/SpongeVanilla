@@ -61,7 +61,6 @@ import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.inject.SpongeGuice;
 import org.spongepowered.common.inject.SpongeModule;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
-import org.spongepowered.common.item.recipe.crafting.SpongeCraftingRecipeRegistry;
 import org.spongepowered.common.network.message.SpongeMessageHandler;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.registry.type.entity.EntityTypeRegistryModule;
@@ -141,8 +140,6 @@ public final class SpongeVanilla extends MetaPluginContainer {
             SpongePermissionService service = new SpongePermissionService(this.game);
             this.game.getServiceManager().setProvider(this, PermissionService.class, service);
         }
-
-        SpongeCraftingRecipeRegistry.getInstance().disableRegistrations();
 
         SpongeImpl.postState(GameState.INITIALIZATION, SpongeEventFactory.createGameInitializationEvent(Sponge.getCauseStackManager().getCurrentCause()));
 
