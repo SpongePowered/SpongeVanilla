@@ -153,6 +153,7 @@ public final class VanillaServerTweaker implements ITweaker {
         Mixins.addConfiguration("mixins.vanilla.core.json");
         Mixins.addConfiguration("mixins.vanilla.entityactivation.json");
         Mixins.addConfiguration("mixins.vanilla.chunkio.json");
+        Mixins.addConfiguration("mixins.vanilla.optimization.json");
 
         MixinEnvironment.getDefaultEnvironment().setSide(SERVER);
 
@@ -211,6 +212,7 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.plugin.");
+        loader.addTransformerExclusion("org.spongepowered.common.event.tracking.PhaseTracker");
 
         // Don't allow transforming libraries
         loader.addTransformerExclusion("com.google.");

@@ -58,6 +58,7 @@ import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.common.SpongeInternalListeners;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
+import org.spongepowered.common.event.tracking.PhaseTracker;
 import org.spongepowered.common.inject.SpongeGuice;
 import org.spongepowered.common.inject.SpongeModule;
 import org.spongepowered.common.interfaces.IMixinServerCommandManager;
@@ -108,6 +109,8 @@ public final class SpongeVanilla extends MetaPluginContainer {
 
         // Pre-initialize registry
         this.registry.preRegistryInit();
+        PhaseTracker.SERVER.init(); // Needs to occur after the game registry registers all the builders.
+
         this.game.getEventManager().registerListeners(this, SpongeInternalListeners.getInstance());
         SpongeBootstrap.initializeServices();
         SpongeBootstrap.initializeCommands();
