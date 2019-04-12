@@ -213,6 +213,7 @@ public final class VanillaServerTweaker implements ITweaker {
         loader.addClassLoaderExclusion("org.spongepowered.server.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.plugin.");
         loader.addTransformerExclusion("org.spongepowered.common.event.tracking.PhaseTracker");
+        loader.addTransformerExclusion("org.spongepowered.common.event.tracking.TrackingUtil");
 
         // Don't allow transforming libraries
         loader.addTransformerExclusion("com.google.");
