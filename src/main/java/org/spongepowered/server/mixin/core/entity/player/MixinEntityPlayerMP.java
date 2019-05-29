@@ -65,7 +65,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
         if (!this.world.isRemote && !this.isDead) {
             // Sponge Start - Handle teleportation solely in TrackingUtil where everything can be debugged.
             return EntityUtil.teleportPlayerToDimension((EntityPlayerMP) (Object) this, toDimensionId,
-                    (IMixinITeleporter) SpongeImpl.getServer().getWorld(toDimensionId).getDefaultTeleporter());
+                    (IMixinITeleporter) SpongeImpl.getServer().getWorld(toDimensionId).getDefaultTeleporter(), null);
             // Sponge End
         }
         return null;
