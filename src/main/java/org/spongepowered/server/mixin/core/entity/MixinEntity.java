@@ -118,7 +118,7 @@ public abstract class MixinEntity implements IMixinEntity {
         if (!this.world.isRemote && !this.isDead) {
             // Sponge Start - Handle teleportation solely in TrackingUtil where everything can be debugged.
             return EntityUtil.transferEntityToDimension(this, toDimensionId, (IMixinITeleporter) SpongeImpl.getServer().getWorld(toDimensionId)
-                    .getDefaultTeleporter());
+                    .getDefaultTeleporter(), null);
             // Sponge End
         }
         return null;
