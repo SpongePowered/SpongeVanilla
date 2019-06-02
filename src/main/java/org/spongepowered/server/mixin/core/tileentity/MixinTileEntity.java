@@ -41,6 +41,11 @@ public abstract class MixinTileEntity implements IMixinTileEntity {
     @Nullable private NBTTagCompound customTileData;
 
     @Override
+    public boolean hasTileDataCompound() {
+        return this.customTileData != null;
+    }
+
+    @Override
     public NBTTagCompound getTileData() {
         if (this.customTileData == null) {
             this.customTileData = new NBTTagCompound();
