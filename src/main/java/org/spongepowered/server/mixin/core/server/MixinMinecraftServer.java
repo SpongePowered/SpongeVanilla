@@ -173,7 +173,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                         }
                     }
 
-                    WorldManager.unloadWorld(worldserver1, false);
+                    WorldManager.unloadWorld(worldserver1, false, true);
                 }
             }
 
