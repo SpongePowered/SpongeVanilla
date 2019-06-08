@@ -41,16 +41,12 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
@@ -160,8 +156,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             for (WorldServer worldserver1 : server.worlds) {
                 if (worldserver1 != null) {
                     // Turn off Async Lighting
-                    if (SpongeImpl.getGlobalConfig().getConfig().getModules().useOptimizations() &&
-                        SpongeImpl.getGlobalConfig().getConfig().getOptimizations().useAsyncLighting()) {
+                    if (SpongeImpl.getGlobalConfigAdapter().getConfig().getModules().useOptimizations() &&
+                        SpongeImpl.getGlobalConfigAdapter().getConfig().getOptimizations().useAsyncLighting()) {
                         ((IMixinWorldServer) worldserver1).getLightingExecutor().shutdown();
 
                         try {
