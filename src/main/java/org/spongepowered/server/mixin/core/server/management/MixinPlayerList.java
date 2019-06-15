@@ -33,7 +33,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.common.entity.EntityUtil;
 import org.spongepowered.common.interfaces.IMixinPlayerList;
+import org.spongepowered.common.interfaces.world.IMixinITeleporter;
 
 @Mixin(value = PlayerList.class, priority = 1001)
 public abstract class MixinPlayerList {
@@ -41,22 +43,21 @@ public abstract class MixinPlayerList {
     @Shadow @Final private MinecraftServer server;
 
     /**
-     * @author Zidane - May 31th, 2016
-     * @reason Force Vanilla methods to call derivatives with Teleporter
+     * @author Zidane
+     * @reason Re-route to the common hook
      */
     @Overwrite
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
-        ((IMixinPlayerList) this).transferPlayerToDimension(player, dimensionIn, this.server.getWorld(dimensionIn)
-                .getDefaultTeleporter());
+        final WorldServer world = this.server.getWorld(dimensionIn);
+        EntityUtil.transferPlayerToWorld(player, null, world, (IMixinITeleporter) world.getDefaultTeleporter());
     }
 
     /**
-     * @author Zidane - May 31th, 2016
-     * @reason Force Vanilla methods to call derivatives with Teleporter
+     * @author Zidane
+     * @reason Re-route to the common hook
      */
     @Overwrite
     public void transferEntityToWorld(Entity entityIn, int lastDimension, WorldServer oldWorldIn, WorldServer toWorldIn) {
-        ((IMixinPlayerList) this).transferEntityToWorld(entityIn, lastDimension, oldWorldIn, toWorldIn, toWorldIn.getDefaultTeleporter());
+        EntityUtil.transferEntityToWorld(entityIn, null, toWorldIn, (IMixinITeleporter) toWorldIn.getDefaultTeleporter(), false);
     }
-
 }
