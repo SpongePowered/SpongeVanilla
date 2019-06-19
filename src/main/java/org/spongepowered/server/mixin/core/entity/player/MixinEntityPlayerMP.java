@@ -94,7 +94,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
         }
 
         if (this.dimension == 1 && toDimensionId == 1) {
-            /this.world.removeEntity(player);
+            this.world.removeEntity(player);
 
             if (!this.queuedEndExit) {
                 this.queuedEndExit = true;
