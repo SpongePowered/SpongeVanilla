@@ -37,10 +37,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.interfaces.world.IMixinWorldInfo;
+import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.common.world.WorldManager;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer extends World {
+public abstract class MixinWorldServer extends World implements IMixinWorldServer {
 
     private MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
@@ -66,12 +67,8 @@ public abstract class MixinWorldServer extends World {
         manager.sendPacketToAllPlayersInDimension(packet, getDimensionId());
     }
 
-    public Integer getDimensionId() {
+    @Override
+    public int getDimensionId() {
         return ((IMixinWorldInfo) this.worldInfo).getDimensionId();
     }
-
-    public void setDimensionId(int dimensionId) {
-        ((IMixinWorldInfo) this.worldInfo).setDimensionId(dimensionId);
-    }
-
 }
