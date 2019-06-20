@@ -49,8 +49,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.bridge.world.ServerWorldBridge;
 import org.spongepowered.common.interfaces.IMixinMinecraftServer;
-import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
@@ -158,14 +158,14 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                     // Turn off Async Lighting
                     if (SpongeImpl.getGlobalConfigAdapter().getConfig().getModules().useOptimizations() &&
                         SpongeImpl.getGlobalConfigAdapter().getConfig().getOptimizations().useAsyncLighting()) {
-                        ((IMixinWorldServer) worldserver1).getLightingExecutor().shutdown();
+                        ((ServerWorldBridge) worldserver1).bridge$getLightingExecutor().shutdown();
 
                         try {
-                            ((IMixinWorldServer) worldserver1).getLightingExecutor().awaitTermination(1, TimeUnit.SECONDS);
+                            ((ServerWorldBridge) worldserver1).bridge$getLightingExecutor().awaitTermination(1, TimeUnit.SECONDS);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } finally {
-                            ((IMixinWorldServer) worldserver1).getLightingExecutor().shutdownNow();
+                            ((ServerWorldBridge) worldserver1).bridge$getLightingExecutor().shutdownNow();
                         }
                     }
 
@@ -221,7 +221,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             if (entry.getIntKey() == 0 || this.getAllowNether()) {
 
                 // Sponge start - copy from SpongeCommon MixinMinecraftServer
-                IMixinWorldServer spongeWorld = (IMixinWorldServer) worldServer;
+                ServerWorldBridge spongeWorld = (ServerWorldBridge) worldServer;
                 if (spongeWorld.getChunkGCTickInterval() > 0) {
                     spongeWorld.doChunkGC();
                 }
@@ -233,7 +233,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                     this.profiler.startSection("timeSync");
                     this.playerList.sendPacketToAllPlayersInDimension (
                             new SPacketTimeUpdate(worldServer.getTotalWorldTime(), worldServer.getWorldTime(),
-                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), ((IMixinWorldServer) worldServer).getDimensionId());
+                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), ((ServerWorldBridge) worldServer).bridge$getDimensionId());
                     this.profiler.endSection();
                 }
 

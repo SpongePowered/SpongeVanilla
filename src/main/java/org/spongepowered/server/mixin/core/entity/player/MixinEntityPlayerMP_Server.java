@@ -41,14 +41,15 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.bridge.data.DataCompoundHolder;
+import org.spongepowered.common.bridge.world.TeleporterBridge;
 import org.spongepowered.common.entity.EntityUtil;
-import org.spongepowered.common.interfaces.world.IMixinITeleporter;
+import org.spongepowered.common.util.Constants;
 
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayerMP.class)
-public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
+public abstract class MixinEntityPlayerMP_Server extends MixinEntityPlayer_Server {
 
     @Shadow public boolean invulnerableDimensionChange;
     @Shadow private Vec3d enteredNetherPosition;
@@ -59,16 +60,19 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
     @Shadow public int lastExperience;
     @Shadow private float lastHealth;
     @Shadow private int lastFoodLevel;
-    private static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
+    @SuppressWarnings("ConstantConditions")
     @Inject(method = "copyFrom", at = @At("RETURN"))
     private void onClonePlayerReturn(EntityPlayerMP oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
-        this.spawnChunkMap = ((MixinEntityPlayer) (Object) oldPlayer).spawnChunkMap;
-        this.spawnForcedSet = ((MixinEntityPlayer) (Object) oldPlayer).spawnForcedSet;
+        this.server$spawnChunkMap = ((MixinEntityPlayerMP_Server) (Object) oldPlayer).server$spawnChunkMap;
+        this.server$spawnForcedSet = ((MixinEntityPlayerMP_Server) (Object) oldPlayer).server$spawnForcedSet;
 
-        final NBTTagCompound old = ((MixinEntityPlayer) (Object) oldPlayer).getEntityData();
-        if (old.hasKey(PERSISTED_NBT_TAG)) {
-            this.getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
+        if (((DataCompoundHolder) oldPlayer).data$hasRootCompound()) {
+            final NBTTagCompound old = ((DataCompoundHolder) oldPlayer).data$getRootCompound();
+            if (old.hasKey(Constants.Forge.PERSISTED_NBT_TAG)) {
+                this.data$getRootCompound().setTag(Constants.Forge.PERSISTED_NBT_TAG, old.getCompoundTag(Constants.Forge.PERSISTED_NBT_TAG));
+            }
+
         }
     }
 
@@ -107,7 +111,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer {
         else {
 
             final WorldServer world = this.server.getWorld(toDimensionId);
-            EntityUtil.transferPlayerToWorld(player, null, world, (IMixinITeleporter) world.getDefaultTeleporter());
+            EntityUtil.transferPlayerToWorld(player, null, world, (TeleporterBridge) world.getDefaultTeleporter());
 
             this.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false));
             this.lastExperience = -1;

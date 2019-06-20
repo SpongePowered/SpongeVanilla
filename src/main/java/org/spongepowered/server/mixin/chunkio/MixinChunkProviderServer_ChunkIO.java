@@ -36,7 +36,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.interfaces.world.IMixinWorldServer;
+import org.spongepowered.common.bridge.world.ServerWorldBridge;
 import org.spongepowered.server.interfaces.world.chunkio.IMixinChunkProviderServer;
 
 import java.util.function.Consumer;
@@ -83,7 +83,7 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
      * @reason Overwrite method in SpongeCommon to load chunks using the chunk IO executor
      */
     private Chunk loadChunkForce(int x, int z) {
-        Timing timing = ((IMixinWorldServer) this.world).getTimingsHandler().syncChunkLoadDataTimer;
+        Timing timing = ((ServerWorldBridge) this.world).bridge$getTimingsHandler().syncChunkLoadDataTimer;
         try {
             return ChunkIOExecutor.syncChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
         } finally {

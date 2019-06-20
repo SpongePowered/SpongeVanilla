@@ -41,6 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
@@ -52,8 +53,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.bridge.entity.player.PlayerEntityBridge;
 import org.spongepowered.common.data.util.NbtDataUtil;
-import org.spongepowered.common.interfaces.entity.player.IMixinEntityPlayer;
 import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
 import org.spongepowered.common.util.VecHelper;
 
@@ -62,7 +63,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayer.class)
-public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements IMixinEntityPlayer {
+public abstract class MixinEntityPlayer_Server extends MixinEntityLivingBase implements PlayerEntityBridge {
 
     @Shadow public InventoryPlayer inventory;
     @Shadow protected boolean sleeping;
@@ -72,8 +73,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     @Shadow private boolean spawnForced;
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
-    protected Int2ObjectOpenHashMap<BlockPos> spawnChunkMap = new Int2ObjectOpenHashMap<>();
-    protected IntSet spawnForcedSet = new IntOpenHashSet();
+    Int2ObjectOpenHashMap<BlockPos> server$spawnChunkMap = new Int2ObjectOpenHashMap<>();
+    IntSet server$spawnForcedSet = new IntOpenHashSet();
 
     /**
      * @author Minecrell
@@ -87,7 +88,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     @Override
     public BlockPos getBedLocation(int dimension) {
-        return dimension == 0 ? this.spawnPos : this.spawnChunkMap.get(dimension);
+        return dimension == 0 ? this.spawnPos : this.server$spawnChunkMap.get(dimension);
     }
 
     /**
@@ -101,12 +102,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
 
     @Override
     public boolean isSpawnForced(int dimension) {
-        return dimension == 0 ? this.spawnForced : this.spawnForcedSet.contains(dimension);
-    }
-
-    @Override
-    public void setOverworldSpawnPoint(@Nullable BlockPos pos) {
-        this.spawnPos = pos;
+        return dimension == 0 ? this.spawnForced : this.server$spawnForcedSet.contains(dimension);
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
@@ -127,15 +123,15 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
                 this.spawnForced = false;
             }
         } else if (pos != null) {
-            this.spawnChunkMap.put(dimension, pos);
+            this.server$spawnChunkMap.put(dimension, pos);
             if (forced) {
-                this.spawnForcedSet.add(dimension);
+                this.server$spawnForcedSet.add(dimension);
             } else {
-                this.spawnForcedSet.remove(dimension);
+                this.server$spawnForcedSet.remove(dimension);
             }
         } else {
-            this.spawnChunkMap.remove(dimension);
-            this.spawnForcedSet.remove(dimension);
+            this.server$spawnChunkMap.remove(dimension);
+            this.server$spawnForcedSet.remove(dimension);
         }
     }
 
@@ -145,10 +141,10 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
         for (int i = 0; i < spawnList.tagCount(); i++) {
             final NBTTagCompound spawnData = spawnList.getCompoundTagAt(i);
             int spawnDim = spawnData.getInteger("Dim");
-            this.spawnChunkMap.put(spawnDim,
+            this.server$spawnChunkMap.put(spawnDim,
                     new BlockPos(spawnData.getInteger("SpawnX"), spawnData.getInteger("SpawnY"), spawnData.getInteger("SpawnZ")));
             if (spawnData.getBoolean("SpawnForced")) {
-                this.spawnForcedSet.add(spawnDim);
+                this.server$spawnForcedSet.add(spawnDim);
             }
         }
     }
@@ -157,7 +153,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     private void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
         final NBTTagList spawnList = new NBTTagList();
 
-        ObjectIterator<Int2ObjectMap.Entry<BlockPos>> itr = this.spawnChunkMap.int2ObjectEntrySet().fastIterator();
+        ObjectIterator<Int2ObjectMap.Entry<BlockPos>> itr = this.server$spawnChunkMap.int2ObjectEntrySet().fastIterator();
         while (itr.hasNext()) {
             Int2ObjectMap.Entry<BlockPos> entry = itr.next();
             int dim = entry.getIntKey();
@@ -168,7 +164,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
             spawnData.setInteger("SpawnX", spawn.getX());
             spawnData.setInteger("SpawnY", spawn.getY());
             spawnData.setInteger("SpawnZ", spawn.getZ());
-            spawnData.setBoolean("SpawnForced", this.spawnForcedSet.contains(dim));
+            spawnData.setBoolean("SpawnForced", this.server$spawnForcedSet.contains(dim));
             spawnList.appendTag(spawnData);
         }
 
@@ -181,7 +177,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
         Sponge.getCauseStackManager().pushCause(this);
         SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Sponge.getCauseStackManager().getCurrentCause(),
-                ((org.spongepowered.api.world.World) this.world).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), this);
+                ((org.spongepowered.api.world.World) this.world).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), (Player) this);
         if (SpongeImpl.postEvent(event)) {
             ci.setReturnValue(EntityPlayer.SleepResult.OTHER_PROBLEM);
         }
@@ -214,16 +210,16 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
             // Sponge start (Store position for later)
             /*this.setPosition((double) ((float) blockpos.getX() + 0.5F), (double) ((float) blockpos.getY() + 0.1F),
                     (double) ((float) blockpos.getZ() + 0.5F));*/
-            newLocation = getTransform().setPosition(new Vector3d(blockpos.getX() + 0.5F, blockpos.getY() + 0.1F, blockpos.getZ() + 0.5F));
+            newLocation = ((Player) this).getTransform().setPosition(new Vector3d(blockpos.getX() + 0.5F, blockpos.getY() + 0.1F, blockpos.getZ() + 0.5F));
             // Sponge end
         }
 
         // Sponge start
-        BlockSnapshot bed = getWorld().createSnapshot(VecHelper.toVector3i(this.bedLocation));
+        BlockSnapshot bed = ((Player) this).getWorld().createSnapshot(VecHelper.toVector3i(this.bedLocation));
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             frame.pushCause(this);
             SleepingEvent.Post event = SpongeEventFactory.createSleepingEventPost(frame.getCurrentCause(), bed,
-                    Optional.ofNullable(newLocation), this, setSpawn);
+                    Optional.ofNullable(newLocation), (Player) this, setSpawn);
 
             if (SpongeImpl.postEvent(event)) {
                 return;
@@ -235,7 +231,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
                 // Set property only if bed still existsthis.world.setBlockState(this.bedLocation, iblockstate.withProperty(BlockBed.OCCUPIED, false), 4);}
 
                 // Teleport player
-                event.getSpawnTransform().ifPresent(this::setLocationAndAngles);
+                event.getSpawnTransform().ifPresent(this::bridge$setLocationAndAngles);
                 // Sponge end
 
                 this.sleeping = false;
@@ -251,7 +247,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase implements
                 }
 
                 // Sponge start
-                SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(frame.getCurrentCause(), bed, this));
+                SpongeImpl.postEvent(SpongeEventFactory.createSleepingEventFinish(frame.getCurrentCause(), bed, (Player) this));
             }
             // Sponge end
         }

@@ -31,39 +31,40 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.common.interfaces.block.tile.IMixinTileEntity;
+import org.spongepowered.common.bridge.data.DataCompoundHolder;
+import org.spongepowered.common.util.Constants;
 
 import javax.annotation.Nullable;
 
 @Mixin(value = TileEntity.class, priority = 999)
-public abstract class MixinTileEntity implements IMixinTileEntity {
+public abstract class MixinTileEntity_Server implements DataCompoundHolder {
 
-    @Nullable private NBTTagCompound customTileData;
+    @Nullable private NBTTagCompound server$customTileData;
 
     @Override
-    public boolean hasTileDataCompound() {
-        return this.customTileData != null;
+    public boolean data$hasRootCompound() {
+        return this.server$customTileData != null;
     }
 
     @Override
-    public NBTTagCompound getTileData() {
-        if (this.customTileData == null) {
-            this.customTileData = new NBTTagCompound();
+    public NBTTagCompound data$getRootCompound() {
+        if (this.server$customTileData == null) {
+            this.server$customTileData = new NBTTagCompound();
         }
-        return this.customTileData;
+        return this.server$customTileData;
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
-    private void endReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
-        if (tagCompound.hasKey("ForgeData")) {
-            this.customTileData = tagCompound.getCompoundTag("ForgeData");
+    private void server$GetForgeDataFromCompound(NBTTagCompound tagCompound, CallbackInfo ci) {
+        if (tagCompound.hasKey(Constants.Forge.FORGE_DATA)) {
+            this.server$customTileData = tagCompound.getCompoundTag(Constants.Forge.FORGE_DATA);
         }
     }
 
     @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", at = @At("RETURN"))
-    private void endWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
-        if (this.customTileData != null) {
-            tagCompound.setTag("ForgeData", this.customTileData);
+    private void server$writeForgeDataToCompound(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
+        if (this.server$customTileData != null) {
+            tagCompound.setTag(Constants.Forge.FORGE_DATA, this.server$customTileData);
         }
     }
 
