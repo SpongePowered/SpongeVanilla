@@ -39,6 +39,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.bridge.data.DataCompoundHolder;
 import org.spongepowered.common.bridge.entity.EntityBridge;
 import org.spongepowered.common.bridge.world.TeleporterBridge;
 import org.spongepowered.common.entity.EntityUtil;
@@ -47,7 +48,7 @@ import org.spongepowered.common.util.Constants;
 import javax.annotation.Nullable;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity_Server implements EntityBridge {
+public abstract class MixinEntity_Server implements EntityBridge, DataCompoundHolder {
 
     @Shadow public World world;
     @Shadow public boolean isDead;
