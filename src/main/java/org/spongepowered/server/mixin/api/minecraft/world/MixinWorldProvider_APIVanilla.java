@@ -22,23 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.item;
+package org.spongepowered.server.mixin.api.minecraft.world;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import org.spongepowered.api.item.ItemType;
+import net.minecraft.world.WorldProvider;
+import org.spongepowered.api.world.Dimension;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.registry.type.ItemTypeRegistryModule;
+import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(Item.class)
-public class MixinItem {
+@Mixin(WorldProvider.class)
+public abstract class MixinWorldProvider_APIVanilla implements Dimension {
 
-    @Inject(method = "registerItem(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V", at = @At("RETURN"))
-    private static void registerMinecraftItem(int id, ResourceLocation name, Item item, CallbackInfo ci) {
-        ItemTypeRegistryModule.getInstance().registerAdditionalCatalog((ItemType) item);
+    @Shadow public abstract boolean isNether();
+
+    @Override
+    public int getHeight() {
+        return this.isNether() ? 128 : 256;
+    }
+
+    @Override
+    public int getBuildHeight() {
+        return 256;
     }
 
 }

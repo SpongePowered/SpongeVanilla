@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.interfaces.IMixinChunk;
+import org.spongepowered.common.bridge.world.ChunkBridge;
 import org.spongepowered.server.interfaces.world.chunkio.IMixinChunkProviderServer;
 
 import java.util.function.Consumer;
@@ -47,12 +47,9 @@ import javax.annotation.Nullable;
 @Mixin(PlayerChunkMapEntry.class)
 public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk> {
 
-    private static final String LOAD_CHUNK = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;";
-    private static final String PROVIDE_CHUNK = "Lnet/minecraft/world/gen/ChunkProviderServer;provideChunk(II)Lnet/minecraft/world/chunk/Chunk;";
-
-    @Shadow @Final private PlayerChunkMap playerChunkMap;
-    @Shadow @Final private ChunkPos pos;
-    @Shadow @Nullable private Chunk chunk;
+    @Shadow @Final public PlayerChunkMap playerChunkMap;
+    @Shadow @Final public ChunkPos pos;
+    @Shadow @Nullable public Chunk chunk;
 
     private boolean loading;
 
@@ -72,12 +69,12 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
         this.loading = false;
 
         if (chunk != null) {
-            ((IMixinChunk) chunk).setScheduledForUnload(-1);
+            ((ChunkBridge) chunk).setScheduledForUnload(-1);
         }
     }
 
     @Nullable
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = LOAD_CHUNK))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
     private Chunk onLoadChunkInit(ChunkProviderServer provider, int x, int z) {
         return loadChunkAsync(provider, x, z);
     }
@@ -92,13 +89,13 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
     }
 
     @Nullable
-    @Redirect(method = "providePlayerChunk", at = @At(value = "INVOKE", target = PROVIDE_CHUNK))
+    @Redirect(method = "providePlayerChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;provideChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
     private Chunk onProvideChunk(ChunkProviderServer provider, int x, int z) {
         return this.loading ? null : provider.provideChunk(x, z); // Don't try to generate while still attempting to load
     }
 
     @Nullable
-    @Redirect(method = "providePlayerChunk", at = @At(value = "INVOKE", target = LOAD_CHUNK))
+    @Redirect(method = "providePlayerChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
     private Chunk onLoadChunkProvide(ChunkProviderServer provider, int x, int z) {
         return loadChunkAsync(provider, x, z);
     }

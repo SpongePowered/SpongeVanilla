@@ -39,50 +39,56 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.data.util.NbtDataUtil;
+import org.spongepowered.common.bridge.entity.EntityBridge;
+import org.spongepowered.common.bridge.world.TeleporterBridge;
 import org.spongepowered.common.entity.EntityUtil;
-import org.spongepowered.common.interfaces.entity.IMixinEntity;
-import org.spongepowered.common.interfaces.world.IMixinTeleporter;
+import org.spongepowered.common.util.Constants;
 
 import javax.annotation.Nullable;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity implements IMixinEntity {
+public abstract class MixinEntity_Server implements EntityBridge {
 
     @Shadow public World world;
     @Shadow public boolean isDead;
     @Shadow @Nullable public abstract MinecraftServer getServer();
-    @Nullable private NBTTagCompound customEntityData;
+
+    @Nullable private NBTTagCompound server$customEntityData;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     private void onConstructed(World world, CallbackInfo ci) {
         Sponge.getCauseStackManager().pushCause(world);
         SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Sponge.getCauseStackManager().getCurrentCause(),
-                this, this.getType(), this.getTransform()));
+            ((org.spongepowered.api.entity.Entity) this), ((org.spongepowered.api.entity.Entity) this).getType(), ((org.spongepowered.api.entity.Entity) this).getTransform()));
         Sponge.getCauseStackManager().popCause();
     }
 
     @Override
-    public final NBTTagCompound getEntityData() {
-        if (this.customEntityData == null) {
-            this.customEntityData = new NBTTagCompound();
+    public final NBTTagCompound data$getRootCompound() {
+        if (this.server$customEntityData == null) {
+            this.server$customEntityData = new NBTTagCompound();
         }
-        return this.customEntityData;
+        return this.server$customEntityData;
+    }
+
+    @Override
+    public boolean data$hasRootCompound() {
+        return this.server$customEntityData != null;
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     private void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
-        if (tagCompound.hasKey(NbtDataUtil.FORGE_DATA)) {
-            this.customEntityData = tagCompound.getCompoundTag(NbtDataUtil.FORGE_DATA);
+        if (tagCompound.hasKey(Constants.Forge.FORGE_DATA)) {
+            this.server$customEntityData = tagCompound.getCompoundTag(Constants.Forge.FORGE_DATA);
         }
     }
 
     @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
     private void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
-        if (this.customEntityData != null) {
-            tagCompound.setTag(NbtDataUtil.FORGE_DATA, this.customEntityData);
+        if (this.server$customEntityData != null) {
+            tagCompound.setTag(Constants.Forge.FORGE_DATA, this.server$customEntityData);
         }
     }
 
@@ -96,7 +102,7 @@ public abstract class MixinEntity implements IMixinEntity {
         if (!this.world.isRemote && !this.isDead) {
 
             final WorldServer world = this.getServer().getWorld(toDimensionId);
-            return EntityUtil.transferEntityToWorld((Entity) (Object) this, null, world, (IMixinTeleporter) world.getDefaultTeleporter(), true);
+            return EntityUtil.transferEntityToWorld((Entity) (Object) this, null, world, (TeleporterBridge) world.getDefaultTeleporter(), true);
         }
 
         return null;

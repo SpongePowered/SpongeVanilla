@@ -31,20 +31,23 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.interfaces.world.IMixinWorld;
 import org.spongepowered.common.mixin.plugin.entityactivation.EntityActivationRange;
-import org.spongepowered.common.mixin.plugin.entityactivation.interfaces.IModData_Activation;
+import org.spongepowered.common.mixin.plugin.entityactivation.interfaces.ActivationCapability;
 
 @Mixin(World.class)
-public abstract class MixinWorld_Activation implements IMixinWorld {
+public abstract class MixinWorld_Activation {
 
     @Inject(method = "updateEntityWithOptionalForce",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;lastTickPosX:D", opcode = Opcodes.PUTFIELD, ordinal = 0),
+            at = @At(
+                value = "FIELD",
+                target = "Lnet/minecraft/entity/Entity;lastTickPosX:D",
+                opcode = Opcodes.PUTFIELD,
+                ordinal = 0),
             cancellable = true)
     private void onUpdateEntityWithOptionalForce(Entity entity, boolean forceUpdate, CallbackInfo ci) {
         if (forceUpdate && !EntityActivationRange.checkIfActive(entity)) { // ignore if forced by forge event update or entity's chunk
             entity.ticksExisted++;
-            ((IModData_Activation) entity).inactiveTick();
+            ((ActivationCapability) entity).activation$inactiveTick();
             ci.cancel();
         }
     }

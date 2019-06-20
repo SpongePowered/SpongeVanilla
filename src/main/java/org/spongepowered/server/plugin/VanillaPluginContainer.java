@@ -25,6 +25,7 @@
 package org.spongepowered.server.plugin;
 
 import com.google.inject.Injector;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.spongepowered.common.inject.plugin.PluginModule;
 import org.spongepowered.common.plugin.PluginContainerExtension;
 import org.spongepowered.plugin.meta.PluginMetadata;
@@ -32,21 +33,26 @@ import org.spongepowered.plugin.meta.PluginMetadata;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 final class VanillaPluginContainer extends MetaPluginContainer implements PluginContainerExtension {
 
-    private final Optional<?> instance;
+    @Nullable @MonotonicNonNull private Object instance;
     private final Injector injector;
+    private final Class<?> pluginClass;
 
     VanillaPluginContainer(Injector injector, Class<?> pluginClass, PluginMetadata metadata, Optional<Path> source) {
         super(metadata, source);
-
+        this.pluginClass = pluginClass;
         this.injector = injector.createChildInjector(new PluginModule(this, pluginClass));
-        this.instance = Optional.of(this.injector.getInstance(pluginClass));
     }
 
     @Override
     public Optional<?> getInstance() {
-        return this.instance;
+        if (this.instance == null) {
+            this.instance = this.injector.getInstance(this.pluginClass);
+        }
+        return Optional.ofNullable(this.instance);
     }
 
     @Override

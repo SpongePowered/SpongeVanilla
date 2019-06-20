@@ -36,14 +36,14 @@ import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.common.interfaces.world.IMixinWorldInfo;
-import org.spongepowered.common.interfaces.world.IMixinWorldServer;
+import org.spongepowered.common.bridge.world.ServerWorldBridge;
+import org.spongepowered.common.bridge.world.WorldInfoBridge;
 import org.spongepowered.common.world.WorldManager;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer extends World implements IMixinWorldServer {
+public abstract class MixinWorldServer_Server extends World implements ServerWorldBridge {
 
-    private MixinWorldServer(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
+    private MixinWorldServer_Server(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
@@ -56,7 +56,7 @@ public abstract class MixinWorldServer extends World implements IMixinWorldServe
 
     @Redirect(method = "updateWeather", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/DimensionType;getId()I"))
     private int onGetDimensionIdForWeather(DimensionType type) {
-        return getDimensionId();
+        return bridge$getDimensionId();
     }
 
     // Prevent wrong weather changes getting sent to players in other (unaffected) dimensions
@@ -64,11 +64,12 @@ public abstract class MixinWorldServer extends World implements IMixinWorldServe
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/PlayerList;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
     private void onSendWeatherPacket(PlayerList manager, Packet<?> packet) {
-        manager.sendPacketToAllPlayersInDimension(packet, getDimensionId());
+        manager.sendPacketToAllPlayersInDimension(packet, bridge$getDimensionId());
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
-    public int getDimensionId() {
-        return ((IMixinWorldInfo) this.worldInfo).getDimensionId();
+    public int bridge$getDimensionId() {
+        return ((WorldInfoBridge) this.worldInfo).getDimensionId();
     }
 }

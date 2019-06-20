@@ -26,6 +26,7 @@ package org.spongepowered.server.mixin.core.server.management;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.world.WorldServer;
@@ -33,14 +34,25 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.common.bridge.world.ForgeITeleporterBridge;
 import org.spongepowered.common.entity.EntityUtil;
-import org.spongepowered.common.interfaces.IMixinPlayerList;
-import org.spongepowered.common.interfaces.world.IMixinITeleporter;
+import org.spongepowered.common.util.NetworkUtil;
 
 @Mixin(value = PlayerList.class, priority = 1001)
-public abstract class MixinPlayerList {
+public abstract class MixinPlayerList_Server {
 
     @Shadow @Final private MinecraftServer server;
+
+    /**
+     * @author gabizou - June 18th, 2019 - 1.12.2
+     * @reason Use the common initialize connection with events
+     * since Forge changes this method's signature to add the
+     * net handler play server....
+     */
+    @Overwrite
+    public void initializeConnectionToPlayer(NetworkManager netManager, EntityPlayerMP playerIn) {
+        NetworkUtil.initializeConnectionToPlayer((PlayerList) (Object) this, netManager, playerIn, null);
+    }
 
     /**
      * @author Zidane
@@ -49,7 +61,7 @@ public abstract class MixinPlayerList {
     @Overwrite
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn) {
         final WorldServer world = this.server.getWorld(dimensionIn);
-        EntityUtil.transferPlayerToWorld(player, null, world, (IMixinITeleporter) world.getDefaultTeleporter());
+        EntityUtil.transferPlayerToWorld(player, null, world, (ForgeITeleporterBridge) world.getDefaultTeleporter());
     }
 
     /**
@@ -58,6 +70,6 @@ public abstract class MixinPlayerList {
      */
     @Overwrite
     public void transferEntityToWorld(Entity entityIn, int lastDimension, WorldServer oldWorldIn, WorldServer toWorldIn) {
-        EntityUtil.transferEntityToWorld(entityIn, null, toWorldIn, (IMixinITeleporter) toWorldIn.getDefaultTeleporter(), false);
+        EntityUtil.transferEntityToWorld(entityIn, null, toWorldIn, (ForgeITeleporterBridge) toWorldIn.getDefaultTeleporter(), false);
     }
 }
