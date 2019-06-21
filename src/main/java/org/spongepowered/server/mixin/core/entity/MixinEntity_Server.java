@@ -48,7 +48,7 @@ import org.spongepowered.common.util.Constants;
 import javax.annotation.Nullable;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity_Server implements EntityBridge, DataCompoundHolder {
+public abstract class MixinEntity_Server implements DataCompoundHolder {
 
     @Shadow public World world;
     @Shadow public boolean isDead;

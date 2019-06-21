@@ -70,7 +70,7 @@ public abstract class MixinEntityPlayerMP_Server extends MixinEntityPlayer_Serve
         if (((DataCompoundHolder) oldPlayer).data$hasRootCompound()) {
             final NBTTagCompound old = ((DataCompoundHolder) oldPlayer).data$getRootCompound();
             if (old.hasKey(Constants.Forge.PERSISTED_NBT_TAG)) {
-                this.data$getRootCompound().setTag(Constants.Forge.PERSISTED_NBT_TAG, old.getCompoundTag(Constants.Forge.PERSISTED_NBT_TAG));
+                ((DataCompoundHolder) this).data$getRootCompound().setTag(Constants.Forge.PERSISTED_NBT_TAG, old.getCompoundTag(Constants.Forge.PERSISTED_NBT_TAG));
             }
 
         }
