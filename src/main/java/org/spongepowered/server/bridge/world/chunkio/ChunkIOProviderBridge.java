@@ -22,14 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.interfaces.world.chunkio;
+package org.spongepowered.server.bridge.world.chunkio;
 
 import net.minecraft.world.chunk.Chunk;
 
 import java.util.function.Consumer;
 
-public interface IMixinChunkProviderServer {
+public interface ChunkIOProviderBridge {
 
-    Chunk loadChunk(int x, int z, Consumer<Chunk> callback);
+    Chunk serverbridge$loadChunk(int x, int z, Consumer<Chunk> callback);
 
 }

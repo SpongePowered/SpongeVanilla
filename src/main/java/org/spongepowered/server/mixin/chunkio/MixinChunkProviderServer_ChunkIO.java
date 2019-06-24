@@ -37,14 +37,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
-import org.spongepowered.server.interfaces.world.chunkio.IMixinChunkProviderServer;
+import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
+import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
 
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
 @Mixin(value = ChunkProviderServer.class, priority = 1112)
-public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider, IMixinChunkProviderServer {
+public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider, ChunkIOProviderBridge, ServerChunkProviderBridge {
 
     @Shadow @Final private IChunkLoader chunkLoader;
     @Shadow @Final public WorldServer world;
@@ -56,12 +57,12 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
     @Nullable
     @Overwrite
     public Chunk loadChunk(int x, int z) {
-        return loadChunk(x, z, null);
+        return serverbridge$loadChunk(x, z, null);
     }
 
     @Nullable
     @Override
-    public Chunk loadChunk(int x, int z, @Nullable Consumer<Chunk> callback) {
+    public Chunk serverbridge$loadChunk(int x, int z, @Nullable Consumer<Chunk> callback) {
         Chunk chunk = getLoadedChunk(x, z);
 
         if (chunk != null) {
@@ -74,7 +75,7 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
             ChunkIOExecutor.queueChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z, callback);
             return null;
         } else {
-            return loadChunkForce(x, z); // Load chunk synchronously
+            return impl$loadChunkForce(x, z); // Load chunk synchronously
         }
     }
 
@@ -82,7 +83,8 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
      * @author Minecrell - October 25th, 2016
      * @reason Overwrite method in SpongeCommon to load chunks using the chunk IO executor
      */
-    private Chunk loadChunkForce(int x, int z) {
+    @Override
+    public Chunk impl$loadChunkForce(int x, int z) {
         Timing timing = ((ServerWorldBridge) this.world).bridge$getTimingsHandler().syncChunkLoadDataTimer;
         try {
             return ChunkIOExecutor.syncChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);

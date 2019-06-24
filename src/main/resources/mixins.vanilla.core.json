@@ -24,7 +24,7 @@
         "server.management.MixinPlayerList_Server",
         "tileentity.MixinTileEntity_Server",
         "world.MixinWorldServer_Server",
-        "world.chunk.MixinChunk",
+        "world.chunk.gen.MixinChunkProviderServer_Server",
         "world.storage.MixinSaveHandler"
     ],
     "injectors": {

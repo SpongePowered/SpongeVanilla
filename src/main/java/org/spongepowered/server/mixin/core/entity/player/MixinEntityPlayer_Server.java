@@ -25,6 +25,7 @@
 package org.spongepowered.server.mixin.core.entity.player;
 
 import com.flowpowered.math.vector.Vector3d;
+import io.netty.util.internal.ConcurrentSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -38,6 +39,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Transform;
@@ -45,6 +47,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.action.SleepingEvent;
+import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -54,18 +57,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.bridge.entity.player.PlayerEntityBridge;
+import org.spongepowered.common.bridge.world.WorldBridge;
+import org.spongepowered.common.bridge.world.WorldInfoBridge;
 import org.spongepowered.common.data.util.NbtDataUtil;
 import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
+import org.spongepowered.common.util.Constants;
 import org.spongepowered.common.util.VecHelper;
+import org.spongepowered.common.world.WorldManager;
 
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer_Server extends MixinEntityLivingBase implements PlayerEntityBridge {
 
-    @Shadow public InventoryPlayer inventory;
     @Shadow protected boolean sleeping;
     @Shadow @Nullable public BlockPos bedLocation;
     @Shadow private int sleepTimer;
@@ -73,8 +85,8 @@ public abstract class MixinEntityPlayer_Server extends MixinEntityLivingBase imp
     @Shadow private boolean spawnForced;
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
-    Int2ObjectOpenHashMap<BlockPos> server$spawnChunkMap = new Int2ObjectOpenHashMap<>();
-    IntSet server$spawnForcedSet = new IntOpenHashSet();
+    Map<UUID, BlockPos> server$spawnChunkMap = new ConcurrentHashMap<>();
+    Set<UUID> server$spawnForcedSet = new ConcurrentSet<>();
 
     /**
      * @author Minecrell
@@ -106,75 +118,72 @@ public abstract class MixinEntityPlayer_Server extends MixinEntityLivingBase imp
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
-    private void onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
+    private void server$onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
         if (this.dimension != 0) {
-            setSpawnChunk(pos, forced, this.dimension);
+            server$setSpawnChunk(pos, forced, this.world);
             ci.cancel();
         }
     }
 
-    public void setSpawnChunk(@Nullable BlockPos pos, boolean forced, int dimension) {
-        if (dimension == 0) {
-            if (pos != null) {
-                this.spawnPos = pos;
-                this.spawnForced = forced;
-            } else {
-                this.spawnPos = null;
-                this.spawnForced = false;
-            }
-        } else if (pos != null) {
-            this.server$spawnChunkMap.put(dimension, pos);
+    private void server$setSpawnChunk(@Nullable BlockPos pos, boolean forced, net.minecraft.world.World dimension) {
+        final Integer dimensionId = ((WorldInfoBridge) dimension.getWorldInfo()).getDimensionId();
+        if (dimensionId == null) {
+            return;
+        }
+        final UUID id = ((World) dimension).getUniqueId();
+        if (pos != null) {
+            this.server$spawnChunkMap.put(id, pos);
             if (forced) {
-                this.server$spawnForcedSet.add(dimension);
+                this.server$spawnForcedSet.add(id);
             } else {
-                this.server$spawnForcedSet.remove(dimension);
+                this.server$spawnForcedSet.remove(id);
             }
         } else {
-            this.server$spawnChunkMap.remove(dimension);
-            this.server$spawnForcedSet.remove(dimension);
+            this.server$spawnChunkMap.remove(id);
+            this.server$spawnForcedSet.remove(id);
         }
     }
 
     @Inject(method = "readEntityFromNBT", at = @At("RETURN"))
     private void onReadEntityFromNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
-        final NBTTagList spawnList = tagCompound.getTagList("Spawns", NbtDataUtil.TAG_COMPOUND);
+        final NBTTagList spawnList = tagCompound.getTagList(Constants.Sponge.User.USER_SPAWN_LIST, Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < spawnList.tagCount(); i++) {
             final NBTTagCompound spawnData = spawnList.getCompoundTagAt(i);
-            int spawnDim = spawnData.getInteger("Dim");
-            this.server$spawnChunkMap.put(spawnDim,
-                    new BlockPos(spawnData.getInteger("SpawnX"), spawnData.getInteger("SpawnY"), spawnData.getInteger("SpawnZ")));
-            if (spawnData.getBoolean("SpawnForced")) {
+            UUID spawnDim = spawnData.getUniqueId(Constants.UUID);
+            final int x = spawnData.getInteger(Constants.Sponge.User.USER_SPAWN_X);
+            final int y = spawnData.getInteger(Constants.Sponge.User.USER_SPAWN_Y);
+            final int z = spawnData.getInteger(Constants.Sponge.User.USER_SPAWN_Z);
+            this.server$spawnChunkMap.put(spawnDim, new BlockPos(x, y, z));
+            if (spawnData.getBoolean(Constants.Sponge.User.USER_SPAWN_FORCED)) {
                 this.server$spawnForcedSet.add(spawnDim);
             }
         }
     }
 
     @Inject(method = "writeEntityToNBT", at = @At("RETURN"))
-    private void onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
+    private void server$onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
         final NBTTagList spawnList = new NBTTagList();
 
-        ObjectIterator<Int2ObjectMap.Entry<BlockPos>> itr = this.server$spawnChunkMap.int2ObjectEntrySet().fastIterator();
-        while (itr.hasNext()) {
-            Int2ObjectMap.Entry<BlockPos> entry = itr.next();
-            int dim = entry.getIntKey();
+        for (Map.Entry<UUID, BlockPos> entry : this.server$spawnChunkMap.entrySet()) {
+            UUID dim = entry.getKey();
             BlockPos spawn = entry.getValue();
 
             NBTTagCompound spawnData = new NBTTagCompound();
-            spawnData.setInteger("Dim", dim);
-            spawnData.setInteger("SpawnX", spawn.getX());
-            spawnData.setInteger("SpawnY", spawn.getY());
-            spawnData.setInteger("SpawnZ", spawn.getZ());
-            spawnData.setBoolean("SpawnForced", this.server$spawnForcedSet.contains(dim));
+            spawnData.setUniqueId(Constants.UUID, dim);
+            spawnData.setInteger(Constants.Sponge.User.USER_SPAWN_X, spawn.getX());
+            spawnData.setInteger(Constants.Sponge.User.USER_SPAWN_Y, spawn.getY());
+            spawnData.setInteger(Constants.Sponge.User.USER_SPAWN_Z, spawn.getZ());
+            spawnData.setBoolean(Constants.Sponge.User.USER_SPAWN_FORCED, this.server$spawnForcedSet.contains(dim));
             spawnList.appendTag(spawnData);
         }
 
-        tagCompound.setTag("Spawns", spawnList);
+        tagCompound.setTag(Constants.Sponge.User.USER_SPAWN_LIST, spawnList);
     }
 
     // Event injectors
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
-    private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
+    private void server$onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
         Sponge.getCauseStackManager().pushCause(this);
         SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Sponge.getCauseStackManager().getCurrentCause(),
                 ((org.spongepowered.api.world.World) this.world).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), (Player) this);

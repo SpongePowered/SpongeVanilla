@@ -8,7 +8,8 @@
     "mixinPriority": 901,
     "priority": 1111,
     "server": [
-        "minecraft.world.MixinWorldProvider_APIVanilla"
+        "minecraft.world.MixinWorldProvider_APIVanilla",
+        "minecraft.world.chunk.MixinChunk_ServerAPI"
     ],
     "injectors": {
         "defaultRequire": 1

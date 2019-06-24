@@ -22,39 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.chunkio;
+package org.spongepowered.server.mixin.api.minecraft.world.chunk;
 
-import net.minecraft.world.chunk.IChunkProvider;
-import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.World;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.world.storage.SpongeChunkLayout;
-import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+@Mixin(Chunk.class)
+public abstract class MixinChunk_ServerAPI implements org.spongepowered.api.world.Chunk {
 
-@Mixin(net.minecraft.world.World.class)
-public abstract class MixinWorld_ChunkIO implements World {
-
-    @Shadow protected IChunkProvider chunkProvider;
+    @Shadow @Final private World world;
+    @Shadow @Final public int x;
+    @Shadow @Final public int z;
 
     @Override
-    public CompletableFuture<Optional<Chunk>> loadChunkAsync(int cx, int cy, int cz, boolean shouldGenerate) {
-        // Currently, we can only load asynchronously if the chunk should not be generated
-        if (shouldGenerate) {
-            return World.super.loadChunkAsync(cx, cy, cz, true);
+    public boolean unloadChunk() {
+        if (this.world.provider.canRespawnHere()
+//                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())
+                && this.world.isSpawnChunk(this.x, this.z)) {
+            return false;
         }
 
-        if (!SpongeChunkLayout.instance.isValidChunk(cx, cy, cz)) {
-            return CompletableFuture.completedFuture(Optional.empty());
-        }
-
-        CompletableFuture<Optional<Chunk>> future = new CompletableFuture<>();
-        ((ChunkIOProviderBridge) this.chunkProvider).serverbridge$loadChunk(cx, cz,
-                chunk -> future.complete(Optional.ofNullable((Chunk) chunk)));
-        return future;
+        ((WorldServer) this.world).getChunkProvider().queueUnload((Chunk) (Object) this);
+        return true;
     }
-
 }

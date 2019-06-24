@@ -38,7 +38,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.bridge.world.chunk.ChunkBridge;
-import org.spongepowered.server.interfaces.world.chunkio.IMixinChunkProviderServer;
+import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
 
 import java.util.function.Consumer;
 
@@ -60,7 +60,7 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
         }
 
         this.loading = true;
-        return ((IMixinChunkProviderServer) provider).loadChunk(x, z, this);
+        return ((ChunkIOProviderBridge) provider).serverbridge$loadChunk(x, z, this);
     }
 
     @Override

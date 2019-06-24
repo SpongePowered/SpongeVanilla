@@ -22,39 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.chunkio;
+package org.spongepowered.server.mixin.core.world.chunk.gen;
 
-import net.minecraft.world.chunk.IChunkProvider;
-import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.World;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.gen.IChunkGenerator;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.world.storage.SpongeChunkLayout;
-import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
+import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import javax.annotation.Nullable;
 
-@Mixin(net.minecraft.world.World.class)
-public abstract class MixinWorld_ChunkIO implements World {
+/**
+ * Only needed to implement {@link #impl$loadChunkForce(int, int)} since
+ * Forge has a different implementation required for this.
+ */
+@Mixin(ChunkProviderServer.class)
+public abstract class MixinChunkProviderServer_Server implements ServerChunkProviderBridge {
 
-    @Shadow protected IChunkProvider chunkProvider;
+    @Shadow @Final public Long2ObjectMap<Chunk> loadedChunks;
+    @Shadow public IChunkGenerator chunkGenerator;
+
+    @Shadow @Nullable protected abstract Chunk loadChunkFromFile(int x, int z);
 
     @Override
-    public CompletableFuture<Optional<Chunk>> loadChunkAsync(int cx, int cy, int cz, boolean shouldGenerate) {
-        // Currently, we can only load asynchronously if the chunk should not be generated
-        if (shouldGenerate) {
-            return World.super.loadChunkAsync(cx, cy, cz, true);
+    public Chunk impl$loadChunkForce(int x, int z) {
+        Chunk chunk = this.loadChunkFromFile(x, z);
+
+        if (chunk != null)
+        {
+            this.loadedChunks.put(ChunkPos.asLong(x, z), chunk);
+            chunk.onLoad();
+            chunk.populate((ChunkProviderServer) (Object) this, this.chunkGenerator);
         }
 
-        if (!SpongeChunkLayout.instance.isValidChunk(cx, cy, cz)) {
-            return CompletableFuture.completedFuture(Optional.empty());
-        }
-
-        CompletableFuture<Optional<Chunk>> future = new CompletableFuture<>();
-        ((ChunkIOProviderBridge) this.chunkProvider).serverbridge$loadChunk(cx, cz,
-                chunk -> future.complete(Optional.ofNullable((Chunk) chunk)));
-        return future;
+        return chunk;
     }
-
 }
