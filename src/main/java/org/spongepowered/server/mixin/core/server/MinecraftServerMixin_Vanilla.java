@@ -49,8 +49,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
+import org.spongepowered.common.bridge.server.MinecraftServerBridge;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
-import org.spongepowered.common.interfaces.IMixinMinecraftServer;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
@@ -63,9 +63,9 @@ import java.util.concurrent.TimeUnit;
 // SpongeCommon injects into updateTimeLightAndEntities, so we need to apply
 // our @Overwrite *before* SpongeCommon's mixin is applied, otherwise it will fail
 @Mixin(value = MinecraftServer.class, priority = 999)
-public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
+public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBridge {
 
-    @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
+    @SuppressWarnings("NullableProblems") @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
     @Shadow @Final private static Logger LOGGER;
     @Shadow @Final private Snooper usageSnooper;
 
@@ -180,17 +180,17 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     }
 
     @Override
-    public long[] getWorldTickTimes(int dimensionId) {
+    public long[] bridge$getWorldTickTimes(int dimensionId) {
         return this.worldTickTimes.get(dimensionId);
     }
 
     @Override
-    public void putWorldTickTimes(int dimensionId, long[] tickTimes) {
+    public void bridge$putWorldTickTimes(int dimensionId, long[] tickTimes) {
         this.worldTickTimes.put(dimensionId, tickTimes);
     }
 
     @Override
-    public void removeWorldTickTimes(int dimensionId) {
+    public void bridge$removeWorldTickTimes(int dimensionId) {
         this.worldTickTimes.remove(dimensionId);
     }
 
@@ -220,7 +220,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
             if (entry.getIntKey() == 0 || this.getAllowNether()) {
 
-                // Sponge start - copy from SpongeCommon MixinMinecraftServer
+                // Sponge start - copy from SpongeCommon MinecraftServerMixin_Vanilla
                 ServerWorldBridge spongeWorld = (ServerWorldBridge) worldServer;
                 if (spongeWorld.getChunkGCTickInterval() > 0) {
                     spongeWorld.doChunkGC();
@@ -258,7 +258,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
                 this.profiler.endSection();
                 this.profiler.startSection("tracker");
 
-                // Sponge start - copy from SpongeCommon MixinMinecraftServer
+                // Sponge start - copy from SpongeCommon MinecraftServerMixin_Vanilla
                 if (spongeWorld.getChunkGCTickInterval() > 0) {
                     worldServer.getChunkProvider().tick();
                 }
