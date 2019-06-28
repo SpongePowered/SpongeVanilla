@@ -13,19 +13,19 @@
         "common.MixinSpongeImplHooks",
         "crash.MixinCrashReport",
         "enchantment.MixinEnchantment",
-        "entity.MixinEntity_Server",
+        "entity.EntityMixin_Vanilla",
         "entity.item.MixinEntityMinecart",
-        "entity.player.MixinEntityPlayer_Server",
-        "entity.player.MixinEntityPlayerMP_Server",
+        "entity.player.EntityPlayerMixin_Vanilla",
+        "entity.player.EntityPlayerMPMixin_Vanilla",
         "network.MixinNetHandlerPlayServer",
         "server.MixinMinecraftServer",
         "server.dedicated.MixinDedicatedServer",
         "server.dedicated.MixinDedicatedServerConsoleThread",
         "server.management.MixinPlayerList_Server",
-        "tileentity.MixinTileEntity_Server",
-        "world.MixinWorldServer_Server",
-        "world.chunk.gen.MixinChunkProviderServer_Server",
-        "world.storage.MixinSaveHandler"
+        "tileentity.TileEntityMixin_Vanilla",
+        "world.WorldServerMixin_Vanilla",
+        "world.chunk.gen.MixinChunkProviderServer_Vanilla",
+        "world.storage.SaveHandlerMixin_Vanilla"
     ],
     "injectors": {
         "defaultRequire": 1

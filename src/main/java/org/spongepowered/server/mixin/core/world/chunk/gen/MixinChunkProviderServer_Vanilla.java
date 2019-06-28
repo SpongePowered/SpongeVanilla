@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
  * Forge has a different implementation required for this.
  */
 @Mixin(ChunkProviderServer.class)
-public abstract class MixinChunkProviderServer_Server implements ServerChunkProviderBridge {
+public abstract class MixinChunkProviderServer_Vanilla implements ServerChunkProviderBridge {
 
     @Shadow @Final public Long2ObjectMap<Chunk> loadedChunks;
     @Shadow public IChunkGenerator chunkGenerator;

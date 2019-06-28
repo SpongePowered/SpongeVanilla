@@ -37,7 +37,7 @@ import org.spongepowered.common.util.Constants;
 import javax.annotation.Nullable;
 
 @Mixin(value = TileEntity.class, priority = 999)
-public abstract class MixinTileEntity_Server implements DataCompoundHolder {
+public abstract class TileEntityMixin_Vanilla implements DataCompoundHolder {
 
     @Nullable private NBTTagCompound server$customTileData;
 

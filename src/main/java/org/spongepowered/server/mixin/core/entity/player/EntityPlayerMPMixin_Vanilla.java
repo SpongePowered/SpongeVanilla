@@ -49,7 +49,7 @@ import org.spongepowered.common.util.Constants;
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayerMP.class)
-public abstract class MixinEntityPlayerMP_Server extends MixinEntityPlayer_Server {
+public abstract class EntityPlayerMPMixin_Vanilla extends EntityPlayerMixin_Vanilla {
 
     @Shadow public boolean invulnerableDimensionChange;
     @Shadow private Vec3d enteredNetherPosition;
@@ -64,8 +64,8 @@ public abstract class MixinEntityPlayerMP_Server extends MixinEntityPlayer_Serve
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "copyFrom", at = @At("RETURN"))
     private void onClonePlayerReturn(EntityPlayerMP oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
-        this.server$spawnChunkMap = ((MixinEntityPlayerMP_Server) (Object) oldPlayer).server$spawnChunkMap;
-        this.server$spawnForcedSet = ((MixinEntityPlayerMP_Server) (Object) oldPlayer).server$spawnForcedSet;
+        this.server$spawnChunkMap = ((EntityPlayerMPMixin_Vanilla) (Object) oldPlayer).server$spawnChunkMap;
+        this.server$spawnForcedSet = ((EntityPlayerMPMixin_Vanilla) (Object) oldPlayer).server$spawnForcedSet;
 
         if (((DataCompoundHolder) oldPlayer).data$hasRootCompound()) {
             final NBTTagCompound old = ((DataCompoundHolder) oldPlayer).data$getRootCompound();

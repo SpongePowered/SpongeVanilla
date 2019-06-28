@@ -41,9 +41,9 @@ import org.spongepowered.common.bridge.world.WorldInfoBridge;
 import org.spongepowered.common.world.WorldManager;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer_Server extends World implements ServerWorldBridge {
+public abstract class WorldServerMixin_Vanilla extends World implements ServerWorldBridge {
 
-    private MixinWorldServer_Server(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
+    private WorldServerMixin_Vanilla(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
@@ -70,6 +70,6 @@ public abstract class MixinWorldServer_Server extends World implements ServerWor
     @SuppressWarnings("ConstantConditions")
     @Override
     public int bridge$getDimensionId() {
-        return ((WorldInfoBridge) this.worldInfo).getDimensionId();
+        return ((WorldInfoBridge) this.worldInfo).bridge$getDimensionId();
     }
 }

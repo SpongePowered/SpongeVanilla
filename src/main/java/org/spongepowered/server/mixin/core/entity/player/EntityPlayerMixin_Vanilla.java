@@ -26,20 +26,13 @@ package org.spongepowered.server.mixin.core.entity.player;
 
 import com.flowpowered.math.vector.Vector3d;
 import io.netty.util.internal.ConcurrentSet;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.Transform;
@@ -57,16 +50,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.bridge.entity.player.PlayerEntityBridge;
-import org.spongepowered.common.bridge.world.WorldBridge;
 import org.spongepowered.common.bridge.world.WorldInfoBridge;
-import org.spongepowered.common.data.util.NbtDataUtil;
-import org.spongepowered.common.mixin.core.entity.MixinEntityLivingBase;
+import org.spongepowered.common.mixin.core.entity.EntityLivingBaseMixin;
 import org.spongepowered.common.util.Constants;
 import org.spongepowered.common.util.VecHelper;
-import org.spongepowered.common.world.WorldManager;
 
-import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -76,7 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayer.class)
-public abstract class MixinEntityPlayer_Server extends MixinEntityLivingBase implements PlayerEntityBridge {
+public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin implements PlayerEntityBridge {
 
     @Shadow protected boolean sleeping;
     @Shadow @Nullable public BlockPos bedLocation;
@@ -126,7 +114,7 @@ public abstract class MixinEntityPlayer_Server extends MixinEntityLivingBase imp
     }
 
     private void server$setSpawnChunk(@Nullable BlockPos pos, boolean forced, net.minecraft.world.World dimension) {
-        final Integer dimensionId = ((WorldInfoBridge) dimension.getWorldInfo()).getDimensionId();
+        final Integer dimensionId = ((WorldInfoBridge) dimension.getWorldInfo()).bridge$getDimensionId();
         if (dimensionId == null) {
             return;
         }

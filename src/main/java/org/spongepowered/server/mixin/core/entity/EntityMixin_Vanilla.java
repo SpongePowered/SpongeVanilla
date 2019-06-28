@@ -48,7 +48,7 @@ import org.spongepowered.common.util.Constants;
 import javax.annotation.Nullable;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity_Server implements DataCompoundHolder {
+public abstract class EntityMixin_Vanilla implements DataCompoundHolder {
 
     @Shadow public World world;
     @Shadow public boolean isDead;
@@ -57,7 +57,7 @@ public abstract class MixinEntity_Server implements DataCompoundHolder {
     @Nullable private NBTTagCompound server$customEntityData;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
-    private void onConstructed(World world, CallbackInfo ci) {
+    private void vanillaImpl$pushConstructPost(World world, CallbackInfo ci) {
         Sponge.getCauseStackManager().pushCause(world);
         SpongeImpl.postEvent(SpongeEventFactory.createConstructEntityEventPost(Sponge.getCauseStackManager().getCurrentCause(),
             ((org.spongepowered.api.entity.Entity) this), ((org.spongepowered.api.entity.Entity) this).getType(), ((org.spongepowered.api.entity.Entity) this).getTransform()));

@@ -34,13 +34,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.interfaces.IMixinSaveHandler;
+import org.spongepowered.common.bridge.world.storage.SaveHandlerBridge;
 
 import java.io.File;
 import java.io.FileInputStream;
 
 @Mixin(SaveHandler.class)
-public abstract class MixinSaveHandler implements IMixinSaveHandler {
+public abstract class SaveHandlerMixin_Vanilla implements SaveHandlerBridge {
 
     @Redirect(method = "loadWorldInfo",
             at = @At(value = "INVOKE", target= "Lnet/minecraft/world/storage/SaveFormatOld;"
@@ -51,9 +51,9 @@ public abstract class MixinSaveHandler implements IMixinSaveHandler {
             NBTTagCompound data = root.getCompoundTag("Data");
             WorldInfo info = new WorldInfo(fixer.process(FixTypes.LEVEL, data));
 
-            this.loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
+            this.bridge$loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
             try {
-                this.loadSpongeDatData(info);
+                this.bridge$loadSpongeDatData(info);
             } catch (Exception ex) {
                 SpongeImpl.getLogger().error("Exception reading Sponge level data", ex);
                 return null;
