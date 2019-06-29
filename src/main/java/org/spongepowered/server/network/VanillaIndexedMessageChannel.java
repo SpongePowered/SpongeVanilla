@@ -47,7 +47,7 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.network.SpongeNetworkManager;
-import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
+import org.spongepowered.server.bridge.network.NetHandlerPlayServerBridge_Vanilla;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -148,7 +148,7 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
     public void sendTo(Player player, Message message) {
         validate();
         final EntityPlayerMP playerMP = (EntityPlayerMP) player;
-        if (((IMixinNetHandlerPlayServer) playerMP.connection).supportsChannel(getName())) {
+        if (((NetHandlerPlayServerBridge_Vanilla) playerMP.connection).vanillaBridge$supportsChannel(getName())) {
             playerMP.connection.sendPacket(createPacket(message));
         }
     }
@@ -165,7 +165,7 @@ public final class VanillaIndexedMessageChannel extends VanillaChannelBinding im
         final String name = getName();
         SPacketCustomPayload packet = null;
         for (EntityPlayerMP player : SpongeImpl.getServer().getPlayerList().getPlayers()) {
-            if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
+            if (((NetHandlerPlayServerBridge_Vanilla) player.connection).vanillaBridge$supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(message);
                 }

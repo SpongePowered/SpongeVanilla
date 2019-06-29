@@ -22,10 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.interfaces;
+package org.spongepowered.server.mixin.api.minecraft.enchantment;
 
-public interface IMixinNetHandlerPlayServer {
+import org.spongepowered.api.item.enchantment.EnchantmentType;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-    boolean supportsChannel(String name);
+@Mixin(net.minecraft.enchantment.Enchantment.class)
+public abstract class EnchantmentMixin_VanillaAPI implements EnchantmentType {
+
+    @Shadow public abstract boolean canApply(net.minecraft.item.ItemStack stack);
+
+    @Override
+    public boolean canBeAppliedToStack(ItemStack stack) {
+        return canApply((net.minecraft.item.ItemStack) stack);
+    }
 
 }

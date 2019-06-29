@@ -22,22 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core;
+package org.spongepowered.server.bridge.network;
 
-import net.minecraft.init.Bootstrap;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+public interface NetHandlerPlayServerBridge_Vanilla {
 
-@Mixin(Bootstrap.class)
-public abstract class MixinBootstrap {
-
-    /**
-     * @author Minecrell
-     * @reason Remove STDOUT to logger redirection, already handled by SpongeVanilla.
-     */
-    @Overwrite
-    private static void redirectOutputToLog() {
-        // Handled by TerminalConsoleAppender
-    }
+    boolean vanillaBridge$supportsChannel(String name);
 
 }

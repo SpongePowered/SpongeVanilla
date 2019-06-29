@@ -22,4 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.mixin.core.enchantment;
+package org.spongepowered.server.mixin.api.minecraft.world.chunk;
+
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
+@Mixin(Chunk.class)
+public abstract class ChunkMixin_VanillaAPI implements org.spongepowered.api.world.Chunk {
+
+    @Shadow @Final private World world;
+    @Shadow @Final public int x;
+    @Shadow @Final public int z;
+
+    @Override
+    public boolean unloadChunk() {
+        if (this.world.provider.canRespawnHere()
+//                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())
+                && this.world.isSpawnChunk(this.x, this.z)) {
+            return false;
+        }
+
+        ((WorldServer) this.world).getChunkProvider().queueUnload((Chunk) (Object) this);
+        return true;
+    }
+}

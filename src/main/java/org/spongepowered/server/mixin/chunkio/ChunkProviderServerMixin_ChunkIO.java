@@ -38,16 +38,16 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
 import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
-import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
+import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge_Vanilla;
 
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
 @Mixin(value = ChunkProviderServer.class, priority = 1112)
-public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider, ChunkIOProviderBridge, ServerChunkProviderBridge {
+public abstract class ChunkProviderServerMixin_ChunkIO implements IChunkProvider, ChunkIOProviderBridge_Vanilla, ServerChunkProviderBridge {
 
-    @Shadow @Final private IChunkLoader chunkLoader;
+    @Shadow @Final public IChunkLoader chunkLoader;
     @Shadow @Final public WorldServer world;
 
     /**
@@ -57,12 +57,12 @@ public abstract class MixinChunkProviderServer_ChunkIO implements IChunkProvider
     @Nullable
     @Overwrite
     public Chunk loadChunk(int x, int z) {
-        return serverbridge$loadChunk(x, z, null);
+        return vanillaBridge$loadChunk(x, z, null);
     }
 
     @Nullable
     @Override
-    public Chunk serverbridge$loadChunk(int x, int z, @Nullable Consumer<Chunk> callback) {
+    public Chunk vanillaBridge$loadChunk(int x, int z, @Nullable Consumer<Chunk> callback) {
         Chunk chunk = getLoadedChunk(x, z);
 
         if (chunk != null) {

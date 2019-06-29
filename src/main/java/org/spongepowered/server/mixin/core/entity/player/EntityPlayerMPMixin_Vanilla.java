@@ -63,9 +63,9 @@ public abstract class EntityPlayerMPMixin_Vanilla extends EntityPlayerMixin_Vani
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "copyFrom", at = @At("RETURN"))
-    private void onClonePlayerReturn(EntityPlayerMP oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
-        this.server$spawnChunkMap = ((EntityPlayerMPMixin_Vanilla) (Object) oldPlayer).server$spawnChunkMap;
-        this.server$spawnForcedSet = ((EntityPlayerMPMixin_Vanilla) (Object) oldPlayer).server$spawnForcedSet;
+    private void vanilla$initializeFieldsOnCopy(EntityPlayerMP oldPlayer, boolean respawnFromEnd, CallbackInfo ci) {
+        this.vanilla$spawnChunkMap = ((EntityPlayerMPMixin_Vanilla) (Object) oldPlayer).vanilla$spawnChunkMap;
+        this.vanilla$spawnForcedSet = ((EntityPlayerMPMixin_Vanilla) (Object) oldPlayer).vanilla$spawnForcedSet;
 
         if (((DataCompoundHolder) oldPlayer).data$hasRootCompound()) {
             final NBTTagCompound old = ((DataCompoundHolder) oldPlayer).data$getRootCompound();

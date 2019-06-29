@@ -38,7 +38,7 @@ import org.spongepowered.api.network.RawDataListener;
 import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
+import org.spongepowered.server.bridge.network.NetHandlerPlayServerBridge_Vanilla;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -92,7 +92,7 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
     public void sendTo(Player player, Consumer<ChannelBuf> payload) {
         validate();
         final EntityPlayerMP playerMP = (EntityPlayerMP) player;
-        if (((IMixinNetHandlerPlayServer) playerMP.connection).supportsChannel(getName())) {
+        if (((NetHandlerPlayServerBridge_Vanilla) playerMP.connection).vanillaBridge$supportsChannel(getName())) {
             playerMP.connection.sendPacket(createPacket(payload));
         }
     }
@@ -109,7 +109,7 @@ public final class VanillaRawDataChannel extends VanillaChannelBinding implement
         final String name = getName();
         SPacketCustomPayload packet = null;
         for (EntityPlayerMP player : SpongeImpl.getServer().getPlayerList().getPlayers()) {
-            if (((IMixinNetHandlerPlayServer) player.connection).supportsChannel(name)) {
+            if (((NetHandlerPlayServerBridge_Vanilla) player.connection).vanillaBridge$supportsChannel(name)) {
                 if (packet == null) {
                     packet = createPacket(payload);
                 }

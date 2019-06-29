@@ -22,20 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.command;
+package org.spongepowered.server.mixin.chunkio;
 
-import net.minecraft.command.EntitySelector;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.server.management.PlayerList;
+import net.minecraftforge.common.chunkio.ChunkIOExecutor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.common.command.WrapperCommandSource;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EntitySelector.class)
-public abstract class MixinEntitySelector {
+@Mixin(PlayerList.class)
+public abstract class PlayerListMixin_ChunkIO {
 
-    @Redirect(method = "matchEntities", at = @At(value = "INVOKE", target = "net.minecraft.command.ICommandSender.canUseCommand(ILjava/lang/String;)Z"))
-    private static boolean redirectCanUseCommand(ICommandSender self, int opLevel, String command) {
-        return WrapperCommandSource.of(self).hasPermission("minecraft.selector");
+    @Shadow public abstract int getCurrentPlayerCount();
+
+    @Inject(method = "playerLoggedIn", at = @At("HEAD"))
+    private void chunkIO$adjustChunkLoadingPoolJoin(CallbackInfo ci) {
+        ChunkIOExecutor.adjustPoolSize(getCurrentPlayerCount() + 1); // Called before the player is added
     }
+
+    @Inject(method = "playerLoggedOut", at = @At("RETURN"))
+    private void chunkIO$adjustChunkLoadingPoolQuit(CallbackInfo ci) {
+        ChunkIOExecutor.adjustPoolSize(getCurrentPlayerCount());
+    }
+
 }

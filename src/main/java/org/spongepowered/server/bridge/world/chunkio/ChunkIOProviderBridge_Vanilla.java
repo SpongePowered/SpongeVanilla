@@ -22,31 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.api.minecraft.world.chunk;
+package org.spongepowered.server.bridge.world.chunkio;
 
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(Chunk.class)
-public abstract class MixinChunk_ServerAPI implements org.spongepowered.api.world.Chunk {
+import java.util.function.Consumer;
 
-    @Shadow @Final private World world;
-    @Shadow @Final public int x;
-    @Shadow @Final public int z;
+public interface ChunkIOProviderBridge_Vanilla {
 
-    @Override
-    public boolean unloadChunk() {
-        if (this.world.provider.canRespawnHere()
-//                && DimensionManager.shouldLoadSpawn(this.worldObj.provider.getDimensionType().getId())
-                && this.world.isSpawnChunk(this.x, this.z)) {
-            return false;
-        }
+    Chunk vanillaBridge$loadChunk(int x, int z, Consumer<Chunk> callback);
 
-        ((WorldServer) this.world).getChunkProvider().queueUnload((Chunk) (Object) this);
-        return true;
-    }
 }

@@ -40,7 +40,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.bridge.data.DataCompoundHolder;
-import org.spongepowered.common.bridge.entity.EntityBridge;
 import org.spongepowered.common.bridge.world.TeleporterBridge;
 import org.spongepowered.common.entity.EntityUtil;
 import org.spongepowered.common.util.Constants;
@@ -54,7 +53,7 @@ public abstract class EntityMixin_Vanilla implements DataCompoundHolder {
     @Shadow public boolean isDead;
     @Shadow @Nullable public abstract MinecraftServer getServer();
 
-    @Nullable private NBTTagCompound server$customEntityData;
+    @Nullable private NBTTagCompound vanilla$customEntityData;
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At("RETURN"), remap = false)
     private void vanillaImpl$pushConstructPost(World world, CallbackInfo ci) {
@@ -66,30 +65,30 @@ public abstract class EntityMixin_Vanilla implements DataCompoundHolder {
 
     @Override
     public final NBTTagCompound data$getRootCompound() {
-        if (this.server$customEntityData == null) {
-            this.server$customEntityData = new NBTTagCompound();
+        if (this.vanilla$customEntityData == null) {
+            this.vanilla$customEntityData = new NBTTagCompound();
         }
-        return this.server$customEntityData;
+        return this.vanilla$customEntityData;
     }
 
     @Override
     public boolean data$hasRootCompound() {
-        return this.server$customEntityData != null;
+        return this.vanilla$customEntityData != null;
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readEntityFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
-    private void preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
+    private void vanilla$preReadFromNBTInject(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey(Constants.Forge.FORGE_DATA)) {
-            this.server$customEntityData = tagCompound.getCompoundTag(Constants.Forge.FORGE_DATA);
+            this.vanilla$customEntityData = tagCompound.getCompoundTag(Constants.Forge.FORGE_DATA);
         }
     }
 
     @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeEntityToNBT(Lnet/minecraft/nbt/NBTTagCompound;)V"))
-    private void preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
-        if (this.server$customEntityData != null) {
-            tagCompound.setTag(Constants.Forge.FORGE_DATA, this.server$customEntityData);
+    private void vanilla$preWriteToNBTInject(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
+        if (this.vanilla$customEntityData != null) {
+            tagCompound.setTag(Constants.Forge.FORGE_DATA, this.vanilla$customEntityData);
         }
     }
 

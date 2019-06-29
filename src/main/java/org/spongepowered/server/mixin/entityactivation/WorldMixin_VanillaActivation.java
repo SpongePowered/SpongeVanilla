@@ -22,33 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.optimization;
+package org.spongepowered.server.mixin.entityactivation;
 
-
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
+import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.common.SpongeImplHooks;
-import org.spongepowered.common.event.tracking.PhaseTracker;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.mixin.plugin.entityactivation.EntityActivationRange;
+import org.spongepowered.common.mixin.plugin.entityactivation.interfaces.ActivationCapability;
 
-@Mixin(value = SpongeImplHooks.class, remap = false)
-public class MixinSpongeImplHooks_ThreadChecks {
+@Mixin(World.class)
+public abstract class WorldMixin_VanillaActivation {
 
-    /**
-     * @author gabizou - July 8th, 2018
-     * @author gabizou - February 10th, 2019 - Better client support checks for client run server and client joining remote server
-     *
-     * @reason Makes the thread checks simply faster than the multiple
-     * null and state checks and finally delegating to
-     * {@link MinecraftServer#isCallingFromMinecraftThread()}. This is
-     * only possible through mixins due to having to set and reset the
-     * server thread.
-     */
-    @Overwrite
-    public static boolean isMainThread() {
-        // Return true when the server isn't yet initialized, this means on a client
-        // that the game is still being loaded. This is needed to support initialization
-        // events with cause tracking.
-        return PhaseTracker.SERVER.getSidedThread() == null || Thread.currentThread() == PhaseTracker.SERVER.getSidedThread();
+    @Inject(method = "updateEntityWithOptionalForce",
+            at = @At(
+                value = "FIELD",
+                target = "Lnet/minecraft/entity/Entity;lastTickPosX:D",
+                opcode = Opcodes.PUTFIELD,
+                ordinal = 0),
+            cancellable = true)
+    private void vanillaActivation$onUpdateEntityWithOptionalForce(Entity entity, boolean forceUpdate, CallbackInfo ci) {
+        if (forceUpdate && !EntityActivationRange.checkIfActive(entity)) { // ignore if forced by forge event update or entity's chunk
+            entity.ticksExisted++;
+            ((ActivationCapability) entity).activation$inactiveTick();
+            ci.cancel();
+        }
     }
+
 }

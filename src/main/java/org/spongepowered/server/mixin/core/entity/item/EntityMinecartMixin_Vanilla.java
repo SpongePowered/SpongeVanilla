@@ -24,39 +24,38 @@
  */
 package org.spongepowered.server.mixin.core.entity.item;
 
-import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.common.bridge.entity.item.MinecartEntityBridge;
+import org.spongepowered.common.util.Constants;
 
 @Mixin(EntityMinecart.class)
-public abstract class MixinEntityMinecart extends Entity {
+public abstract class EntityMinecartMixin_Vanilla extends Entity {
 
-    private static final double DEFAULT_AIRBORNE_MOD = 0.949999988079071D;
-
-    // Added in SpongeCommon
-    private Vector3d airborneMod;
-
-    protected MixinEntityMinecart(World worldIn) {
+    public EntityMinecartMixin_Vanilla(World worldIn) {
         super(worldIn);
     }
 
-    @ModifyConstant(method = "moveDerailedMinecart", constant = @Constant(doubleValue = DEFAULT_AIRBORNE_MOD, ordinal = 0))
+    @ModifyConstant(method = "moveDerailedMinecart",
+        constant = @Constant(doubleValue = Constants.Entity.Minecart.DEFAULT_AIRBORNE_MOD, ordinal = 0))
     private double onAirX(double defaultValue) {
-        return this.airborneMod.getX();
+        return ((MinecartEntityBridge) this).bridge$getAirboneVelocityModifier().getX();
     }
 
-    @ModifyConstant(method = "moveDerailedMinecart", constant = @Constant(doubleValue = DEFAULT_AIRBORNE_MOD, ordinal = 1))
+    @ModifyConstant(method = "moveDerailedMinecart",
+        constant = @Constant(doubleValue = Constants.Entity.Minecart.DEFAULT_AIRBORNE_MOD, ordinal = 1))
     private double onAirY(double defaultValue) {
-        return this.airborneMod.getY();
+        return ((MinecartEntityBridge) this).bridge$getAirboneVelocityModifier().getY();
     }
 
-    @ModifyConstant(method = "moveDerailedMinecart", constant = @Constant(doubleValue = DEFAULT_AIRBORNE_MOD, ordinal = 2))
+    @ModifyConstant(method = "moveDerailedMinecart",
+        constant = @Constant(doubleValue = Constants.Entity.Minecart.DEFAULT_AIRBORNE_MOD, ordinal = 2))
     private double onAirZ(double defaultValue) {
-        return this.airborneMod.getZ();
+        return ((MinecartEntityBridge) this).bridge$getAirboneVelocityModifier().getZ();
     }
 
 }

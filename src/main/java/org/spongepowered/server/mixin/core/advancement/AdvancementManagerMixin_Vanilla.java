@@ -50,13 +50,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Mixin(AdvancementManager.class)
-public class MixinAdvancementManager {
+public class AdvancementManagerMixin_Vanilla {
 
     @Shadow @Final private static Gson GSON;
 
     @Redirect(method = "reload", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/advancements/AdvancementList;loadAdvancements(Ljava/util/Map;)V"))
-    private void onLoadAdvancements(AdvancementList advancementList,
+    private void vanilla$LoadUpAdvancements(AdvancementList advancementList,
             Map<ResourceLocation, Advancement.Builder> advancements) {
         if (!SpongeImpl.isInitialized()) {
             return;

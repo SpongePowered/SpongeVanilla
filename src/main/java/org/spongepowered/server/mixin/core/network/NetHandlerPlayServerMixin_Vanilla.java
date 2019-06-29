@@ -59,7 +59,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.server.chat.ChatFormatter;
-import org.spongepowered.server.interfaces.IMixinNetHandlerPlayServer;
+import org.spongepowered.server.bridge.network.NetHandlerPlayServerBridge_Vanilla;
 import org.spongepowered.server.network.VanillaChannelRegistrar;
 
 import java.nio.charset.StandardCharsets;
@@ -68,33 +68,31 @@ import java.util.Optional;
 import java.util.Set;
 
 @Mixin(NetHandlerPlayServer.class)
-public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMixinNetHandlerPlayServer {
+public abstract class NetHandlerPlayServerMixin_Vanilla implements RemoteConnection, NetHandlerPlayServerBridge_Vanilla {
 
-    private static final String
-        CHECK_THREAD_AND_ENQUEUE =
-        "Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V";
-    @Shadow @Final private MinecraftServer server;
     @Shadow public EntityPlayerMP player;
-
-    @Shadow
-    public abstract void sendPacket(final Packet<?> packetIn);
 
     private static final Splitter CHANNEL_SPLITTER = Splitter.on(CHANNEL_SEPARATOR);
 
-    private final Set<String> registeredChannels = new HashSet<>();
+    private final Set<String> vanilla$registeredChannels = new HashSet<>();
 
     @Override
-    public boolean supportsChannel(String name) {
-        return this.registeredChannels.contains(name);
+    public boolean vanillaBridge$supportsChannel(String name) {
+        return this.vanilla$registeredChannels.contains(name);
     }
 
     @Inject(method = "<init>*", at = @At("RETURN") )
-    private void registerChannels(CallbackInfo ci) {
+    private void vanilla$registerChannels(CallbackInfo ci) {
         ((VanillaChannelRegistrar) Sponge.getChannelRegistrar()).registerChannels((NetHandlerPlayServer) (Object) this);
     }
 
-    @Inject(method = "processChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V") , cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
+    @Inject(method = "processChatMessage",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V"),
+        cancellable = true,
+        locals = LocalCapture.CAPTURE_FAILHARD)
+    private void vanilla$onProcessChatMessage(CPacketChatMessage packet, CallbackInfo ci, String s, ITextComponent component) {
         ChatFormatter.formatChatComponent((TextComponentTranslation) component);
         final Text[] message = SpongeTexts.splitChatMessage((TextComponentTranslation) component); // safe cast
         final MessageChannel originalChannel = ((Player) this.player).getMessageChannel();
@@ -110,13 +108,21 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
         Sponge.getCauseStackManager().popCause();
     }
 
-    @Redirect(method = "processChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V") )
-    private void cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
+    @Redirect(method = "processChatMessage",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;Z)V") )
+    private void vanilla$cancelSendChatMsgImpl(PlayerList manager, ITextComponent component, boolean chat) {
         // Do nothing
     }
 
-    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = CHECK_THREAD_AND_ENQUEUE, shift = At.Shift.AFTER) , cancellable = true)
-    private void onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
+    @Inject(method = "processCustomPayload",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V",
+            shift = At.Shift.AFTER),
+        cancellable = true)
+    private void vanilla$onProcessPluginMessage(CPacketCustomPayload packet, CallbackInfo ci) {
         final String name = packet.getChannelName();
         if (name.startsWith(INTERNAL_PREFIX)) {
             return;
@@ -127,7 +133,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             case REGISTER_CHANNEL: {
                 final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
                 for (String channel : CHANNEL_SPLITTER.split(channels)) {
-                    if (this.registeredChannels.add(channel)) {
+                    if (this.vanilla$registeredChannels.add(channel)) {
                         Sponge.getCauseStackManager().pushCause(this);
                         Sponge.getCauseStackManager().pushCause(this.player);
                         SpongeImpl.postEvent(
@@ -140,7 +146,7 @@ public abstract class MixinNetHandlerPlayServer implements RemoteConnection, IMi
             case UNREGISTER_CHANNEL: {
                 final String channels = packet.getBufferData().toString(StandardCharsets.UTF_8);
                 for (String channel : CHANNEL_SPLITTER.split(channels)) {
-                    if (this.registeredChannels.remove(channel)) {
+                    if (this.vanilla$registeredChannels.remove(channel)) {
                         Sponge.getCauseStackManager().pushCause(this);
                         Sponge.getCauseStackManager().pushCause(this.player);
                         SpongeImpl.postEvent(SpongeEventFactory

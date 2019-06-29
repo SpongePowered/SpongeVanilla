@@ -22,33 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.crash;
+package org.spongepowered.server.mixin.core.world.chunk.gen;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.plugin.PluginContainer;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.gen.IChunkGenerator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
 
-@Mixin(CrashReport.class)
-public abstract class MixinCrashReport {
+import javax.annotation.Nullable;
 
-    @Shadow @Final private CrashReportCategory systemDetailsCategory;
+/**
+ * Only needed to implement {@link #impl$loadChunkForce(int, int)} since
+ * Forge has a different implementation required for this.
+ */
+@Mixin(ChunkProviderServer.class)
+public abstract class ChunkProviderServerMixin_Vanilla implements ServerChunkProviderBridge {
 
-    @Inject(method = "populateEnvironment", at = @At("RETURN"))
-    private void onPopulateEnvironment(CallbackInfo ci) {
-        this.systemDetailsCategory.addDetail("Plugins", () -> {
-            StringBuilder result = new StringBuilder(64);
-            for (PluginContainer container : Sponge.getPluginManager().getPlugins()) {
-                result.append("\n\t\t").append(container);
-            }
-            return result.toString();
-        });
+    @Shadow @Final public Long2ObjectMap<Chunk> loadedChunks;
+    @Shadow public IChunkGenerator chunkGenerator;
+
+    @Shadow @Nullable protected abstract Chunk loadChunkFromFile(int x, int z);
+
+    @Override
+    public Chunk impl$loadChunkForce(int x, int z) {
+        Chunk chunk = this.loadChunkFromFile(x, z);
+
+        if (chunk != null)
+        {
+            this.loadedChunks.put(ChunkPos.asLong(x, z), chunk);
+            chunk.onLoad();
+            chunk.populate((ChunkProviderServer) (Object) this, this.chunkGenerator);
+        }
+
+        return chunk;
     }
-
 }

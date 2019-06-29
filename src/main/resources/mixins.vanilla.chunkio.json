@@ -5,12 +5,12 @@
     "refmap": "mixins.vanilla.refmap.json",
     "priority": 1112,
     "server": [
-        "MixinAnvilChunkLoader_ChunkIO",
-        "MixinChunkProviderServer_ChunkIO",
-        "MixinMinecraftServer_ChunkIO",
-        "MixinPlayerChunkMapEntry_ChunkIO",
-        "MixinPlayerList_ChunkIO",
-        "MixinWorld_ChunkIO"
+        "AnvilChunkLoaderMixin_ChunkIO",
+        "ChunkProviderServerMixin_ChunkIO",
+        "MinecraftServerMixin_ChunkIO",
+        "PlayerChunkMapEntryMixin_ChunkIO",
+        "PlayerListMixin_ChunkIO",
+        "WorldMixin_ChunkIO"
     ],
     "injectors": {
         "defaultRequire": 1

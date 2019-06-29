@@ -22,21 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.chunkio;
+package org.spongepowered.server.bridge;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.chunkio.ChunkIOExecutor;
-import org.spongepowered.asm.mixin.Mixin;
+public interface ChunkLoaderTickBridge {
 
-@Mixin(value = MinecraftServer.class, priority = 1112) // TODO: Why is priority needed here?
-public abstract class MixinMinecraftServer_ChunkIO {
-
-    /**
-     * @author Minecrell - May 28th, 2016
-     * @reason Replaced to finish loading the asynchronously loaded chunks
-     */
-    private void tickChunkLoader() {
-        ChunkIOExecutor.tick();
-    }
+    void chunkIO$tickChunkLoader();
 
 }

@@ -22,14 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.bridge.world.chunkio;
+package org.spongepowered.server.mixin.core;
 
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.init.Bootstrap;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
-import java.util.function.Consumer;
+@Mixin(Bootstrap.class)
+public abstract class BootstrapMixin_Vanilla {
 
-public interface ChunkIOProviderBridge {
-
-    Chunk serverbridge$loadChunk(int x, int z, Consumer<Chunk> callback);
+    /**
+     * @author Minecrell
+     * @reason Remove STDOUT to logger redirection, already handled by SpongeVanilla.
+     */
+    @Overwrite
+    private static void redirectOutputToLog() {
+        // Handled by TerminalConsoleAppender
+    }
 
 }

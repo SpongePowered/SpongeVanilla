@@ -38,35 +38,35 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.bridge.world.chunk.ChunkBridge;
-import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
+import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge_Vanilla;
 
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
 @Mixin(PlayerChunkMapEntry.class)
-public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk> {
+public abstract class PlayerChunkMapEntryMixin_ChunkIO implements Consumer<Chunk> {
 
     @Shadow @Final public PlayerChunkMap playerChunkMap;
     @Shadow @Final public ChunkPos pos;
     @Shadow @Nullable public Chunk chunk;
 
-    private boolean loading;
+    private boolean chunkIO$loading;
 
     @Nullable
-    private Chunk loadChunkAsync(ChunkProviderServer provider, int x, int z) {
-        if (this.loading) {
+    private Chunk chunkIO$loadChunkAsync(ChunkProviderServer provider, int x, int z) {
+        if (this.chunkIO$loading) {
             return null;
         }
 
-        this.loading = true;
-        return ((ChunkIOProviderBridge) provider).serverbridge$loadChunk(x, z, this);
+        this.chunkIO$loading = true;
+        return ((ChunkIOProviderBridge_Vanilla) provider).vanillaBridge$loadChunk(x, z, this);
     }
 
     @Override
     public void accept(@Nullable Chunk chunk) {
         this.chunk = chunk;
-        this.loading = false;
+        this.chunkIO$loading = false;
 
         if (chunk != null) {
             ((ChunkBridge) chunk).setScheduledForUnload(-1);
@@ -74,30 +74,34 @@ public abstract class MixinPlayerChunkMapEntry_ChunkIO implements Consumer<Chunk
     }
 
     @Nullable
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
-    private Chunk onLoadChunkInit(ChunkProviderServer provider, int x, int z) {
-        return loadChunkAsync(provider, x, z);
+    @Redirect(method = "<init>",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
+    private Chunk chunkIO$onLoadChunkInit(ChunkProviderServer provider, int x, int z) {
+        return chunkIO$loadChunkAsync(provider, x, z);
     }
 
-    @Inject(method = "removePlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerChunkMap;removeEntry"
+    @Inject(method = "removePlayer",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerChunkMap;removeEntry"
             + "(Lnet/minecraft/server/management/PlayerChunkMapEntry;)V"))
-    private void onRemoveEntry(CallbackInfo ci) {
-        if (this.loading) {
+    private void chunkIO$onRemoveEntry(CallbackInfo ci) {
+        if (this.chunkIO$loading) {
             // Don't load the chunk if we haven't loaded it yet
             ChunkIOExecutor.dropQueuedChunkLoad(this.playerChunkMap.getWorldServer(), this.pos.x, this.pos.z, this);
         }
     }
 
     @Nullable
-    @Redirect(method = "providePlayerChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;provideChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
-    private Chunk onProvideChunk(ChunkProviderServer provider, int x, int z) {
-        return this.loading ? null : provider.provideChunk(x, z); // Don't try to generate while still attempting to load
+    @Redirect(method = "providePlayerChunk",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;provideChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
+    private Chunk chunkIO$onProvideChunk(ChunkProviderServer provider, int x, int z) {
+        return this.chunkIO$loading ? null : provider.provideChunk(x, z); // Don't try to generate while still attempting to load
     }
 
     @Nullable
-    @Redirect(method = "providePlayerChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
-    private Chunk onLoadChunkProvide(ChunkProviderServer provider, int x, int z) {
-        return loadChunkAsync(provider, x, z);
+    @Redirect(method = "providePlayerChunk",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/ChunkProviderServer;loadChunk(II)Lnet/minecraft/world/chunk/Chunk;"))
+    private Chunk chunkIO$onLoadChunkProvide(ChunkProviderServer provider, int x, int z) {
+        return chunkIO$loadChunkAsync(provider, x, z);
     }
 
 }

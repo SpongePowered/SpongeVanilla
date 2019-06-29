@@ -22,23 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.server.dedicated;
+package org.spongepowered.server.mixin.core.crash;
 
-import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.server.console.VanillaConsole;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(targets = "net/minecraft/server/dedicated/DedicatedServer$2")
-public abstract class MixinDedicatedServerConsoleThread implements Runnable {
+@Mixin(CrashReport.class)
+public abstract class CrashReportMixin_Vanilla {
 
-    @Shadow(remap = false, aliases = {"field_72428_a", "this$0"}) @Final
-    private DedicatedServer server;
+    @Shadow @Final private CrashReportCategory systemDetailsCategory;
 
-    @Override
-    public void run() {
-        new VanillaConsole(this.server).start();
+    @Inject(method = "populateEnvironment", at = @At("RETURN"))
+    private void vanilla$addPluginsToEnvironment(CallbackInfo ci) {
+        this.systemDetailsCategory.addDetail("Plugins", () -> {
+            StringBuilder result = new StringBuilder(64);
+            for (PluginContainer container : Sponge.getPluginManager().getPlugins()) {
+                result.append("\n\t\t").append(container);
+            }
+            return result.toString();
+        });
     }
 
 }

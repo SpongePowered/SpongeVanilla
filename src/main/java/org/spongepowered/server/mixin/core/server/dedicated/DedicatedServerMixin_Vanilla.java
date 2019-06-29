@@ -41,31 +41,42 @@ import org.spongepowered.common.scheduler.SpongeScheduler;
 import org.spongepowered.server.SpongeVanilla;
 
 @Mixin(DedicatedServer.class)
-public abstract class MixinDedicatedServer extends MinecraftServer {
-
-    @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
-    @com.google.inject.Inject private static SpongeScheduler scheduler;
-    @Shadow public abstract String getMotd();
-
-    public MixinDedicatedServer() {
-        super(null, null, null, null, null, null, null);
-    }
+public abstract class DedicatedServerMixin_Vanilla extends MinecraftServer {
 
     @Shadow private PropertyManager settings;
 
-    @Inject(method = "init()Z", at = @At(value = "INVOKE_STRING", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
-            args = "ldc=Loading properties", remap = false))
-    private void server$onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
-        spongeVanilla.preInitialize();
+    @Shadow public abstract String getMotd();
+
+    @SuppressWarnings("NullableProblems") @com.google.inject.Inject private static SpongeVanilla vanilla$spongeVanilla;
+    @SuppressWarnings("NullableProblems") @com.google.inject.Inject private static SpongeScheduler vanilla$scheduler;
+
+
+    @SuppressWarnings("ConstantConditions")
+    public DedicatedServerMixin_Vanilla() { // Ignored, ditched
+        super(null, null, null, null, null, null, null);
     }
 
-    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedPlayerList;<init>(Lnet/minecraft/server/dedicated/DedicatedServer;)V", shift = At.Shift.BEFORE))
-    private void server$onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
+    @Inject(method = "init()Z",
+        at = @At(
+            value = "INVOKE_STRING",
+            target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V",
+            args = "ldc=Loading properties",
+            remap = false))
+    private void vanilla$onServerLoad(CallbackInfoReturnable<Boolean> ci) throws Exception {
+        vanilla$spongeVanilla.preInitialize();
+    }
+
+    @Inject(method = "init()Z",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/dedicated/DedicatedPlayerList;<init>(Lnet/minecraft/server/dedicated/DedicatedServer;)V",
+            shift = At.Shift.BEFORE))
+    private void vanilla$onServerInitialize(CallbackInfoReturnable<Boolean> ci) {
         if (this.getFolderName() == null) {
             this.setFolderName(this.settings.getStringProperty("level-name", "world"));
         }
 
-        spongeVanilla.initialize();
+        vanilla$spongeVanilla.initialize();
         ServerStatusResponse statusResponse = getServerStatusResponse();
         statusResponse.setServerDescription(new TextComponentString(this.getMotd()));
         statusResponse.setVersion(
@@ -73,25 +84,33 @@ public abstract class MixinDedicatedServer extends MinecraftServer {
         this.applyServerIconToResponse(statusResponse);
     }
 
-    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/PropertyManager;setProperty(Ljava/lang/String;Ljava/lang/Object;)V", ordinal = 2, shift = At.Shift.AFTER))
-    private void server$callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
-        spongeVanilla.onServerAboutToStart();
+    @Inject(method = "init()Z",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/dedicated/PropertyManager;setProperty(Ljava/lang/String;Ljava/lang/Object;)V",
+            ordinal = 2,
+            shift = At.Shift.AFTER))
+    private void vanilla$callServerAboutToStart(CallbackInfoReturnable<Boolean> ci) {
+        vanilla$spongeVanilla.onServerAboutToStart();
     }
 
-    @Inject(method = "init()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds"
-                                                                    + "(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V", shift = At.Shift.AFTER))
-    private void server$callServerStarting(CallbackInfoReturnable<Boolean> ci) {
-        spongeVanilla.onServerStarting();
+    @Inject(method = "init()Z",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadAllWorlds(Ljava/lang/String;Ljava/lang/String;JLnet/minecraft/world/WorldType;Ljava/lang/String;)V",
+            shift = At.Shift.AFTER))
+    private void vanilla$callServerStarting(CallbackInfoReturnable<Boolean> ci) {
+        vanilla$spongeVanilla.onServerStarting();
     }
 
     @Inject(method = "updateTimeLightAndEntities", at = @At("RETURN"))
-    private void server$onTick(CallbackInfo ci) {
-        scheduler.tickSyncScheduler();
+    private void vanilla$onTick(CallbackInfo ci) {
+        vanilla$scheduler.tickSyncScheduler();
     }
 
     @Inject(method = "systemExitNow", at = @At(value = "HEAD"))
-    private void server$callServerStopped(CallbackInfo ci) throws Exception {
-        spongeVanilla.onServerStopped();
+    private void vanilla$callServerStopped(CallbackInfo ci) throws Exception {
+        vanilla$spongeVanilla.onServerStopped();
     }
 
 }

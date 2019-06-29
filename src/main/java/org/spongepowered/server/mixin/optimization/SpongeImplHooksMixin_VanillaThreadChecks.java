@@ -24,26 +24,31 @@
  */
 package org.spongepowered.server.mixin.optimization;
 
+
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.common.event.tracking.PhaseTracker;
 
-@Mixin(MinecraftServer.class)
-public class MixinMinecraftServer_ThreadChecks {
+@Mixin(value = SpongeImplHooks.class, remap = false)
+public class SpongeImplHooksMixin_VanillaThreadChecks {
 
-    @Redirect(method = "startServerThread", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;start()V", remap = false))
-    private void onServerStart(Thread thread) throws IllegalAccessException {
-        PhaseTracker.SERVER.setThread(thread);
-        thread.start();
-
-    }
-
-    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
-    private void onServerStop(CallbackInfo ci) throws IllegalAccessException {
-        PhaseTracker.SERVER.setThread(null);
+    /**
+     * @author gabizou - July 8th, 2018
+     * @author gabizou - February 10th, 2019 - Better client support checks for client run server and client joining remote server
+     *
+     * @reason Makes the thread checks simply faster than the multiple
+     * null and state checks and finally delegating to
+     * {@link MinecraftServer#isCallingFromMinecraftThread()}. This is
+     * only possible through mixins due to having to set and reset the
+     * server thread.
+     */
+    @Overwrite
+    public static boolean isMainThread() {
+        // Return true when the server isn't yet initialized, this means on a client
+        // that the game is still being loaded. This is needed to support initialization
+        // events with cause tracking.
+        return PhaseTracker.SERVER.getSidedThread() == null || Thread.currentThread() == PhaseTracker.SERVER.getSidedThread();
     }
 }

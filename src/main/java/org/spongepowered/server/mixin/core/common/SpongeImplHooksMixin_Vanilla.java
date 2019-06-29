@@ -40,7 +40,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 @Mixin(value = SpongeImplHooks.class, remap = false)
-public abstract class MixinSpongeImplHooks {
+public abstract class SpongeImplHooksMixin_Vanilla {
 
     /**
      * @author Aaron1011

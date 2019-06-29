@@ -22,34 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.entityactivation;
+package org.spongepowered.server.mixin.core.command;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
-import org.spongepowered.asm.lib.Opcodes;
+import net.minecraft.command.EntitySelector;
+import net.minecraft.command.ICommandSender;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.common.mixin.plugin.entityactivation.EntityActivationRange;
-import org.spongepowered.common.mixin.plugin.entityactivation.interfaces.ActivationCapability;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.common.command.WrapperCommandSource;
+import org.spongepowered.common.util.Constants;
 
-@Mixin(World.class)
-public abstract class MixinWorld_Activation {
+@Mixin(EntitySelector.class)
+public abstract class EntitySelectorMixin_Vanilla {
 
-    @Inject(method = "updateEntityWithOptionalForce",
-            at = @At(
-                value = "FIELD",
-                target = "Lnet/minecraft/entity/Entity;lastTickPosX:D",
-                opcode = Opcodes.PUTFIELD,
-                ordinal = 0),
-            cancellable = true)
-    private void onUpdateEntityWithOptionalForce(Entity entity, boolean forceUpdate, CallbackInfo ci) {
-        if (forceUpdate && !EntityActivationRange.checkIfActive(entity)) { // ignore if forced by forge event update or entity's chunk
-            entity.ticksExisted++;
-            ((ActivationCapability) entity).activation$inactiveTick();
-            ci.cancel();
-        }
+    @Redirect(method = "matchEntities",
+        at = @At(value = "INVOKE", target = "net.minecraft.command.ICommandSender.canUseCommand(ILjava/lang/String;)Z"))
+    private static boolean vanilla$usePermission(ICommandSender self, int opLevel, String command) {
+        return WrapperCommandSource.of(self).hasPermission(Constants.Permissions.SELECTOR_PERMISSION);
     }
-
 }

@@ -6,7 +6,7 @@
     "target": "@env(DEFAULT)",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinWorld_Activation"
+        "WorldMixin_VanillaActivation"
     ],
     "injectors": {
         "defaultRequire": 1

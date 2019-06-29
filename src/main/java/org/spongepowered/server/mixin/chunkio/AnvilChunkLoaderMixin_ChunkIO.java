@@ -43,7 +43,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 
 @Mixin(AnvilChunkLoader.class)
-public abstract class MixinAnvilChunkLoader_ChunkIO {
+public abstract class AnvilChunkLoaderMixin_ChunkIO {
 
     /**
      * @author Minecrell - May 28th, 2016
@@ -61,12 +61,12 @@ public abstract class MixinAnvilChunkLoader_ChunkIO {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NBTTagCompound;getTagList(Ljava/lang/String;I)Lnet/minecraft/nbt/NBTTagList;",
                     ordinal = 1),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void asyncReadChunkFromNBT(World worldIn, NBTTagCompound compound, CallbackInfoReturnable<Chunk> cir, int x, int z, Chunk chunk) {
+    private void chunkIO$asyncReadChunkFromNBT(World worldIn, NBTTagCompound compound, CallbackInfoReturnable<Chunk> cir, int x, int z, Chunk chunk) {
         cir.setReturnValue(chunk);
     }
 
     @Surrogate
-    private void asyncReadChunkFromNBT(World worldIn, NBTTagCompound compound, CallbackInfoReturnable<Chunk> cir,
+    private void chunkIO$asyncReadChunkFromNBT(World worldIn, NBTTagCompound compound, CallbackInfoReturnable<Chunk> cir,
             int x, int z, Chunk chunk, NBTTagList nbttaglist, int k, ExtendedBlockStorage[] aextendedblockstorage, boolean flag) {
         cir.setReturnValue(chunk);
     }

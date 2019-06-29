@@ -22,26 +22,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.api.minecraft.world;
-
-import net.minecraft.world.WorldProvider;
-import org.spongepowered.api.world.Dimension;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-
-@Mixin(WorldProvider.class)
-public abstract class MixinWorldProvider_APIVanilla implements Dimension {
-
-    @Shadow public abstract boolean isNether();
-
-    @Override
-    public int getHeight() {
-        return this.isNether() ? 128 : 256;
-    }
-
-    @Override
-    public int getBuildHeight() {
-        return 256;
-    }
-
-}
+@org.spongepowered.api.util.annotation.NonnullByDefault package org.spongepowered.server.bridge.world.chunkio;

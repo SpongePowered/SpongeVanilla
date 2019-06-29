@@ -43,19 +43,19 @@ import org.spongepowered.common.world.WorldManager;
 @Mixin(WorldServer.class)
 public abstract class WorldServerMixin_Vanilla extends World implements ServerWorldBridge {
 
-    private WorldServerMixin_Vanilla(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
+    public WorldServerMixin_Vanilla(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
         super(saveHandlerIn, info, providerIn, profilerIn, client);
     }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/DimensionType;getById(I)Lnet/minecraft/world/DimensionType;"))
-    private static DimensionType getDimensionType(int dimensionId) {
+    private static DimensionType vanilla$getDimensionType(int dimensionId) {
         return WorldManager.getDimensionType(dimensionId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid dimension id: " + dimensionId));
     }
 
     @Redirect(method = "updateWeather", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/DimensionType;getId()I"))
-    private int onGetDimensionIdForWeather(DimensionType type) {
+    private int vanilla$onGetDimensionIdForWeather(DimensionType type) {
         return bridge$getDimensionId();
     }
 
@@ -63,7 +63,7 @@ public abstract class WorldServerMixin_Vanilla extends World implements ServerWo
     // This causes "phantom rain" on the client, sunny and rainy weather at the same time
     @Redirect(method = "updateWeather", require = 4, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/management/PlayerList;sendPacketToAllPlayers(Lnet/minecraft/network/Packet;)V"))
-    private void onSendWeatherPacket(PlayerList manager, Packet<?> packet) {
+    private void vanilla$onSendWeatherPacket(PlayerList manager, Packet<?> packet) {
         manager.sendPacketToAllPlayersInDimension(packet, bridge$getDimensionId());
     }
 

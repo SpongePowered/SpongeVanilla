@@ -39,7 +39,7 @@ import org.spongepowered.common.entity.EntityUtil;
 import org.spongepowered.common.util.NetworkUtil;
 
 @Mixin(value = PlayerList.class, priority = 1001)
-public abstract class MixinPlayerList_Server {
+public abstract class PlayerListMixin_Vanilla {
 
     @Shadow @Final private MinecraftServer server;
 

@@ -39,32 +39,32 @@ import javax.annotation.Nullable;
 @Mixin(value = TileEntity.class, priority = 999)
 public abstract class TileEntityMixin_Vanilla implements DataCompoundHolder {
 
-    @Nullable private NBTTagCompound server$customTileData;
+    @Nullable private NBTTagCompound vanilla$customTileData;
 
     @Override
     public boolean data$hasRootCompound() {
-        return this.server$customTileData != null;
+        return this.vanilla$customTileData != null;
     }
 
     @Override
     public NBTTagCompound data$getRootCompound() {
-        if (this.server$customTileData == null) {
-            this.server$customTileData = new NBTTagCompound();
+        if (this.vanilla$customTileData == null) {
+            this.vanilla$customTileData = new NBTTagCompound();
         }
-        return this.server$customTileData;
+        return this.vanilla$customTileData;
     }
 
     @Inject(method = "readFromNBT(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"))
-    private void server$GetForgeDataFromCompound(NBTTagCompound tagCompound, CallbackInfo ci) {
+    private void vanilla$GetForgeDataFromCompound(NBTTagCompound tagCompound, CallbackInfo ci) {
         if (tagCompound.hasKey(Constants.Forge.FORGE_DATA)) {
-            this.server$customTileData = tagCompound.getCompoundTag(Constants.Forge.FORGE_DATA);
+            this.vanilla$customTileData = tagCompound.getCompoundTag(Constants.Forge.FORGE_DATA);
         }
     }
 
     @Inject(method = "writeToNBT(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", at = @At("RETURN"))
-    private void server$writeForgeDataToCompound(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
-        if (this.server$customTileData != null) {
-            tagCompound.setTag(Constants.Forge.FORGE_DATA, this.server$customTileData);
+    private void vanilla$writeForgeDataToCompound(NBTTagCompound tagCompound, CallbackInfoReturnable<NBTTagCompound> ci) {
+        if (this.vanilla$customTileData != null) {
+            tagCompound.setTag(Constants.Forge.FORGE_DATA, this.vanilla$customTileData);
         }
     }
 

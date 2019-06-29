@@ -54,6 +54,7 @@ import org.spongepowered.common.bridge.world.ServerWorldBridge;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
+import org.spongepowered.server.bridge.ChunkLoaderTickBridge;
 
 import java.util.List;
 import java.util.Queue;
@@ -63,12 +64,10 @@ import java.util.concurrent.TimeUnit;
 // SpongeCommon injects into updateTimeLightAndEntities, so we need to apply
 // our @Overwrite *before* SpongeCommon's mixin is applied, otherwise it will fail
 @Mixin(value = MinecraftServer.class, priority = 999)
-public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBridge {
+public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBridge, ChunkLoaderTickBridge {
 
-    @SuppressWarnings("NullableProblems") @com.google.inject.Inject private static SpongeVanilla spongeVanilla;
     @Shadow @Final private static Logger LOGGER;
     @Shadow @Final private Snooper usageSnooper;
-
     @Shadow @Final private List<ITickable> tickables;
     @Shadow @Final public Profiler profiler;
     @Shadow private PlayerList playerList;
@@ -78,9 +77,10 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
     @Shadow public abstract boolean getAllowNether();
     @Shadow public abstract NetworkSystem getNetworkSystem();
 
-    private boolean skipServerStop = false;
+    @SuppressWarnings("NullableProblems") @com.google.inject.Inject private static SpongeVanilla vanilla$spongeVanilla;
+    private boolean vanilla$skipServerStop = false;
 
-    private final Int2ObjectMap<long[]> worldTickTimes = new Int2ObjectOpenHashMap<>(3);
+    private final Int2ObjectMap<long[]> vanilla$worldTickTimes = new Int2ObjectOpenHashMap<>(3);
 
     /**
      * @author Minecrell
@@ -88,7 +88,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
      */
     @Overwrite
     public String getServerModName() {
-        return spongeVanilla.getName();
+        return vanilla$spongeVanilla.getName();
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
     }
 
     @Inject(method = "applyServerIconToResponse", at = @At("HEAD"), cancellable = true)
-    private void onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
+    private void vanilla$onAddFaviconToStatusResponse(ServerStatusResponse response, CallbackInfo ci) {
         // Don't load favicon twice
         if (response.getFavicon() != null) {
             ci.cancel();
@@ -117,15 +117,15 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
     public void stopServer() {
 
         // stopServer is called from both the shutdown hook AND the finally statement in the main game loop, no reason to do this twice..
-        if (skipServerStop) {
+        if (vanilla$skipServerStop) {
             return;
         }
 
-        skipServerStop = true;
+        vanilla$skipServerStop = true;
 
         LOGGER.info("Stopping server");
 
-        spongeVanilla.onServerStopping();
+        vanilla$spongeVanilla.onServerStopping();
 
         final MinecraftServer server = (MinecraftServer) (Object) this;
 
@@ -181,17 +181,17 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
 
     @Override
     public long[] bridge$getWorldTickTimes(int dimensionId) {
-        return this.worldTickTimes.get(dimensionId);
+        return this.vanilla$worldTickTimes.get(dimensionId);
     }
 
     @Override
     public void bridge$putWorldTickTimes(int dimensionId, long[] tickTimes) {
-        this.worldTickTimes.put(dimensionId, tickTimes);
+        this.vanilla$worldTickTimes.put(dimensionId, tickTimes);
     }
 
     @Override
     public void bridge$removeWorldTickTimes(int dimensionId) {
-        this.worldTickTimes.remove(dimensionId);
+        this.vanilla$worldTickTimes.remove(dimensionId);
     }
 
     /**
@@ -209,7 +209,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
         }
 
         this.profiler.endStartSection("levels");
-        tickChunkLoader(); // Sponge: Tick chunk loader
+        chunkIO$tickChunkLoader(); // Sponge: Tick chunk loader
 
         // Sponge start - Iterate over all our dimensions
         for (final ObjectIterator<Int2ObjectMap.Entry<WorldServer>> it = WorldManager.worldsIterator(); it.hasNext();) {
@@ -270,7 +270,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
             }
 
             // Sponge start - Write tick times to our custom map
-            this.worldTickTimes.get(entry.getIntKey())[this.tickCounter % 100] = System.nanoTime() - i;
+            this.vanilla$worldTickTimes.get(entry.getIntKey())[this.tickCounter % 100] = System.nanoTime() - i;
             // Sponge end
         }
 
@@ -293,7 +293,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
     }
 
     // This is used by asynchronous chunk loading to finish loading the chunks
-    private void tickChunkLoader() {
+    public void chunkIO$tickChunkLoader() {
     }
 
 }

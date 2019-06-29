@@ -73,8 +73,8 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
     @Shadow private boolean spawnForced;
     @Shadow public abstract void setSpawnPoint(BlockPos pos, boolean forced);
 
-    Map<UUID, BlockPos> server$spawnChunkMap = new ConcurrentHashMap<>();
-    Set<UUID> server$spawnForcedSet = new ConcurrentSet<>();
+    Map<UUID, BlockPos> vanilla$spawnChunkMap = new ConcurrentHashMap<>();
+    Set<UUID> vanilla$spawnForcedSet = new ConcurrentSet<>();
 
     /**
      * @author Minecrell
@@ -88,7 +88,7 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
 
     @Override
     public BlockPos getBedLocation(int dimension) {
-        return dimension == 0 ? this.spawnPos : this.server$spawnChunkMap.get(dimension);
+        return dimension == 0 ? this.spawnPos : this.vanilla$spawnChunkMap.get(dimension);
     }
 
     /**
@@ -102,33 +102,33 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
 
     @Override
     public boolean isSpawnForced(int dimension) {
-        return dimension == 0 ? this.spawnForced : this.server$spawnForcedSet.contains(dimension);
+        return dimension == 0 ? this.spawnForced : this.vanilla$spawnForcedSet.contains(dimension);
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
-    private void server$onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
+    private void vanilla$onSetSpawnPoint(BlockPos pos, boolean forced, CallbackInfo ci) {
         if (this.dimension != 0) {
-            server$setSpawnChunk(pos, forced, this.world);
+            vanilla$setSpawnChunk(pos, forced, this.world);
             ci.cancel();
         }
     }
 
-    private void server$setSpawnChunk(@Nullable BlockPos pos, boolean forced, net.minecraft.world.World dimension) {
+    private void vanilla$setSpawnChunk(@Nullable BlockPos pos, boolean forced, net.minecraft.world.World dimension) {
         final Integer dimensionId = ((WorldInfoBridge) dimension.getWorldInfo()).bridge$getDimensionId();
         if (dimensionId == null) {
             return;
         }
         final UUID id = ((World) dimension).getUniqueId();
         if (pos != null) {
-            this.server$spawnChunkMap.put(id, pos);
+            this.vanilla$spawnChunkMap.put(id, pos);
             if (forced) {
-                this.server$spawnForcedSet.add(id);
+                this.vanilla$spawnForcedSet.add(id);
             } else {
-                this.server$spawnForcedSet.remove(id);
+                this.vanilla$spawnForcedSet.remove(id);
             }
         } else {
-            this.server$spawnChunkMap.remove(id);
-            this.server$spawnForcedSet.remove(id);
+            this.vanilla$spawnChunkMap.remove(id);
+            this.vanilla$spawnForcedSet.remove(id);
         }
     }
 
@@ -141,18 +141,18 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
             final int x = spawnData.getInteger(Constants.Sponge.User.USER_SPAWN_X);
             final int y = spawnData.getInteger(Constants.Sponge.User.USER_SPAWN_Y);
             final int z = spawnData.getInteger(Constants.Sponge.User.USER_SPAWN_Z);
-            this.server$spawnChunkMap.put(spawnDim, new BlockPos(x, y, z));
+            this.vanilla$spawnChunkMap.put(spawnDim, new BlockPos(x, y, z));
             if (spawnData.getBoolean(Constants.Sponge.User.USER_SPAWN_FORCED)) {
-                this.server$spawnForcedSet.add(spawnDim);
+                this.vanilla$spawnForcedSet.add(spawnDim);
             }
         }
     }
 
     @Inject(method = "writeEntityToNBT", at = @At("RETURN"))
-    private void server$onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
+    private void vanilla$onWriteEntityToNBT(NBTTagCompound tagCompound, CallbackInfo ci) {
         final NBTTagList spawnList = new NBTTagList();
 
-        for (Map.Entry<UUID, BlockPos> entry : this.server$spawnChunkMap.entrySet()) {
+        for (Map.Entry<UUID, BlockPos> entry : this.vanilla$spawnChunkMap.entrySet()) {
             UUID dim = entry.getKey();
             BlockPos spawn = entry.getValue();
 
@@ -161,7 +161,7 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
             spawnData.setInteger(Constants.Sponge.User.USER_SPAWN_X, spawn.getX());
             spawnData.setInteger(Constants.Sponge.User.USER_SPAWN_Y, spawn.getY());
             spawnData.setInteger(Constants.Sponge.User.USER_SPAWN_Z, spawn.getZ());
-            spawnData.setBoolean(Constants.Sponge.User.USER_SPAWN_FORCED, this.server$spawnForcedSet.contains(dim));
+            spawnData.setBoolean(Constants.Sponge.User.USER_SPAWN_FORCED, this.vanilla$spawnForcedSet.contains(dim));
             spawnList.appendTag(spawnData);
         }
 
@@ -171,7 +171,7 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
     // Event injectors
 
     @Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
-    private void server$onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
+    private void vanilla$onTrySleep(BlockPos bedPos, CallbackInfoReturnable<EntityPlayer.SleepResult> ci) {
         Sponge.getCauseStackManager().pushCause(this);
         SleepingEvent.Pre event = SpongeEventFactory.createSleepingEventPre(Sponge.getCauseStackManager().getCurrentCause(),
                 ((org.spongepowered.api.world.World) this.world).createSnapshot(bedPos.getX(), bedPos.getY(), bedPos.getZ()), (Player) this);

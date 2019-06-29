@@ -24,37 +24,21 @@
  */
 package org.spongepowered.server.mixin.chunkio;
 
-import net.minecraft.world.chunk.IChunkProvider;
-import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.World;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.chunkio.ChunkIOExecutor;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.world.storage.SpongeChunkLayout;
-import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge;
+import org.spongepowered.server.bridge.ChunkLoaderTickBridge;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+@Mixin(value = MinecraftServer.class, priority = 1112)
+public abstract class MinecraftServerMixin_ChunkIO implements ChunkLoaderTickBridge {
 
-@Mixin(net.minecraft.world.World.class)
-public abstract class MixinWorld_ChunkIO implements World {
-
-    @Shadow protected IChunkProvider chunkProvider;
-
+    /**
+     * @author Minecrell - May 28th, 2016
+     * @reason Replaced to finish loading the asynchronously loaded chunks
+     */
     @Override
-    public CompletableFuture<Optional<Chunk>> loadChunkAsync(int cx, int cy, int cz, boolean shouldGenerate) {
-        // Currently, we can only load asynchronously if the chunk should not be generated
-        if (shouldGenerate) {
-            return World.super.loadChunkAsync(cx, cy, cz, true);
-        }
-
-        if (!SpongeChunkLayout.instance.isValidChunk(cx, cy, cz)) {
-            return CompletableFuture.completedFuture(Optional.empty());
-        }
-
-        CompletableFuture<Optional<Chunk>> future = new CompletableFuture<>();
-        ((ChunkIOProviderBridge) this.chunkProvider).serverbridge$loadChunk(cx, cz,
-                chunk -> future.complete(Optional.ofNullable((Chunk) chunk)));
-        return future;
+    public void chunkIO$tickChunkLoader() {
+        ChunkIOExecutor.tick();
     }
 
 }

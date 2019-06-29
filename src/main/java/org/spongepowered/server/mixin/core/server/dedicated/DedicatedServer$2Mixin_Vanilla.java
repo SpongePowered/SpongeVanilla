@@ -22,21 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.mixin.core.enchantment;
+package org.spongepowered.server.mixin.core.server.dedicated;
 
-import org.spongepowered.api.item.enchantment.EnchantmentType;
-import org.spongepowered.api.item.inventory.ItemStack;
+import net.minecraft.server.dedicated.DedicatedServer;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.server.console.VanillaConsole;
 
-@Mixin(net.minecraft.enchantment.Enchantment.class)
-public abstract class MixinEnchantment implements EnchantmentType {
+@Mixin(targets = "net/minecraft/server/dedicated/DedicatedServer$2")
+public abstract class DedicatedServer$2Mixin_Vanilla implements Runnable {
 
-    @Shadow public abstract boolean canApply(net.minecraft.item.ItemStack stack);
+    @Shadow(remap = false, aliases = {"field_72428_a", "this$0"}) @Final private DedicatedServer server;
 
     @Override
-    public boolean canBeAppliedToStack(ItemStack stack) {
-        return canApply((net.minecraft.item.ItemStack) stack);
+    public void run() {
+        new VanillaConsole(this.server).start();
     }
 
 }
