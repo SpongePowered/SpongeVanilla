@@ -35,6 +35,7 @@ import net.minecraft.profiler.Profiler;
 import net.minecraft.profiler.Snooper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.Util;
@@ -73,9 +74,12 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
     @Shadow private PlayerList playerList;
     @Shadow private int tickCounter;
     @Shadow @Final protected Queue<FutureTask<?>> futureTaskQueue;
+    @Shadow public WorldServer[] worlds;
 
     @Shadow public abstract boolean getAllowNether();
     @Shadow public abstract NetworkSystem getNetworkSystem();
+    @Shadow public abstract void saveAllWorlds(boolean isSilent);
+    @Shadow public abstract PlayerProfileCache getPlayerProfileCache();
 
     @SuppressWarnings("NullableProblems") @com.google.inject.Inject private static SpongeVanilla vanilla$spongeVanilla;
     private boolean vanilla$skipServerStop = false;
@@ -127,10 +131,8 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
 
         vanilla$spongeVanilla.onServerStopping();
 
-        final MinecraftServer server = (MinecraftServer) (Object) this;
-
         // Sponge Start - Force player profile cache save
-        server.getPlayerProfileCache().save();
+        this.getPlayerProfileCache().save();
 
         if (this.getNetworkSystem() != null) {
             this.getNetworkSystem().terminateEndpoints();
@@ -142,18 +144,18 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
             this.playerList.removeAllPlayers();
         }
 
-        if (server.worlds != null) {
+        if (this.worlds != null) {
             LOGGER.info("Saving worlds");
 
-            for (WorldServer worldserver : server.worlds) {
+            for (WorldServer worldserver : this.worlds) {
                 if (worldserver != null) {
                     worldserver.disableLevelSaving = false;
                 }
             }
 
-            server.saveAllWorlds(false);
+            this.saveAllWorlds(false);
 
-            for (WorldServer worldserver1 : server.worlds) {
+            for (WorldServer worldserver1 : this.worlds) {
                 if (worldserver1 != null) {
                     // Turn off Async Lighting
                     if (SpongeImpl.getGlobalConfigAdapter().getConfig().getModules().useOptimizations() &&

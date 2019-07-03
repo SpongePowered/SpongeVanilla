@@ -18,11 +18,13 @@
         "entity.player.EntityPlayerMPMixin_Vanilla",
         "network.NetHandlerPlayServerMixin_Vanilla",
         "server.MinecraftServerMixin_Vanilla",
+        "server.MinecraftServerAccessor_Vanilla",
         "server.dedicated.DedicatedServerMixin_Vanilla",
         "server.dedicated.DedicatedServer$2Mixin_Vanilla",
         "server.management.PlayerListMixin_Vanilla",
         "tileentity.TileEntityMixin_Vanilla",
         "world.WorldServerMixin_Vanilla",
+        "world.chunk.storage.AnvilChunkLoaderAccessor_Vanilla",
         "world.chunk.gen.ChunkProviderServerMixin_Vanilla",
         "world.storage.SaveHandlerMixin_Vanilla"
     ],

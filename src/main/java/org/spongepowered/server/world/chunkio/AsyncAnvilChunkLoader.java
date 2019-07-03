@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
+import org.spongepowered.server.mixin.core.world.chunk.storage.AnvilChunkLoaderAccessor_Vanilla;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -66,7 +67,7 @@ public final class AsyncAnvilChunkLoader {
         NBTTagCompound nbttagcompound = loader.chunksToSave.get(chunkpos);
 
         if (nbttagcompound == null) {
-            DataInputStream datainputstream = RegionFileCache.getChunkInputStream(loader.chunkSaveLocation, x, z);
+            DataInputStream datainputstream = RegionFileCache.getChunkInputStream(((AnvilChunkLoaderAccessor_Vanilla) loader).accessor$getChunkSaveLocation(), x, z);
 
             if (datainputstream == null) {
                 return null;

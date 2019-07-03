@@ -68,7 +68,6 @@ minecraft {
 
     atSource sourceSets.main
 }
-ats += 'vanilla_at.cfg'
 
 configurations {
     // While we could set this to 'runtime', Eclipse doesn't support runtime dependencies

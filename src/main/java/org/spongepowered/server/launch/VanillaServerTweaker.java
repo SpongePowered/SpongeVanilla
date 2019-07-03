@@ -124,7 +124,6 @@ public final class VanillaServerTweaker implements ITweaker {
         try {
             // Apply our access transformers
             AccessTransformers.register(getResource("META-INF/common_at.cfg"));
-            AccessTransformers.register(getResource("META-INF/vanilla_at.cfg"));
         } catch (IOException e) {
             throw new LaunchException("Failed to register SpongeCommon/SpongeVanilla access transformers", e);
         }

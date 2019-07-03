@@ -22,31 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch;
+package org.spongepowered.server.mixin.core.server;
 
-import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.spongepowered.common.launch.SpongeLaunch;
-import org.spongepowered.lwts.AbstractTestTweaker;
+import net.minecraft.server.MinecraftServer;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import java.io.File;
+@Mixin(MinecraftServer.class)
+public interface MinecraftServerAccessor_Vanilla {
 
-public class TestTweaker extends AbstractTestTweaker {
+    @Invoker("stopServer") void accessor$stopServer();
 
-    @Override
-    public void injectIntoClassLoader(LaunchClassLoader loader) {
-        super.injectIntoClassLoader(loader);
-        VanillaServerTweaker.configureLaunchClassLoader(loader);
 
-        registerAccessTransformer("META-INF/common_at.cfg");
-
-        SpongeLaunch.initPaths(new File("."));
-
-        VanillaServerTweaker.configureMixinEnvironment();
-    }
-
-    @Override
-    public String getLaunchTarget() {
-        return "org.spongepowered.server.test.TestMain";
-    }
 
 }

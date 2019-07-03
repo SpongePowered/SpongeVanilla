@@ -6,6 +6,7 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.ChunkPos;
 import org.spongepowered.common.SpongeImpl; // Sponge
+import org.spongepowered.server.mixin.core.world.chunk.storage.AnvilChunkLoaderAccessor_Vanilla;
 import org.spongepowered.server.world.chunkio.AsyncAnvilChunkLoader; // Sponge
 //import net.minecraftforge.common.MinecraftForge; // Sponge
 //import net.minecraftforge.event.world.ChunkDataEvent; // Sponge
@@ -53,7 +54,7 @@ class ChunkIOProvider implements Runnable
                 //data = this.loader.loadChunk__Async(chunkInfo.world, chunkInfo.x, chunkInfo.z);
                 this.nbt = AsyncAnvilChunkLoader.read(this.loader, this.chunkInfo.x, this.chunkInfo.z);
                 if (this.nbt != null) {
-                    this.chunk = this.loader.checkedReadChunkFromNBT(this.chunkInfo.world, this.chunkInfo.x, this.chunkInfo.z, this.nbt);
+                    this.chunk = ((AnvilChunkLoaderAccessor_Vanilla) this.loader).accessor$checkedReadChunkFromNBT(this.chunkInfo.world, this.chunkInfo.x, this.chunkInfo.z, this.nbt);
                 }
                 // Sponge end
             }

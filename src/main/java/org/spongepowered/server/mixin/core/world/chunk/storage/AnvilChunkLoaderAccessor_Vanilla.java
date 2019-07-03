@@ -22,31 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server.launch;
+package org.spongepowered.server.mixin.core.world.chunk.storage;
 
-import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.spongepowered.common.launch.SpongeLaunch;
-import org.spongepowered.lwts.AbstractTestTweaker;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.io.File;
+import java.util.Map;
 
-public class TestTweaker extends AbstractTestTweaker {
+@Mixin(AnvilChunkLoader.class)
+public interface AnvilChunkLoaderAccessor_Vanilla {
 
-    @Override
-    public void injectIntoClassLoader(LaunchClassLoader loader) {
-        super.injectIntoClassLoader(loader);
-        VanillaServerTweaker.configureLaunchClassLoader(loader);
+    @Accessor("chunksToSave") Map<ChunkPos, NBTTagCompound> accessor$getChunksToSave();
 
-        registerAccessTransformer("META-INF/common_at.cfg");
+    @Accessor("chunkSaveLocation") File accessor$getChunkSaveLocation();
 
-        SpongeLaunch.initPaths(new File("."));
-
-        VanillaServerTweaker.configureMixinEnvironment();
-    }
-
-    @Override
-    public String getLaunchTarget() {
-        return "org.spongepowered.server.test.TestMain";
-    }
+    @Invoker("checkedReadChunkFromNBT") Chunk accessor$checkedReadChunkFromNBT(World worldIn, int x, int z, NBTTagCompound compound);
 
 }
