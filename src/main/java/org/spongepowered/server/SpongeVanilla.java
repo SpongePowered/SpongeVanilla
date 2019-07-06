@@ -57,12 +57,11 @@ import org.spongepowered.common.SpongeBootstrap;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.SpongeImplHooks;
 import org.spongepowered.common.SpongeInternalListeners;
+import org.spongepowered.common.bridge.command.ServerCommandManagerBridge;
 import org.spongepowered.common.entity.ai.SpongeEntityAICommonSuperclass;
 import org.spongepowered.common.event.tracking.PhaseTracker;
 import org.spongepowered.common.inject.SpongeGuice;
 import org.spongepowered.common.inject.SpongeModule;
-import org.spongepowered.common.interfaces.IMixinServerCommandManager;
-import org.spongepowered.common.mixin.core.server.MinecraftServerAccessor;
 import org.spongepowered.common.network.message.SpongeMessageHandler;
 import org.spongepowered.common.registry.SpongeGameRegistry;
 import org.spongepowered.common.registry.type.entity.EntityTypeRegistryModule;
@@ -160,7 +159,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
     }
 
     public void onServerAboutToStart() {
-        ((IMixinServerCommandManager) SpongeImpl.getServer().getCommandManager()).registerEarlyCommands(this.game);
+        ((ServerCommandManagerBridge) SpongeImpl.getServer().getCommandManager()).bridge$registerEarlyCommands(this.game);
         SpongeImpl.postState(GameState.SERVER_ABOUT_TO_START, SpongeEventFactory.createGameAboutToStartServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
     }
 
@@ -168,7 +167,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
         SpongeImpl.postState(GameState.SERVER_STARTING, SpongeEventFactory.createGameStartingServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
         SpongeImpl.getConfigSaveManager().flush();
         SpongeImpl.postState(GameState.SERVER_STARTED, SpongeEventFactory.createGameStartedServerEvent(Sponge.getCauseStackManager().getCurrentCause()));
-        ((IMixinServerCommandManager) SpongeImpl.getServer().getCommandManager()).registerLowPriorityCommands(this.game);
+        ((ServerCommandManagerBridge) SpongeImpl.getServer().getCommandManager()).bridge$registerLowPriorityCommands(this.game);
         SpongePlayerDataHandler.init();
     }
 
