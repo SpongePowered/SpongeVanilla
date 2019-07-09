@@ -83,6 +83,7 @@ import org.spongepowered.server.plugin.VanillaPluginManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.util.Optional;
 import java.util.UUID;
@@ -116,7 +117,15 @@ public final class SpongeVanilla extends MetaPluginContainer {
         SpongeBootstrap.initializeServices();
         SpongeBootstrap.initializeCommands();
         for (EntityTypeRegistryModule.FutureRegistration registration : EntityTypeRegistryModule.getInstance().getCustomEntities()) {
-            EntityList.register(registration.id, registration.name.toString(), registration.type, registration.oldName);
+            try {
+                // Workaround until we can have static mixin accessors.
+                final String registerName = SpongeImplHooks.isDeobfuscatedEnvironment() ? "register" : "func_191303_a";
+                Method register = EntityList.class.getMethod(registerName, int.class, String.class, Class.class, String.class);
+                register.setAccessible(true);
+                register.invoke(null, registration.id, registration.name.toString(), registration.type, registration.oldName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         this.logger.info("Loading plugins...");

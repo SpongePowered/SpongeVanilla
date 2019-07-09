@@ -52,6 +52,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.bridge.server.MinecraftServerBridge;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
+import org.spongepowered.common.bridge.world.ServerWorldBridge_AsyncLighting;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
@@ -59,6 +60,7 @@ import org.spongepowered.server.bridge.ChunkLoaderTickBridge;
 
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -160,14 +162,16 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                     // Turn off Async Lighting
                     if (SpongeImpl.getGlobalConfigAdapter().getConfig().getModules().useOptimizations() &&
                         SpongeImpl.getGlobalConfigAdapter().getConfig().getOptimizations().useAsyncLighting()) {
-                        ((ServerWorldBridge) worldserver1).bridge$getLightingExecutor().shutdown();
+                        final ExecutorService lightingExecutor =
+                            ((ServerWorldBridge_AsyncLighting) worldserver1).asyncLightingBridge$getLightingExecutor();
+                        lightingExecutor.shutdown();
 
                         try {
-                            ((ServerWorldBridge) worldserver1).bridge$getLightingExecutor().awaitTermination(1, TimeUnit.SECONDS);
+                            lightingExecutor.awaitTermination(1, TimeUnit.SECONDS);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } finally {
-                            ((ServerWorldBridge) worldserver1).bridge$getLightingExecutor().shutdownNow();
+                            lightingExecutor.shutdownNow();
                         }
                     }
 
@@ -224,8 +228,8 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
 
                 // Sponge start - copy from SpongeCommon MinecraftServerMixin_Vanilla
                 ServerWorldBridge spongeWorld = (ServerWorldBridge) worldServer;
-                if (spongeWorld.getChunkGCTickInterval() > 0) {
-                    spongeWorld.doChunkGC();
+                if (spongeWorld.bridge$getChunkGCTickInterval() > 0) {
+                    spongeWorld.bridge$doChunkGC();
                 }
                 // Sponge end
 
@@ -261,7 +265,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                 this.profiler.startSection("tracker");
 
                 // Sponge start - copy from SpongeCommon MinecraftServerMixin_Vanilla
-                if (spongeWorld.getChunkGCTickInterval() > 0) {
+                if (spongeWorld.bridge$getChunkGCTickInterval() > 0) {
                     worldServer.getChunkProvider().tick();
                 }
                 // Sponge end

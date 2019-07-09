@@ -83,11 +83,11 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
     @Overwrite
     @Nullable
     public BlockPos getBedLocation() { // getBedLocation
-        return getBedLocation(this.dimension);
+        return bridge$getBedLocation(this.dimension);
     }
 
     @Override
-    public BlockPos getBedLocation(int dimension) {
+    public BlockPos bridge$getBedLocation(int dimension) {
         return dimension == 0 ? this.spawnPos : this.vanilla$spawnChunkMap.get(dimension);
     }
 
@@ -97,11 +97,11 @@ public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin im
      */
     @Overwrite
     public boolean isSpawnForced() { // isSpawnForced
-        return isSpawnForced(this.dimension);
+        return bridge$isSpawnForced(this.dimension);
     }
 
     @Override
-    public boolean isSpawnForced(int dimension) {
+    public boolean bridge$isSpawnForced(int dimension) {
         return dimension == 0 ? this.spawnForced : this.vanilla$spawnForcedSet.contains(dimension);
     }
 

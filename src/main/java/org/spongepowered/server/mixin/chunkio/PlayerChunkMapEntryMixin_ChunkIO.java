@@ -69,7 +69,7 @@ public abstract class PlayerChunkMapEntryMixin_ChunkIO implements Consumer<Chunk
         this.chunkIO$loading = false;
 
         if (chunk != null) {
-            ((ChunkBridge) chunk).setScheduledForUnload(-1);
+            ((ChunkBridge) chunk).bridge$setScheduledForUnload(-1);
         }
     }
 

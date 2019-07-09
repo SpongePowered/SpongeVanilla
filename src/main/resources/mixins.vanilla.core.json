@@ -23,6 +23,7 @@
         "server.dedicated.DedicatedServer$2Mixin_Vanilla",
         "server.management.PlayerListMixin_Vanilla",
         "tileentity.TileEntityMixin_Vanilla",
+        "world.WorldMixin_Vanilla",
         "world.WorldServerMixin_Vanilla",
         "world.chunk.storage.AnvilChunkLoaderAccessor_Vanilla",
         "world.chunk.gen.ChunkProviderServerMixin_Vanilla",

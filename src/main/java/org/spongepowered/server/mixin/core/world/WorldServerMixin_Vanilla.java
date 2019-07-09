@@ -25,27 +25,19 @@
 package org.spongepowered.server.mixin.core.world;
 
 import net.minecraft.network.Packet;
-import net.minecraft.profiler.Profiler;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.bridge.world.ServerWorldBridge;
+import org.spongepowered.common.bridge.world.WorldBridge;
 import org.spongepowered.common.bridge.world.WorldInfoBridge;
 import org.spongepowered.common.world.WorldManager;
 
 @Mixin(WorldServer.class)
-public abstract class WorldServerMixin_Vanilla extends World implements ServerWorldBridge {
-
-    public WorldServerMixin_Vanilla(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
-        super(saveHandlerIn, info, providerIn, profilerIn, client);
-    }
+public abstract class WorldServerMixin_Vanilla extends WorldMixin_Vanilla implements ServerWorldBridge {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/DimensionType;getById(I)Lnet/minecraft/world/DimensionType;"))
@@ -71,5 +63,26 @@ public abstract class WorldServerMixin_Vanilla extends World implements ServerWo
     @Override
     public int bridge$getDimensionId() {
         return ((WorldInfoBridge) this.worldInfo).bridge$getDimensionId();
+    }
+
+
+    @Override
+    int vanillaImpl$updateRainTimeStart(final int newRainTime) {
+        if (!((WorldBridge) this).bridge$isFake()) {
+            if (this.worldInfo.getRainTime() - 1 != newRainTime) {
+                this.bridge$setWeatherStartTime(this.getTotalWorldTime());
+            }
+        }
+        return newRainTime;
+    }
+
+    @Override
+    int vanillaImpl$updateThunderTimeStart(int newThunderTime) {
+        if (!((WorldBridge) this).bridge$isFake()) {
+            if (this.worldInfo.getThunderTime() - 1 != newThunderTime) {
+                this.bridge$setWeatherStartTime(this.getTotalWorldTime());
+            }
+        }
+        return newThunderTime;
     }
 }

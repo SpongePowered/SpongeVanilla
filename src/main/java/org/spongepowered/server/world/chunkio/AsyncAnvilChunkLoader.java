@@ -64,7 +64,7 @@ public final class AsyncAnvilChunkLoader {
         // Copied from AnvilChunkLoader.loadChunk, keep this up-to-date!
 
         ChunkPos chunkpos = new ChunkPos(x, z);
-        NBTTagCompound nbttagcompound = loader.chunksToSave.get(chunkpos);
+        NBTTagCompound nbttagcompound = ((AnvilChunkLoaderAccessor_Vanilla) loader).accessor$getChunksToSave().get(chunkpos);
 
         if (nbttagcompound == null) {
             DataInputStream datainputstream = RegionFileCache.getChunkInputStream(((AnvilChunkLoaderAccessor_Vanilla) loader).accessor$getChunkSaveLocation(), x, z);
