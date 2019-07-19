@@ -120,7 +120,7 @@ public final class SpongeVanilla extends MetaPluginContainer {
             try {
                 // Workaround until we can have static mixin accessors.
                 final String registerName = SpongeImplHooks.isDeobfuscatedEnvironment() ? "register" : "func_191303_a";
-                Method register = EntityList.class.getMethod(registerName, int.class, String.class, Class.class, String.class);
+                Method register = EntityList.class.getDeclaredMethod(registerName, int.class, String.class, Class.class, String.class);
                 register.setAccessible(true);
                 register.invoke(null, registration.id, registration.name.toString(), registration.type, registration.oldName);
             } catch (Exception e) {
