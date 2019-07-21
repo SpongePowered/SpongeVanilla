@@ -90,8 +90,8 @@ dependencies {
     compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
 
     // Terminal console
-    compile 'net.minecrell:terminalconsoleappender:1.1.1'
-    runtime 'net.java.dev.jna:jna:4.5.2'
+    compile 'net.minecrell:terminalconsoleappender:1.2.0'
+    runtime 'org.jline:jline-terminal-jansi:3.12.1'
 
     shadow 'org.ow2.asm:asm-all:5.2'
 
@@ -141,9 +141,9 @@ shadowJar {
 
         include dependency('net.minecrell:terminalconsoleappender')
         include dependency('org.jline:jline-terminal')
-        include dependency('org.jline:jline-terminal-jna')
+        include dependency('org.jline:jline-terminal-jansi')
         include dependency('org.jline:jline-reader')
-        include dependency('net.java.dev.jna:jna')
+        include dependency('org.fusesource.jansi:jansi')
 
         include dependency('com.eclipsesource.minimal-json:minimal-json')
     }
