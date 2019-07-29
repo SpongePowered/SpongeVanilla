@@ -24,12 +24,16 @@
  */
 package org.spongepowered.server.mixin.core.world;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(World.class)
 public abstract class WorldMixin_Vanilla {
@@ -46,5 +50,20 @@ public abstract class WorldMixin_Vanilla {
     @ModifyArg(method = "updateWeather", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/storage/WorldInfo;setThunderTime(I)V"))
     int vanillaImpl$updateThunderTimeStart(final int newThunderTime) {
         return newThunderTime;
+    }
+
+    // This would be in common, but Forge rewrites isBlockLoaded(BlockPos) to isBlockLoaded(BlockPos,boolean)....
+    @Redirect(method = "updateEntities",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/World;isBlockLoaded(Lnet/minecraft/util/math/BlockPos;)Z"),
+        slice = @Slice(
+            from = @At(value = "INVOKE", target = "Lnet/minecraft/tileentity/TileEntity;isInvalid()Z", ordinal = 0),
+            to = @At(value = "INVOKE", target = "Lnet/minecraft/world/border/WorldBorder;contains(Lnet/minecraft/util/math/BlockPos;)Z")
+        )
+    )
+    @Group(name = "isBlockLoadedTargetingUpdateEntities", min = 1)
+    private boolean impl$useTileActiveChunk(final World world, final BlockPos pos) {
+        return true; // If we got to here, we already have the method `bridge$shouldTick()` passing
     }
 }

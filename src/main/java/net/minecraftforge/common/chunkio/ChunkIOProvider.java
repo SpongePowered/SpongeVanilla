@@ -6,6 +6,7 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.ChunkPos;
 import org.spongepowered.common.SpongeImpl; // Sponge
+import org.spongepowered.server.mixin.chunkio.ChunkProviderServerAccessor_Vanilla;
 import org.spongepowered.server.mixin.core.world.chunk.storage.AnvilChunkLoaderAccessor_Vanilla;
 import org.spongepowered.server.world.chunkio.AsyncAnvilChunkLoader; // Sponge
 //import net.minecraftforge.common.MinecraftForge; // Sponge
@@ -95,12 +96,13 @@ class ChunkIOProvider implements Runnable
         // Sponge: Don't call Forge event
         //MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(this.chunk, this.nbt)); // Don't call ChunkDataEvent.Load async
 
-        this.chunk.setLastSaveTime(this.provider.world.getTotalWorldTime());
-        this.provider.chunkGenerator.recreateStructures(this.chunk, this.chunkInfo.x, this.chunkInfo.z);
+        final ChunkProviderServerAccessor_Vanilla accessor = (ChunkProviderServerAccessor_Vanilla) this.provider;
+        this.chunk.setLastSaveTime(accessor.chunkIOAccessor$getWorld().getTotalWorldTime());
+        accessor.chunkIOAccessor$getChunkGenerator().recreateStructures(this.chunk, this.chunkInfo.x, this.chunkInfo.z);
 
-        this.provider.loadedChunks.put(ChunkPos.asLong(this.chunkInfo.x, this.chunkInfo.z), this.chunk);
+        accessor.chunkIOAccessor$getLoadedChunks().put(ChunkPos.asLong(this.chunkInfo.x, this.chunkInfo.z), this.chunk);
         this.chunk.onLoad();
-        this.chunk.populate(this.provider, this.provider.chunkGenerator);
+        this.chunk.populate(this.provider, accessor.chunkIOAccessor$getChunkGenerator());
 
         this.runCallbacks();
     }

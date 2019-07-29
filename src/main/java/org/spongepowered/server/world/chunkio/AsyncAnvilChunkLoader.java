@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
+import org.spongepowered.server.mixin.chunkio.AnvilChunkLoaderAccessor_ChunkIO;
 import org.spongepowered.server.mixin.core.world.chunk.storage.AnvilChunkLoaderAccessor_Vanilla;
 
 import java.io.DataInputStream;
@@ -73,7 +74,7 @@ public final class AsyncAnvilChunkLoader {
                 return null;
             }
 
-            nbttagcompound = loader.fixer.process(FixTypes.CHUNK, CompressedStreamTools.read(datainputstream));
+            nbttagcompound = ((AnvilChunkLoaderAccessor_ChunkIO) loader).chunkIOAccessor$getFixer().process(FixTypes.CHUNK, CompressedStreamTools.read(datainputstream));
         }
 
         // Sponge: Return NBT data and load chunk later

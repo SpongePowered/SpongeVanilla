@@ -22,40 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server;
+package org.spongepowered.server.mixin.chunkio;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import org.spongepowered.api.Server;
-import org.spongepowered.common.SpongeGame;
-import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.server.mixin.core.server.MinecraftServerAccessor_Vanilla;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.nio.file.Path;
+@Mixin(AnvilChunkLoader.class)
+public interface AnvilChunkLoaderAccessor_ChunkIO {
 
-@Singleton
-public final class VanillaGame extends SpongeGame {
-
-    private final Server server;
-
-    @Inject
-    public VanillaGame(Server server) {
-        this.server = server;
-    }
-
-    @Override
-    public Path getSavesDirectory() {
-        return ((MinecraftServerAccessor_Vanilla) SpongeImpl.getServer()).vanillaAccessor$getAnvilFile().toPath();
-    }
-
-    @Override
-    public boolean isServerAvailable() {
-        return true;
-    }
-
-    @Override
-    public Server getServer() {
-        return this.server;
-    }
+    @Accessor("fixer") DataFixer chunkIOAccessor$getFixer();
 
 }

@@ -22,40 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.server;
+package org.spongepowered.server.mixin.chunkio;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import org.spongepowered.api.Server;
-import org.spongepowered.common.SpongeGame;
-import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.server.mixin.core.server.MinecraftServerAccessor_Vanilla;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.gen.IChunkGenerator;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.nio.file.Path;
+@Mixin(ChunkProviderServer.class)
+public interface ChunkProviderServerAccessor_Vanilla {
 
-@Singleton
-public final class VanillaGame extends SpongeGame {
+    @Accessor("chunkGenerator") IChunkGenerator chunkIOAccessor$getChunkGenerator();
 
-    private final Server server;
+    /** map of chunk Id's to Chunk instances */
+    @Accessor("loadedChunks") Long2ObjectMap<Chunk> chunkIOAccessor$getLoadedChunks();
 
-    @Inject
-    public VanillaGame(Server server) {
-        this.server = server;
-    }
-
-    @Override
-    public Path getSavesDirectory() {
-        return ((MinecraftServerAccessor_Vanilla) SpongeImpl.getServer()).vanillaAccessor$getAnvilFile().toPath();
-    }
-
-    @Override
-    public boolean isServerAvailable() {
-        return true;
-    }
-
-    @Override
-    public Server getServer() {
-        return this.server;
-    }
+    @Accessor("world") WorldServer chunkIOAccessor$getWorld();
 
 }

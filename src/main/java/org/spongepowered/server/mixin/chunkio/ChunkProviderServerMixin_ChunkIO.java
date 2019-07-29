@@ -47,8 +47,8 @@ import javax.annotation.Nullable;
 @Mixin(value = ChunkProviderServer.class, priority = 1112)
 public abstract class ChunkProviderServerMixin_ChunkIO implements IChunkProvider, ChunkIOProviderBridge_Vanilla, ServerChunkProviderBridge {
 
-    @Shadow @Final public IChunkLoader chunkLoader;
-    @Shadow @Final public WorldServer world;
+    @Shadow @Final private IChunkLoader chunkLoader;
+    @Shadow @Final private WorldServer world;
 
     /**
      * @author Minecrell - May 28th, 2016
