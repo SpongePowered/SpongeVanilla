@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class CraftingManagerMixin_Vanilla {
 
     @Inject(method = "register(Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/crafting/IRecipe;)V", at = @At(value = "NEW"), cancellable = true)
-    private static void register(final ResourceLocation name, final IRecipe recipe, final CallbackInfo ci) {
+    private static void vanilla$register(final ResourceLocation name, final IRecipe recipe, final CallbackInfo ci) {
         final int id = CraftingManager.REGISTRY.getIDForObject(CraftingManager.REGISTRY.getObject(name));
         CraftingManager.REGISTRY.register(id, name, recipe);
         ci.cancel();
