@@ -31,13 +31,13 @@ import net.minecraft.world.WorldServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.common.bridge.world.ServerWorldBridge;
 import org.spongepowered.common.bridge.world.WorldBridge;
 import org.spongepowered.common.bridge.world.WorldInfoBridge;
+import org.spongepowered.common.bridge.world.WorldServerBridge;
 import org.spongepowered.common.world.WorldManager;
 
 @Mixin(WorldServer.class)
-public abstract class WorldServerMixin_Vanilla extends WorldMixin_Vanilla implements ServerWorldBridge {
+public abstract class WorldServerMixin_Vanilla extends WorldMixin_Vanilla implements WorldServerBridge {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/DimensionType;getById(I)Lnet/minecraft/world/DimensionType;"))

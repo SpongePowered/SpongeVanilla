@@ -49,7 +49,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.common.SpongeImpl;
-import org.spongepowered.common.bridge.entity.player.PlayerEntityBridge;
+import org.spongepowered.common.bridge.entity.player.EntityPlayerBridge;
 import org.spongepowered.common.bridge.world.WorldInfoBridge;
 import org.spongepowered.common.mixin.core.entity.EntityLivingBaseMixin;
 import org.spongepowered.common.util.Constants;
@@ -64,7 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
 @Mixin(EntityPlayer.class)
-public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin implements PlayerEntityBridge {
+public abstract class EntityPlayerMixin_Vanilla extends EntityLivingBaseMixin implements EntityPlayerBridge {
 
     @Shadow protected boolean sleeping;
     @Shadow @Nullable public BlockPos bedLocation;

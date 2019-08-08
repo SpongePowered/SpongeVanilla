@@ -51,8 +51,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.bridge.server.MinecraftServerBridge;
-import org.spongepowered.common.bridge.world.ServerWorldBridge;
-import org.spongepowered.common.bridge.world.ServerWorldBridge_AsyncLighting;
+import org.spongepowered.common.bridge.world.WorldServerBridge;
+import org.spongepowered.common.bridge.world.WorldServerBridge_AsyncLighting;
 import org.spongepowered.common.text.SpongeTexts;
 import org.spongepowered.common.world.WorldManager;
 import org.spongepowered.server.SpongeVanilla;
@@ -163,7 +163,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                     if (SpongeImpl.getGlobalConfigAdapter().getConfig().getModules().useOptimizations() &&
                         SpongeImpl.getGlobalConfigAdapter().getConfig().getOptimizations().useAsyncLighting()) {
                         final ExecutorService lightingExecutor =
-                            ((ServerWorldBridge_AsyncLighting) worldserver1).asyncLightingBridge$getLightingExecutor();
+                            ((WorldServerBridge_AsyncLighting) worldserver1).asyncLightingBridge$getLightingExecutor();
                         lightingExecutor.shutdown();
 
                         try {
@@ -227,7 +227,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
             if (entry.getIntKey() == 0 || this.getAllowNether()) {
 
                 // Sponge start - copy from SpongeCommon MinecraftServerMixin_Vanilla
-                ServerWorldBridge spongeWorld = (ServerWorldBridge) worldServer;
+                WorldServerBridge spongeWorld = (WorldServerBridge) worldServer;
                 if (spongeWorld.bridge$getChunkGCTickInterval() > 0) {
                     spongeWorld.bridge$doChunkGC();
                 }
@@ -239,7 +239,7 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                     this.profiler.startSection("timeSync");
                     this.playerList.sendPacketToAllPlayersInDimension (
                             new SPacketTimeUpdate(worldServer.getTotalWorldTime(), worldServer.getWorldTime(),
-                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), ((ServerWorldBridge) worldServer).bridge$getDimensionId());
+                                    worldServer.getGameRules().getBoolean("doDaylightCycle")), ((WorldServerBridge) worldServer).bridge$getDimensionId());
                     this.profiler.endSection();
                 }
 

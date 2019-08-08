@@ -36,8 +36,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.bridge.world.ServerWorldBridge;
-import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
+import org.spongepowered.common.bridge.world.WorldServerBridge;
+import org.spongepowered.common.bridge.world.chunk.ChunkProviderServerBridge;
 import org.spongepowered.server.bridge.world.chunkio.ChunkIOProviderBridge_Vanilla;
 
 import java.util.function.Consumer;
@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 @Mixin(value = ChunkProviderServer.class, priority = 1112)
-public abstract class ChunkProviderServerMixin_ChunkIO implements IChunkProvider, ChunkIOProviderBridge_Vanilla, ServerChunkProviderBridge {
+public abstract class ChunkProviderServerMixin_ChunkIO implements IChunkProvider, ChunkIOProviderBridge_Vanilla, ChunkProviderServerBridge {
 
     @Shadow @Final private IChunkLoader chunkLoader;
     @Shadow @Final private WorldServer world;
@@ -75,7 +75,7 @@ public abstract class ChunkProviderServerMixin_ChunkIO implements IChunkProvider
             ChunkIOExecutor.queueChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z, callback);
             return null;
         } else {
-            return impl$loadChunkForce(x, z); // Load chunk synchronously
+            return bridge$loadChunkForce(x, z); // Load chunk synchronously
         }
     }
 
@@ -84,8 +84,8 @@ public abstract class ChunkProviderServerMixin_ChunkIO implements IChunkProvider
      * @reason Overwrite method in SpongeCommon to load chunks using the chunk IO executor
      */
     @Override
-    public Chunk impl$loadChunkForce(int x, int z) {
-        Timing timing = ((ServerWorldBridge) this.world).bridge$getTimingsHandler().syncChunkLoadDataTimer;
+    public Chunk bridge$loadChunkForce(int x, int z) {
+        Timing timing = ((WorldServerBridge) this.world).bridge$getTimingsHandler().syncChunkLoadDataTimer;
         try {
             return ChunkIOExecutor.syncChunkLoad(this.world, (AnvilChunkLoader) this.chunkLoader, (ChunkProviderServer) (Object) this, x, z);
         } finally {

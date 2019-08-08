@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.common.bridge.entity.item.MinecartEntityBridge;
+import org.spongepowered.common.bridge.entity.item.EntityMinecartBridge;
 import org.spongepowered.common.util.Constants;
 
 @Mixin(EntityMinecart.class)
@@ -43,19 +43,19 @@ public abstract class EntityMinecartMixin_Vanilla extends Entity {
     @ModifyConstant(method = "moveDerailedMinecart",
         constant = @Constant(doubleValue = Constants.Entity.Minecart.DEFAULT_AIRBORNE_MOD, ordinal = 0))
     private double onAirX(double defaultValue) {
-        return ((MinecartEntityBridge) this).bridge$getAirboneVelocityModifier().getX();
+        return ((EntityMinecartBridge) this).bridge$getAirboneVelocityModifier().getX();
     }
 
     @ModifyConstant(method = "moveDerailedMinecart",
         constant = @Constant(doubleValue = Constants.Entity.Minecart.DEFAULT_AIRBORNE_MOD, ordinal = 1))
     private double onAirY(double defaultValue) {
-        return ((MinecartEntityBridge) this).bridge$getAirboneVelocityModifier().getY();
+        return ((EntityMinecartBridge) this).bridge$getAirboneVelocityModifier().getY();
     }
 
     @ModifyConstant(method = "moveDerailedMinecart",
         constant = @Constant(doubleValue = Constants.Entity.Minecart.DEFAULT_AIRBORNE_MOD, ordinal = 2))
     private double onAirZ(double defaultValue) {
-        return ((MinecartEntityBridge) this).bridge$getAirboneVelocityModifier().getZ();
+        return ((EntityMinecartBridge) this).bridge$getAirboneVelocityModifier().getZ();
     }
 
 }

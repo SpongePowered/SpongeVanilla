@@ -32,16 +32,16 @@ import net.minecraft.world.gen.IChunkGenerator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.common.bridge.world.chunk.ServerChunkProviderBridge;
+import org.spongepowered.common.bridge.world.chunk.ChunkProviderServerBridge;
 
 import javax.annotation.Nullable;
 
 /**
- * Only needed to implement {@link #impl$loadChunkForce(int, int)} since
+ * Only needed to implement {@link #bridge$loadChunkForce(int, int)} since
  * Forge has a different implementation required for this.
  */
 @Mixin(ChunkProviderServer.class)
-public abstract class ChunkProviderServerMixin_Vanilla implements ServerChunkProviderBridge {
+public abstract class ChunkProviderServerMixin_Vanilla implements ChunkProviderServerBridge {
 
     @Shadow @Final public Long2ObjectMap<Chunk> loadedChunks;
     @Shadow public IChunkGenerator chunkGenerator;
@@ -49,7 +49,7 @@ public abstract class ChunkProviderServerMixin_Vanilla implements ServerChunkPro
     @Shadow @Nullable protected abstract Chunk loadChunkFromFile(int x, int z);
 
     @Override
-    public Chunk impl$loadChunkForce(int x, int z) {
+    public Chunk bridge$loadChunkForce(int x, int z) {
         Chunk chunk = this.loadChunkFromFile(x, z);
 
         if (chunk != null)
