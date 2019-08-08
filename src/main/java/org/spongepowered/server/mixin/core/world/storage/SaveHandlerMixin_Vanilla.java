@@ -35,9 +35,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.bridge.world.storage.SaveHandlerBridge;
+import org.spongepowered.common.util.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
+
+import javax.annotation.Nullable;
 
 @Mixin(SaveHandler.class)
 public abstract class SaveHandlerMixin_Vanilla implements SaveHandlerBridge {
@@ -47,10 +50,11 @@ public abstract class SaveHandlerMixin_Vanilla implements SaveHandlerBridge {
             value = "INVOKE",
             target = "Lnet/minecraft/world/storage/SaveFormatOld;getWorldData(Ljava/io/File;Lnet/minecraft/util/datafix/DataFixer;)Lnet/minecraft/world/storage/WorldInfo;"),
         require = 2)
+    @Nullable
     private WorldInfo vanilla$onGetOldWorldInfo(File file, DataFixer fixer) {
         try {
             NBTTagCompound root = CompressedStreamTools.readCompressed(new FileInputStream(file));
-            NBTTagCompound data = root.getCompoundTag("Data");
+            NBTTagCompound data = root.getCompoundTag(Constants.World.DIMENSION_DATA);
             WorldInfo info = new WorldInfo(fixer.process(FixTypes.LEVEL, data));
 
             this.bridge$loadDimensionAndOtherData((SaveHandler) (Object) this, info, root);
