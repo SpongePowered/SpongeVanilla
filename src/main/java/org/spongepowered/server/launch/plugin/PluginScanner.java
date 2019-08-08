@@ -303,7 +303,7 @@ final class PluginScanner {
 
             if (success) {
                 if (metadata == null) {
-                    logger.warn("{} is missing a valid " + METADATA_FILE + " file."
+                    logger.warn("{} is missing a valid " + METADATA_FILE + " file.\n"
                             + "This is not a problem when testing plugins, however it is recommended to include one in public plugins.\n"
                             + "Please see https://docs.spongepowered.org/master/en/plugin/plugin-meta.html for details.", path);
                 }
