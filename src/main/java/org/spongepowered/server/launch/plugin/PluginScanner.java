@@ -73,8 +73,8 @@ final class PluginScanner {
 
     private static final String CLASS_EXTENSION = ".class";
     static final String JAR_EXTENSION = ".jar";
-
-    private static final PathMatcher CLASS_FILE = path -> path.toString().endsWith(CLASS_EXTENSION);
+    private static final String META_INF = "META-INF/";
+    private static final PathMatcher CLASS_FILE = path -> path.toString().endsWith(CLASS_EXTENSION) && !path.toString().contains(META_INF);
     private static final PathMatcher JAR_FILE = path -> path.toString().endsWith(JAR_EXTENSION);
     private static final DirectoryStream.Filter<Path> JAR_FILTER = path -> path.toString().endsWith(JAR_EXTENSION);
 
@@ -222,6 +222,9 @@ final class PluginScanner {
                 }
 
                 final String name = entry.getName();
+                if (entry.getName().startsWith(META_INF)) {
+                    continue;
+                }
 
                 if (!name.endsWith(CLASS_EXTENSION)) {
                     if (name.equals(METADATA_FILE)) {
@@ -338,7 +341,13 @@ final class PluginScanner {
     }
 
     private PluginCandidate scanClassFile(InputStream in, PluginSource source) throws IOException {
-        ClassReader reader = new ClassReader(in);
+        ClassReader reader = null;
+
+        try {
+             reader = new ClassReader(in);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("Corrupted class file " + in.toString() + ". Could not load plugin " + source.getPath().orElse(null));
+        }
         PluginClassVisitor visitor = new PluginClassVisitor();
 
         try {
