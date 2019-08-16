@@ -16,6 +16,7 @@
         "entity.item.EntityMinecartMixin_Vanilla",
         "entity.player.EntityPlayerMixin_Vanilla",
         "entity.player.EntityPlayerMPMixin_Vanilla",
+        "entity.player.InventoryPlayerMixin_Vanilla",
         "item.crafting.CraftingManagerMixin_Vanilla",
         "network.NetHandlerPlayServerMixin_Vanilla",
         "server.MinecraftServerAccessor_Vanilla",
