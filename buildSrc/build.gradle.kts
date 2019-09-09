@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 plugins {
     `kotlin-dsl`
     `java-library`
+    idea
 }
 
 subprojects {
@@ -24,18 +25,37 @@ repositories {
     jcenter()
     maven(url = "https://files.minecraftforge.net/maven")
 }
+
 dependencies {
     implementation("net.minecrell.licenser:net.minecrell.licenser.gradle.plugin:0.4.1")
-    implementation("com.github.jengelman.gradle.plugins:shadow:5.0.0")
-    implementation("org.spongepowered.plugin:org.spongepowered.plugin.gradle.plugin:0.8.1")
-    implementation("net.minecraftforge.gradle:ForgeGradle:3.0.105")
-    implementation("de.sebastianboegl.gradle.plugins:shadow-log4j-transformer:1.0.1")
+    implementation("net.minecraftforge.gradle:ForgeGradle:3.0.141")
     implementation(group = "org.spongepowered", name = "SpongeGradle", version = "0.11.0-SNAPSHOT")
 }
-tasks {
-    val copyApi by creating {
-    }
-}
+
+//tasks {
+//    val copyApi by creating(Copy::class) {
+//        from("../SpongeCommon/SpongeAPI/buildSrc/src/main/kotlin") {
+//            include("*.kt", "*.kts")
+//        }
+//        from("../SpongeAPI/buildSrc/src/main/kotlin") {
+//            include("*.kt", "*.kts")
+//        }
+//        into("src/main/kotlin")
+//    }
+//
+//    compileKotlin {
+//        dependsOn(copyApi)
+//    }
+//}
+//val proj = this
+//subprojects {
+//    configurations.forEach {
+//        dependencies {
+//            add(it.name, proj)
+//        }
+//    }
+//}
+//
 
 //sourceSets {
 //    val main by getting {
