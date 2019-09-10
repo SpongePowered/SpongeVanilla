@@ -7,7 +7,7 @@ val commonProj = project(":SpongeCommon")
 
 
 dependencies {
-    minecraft("net.minecraft:server:1.14.3")
+    minecraft("net.minecraft:server:1.14.4")
 }
 
 minecraft {
@@ -23,6 +23,4 @@ minecraft {
 
 
 spongeDev {
-    api = project(":SpongeCommon:SpongeAPI")
-    common = commonProj
 }
