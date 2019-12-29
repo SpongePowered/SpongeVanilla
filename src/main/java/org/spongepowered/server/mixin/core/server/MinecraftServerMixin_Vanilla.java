@@ -185,6 +185,11 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
         }
     }
 
+    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
+    private void vanilla$callServerStopped(CallbackInfo ci) throws Exception {
+        vanilla$spongeVanilla.onServerStopped();
+    }
+
     @Override
     public long[] bridge$getWorldTickTimes(int dimensionId) {
         return this.vanilla$worldTickTimes.get(dimensionId);
