@@ -176,6 +176,8 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                     }
 
                     WorldManager.unloadWorld(worldserver1, false, true);
+                    // Sponge End
+                    worldserver1.flush();
                 }
             }
 
