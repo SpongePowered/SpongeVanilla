@@ -108,9 +108,4 @@ public abstract class DedicatedServerMixin_Vanilla extends MinecraftServer {
         vanilla$scheduler.tickSyncScheduler();
     }
 
-    @Inject(method = "systemExitNow", at = @At(value = "HEAD"))
-    private void vanilla$callServerStopped(CallbackInfo ci) throws Exception {
-        vanilla$spongeVanilla.onServerStopped();
-    }
-
 }

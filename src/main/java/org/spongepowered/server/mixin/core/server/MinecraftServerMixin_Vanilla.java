@@ -176,6 +176,8 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                     }
 
                     WorldManager.unloadWorld(worldserver1, false, true);
+                    // Sponge End
+                    worldserver1.flush();
                 }
             }
 
@@ -183,6 +185,11 @@ public abstract class MinecraftServerMixin_Vanilla implements MinecraftServerBri
                 this.usageSnooper.stopSnooper();
             }
         }
+    }
+
+    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
+    private void vanilla$callServerStopped(CallbackInfo ci) throws Exception {
+        vanilla$spongeVanilla.onServerStopped();
     }
 
     @Override
