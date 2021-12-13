@@ -93,6 +93,10 @@ dependencies {
     compile 'net.minecrell:terminalconsoleappender:1.2.0'
     runtime 'org.jline:jline-terminal-jansi:3.12.1'
 
+    // log4j 2.15 to avoid nasty exploit
+    runtime 'org.apache.logging.log4j:log4j-api:2.15.0'
+    runtime 'org.apache.logging.log4j:log4j-core:2.15.0'
+
     shadow 'org.ow2.asm:asm-all:5.2'
 
     log4j('org.apache.logging.log4j:log4j-core:2.8.1') {
@@ -144,6 +148,9 @@ shadowJar {
         include dependency('org.jline:jline-terminal-jansi')
         include dependency('org.jline:jline-reader')
         include dependency('org.fusesource.jansi:jansi')
+
+        include dependency('org.apache.logging.log4j:log4j-api:2.15.0')
+        include dependency('org.apache.logging.log4j:log4j-core:2.15.0')
 
         include dependency('com.eclipsesource.minimal-json:minimal-json')
     }
