@@ -37,7 +37,7 @@ jobs:
           ./gradlew --refresh-dependencies setupDecompWorkspace
       - name: Build with Gradle
         run: |
-          ./gradlew --refresh-dependencies -s build
+          ./gradlew --refresh-dependencies -s clean build
         env:
           CI_SYSTEM: Github Actions
       - name: Add artifacts to build
