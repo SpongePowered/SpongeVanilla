@@ -1,7 +1,11 @@
 SpongeVanilla [![Build Status](https://travis-ci.org/SpongePowered/SpongeVanilla.svg?branch=stable-7)](https://travis-ci.org/SpongePowered/SpongeVanilla)
 =============
 
-**Currently not stable and under heavy development!**
+## Moved
+
+**This repository is obsolete! Development on modern (1.16+) versions continues in the [Sponge](https://github.com/SpongePowered/Sponge) repository.**
+
+---
 
 SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.
 
